@@ -12,6 +12,11 @@ export function attachSidebarToggle() {
     toggleBtn.addEventListener("click", sidebarToggle);
   }
 
+  const closeSidebar = document.getElementById("closeSidebar")
+  if(closeSidebar) {
+    closeSidebar.addEventListener("click", sidebarToggle);
+
+  }
   const actionBtn = document.querySelector(".actionBtn");
   if (actionBtn) {
     actionBtn.addEventListener("click", sidebarToggle);

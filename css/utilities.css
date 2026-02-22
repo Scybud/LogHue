@@ -26,15 +26,15 @@
 }
 
 .pageHeader {
-  grid-area: header;
   background: var(--header-bg);
   backdrop-filter: blur(30px);
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: sticky;
-  top: 0;
-  z-index: 999;
+  top: -8px;
+  border-radius: var(--radius);
+  z-index: 1;
   width: 100%;
   padding: 10px 10px;
 }
@@ -55,6 +55,14 @@
 }
 
 /*SIDEBAR TOGGLE MENU ICON*/
+#closeSidebar {
+  position: sticky;
+  margin: 5px;
+  margin-left: auto;
+}
+#closeSidebar svg {
+  width: 25px;
+}
 .menuBtn {
   padding: 4px 8px;
   font-size: 0.9rem;
