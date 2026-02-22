@@ -121,6 +121,8 @@ function updateworkspaceCount() {
 
 export function createWorkspaceCardElement(ws) {
 
+      const formattedTDate = formatDateTime(ws.created_at);
+
 const workspaceCard = document.createElement("div")
 workspaceCard.classList.add("workspaceCard", "card");
 workspaceCard.dataset.id = ws.id
@@ -132,7 +134,7 @@ workspaceCard.innerHTML = `
            </span>
            </h3> 
            <p>
-           <span class="meta">Created on: ${ws.created_at}</span>
+           <span class="meta">Created on: ${formattedTDate}</span>
            </p>
            <details>
            <summary>Description</summary>

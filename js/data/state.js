@@ -152,6 +152,7 @@ export const state = {
           id: "act_303",
           type: "log_added",
           user_id: "user_001",
+          user_name: "Abdulroqib",
           task_id: "wst_103",
           timestamp: 1708261123000,
         },
@@ -395,7 +396,19 @@ export const state = {
           ],
         },
       ],
-      activity: [],
+      activity: [
+        {
+          id: crypto.randomUUID(),
+          user_id: "user_001",
+          user_name: "Abdulroqib",
+          task_id: "wst_103",
+          type: "log_added",
+          taskValue: "Refactored sidebar component",
+          noteValue: "Cleaned up event listeners and improved toggle logic.",
+          timestamp: 1708261123000,
+        },
+       
+      ],
     },
 
     {

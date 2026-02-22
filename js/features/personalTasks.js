@@ -96,9 +96,6 @@ function createLogElement(log) {
  return taskDetails
 }
 
-/*
-const savedLogDetails = JSON.parse(localStorage.getItem("logDetails")) || [];
-*/
 
 function renderExistingLogs() {
   if (personalCreatedLogs) personalCreatedLogs.innerHTML = "";

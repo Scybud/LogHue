@@ -1,236 +1,247 @@
-import {state} from "./data/state.js"
+import { state } from "./data/state.js";
+import {attachSidebarEvents} from "./components/sidebar.js"
 
-//Get workspace url
-const params = new URLSearchParams(window.location.search)
-const workspaceId = params.get('ws')
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".navBtn");
+    if (!btn) return;
 
-//Load data
-const workspace = state.workspaces.find(w => w.id === workspaceId)
+    const params = new URLSearchParams(window.location.search);
+    const workspaceId = params.get("ws");
+    const workspace = state.workspaces.find((w) => w.id === workspaceId);
 
+const container = document.getElementById("adminWorkspaceDashboardContent");
+  if (!workspace || !container) return;
 
-export function initWorkspaceData() {
-  if (!workspace) return
-  
+    const section = btn.dataset.section;
+
+    renderSection(section, workspace, container);
+  });
+
+export async function initWorkspaceData() {
+  //Get workspace url
+  const params = new URLSearchParams(window.location.search);
+  const workspaceId = params.get("ws");
+  //Load data
+  const workspace = state.workspaces.find((w) => w.id === workspaceId);
+
   const adminWorkspaceDashboardContent = document.getElementById(
     "adminWorkspaceDashboardContent",
   );
-  const workspaceName = document.getElementById("workspaceName")
-   
 
-        if(workspace) {
-          document.title = workspace.name;
-        }
 
-  if(workspace && workspaceName) {
+  if (!workspace) return;
+
+  const workspaceName = document.getElementById("workspaceName");
+
+  if (workspace) {
+    document.title = workspace.name;
+  }
+
+  if (workspace && workspaceName) {
     workspaceName.innerHTML = `${workspace.name} <span class="tag">Admin</span>`;
   }
 
-if(adminWorkspaceDashboardContent) {
-  adminWorkspaceDashboardContent.innerHTML = ""
+  if (adminWorkspaceDashboardContent) {
+    adminWorkspaceDashboardContent.innerHTML = "";
+  }
+
+  if (workspace && adminWorkspaceDashboardContent) {
+    loadCreatedTasks(
+      workspace.workspace_tasks || [],
+      adminWorkspaceDashboardContent,
+    );
+  }
+
+    attachSidebarEvents();
+
 }
 
+function renderSection(section, workspace, container) {
+  container.innerHTML = ""
+  switch (section) {
+    case "createdTasks":
+      loadCreatedTasks(workspace.workspace_tasks || [], container);
+      break;
 
+    case "members":
+      loadMembers(workspace.members || [], container);
+      break;
 
-console.log("TASKS:", workspace.workspace_tasks);
-if (workspace && adminWorkspaceDashboardContent) {
-  loadCreatedTasks(
-    workspace.workspace_tasks || [],
-    adminWorkspaceDashboardContent,
-  );
-}
-
-loadMembers()
-loadActivities()
+    case "activities":
+      loadActivities(workspace.activity || [], container);
+      break;
+  }
 }
 
 
 function loadCreatedTasks(tasks, container) {
-  const section = document.createElement("section")
-  section.classList.add("section")
-  
-  const sectionTitle = document.createElement("h2")
-  sectionTitle.classList.add("sectionTitle")
-  sectionTitle.textContent = "Created Tasks"
+  if (!tasks || tasks.length === 0) {
+    container.innerHTML = `<p class="placeholderText">No tasks created yet.</p>`;
+    return;
+  }
+
+  const section = document.createElement("section");
+  section.classList.add("section");
+
+  const sectionTitle = document.createElement("h2");
+  sectionTitle.classList.add("sectionTitle");
+  sectionTitle.textContent = "Created Tasks";
 
   const divGrid = document.createElement("div");
-  divGrid.classList.add("grid")
-
-  console.log("shown")
-tasks.forEach(tsk => {
-
-const taskCard = document.createElement("div")
-taskCard.classList.add("card", "taskCard")
-
-const taskTitle = document.createElement("h3")
-taskTitle.classList.add("taskTitle")
-taskTitle.textContent = tsk.title
-
-const taskMeta = document.createElement("p")
-taskMeta.classList.add("taskMeta", "meta")
-taskMeta.textContent = `Assigned to: ${tsk.assigned_to}`
-
-const assignToMemberBtn = document.createElement("button")
-assignToMemberBtn.classList.add("btn", "btn-primary", "btn-sm", "assignToMemberBtn")
-assignToMemberBtn.textContent = "Assign to Member"
-
-taskCard.append(taskTitle, taskMeta, assignToMemberBtn)
-
-divGrid.append(taskCard)
-})
+  divGrid.classList.add("grid");
 
 
-section.append(sectionTitle, divGrid)
-container.append(section)
+  tasks.forEach((tsk) => {
+    const taskCard = document.createElement("div");
+    taskCard.classList.add("card", "taskCard");
+
+    const taskTitle = document.createElement("h3");
+    taskTitle.classList.add("taskTitle");
+    taskTitle.textContent = tsk.title;
+
+    const taskMeta = document.createElement("p");
+    taskMeta.classList.add("taskMeta", "meta");
+    taskMeta.textContent = `Assigned to: ${tsk.assigned_to}`;
+
+    const assignToMemberBtn = document.createElement("button");
+    assignToMemberBtn.classList.add(
+      "btn",
+      "btn-primary",
+      "btn-sm",
+      "assignToMemberBtn",
+    );
+    assignToMemberBtn.textContent = "Assign to Member";
+
+    taskCard.append(taskTitle, taskMeta, assignToMemberBtn);
+
+    divGrid.append(taskCard);
+  });
+
+  section.append(sectionTitle, divGrid);
+  container.append(section);
 }
 
-function loadMembers() {
-
+function loadMembers(members, container) {
+if (!members || members.length === 0) {
+container.innerHTML = `<p class="placeholderText">No members found.</p>`;
+  return;
 }
 
-function loadActivities() {
+const section = document.createElement("section");
+section.classList.add("section");
 
+const sectionTitle = document.createElement("h2");
+sectionTitle.classList.add("sectionTitle");
+sectionTitle.textContent = "Workspace Members";
+
+const divGrid = document.createElement("div");
+divGrid.classList.add("grid");
+
+
+members.forEach((mbr) => {
+  const memberCard = document.createElement("div");
+  memberCard.classList.add("card", "memberCard");
+
+  const memberName = document.createElement("h3");
+  memberName.classList.add("memberName");
+  memberName.textContent = mbr.name;
+  const tag = document.createElement("span")
+  tag.classList.add("tag")
+  tag.textContent = mbr.role
+memberName.append(tag)
+
+
+  memberCard.append(memberName);
+
+  divGrid.append(memberCard);
+});
+
+section.append(sectionTitle, divGrid);
+container.append(section);
+}
+
+
+function formatDateTime(isoString) {
+  const date = new Date(isoString);
+  return date.toLocaleString("en-US", {
+    month: "long", // February
+    day: "numeric", // 11
+    year: "numeric", // 2026
+    hour: "2-digit", // 12
+    minute: "2-digit", // 27
+  });
+}
+
+function createLogElement(log) {   
+
+  /*
+   let savedLogDetails = JSON.parse(localStorage.getItem("logDetails")) || [];
+*/
+
+    /*
+     localStorage.setItem("logDetails", JSON.stringify(savedLogDetails));
+     */
+
+ const taskDetails = document.createElement("details");
+ taskDetails.classList.add("loggedActivityContainer");
+ taskDetails.dataset.id = log.id;
+
+ const taskSummary = document.createElement("summary");
+ taskSummary.title = "click to see details";
+ taskSummary.innerHTML = `<span class="personalTaskName">${log.taskValue}</span> 
+ <div class="actionConatiner">
+ <button data-title="Comment" type="button" class="commentBtn tooltip">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+ stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 5h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/>
+</svg>
+</button>
+ <button data-title="Mark as reviewed" type="button" class="markAsReviwedBtn tooltip">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+ stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <polyline points="20 6 9 17 4 12" />
+</svg>
+ </button>
+ </div>
+ `;
+
+ const taskTime = document.createElement("span");
+ taskTime.textContent = formatDateTime(log.timestamp);
+
+ const taskNote = document.createElement("p");
+ taskNote.textContent = log.noteValue;
+
+ taskDetails.append(taskSummary, taskTime, taskNote);
+ return taskDetails
 }
 
 
 
-const sections = {
-  myTasks: `
-    <section class="section">
-      <h2 class="sectionTitle">My Tasks</h2>
-      <div class="taskList">
-        <div class="card taskCard">
-          <h3 class="taskTitle">Design Landing Page</h3>
-          <p class="taskMeta meta">Due: Feb 14 • Priority: High</p>
-          <button class="btn btn-primary btn-sm" id="markDone">View Details</button>
-                <button type="button" class="btn btn-sm" id="logProgress">Log Progress</button>
-        </div>
-        <div class="card taskCard">
-          <h3 class="taskTitle">Write Email Copy</h3>
-          <p class="taskMeta meta">Due: Feb 16 • Priority: Medium</p>
-          <button class="btn btn-primary btn-sm">View Details</button>
-                          <button type="button" class="btn btn-sm" id="logProgress">Log Progress</button>
+function loadActivities(activities, container) {
+if (!activities || activities.length === 0) {
+  container.innerHTML = `<p class="placeholderText">No activity created yet.</p>`;
+  return;
+}
+const section = document.createElement("section");
+section.classList.add("section");
 
-        </div>
-      </div>
-    </section>
-  `,
+const sectionTitle = document.createElement("h2");
+sectionTitle.classList.add("sectionTitle");
+sectionTitle.textContent = "Activities";
 
-  allTasks: `
-    <section class="section">
-      <h2 class="sectionTitle">All Tasks</h2>
-      <div class="grid">
-        <div class="card taskCard">
-          <h3 class="taskTitle">Fix Navbar Bug</h3>
-          <p class="taskMeta meta">Assigned to: Sarah</p>
-        </div>
-        <div class="card taskCard">
-          <h3 class="taskTitle">Prepare Presentation</h3>
-          <p class="taskMeta meta">Assigned to: Abdulroqib</p>
-        </div>
-          <div class="card taskCard">
-          <h3 class="taskTitle">Update Database Schema</h3>
-          <p class="taskMeta meta">Unassigned</p>
-                          <button type="button" class="btn btn-sm" id="takeTask">Take Task</button>
+const divGrid = document.createElement("div");
+divGrid.classList.add("container");
 
-        </div>
-          <div class="card taskCard">
-          <h3 class="taskTitle">Update Database Schema</h3>
-          <p class="taskMeta meta">Unassigned</p>
-                          <button type="button" class="btn btn-sm" id="takeTask">Take Task</button>
+activities.forEach((act) => {
+  console.log(act.timestamp)
+ const taskDetails = createLogElement(act)
 
-        </div>
-        <div class="card taskCard">
-          <h3 class="taskTitle">Prepare Presentation</h3>
-          <p class="taskMeta meta">Assigned to: Abdulroqib</p>
-        </div>
-        <div class="card taskCard">
-          <h3 class="taskTitle">Prepare Presentation</h3>
-          <p class="taskMeta meta">Assigned to: Abdulroqib</p>
-        </div>
-        <div class="card taskCard">
-          <h3 class="taskTitle">Update Database Schema</h3>
-          <p class="taskMeta meta">Unassigned</p>
-                          <button type="button" class="btn btn-sm" class="takeTask">Take Task</button>
+ divGrid.append(taskDetails)
+});
 
-        </div>
-      </div>
-    </section>
-  `,
-
-  members: `
-    <section class="section">
-      <h2 class="sectionTitle">Workspace Members</h2>
-      <div class="memberList grid">
-        <div class="memberCard card">
-          <h3 class="memberName">Abdulroqib</h3>
-          <p class="memberRole">Admin</p>
-        </div>
-        <div class="memberCard card">
-          <h3 class="memberName">Sarah</h3>
-          <p class="memberRole">Member</p>
-        </div>
-        <div class="memberCard card">
-          <h3 class="memberName">David</h3>
-          <p class="memberRole">Member</p>
-        </div>
-      </div>
-    </section>
-  `,
-
-  activity: `
-    <section class="section">
-      <h2 class="sectionTitle">Activity Log</h2>
-      <div class="activityList">
-        <div class="activityItem card">
-        <p><strong>Sarah</strong> completed <em>Fix Navbar Bug</em></p>
-        <span class="activityTime">2 hours ago</span>
-
-       <div class="activityItemActions">
-        <button class="adminOnly markCompleted btn-sm btn btn-primary">Mark as complete</button>
-        <button class="adminOnly taskDetails btn-sm btn">View Details</button>
-        <button class="adminOnly commentOpener btn-sm btn">Comment</button>
-        </div>
-        </div>
-        <div class="activityItem card">
-          <p><strong>Abdulroqib</strong> created <em>Design Landing Page</em></p>
-          <span class="activityTime">5 hours ago</span>
-
-             <div class="activityItemActions">
-        <button class="adminOnly markCompleted btn-sm btn btn-primary">Mark as complete</button>
-        <button class="adminOnly taskDetails btn-sm btn">View Details</button>
-        <button class="adminOnly commentOpener btn-sm btn">Comment</button>
-        </div>
-        </div>
-        <div class="activityItem card">
-          <p><strong>David</strong> joined the workspace</p>
-          <span class="activityTime">1 day ago</span>
-
-            <div class="activityItemActions">
-                    <button class="adminOnly markCompleted btn-sm btn btn-primary">Mark as complete</button>
-        <button class="adminOnly taskDetails btn-sm btn">View Details</button>
-        <button class="adminOnly commentOpener btn-sm btn">Comment</button>
-        </div>
-        </div>
-      </div>
-    </section>
-  `,
-};
-
-
-
-export function loadSection(section) {
-const adminWorkspaceDashboardContent = document.getElementById(
-  "adminWorkspaceDashboardContent",
-);
-  if(adminWorkspaceDashboardContent) {
-    adminWorkspaceDashboardContent.innerHTML =
-      sections[section] || "<p>Section not found.</p>";
-  }
+section.append(sectionTitle, divGrid);
+container.append(section);
 }
 
-document.addEventListener("click", (e) => {
-  if(!e.target.classList.contains("navBtn")) return
 
-  const section = e.target.dataset.section
-  loadSection(section)
-})
+

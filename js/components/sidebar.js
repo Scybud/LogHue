@@ -12,9 +12,6 @@ export function attachSidebarEvents() {
     btn.addEventListener("click", () => {
       const section = btn.dataset.section;
 
-      if(section) {
-         loadSection(section);
-      }
 
       sidebarToggle();
     });

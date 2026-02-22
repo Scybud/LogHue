@@ -167,7 +167,7 @@ details[open] {
   border-color: #4b4bff;
   background: var(--form-bg);
 }
-details[open] .deleteBtn {
+details[open] button {
   background-color: #1c1c1c;
 }
 summary {
@@ -176,11 +176,21 @@ summary {
   font-size: 0.9rem;
   font-weight: 600;
   display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
   align-items: center;
   justify-content: space-between;
 }
 
-.deleteBtn {
+.actionConatiner {
+  display: flex;
+  gap: var(--space-sm);
+}
+.actionConatiner button svg, .deleteBtn svg {
+  width: 25px;
+  height: 25px;
+}
+.actionConatiner button, .deleteBtn {
   background-color: #000000;
   border: none;
   display: flex;
@@ -208,7 +218,8 @@ summary {
   left: -100%;
   top: -80%;
   transform: translateX(-50%);
-  color: #fff;
+  color: var(--color);
+  background: var(--bg);
   padding: 8px 12px;
   border-radius: 60px 60px 0 60px;
   font-size: 14px;
@@ -242,13 +253,9 @@ summary {
   transform: translateX(-50%) translateY(0);
 }
 .deleteBtn:hover {
-  transform: scale(1.1);
   color: rgb(255, 0, 0);
 }
-.deleteBtn svg {
-  width: 25px;
-  height: 25px;
-}
+
 
 #personalCreatedLogs {
   margin: 10px 0 50px;
