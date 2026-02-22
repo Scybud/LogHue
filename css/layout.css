@@ -25,14 +25,12 @@
    grid-area: sidebar;
   background: var(--card-bg);
   height: 100%;
-  border-radius: var(--radius);
   padding-top: 10px;
-  
+  border-radius: var(--radius);  
 }
 #sidebar {
    height: 100%;
    width: 100%;
-   padding-top: 15px;
    overflow-y: auto;
 }
 #sidebar a:hover {

@@ -389,10 +389,10 @@ summary {
   #statsContainer .card {
     display: grid;
   }
-  #statsContainer .card h3 {
+  #statsContainer .card .statsName {
     order: 2;
   }
-  #statsContainer .card h3 {
+  #statsContainer .card .statsName {
     font-size: clamp(0.6rem, 3vw, 0.8rem);
   }
 }

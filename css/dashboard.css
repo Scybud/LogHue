@@ -17,6 +17,9 @@ h2 {
   padding: 0 10px;
 }
 
+#dashboardLink {
+  margin-bottom: 10px;
+}
 .navBtn,
 .actionBtn {
   padding: 8px;

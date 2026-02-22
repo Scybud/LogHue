@@ -29,7 +29,10 @@ export async function initWorkspaceData() {
   );
 
 
-  if (!workspace) return;
+  if (!workspace) {
+    window.location.href = "dashboard.html"
+    return
+  };
 
   const workspaceName = document.getElementById("workspaceName");
 
