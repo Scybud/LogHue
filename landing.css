@@ -223,8 +223,6 @@ main {
 }
 
 .hero-highlights {
-    height: 100%;
-
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-sm);
@@ -232,8 +230,6 @@ main {
 }
 
 .hero-pill {
-    height: 100%;
-
   padding: 6px 12px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.04);

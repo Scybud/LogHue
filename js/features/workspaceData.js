@@ -200,9 +200,9 @@ function attachOpenWorkspaceClickEvent() {
     const role = e.target.dataset.role
 
     if(role === "admin") {
-      window.location.href = `/pages/workspace-dashboard-admin.html?ws=${wsId}`
+      window.location.href = `workspace-dashboard-admin.html?ws=${wsId}`
     } else {
-            window.location.href = `/pages/workspace-dashboard-member.html?ws=${wsId}`;
+            window.location.href = `workspace-dashboard-member.html?ws=${wsId}`;
 
     }
   })
