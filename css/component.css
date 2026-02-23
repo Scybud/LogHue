@@ -85,7 +85,6 @@ PERSONAL LOGGED TASK SECTION
 
 /* LOG LIST */
 .logs {
-  display: flex;
   flex-direction: column;
   gap: 14px;
   margin-top: 20px;
@@ -120,12 +119,46 @@ PERSONAL LOGGED TASK SECTION
   transform: rotate(90deg);
 }
 
+/*META TAGS IN ACTIVITY(ADMIN) SECTION*/
+.loggedActivityContainer .metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin-top: .5rem;
+  font-size: .85rem;
+}
+
+.loggedActivityContainer .metaRow span {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 .4rem;
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  white-space: nowrap;
+}
+
+.loggedActivityContainer .taskName {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.loggedActivityContainer .taskProgress {
+  text-transform: capitalize;
+}
+
+.loggedActivityContainer .taskTime {
+  opacity: .8;
+}
+
+
 /* LOG ITEM */
 details {
   background: var(--card-bg);
   border: 1px solid #333;
   border-radius: 10px;
   padding: 12px;
+  margin: var(--space-sm) auto;
   transition: 0.3s;
 }
 details:hover {

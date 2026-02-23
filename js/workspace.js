@@ -54,26 +54,34 @@ export async function initWorkspaceData() {
       adminWorkspaceDashboardContent,
     );
   }
-
-    attachSidebarEvents();
-
+  
+  attachSidebarEvents();
+  
 }
 
 function renderSection(section, workspace, container) {
   container.innerHTML = ""
+  const allLogs = workspace.workspace_tasks.flatMap(task => {
+    return (task.logs || []).map(log => ({
+      ...log,
+      task_title: task.title,
+      task_id: task.id
+    }))
+  })
+
   switch (section) {
     case "createdTasks":
       loadCreatedTasks(workspace.workspace_tasks || [], container);
       break;
-
-    case "members":
-      loadMembers(workspace.members || [], container);
+      
+      case "members":
+        loadMembers(workspace.members || [], container);
+        break;
+        
+        case "activities":
+          loadActivities(allLogs || [], container);
       break;
-
-    case "activities":
-      loadActivities(workspace.activity || [], container);
-      break;
-  }
+    }
 }
 
 
@@ -104,8 +112,7 @@ function loadCreatedTasks(tasks, container) {
 
     const taskMeta = document.createElement("p");
     taskMeta.classList.add("taskMeta", "meta");
-    taskMeta.textContent = `Assigned to: ${tsk.assigned_to}`;
-
+    
     const assignToMemberBtn = document.createElement("button");
     assignToMemberBtn.classList.add(
       "btn",
@@ -114,9 +121,15 @@ function loadCreatedTasks(tasks, container) {
       "assignToMemberBtn",
     );
     assignToMemberBtn.textContent = "Assign to Member";
-
-    taskCard.append(taskTitle, taskMeta, assignToMemberBtn);
-
+    
+    if(tsk.assigned_to === "") {
+          taskMeta.textContent = `Unassigned`;
+                taskCard.append(taskTitle, taskMeta, assignToMemberBtn);
+    } else {
+      taskMeta.textContent = `Assigned to: ${tsk.assigned_to}`;
+      taskCard.append(taskTitle, taskMeta);
+    }
+    
     divGrid.append(taskCard);
   });
 
@@ -177,21 +190,13 @@ function formatDateTime(isoString) {
 
 function createLogElement(log) {   
 
-  /*
-   let savedLogDetails = JSON.parse(localStorage.getItem("logDetails")) || [];
-*/
-
-    /*
-     localStorage.setItem("logDetails", JSON.stringify(savedLogDetails));
-     */
-
  const taskDetails = document.createElement("details");
  taskDetails.classList.add("loggedActivityContainer");
  taskDetails.dataset.id = log.id;
 
  const taskSummary = document.createElement("summary");
  taskSummary.title = "click to see details";
- taskSummary.innerHTML = `<span class="personalTaskName">${log.taskValue}</span> 
+ taskSummary.innerHTML = `<span class="personalTaskName">${log.note}</span> 
  <div class="actionConatiner">
  <button data-title="Comment" type="button" class="commentBtn tooltip">
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -209,20 +214,30 @@ function createLogElement(log) {
  `;
 
  const taskTime = document.createElement("span");
- taskTime.textContent = formatDateTime(log.timestamp);
+ taskTime.classList.add("meta", "taskTime")
+ taskTime.textContent = formatDateTime(log.date);
 
- const taskNote = document.createElement("p");
- taskNote.textContent = log.noteValue;
+ const taskName = document.createElement("span");
+ taskName.classList.add("meta", "taskName");
+taskName.textContent = `Task: ${log.task_title}`;
 
- taskDetails.append(taskSummary, taskTime, taskNote);
+ const taskProgress = document.createElement("span");
+ taskProgress.classList.add("meta", "taskProgress")
+ taskProgress.textContent = log.progress;
+
+ const meta = document.createElement("div");
+ meta.classList.add("metaRow");
+ meta.append(taskName, taskTime, taskProgress);
+
+ taskDetails.append(taskSummary, meta);
  return taskDetails
 }
 
 
 
-function loadActivities(activities, container) {
-if (!activities || activities.length === 0) {
-  container.innerHTML = `<p class="placeholderText">No activity created yet.</p>`;
+function loadActivities(allLogs, container) {
+if (!allLogs || allLogs.length === 0) {
+  container.innerHTML = `<p class="placeholderText">No activity in this workspace yet.</p>`;
   return;
 }
 const section = document.createElement("section");
@@ -235,8 +250,7 @@ sectionTitle.textContent = "Activities";
 const divGrid = document.createElement("div");
 divGrid.classList.add("container");
 
-activities.forEach((act) => {
-  console.log(act.timestamp)
+allLogs.forEach((act) => {
  const taskDetails = createLogElement(act)
 
  divGrid.append(taskDetails)

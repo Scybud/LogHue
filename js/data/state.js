@@ -380,7 +380,7 @@ export const state = {
         {
           id: "wst_102",
           title: "Define Q1 product roadmap",
-          assigned_to: "user_002",
+          assigned_to: "",
           state: "in-progress",
           priority: "low",
           due_date: "2026-03-01",
