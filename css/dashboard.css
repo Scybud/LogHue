@@ -48,8 +48,7 @@ h3 {
 }
 .tag {
   font-size: 0.8rem;
-  color: #000000;
-  background: var(--secondary);
+  background: var(--tag);
   position: absolute;
   top: 0;
   border-radius: var(--radius);

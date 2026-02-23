@@ -10,13 +10,12 @@ function renderAllWorkspaces() {
   savedWorkspaceData.forEach((wsData) => {
     const wsCard = createWorkspaceCardElement(wsData);
 
-    div.append(wsCard);
+    div.prepend(wsCard);
   });
   const dashboardContent = document.getElementById("dashboardContent");
 
-  dashboardContent.prepend( div);
+  dashboardContent.append( div);
 
-  dashboardContent.prepend();
 }
 
 renderAllWorkspaces();
