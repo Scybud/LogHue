@@ -140,7 +140,7 @@ workspaceCard.innerHTML = `
            <summary>Description</summary>
            <p>${ws.description}</p>
            </details>
-           <button class="btn btn-secondary openWorkspaceBtn" data-id=${ws.id} data-role=${ws.role}>Open Workspace</button> 
+           <button class="btn btn-primary openWorkspaceBtn" data-id=${ws.id} data-role=${ws.role}>Open Workspace</button> 
 `;
 
 return workspaceCard;

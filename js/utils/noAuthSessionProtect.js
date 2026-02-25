@@ -1,10 +1,14 @@
-import { initSession, getCurrentSession } from "../supabase.js";
+import { supabase } from "../supabase.js";
 
-//If session exists, redirect to landing page
-await initSession();
+async function protectPage() {
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
 
-const session = getCurrentSession();
-
-if (!session) {
-  window.location.href = "auth.html";
+if (error || !user) {
+    window.location.href = "auth.html";
+  }
+  return user;
 }
+protectPage()

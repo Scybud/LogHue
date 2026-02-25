@@ -1,9 +1,12 @@
-import { getCurrentSession, initSession } from "./../supabase.js";
+import { supabase } from "../supabase.js";
 
-await initSession();
+async function protectPage() {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-//REDIRECT IF USER LOGGED IN
-const session = getCurrentSession();
-if (session) {
-  window.location.href = "dashboard.html";
+  if (user) {
+    window.location.href = "dashboard.html";
+  }
 }
+protectPage();
