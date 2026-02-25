@@ -12,12 +12,19 @@ export const supabase = createClient(
 // Reactive session storage
 let currentSession = null;
 
-//GET SESSION
+export async function initSession() {
+  //GET SESSION
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  currentSession = session;
+}
+
 supabase.auth.onAuthStateChange((event, session) => {
-  currentSession = session
+  currentSession = session;
 });
 
 // Function other files can use
-export function getCurrentSession() {
+export async function getCurrentSession() {
   return currentSession;
 }

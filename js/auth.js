@@ -1,4 +1,4 @@
-import { supabase, getCurrentSession } from "./supabase.js";
+import { supabase } from "./supabase.js";
 
 //Signup funtion
 async function signup(email, password) {
@@ -52,9 +52,9 @@ async function login(email, password) {
 
       if (error) {
         alert(error.message);
-        return;
+        return false;
       }
-      alert("Logged in successfully!");
+      return true;
 }
 
 //Login form
@@ -76,14 +76,12 @@ export function loginFuntion() {
     return;
   }
 
-  await login(email, password);
-  window.location.href = "dashboard.html"
+  const success = await login(email, password);
+
+  if(success) {
+    window.location.href = "dashboard.html"
+  }
 })
 }
 }
-
-//REDIRECT IF USER LOGGED IN
-const session = getCurrentSession()
-if(session) {
-  window.location.href = "dashboard.html"
-}
+loginFuntion()
