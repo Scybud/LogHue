@@ -286,7 +286,7 @@ summary {
   transform: translateX(-50%) translateY(0);
 }
 .deleteBtn:hover {
-  color: rgb(255, 0, 0);
+  color: #ff0000;
 }
 
 
@@ -428,4 +428,34 @@ summary {
   #statsContainer .card .statsName {
     font-size: clamp(0.6rem, 3vw, 0.8rem);
   }
+}
+
+.navAccountIdentityCard {
+  padding: 2px 5px 10px;
+  margin: 0;
+  position: absolute;
+  bottom: 0;
+  max-width: 100%;
+  width: 100%;
+  display: flex;
+  gap: var(--space-md);
+  border-radius: 0;
+  border-right: none;
+}
+.text p{
+margin: 0;
+}
+.profileImg {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+#subscriptionType {
+  border: 1px solid var(--border);
+  padding: 2px;
+  display: inline-block;
+  border-radius: var(--radius);
+  margin-top: calc(var(--space-sm) - 2);
+  font-size: 0.9rem;
+  opacity: 0.5;
 }

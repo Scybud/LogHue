@@ -35,6 +35,7 @@ body {
   --navBtn-bg: #222;
   --primary: #393838;
   --secondary: #4caf50;
+  --link: #0080ff;
   --tag: #00fff276;
   --accent: #6a5acd;
   --card-bg: #111;
@@ -78,7 +79,7 @@ p {
   margin-bottom: var(--space-md);
 }
 a {
-  color: var(--primary);
+  color: var(--link);
   text-decoration: none;
 }
 a:hover {

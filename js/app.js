@@ -16,6 +16,7 @@ import { initPersonalTasks } from "./features/personalTasks.js";
 import { initWorkspaces } from "./features/workspaceData.js";
 import { autoExpandTextarea } from "./utils/textarea.js";
 
+import {loginFuntion, attachSignoutEvents} from "./auth.js"
 
 window.addEventListener("DOMContentLoaded", async () => {
   await loadComponent(
@@ -34,6 +35,12 @@ window.addEventListener("DOMContentLoaded", async () => {
     "../components/sidebar-general.html",
     "generalSidebarContainer",
   );
+
+
+  //Login function
+  loginFuntion()
+//Logout function
+  attachSignoutEvents()
 
   attachSidebarToggle();
   attachSidebarEvents();

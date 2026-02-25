@@ -1,7 +1,7 @@
 import { supabase } from "./supabase.js";
 
 //Signup funtion
-async function signup(email, password) {
+async function signup(name, email, password) {
    const {data, error} = await supabase.auth.signUp({
       email, 
       password,
@@ -11,17 +11,32 @@ async function signup(email, password) {
       alert(error.message)
       return
    }
-   alert("Account created successfully!")
+
+  if (data.user) {
+    const {error: profileError } = 
+    await supabase.from("profiles").insert([
+      {
+        id: data.user.id,
+        full_name: name,
+      },
+    ]);
+    console.log("Profile insert error:", profileError);
+  }
+
+  alert("Account created successfully!")
 }
+
+
 
 
 //Signup form
 const signupForm = document.getElementById("signupForm");
 if(signupForm) {
-
+  
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-
+    
+    const name = document.getElementById("userSignupNameInput").value.trim();
   const email = document.getElementById("userSignupEmailInput").value.trim();
   const password = document
     .getElementById("userSignupPasswordInput")
@@ -30,15 +45,27 @@ if(signupForm) {
   "userSignupConfirmPasswordInput",
 ).value.trim();
 
-  if (!password || !email || !confirmPassword) {
+
+  if (!name || !password || !email || !confirmPassword) {
     alert("All filed must not be empty");
     return;
+  }else if(!email.includes("@")) {
+    alert("Please enter a valid email")
+    return
   } else if (password != confirmPassword) {
     alert("Passords do not match");
     return;
+  } else if(password.length < 6) {
+    alert("Password must be at least 6 characters")
+    return
   }
+  //disable button
+const button = signupForm.querySelector("button");
+button.disabled = true;
 
-  await signup(email, password);
+await signup(name, email, password);
+
+button.disabled = false;
 });
 }
 
@@ -84,4 +111,28 @@ export function loginFuntion() {
 })
 }
 }
-loginFuntion()
+
+
+
+//signout
+async function signout() {
+  const {error} = await supabase.auth.signOut()
+
+  if(error) {
+    alert(error.message)
+    return;
+  }
+alert("Logged out successfully!")
+window.location.href = "auth.html"
+}
+
+
+export function attachSignoutEvents() {
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("#logoutBtn")
+    if(btn) {
+      signout();
+    }
+  })
+}
