@@ -17,8 +17,10 @@ async function signup(email, password) {
 
 //Signup form
 const signupForm = document.getElementById("signupForm");
-signupForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
+if(signupForm) {
+
+  signupForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
   const email = document.getElementById("userSignupEmailInput").value.trim();
   const password = document
@@ -38,6 +40,7 @@ signupForm.addEventListener("submit", async (e) => {
 
   await signup(email, password);
 });
+}
 
 
 //login funtion
@@ -55,12 +58,15 @@ async function login(email, password) {
 }
 
 //Login form
-const loginForm = document.getElementById("loginForm");
+export function loginFuntion() {
 
-loginForm.addEventListener("submit", async (e) => {
-   e.preventDefault()
+  const loginForm = document.getElementById("loginForm");
+  if(loginForm) {
 
-  const email = document.getElementById("userLoginEmailInput").value.trim();
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault()
+    
+    const email = document.getElementById("userLoginEmailInput").value.trim();
   const password = document
     .getElementById("userLoginPasswordInput")
     .value.trim();
@@ -71,10 +77,13 @@ loginForm.addEventListener("submit", async (e) => {
   }
 
   await login(email, password);
+  window.location.href = "dashboard.html"
 })
+}
+}
 
 //REDIRECT IF USER LOGGED IN
 const session = getCurrentSession()
 if(session) {
-   window.location.href = "dashboard.html"
+  window.location.href = "dashboard.html"
 }

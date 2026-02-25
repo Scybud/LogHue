@@ -1,6 +1,6 @@
 import { loadComponent } from "../ui.js";
 import {initWorkspaces} from "../features/workspaceData.js"
-
+import { loginFuntion } from "../auth.js";
 
 export function openCreateTaskModal() {
   const btn = document.getElementById("createTaskOpen");
@@ -12,7 +12,6 @@ export function openCreateTaskModal() {
         "../components/modals/create-task.html",
         "modalContainer",
       );
-
     });
   }
 }
@@ -59,6 +58,7 @@ function attachLoginModalEvents() {
          );
 
          attachSignupModalEvents();
+         loginFuntion();
        });
      }
 }
@@ -69,6 +69,8 @@ function attachSignupModalEvents() {
      await loadComponent("components/modals/login.html", "modalContainer");
 
      attachLoginModalEvents()
+              loginFuntion();
+
     });
   }
 
