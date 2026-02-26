@@ -18,6 +18,11 @@
 <link rel="manifest" href="./../assets/icons/favicons/site.webmanifest">
 
 <style>
+  main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
  .authGateway {
   max-width: 460px;
   width: 100%;
@@ -144,12 +149,23 @@
 .show {
   display: flex;
 }
+.backBtn.show {
+  display: block;
+}
+.backBtn {
+  position: sticky;
+  top: 30px;
+  left: 20px;
+  padding: 0 auto;
+  display: none;
+  width: fit-content;
+}
 </style>
 </head>
 <body>
   
+  <button type="button" class="btn backBtn btn-sm">← Back</button>
     <main class="main">
-     
      <!-- AUTH GATEWAY -->
 <div class="authGateway">
   <img src="../assets/images/loghue-logo.png" class="logo" alt="LogHue Logo">
@@ -208,7 +224,6 @@
          <label for="userLoginPasswordInput">Password</label>
          <input type="password" name="userLoginPasswordInput" id="userLoginPasswordInput" class="inputField" placeholder="Your account password" required>
          <button class="btn btn-primary" id="loginBtn" type="submit">Login</button>
-         <p class="commonPlaceholderText show">New user? <a href="#signupFrom" class="emailSignup">Create account</a></p>
       </form>
 
 
@@ -224,11 +239,14 @@
                   <label for="userSignupConfirmPasswordInput">Confirm Password</label>
          <input type="password" name="userSignupConfirmPasswordInput" id="userSignupConfirmPasswordInput" class="inputField" placeholder="Confirm your password" required>
          <button class="btn btn-primary" id="signupBtn" type="submit">Signup</button>
-         <p class="commonPlaceholderText show">Have an account? <a href="#loginForm" class="emailLogin">Login</a></p>
       </form>
     </main>
 
     <script>
+      const backBtn = document.querySelector(".backBtn")
+      backBtn.addEventListener("click", () => {
+        window.location.reload()
+      })
       const authGatewayContainer = document.querySelector(".authGateway")
       const loginForm = document.getElementById("loginForm")
       const SignupForm = document.getElementById("signupForm")
@@ -237,21 +255,22 @@
       const emailSignupBtn = document.querySelectorAll(".emailSignup")
 
 
-      function hideConatiner(hideCont1, hideCont2, showCont) {
+      function hideConatiner(hideCont1, hideCont2, showCont, showBtn) {
         hideCont1.classList.add("hide")
         hideCont2.classList.add("hide")
         showCont.classList.add("show")
+        showBtn.classList.add("show")
       }
 
       emailLoginBtn.forEach((btn) => {
         btn.addEventListener("click", () => {
-          hideConatiner(authGatewayContainer, SignupForm, loginForm)
+          hideConatiner(authGatewayContainer, SignupForm, loginForm, backBtn)
         })
       })
 
       emailSignupBtn.forEach((btn) => {
         btn.addEventListener("click", () => {
-          hideConatiner(authGatewayContainer, loginForm, SignupForm)
+          hideConatiner(authGatewayContainer, loginForm, SignupForm, backBtn)
         })
       })
     </script>
