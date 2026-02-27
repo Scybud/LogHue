@@ -1,4 +1,4 @@
-:root {
+body {
   /* assumes your base variables already exist, this just ensures fallbacks */
   --bg: #000;
   --color: #fff;
@@ -7,7 +7,7 @@
   --navBtn-bg: #222;
   --primary: #027ab2;
   --secondary: #4caf50;
-  --accent: #6a5acd;
+  --accent: #ff6b35;
   --card-bg: #111;
   --border: #333;
   --form-bg: #111;
@@ -23,16 +23,16 @@
   --space-md: 16px;
   --space-lg: 24px;
   --space-xl: 32px;
+
+
+    margin: 0;
+  background: var(--bg);
+  color: var(--color);
+  font-family: "Inter", sans-serif, system-ui;
 }
 html {
   scroll-behavior: smooth;
   box-sizing: border-box;
-}
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--color);
-  font-family: "Inter", sans-serif, system-ui;
 }
 
 /* HEADER */

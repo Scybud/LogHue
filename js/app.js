@@ -1,4 +1,4 @@
-import { loadComponent } from "./ui.js";
+import { loadComponent, removeLoader } from "./ui.js";
 import { attachSidebarEvents } from "./components/sidebar.js";
 import {
   openCreateTaskModal,
@@ -36,6 +36,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     "generalSidebarContainer",
   );
 
+  //LOADER
+removeLoader()
 
   //Login function
   loginFuntion()

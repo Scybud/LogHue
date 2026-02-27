@@ -29,3 +29,12 @@ function attachCloseModal() {
     }
 }
 
+//PRELOADER
+export function removeLoader() {
+  const preLoaderContainer = document.querySelector(".preLoaderContainer");
+
+  if(preLoaderContainer) {
+
+    preLoaderContainer.remove()
+  }
+}
