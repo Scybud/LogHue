@@ -1,4 +1,5 @@
 import { supabase } from "./supabase.js";
+import {buttonLoading} from "./ui.js"
 
 //Signup funtion
 async function signup(name, email, password) {
@@ -8,8 +9,8 @@ async function signup(name, email, password) {
    })
 
    if(error) {
-      alert(error.message)
-      return
+      alert(error.message);
+      return false;
    }
 
   if (data.user) {
@@ -20,10 +21,15 @@ async function signup(name, email, password) {
         full_name: name,
       },
     ]);
-    console.log("Profile insert error:", profileError);
+
+    if(profileError) {
+      alert(profileError.message);
+      return false;
+    }
   }
 
-  alert("Account created successfully!")
+  alert("Account created successfully!");
+  return true;
 }
 
 
@@ -37,15 +43,15 @@ if(signupForm) {
     e.preventDefault();
     
     const name = document.getElementById("userSignupNameInput").value.trim();
-  const email = document.getElementById("userSignupEmailInput").value.trim();
-  const password = document
+    const email = document.getElementById("userSignupEmailInput").value.trim();
+    const password = document
     .getElementById("userSignupPasswordInput")
     .value.trim();
-  const confirmPassword = document.getElementById(
-  "userSignupConfirmPasswordInput",
-).value.trim();
+    const confirmPassword = document.getElementById(
+      "userSignupConfirmPasswordInput",
+    ).value.trim();
 
-
+    
   if (!name || !password || !email || !confirmPassword) {
     alert("All filed must not be empty");
     return;
@@ -59,13 +65,20 @@ if(signupForm) {
     alert("Password must be at least 6 characters")
     return
   }
+  
   //disable button
 const button = signupForm.querySelector("button");
 button.disabled = true;
+buttonLoading(button);
 
-await signup(name, email, password);
+const success = await signup(name, email, password);
 
 button.disabled = false;
+
+if(success) {
+  window.location.href = "dashboard.html";
+}
+
 });
 }
 
@@ -81,6 +94,7 @@ async function login(email, password) {
         alert(error.message);
         return false;
       }
+
       return true;
 }
 
@@ -103,12 +117,24 @@ export function loginFuntion() {
     return;
   }
 
-  const success = await login(email, password);
+  const button = document.getElementById("loginBtn")
+    button.disabled = true;
+    buttonLoading(button)
 
-  if(success) {
-    window.location.href = "dashboard.html"
+  try {
+    const success = await login(email, password);
+  
+    
+    if(success) {
+      window.location.href = "dashboard.html"
+    }
+    
+  } finally {
+    button.disabled = false;
+    buttonLoading(button)
   }
-})
+  
+});
 }
 }
 

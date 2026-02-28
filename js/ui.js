@@ -38,3 +38,30 @@ export function removeLoader() {
     preLoaderContainer.remove()
   }
 }
+
+export function buttonLoading(container) {
+  if(container.dataset.loading === "true") {
+    container.innerHTML = container.dataset.originalText
+    container.dataset.loading = "false"; 
+    return;
+  }
+
+  container.dataset.originalText = container.innerHTML; 
+  container.dataset.loading = "true";
+
+const preLoaderContainer = document.createElement("div")
+preLoaderContainer.classList.add("btnLoaderContainer")
+
+const waveLoader = document.createElement("div")
+waveLoader.classList.add("tt-wave-loader");
+
+for(let i = 1; i <= 3; i++) {
+  const span = document.createElement("span")
+
+  waveLoader.append(span)
+}
+preLoaderContainer.append(waveLoader)
+
+container.innerHTML = ""
+container.append(preLoaderContainer)
+}

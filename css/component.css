@@ -76,11 +76,24 @@ PERSONAL LOGGED TASK SECTION
   max-width: 700px;
   max-height: 600px;
   padding: 20px;
-  border: 1px solid #6a5acd;
 }
 .expand label {
   color: #ffffff;
   font-size: 0.9rem;
+}
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 1;
+  background-color: var(--color);
+}
+input[type="number"]::-webkit-inner-spin-button {
+  background: transparent;
+  opacity: 0.4;
+  width: 14px;
+}
+
+input[type="number"]::-webkit-inner-spin-button:hover {
+  opacity: 0.8;
 }
 
 /* LOG LIST */
