@@ -29,8 +29,7 @@ export const state = {
           title: "Define Q2 product roadmap",
           assigned_to: "user_001",
           state: "in-progress",
-          priority: "high",
-          due_date: "2026-03-01",
+          description: "",
           logs: [
             {
               id: "log_501",
@@ -47,8 +46,7 @@ export const state = {
           title: "Define Q1 product roadmap",
           assigned_to: "user_002",
           state: "in-progress",
-          priority: "low",
-          due_date: "2026-03-01",
+          description: "",
           logs: [
             {
               id: "log_501",
@@ -407,7 +405,6 @@ export const state = {
           noteValue: "Cleaned up event listeners and improved toggle logic.",
           timestamp: 1708261123000,
         },
-       
       ],
     },
 

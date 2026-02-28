@@ -90,7 +90,6 @@ function attachCreateWorkspaceEvent() {
     workspaceDescriptionEl.value = "";
 
     closeModal()
-    console.log("close")
   });
 }
 

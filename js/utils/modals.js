@@ -1,19 +1,22 @@
 import { loadComponent } from "../ui.js";
 import {initWorkspaces} from "../features/workspaceData.js"
 import { loginFuntion } from "../auth.js";
+import {attachCreateTaskEvent} from "./modalEvents.js"
 
-export function openCreateTaskModal() {
+export function openCreateTaskModal(workspace) {
   const btn = document.getElementById("createTaskOpen");
 
-  if (btn) {
+  if (!btn) return
     btn.addEventListener("click", async () => {
+const ws = workspace;
 
       await loadComponent(
         "../components/modals/create-task.html",
         "modalContainer",
       );
+
+      attachCreateTaskEvent(ws)
     });
-  }
 }
 
 export function openLogTaskModal() {

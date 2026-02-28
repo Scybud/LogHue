@@ -1,7 +1,9 @@
 import { state } from "./data/state.js";
 import {attachSidebarEvents} from "./components/sidebar.js"
+import { openCreateTaskModal } from "./utils/modals.js";
 
-  document.addEventListener("click", (e) => {
+
+document.addEventListener("click", (e) => {
     const btn = e.target.closest(".navBtn");
     if (!btn) return;
 
@@ -16,6 +18,7 @@ const container = document.getElementById("adminWorkspaceDashboardContent");
 
     renderSection(section, workspace, container);
   });
+
 
 export async function initWorkspaceData() {
   //Get workspace url
@@ -56,7 +59,10 @@ export async function initWorkspaceData() {
   }
   
   attachSidebarEvents();
-  
+
+  workspace.workspace_tasks = workspace.workspace_tasks || [];
+  openCreateTaskModal(workspace.workspace_tasks)
+
 }
 
 function renderSection(section, workspace, container) {
@@ -85,7 +91,7 @@ function renderSection(section, workspace, container) {
 }
 
 
-function loadCreatedTasks(tasks, container) {
+export function loadCreatedTasks(tasks, container) {
   if (!tasks || tasks.length === 0) {
     container.innerHTML = `<p class="placeholderText">No tasks created yet.</p>`;
     return;
@@ -177,7 +183,7 @@ container.append(section);
 }
 
 
-function formatDateTime(isoString) {
+export function formatDateTime(isoString) {
   const date = new Date(isoString);
   return date.toLocaleString("en-US", {
     month: "long", // February
@@ -259,6 +265,3 @@ allLogs.forEach((act) => {
 section.append(sectionTitle, divGrid);
 container.append(section);
 }
-
-
-
