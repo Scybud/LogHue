@@ -36,7 +36,7 @@ body {
   --primary: #393838;
   --secondary: #4caf50;
   --link: #0393d6;
-  --tag: #00fff276;
+  --tag: var(--accent);
   --accent: #ff6b35;
   --card-bg: #111;
   --border: #333;
@@ -45,6 +45,15 @@ body {
   --input-color: #ffffff;
 --chevron-color: #c5c5c5;
 
+  --brand-h: 17;
+  --brand-s: 100%;
+  --brand-l: 60%;
+
+  --brand: hsl(var(--brand-h), var(--brand-s), var(--brand-l));
+  --brand-hover: hsl(var(--brand-h), var(--brand-s), 50%);
+  --brand-soft: hsl(var(--brand-h), var(--brand-s), 90%);
+
+  
 --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 
 --radius: 8px;

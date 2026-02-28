@@ -347,6 +347,7 @@ summary {
 }
 /*BUTTONS*/
 .btn {
+  background: var(--brand);
   padding: 12px;
   border-radius: 8px;
   font-size: 1rem;
