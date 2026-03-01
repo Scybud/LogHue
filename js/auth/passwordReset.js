@@ -62,8 +62,6 @@ if (passwordChangeForm) {
       .getElementById("passwordResetNewPassword")
       .value.trim();
 
-    await sendPasswordResetEmail(
-      password
-    );
+    await sendPasswordResetNewPassword(password);
   });
 }
