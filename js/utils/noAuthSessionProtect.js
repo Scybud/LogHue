@@ -7,8 +7,7 @@ async function protectPage() {
     } = await supabase.auth.getUser();
 
 if (error || !user) {
-    window.location.href =
-      "https://scyflix.github.io/LogHue/pages/auth.html";
+    window.location.href = "auth.html";
   }
   return user;
 }

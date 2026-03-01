@@ -450,15 +450,17 @@ summary {
 
 .navAccountIdentityCard {
   padding: 2px 5px 10px;
-  margin: 0;
-  position: absolute;
+  margin: 10px 0 0;
+  position: sticky;
   bottom: 0;
   max-width: 100%;
-  width: 100%;
+  flex: 1;
   display: flex;
+  justify-content: space-between;
+  background: var(--card-bg);
   gap: var(--space-md);
   border-radius: 0;
-  border-right: none;
+  border-top: 1px solid;
 }
 .text p{
 margin: 0;
