@@ -61,9 +61,12 @@ export function attachCreateTaskEvent(tasksArr) {
          taskMeta.textContent = `Assigned to: ${tsk.assigned_to}`;
          taskCard.append(taskTitle, taskMeta);
        }
-
-       document.querySelector(".grid").prepend(taskCard);
-     });
+const container = document.querySelector(".grid");
+if(container) {
+  container.prepend(taskCard);
+  
+}
+});
 
 
     closeModal();
