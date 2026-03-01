@@ -12,7 +12,7 @@
 
   gap: 15px;
   margin: auto;
-  padding: 20px;
+  padding: 20px 10px;
   width: 95%;
   max-width: 500px;
   border-radius: 8px;
@@ -337,14 +337,15 @@ summary {
   display: flex;
   gap: 6px;
   width: 100%;
-  padding: 5px;
 }
 .singleInput .inputField {
   flex: 1;
 }
 .singleInput .btn {
-  padding: 12px 5px;
+  width: auto;
+  min-height: 100%;
 }
+
 /*BUTTONS*/
 .btn {
   background: var(--brand);
@@ -360,6 +361,9 @@ summary {
   .btn {
     width: 100%;
     margin: 5px 0;
+  }
+  .singleInput {
+    flex-direction: column;
   }
 }
 #toggleInputContainer {

@@ -33,8 +33,6 @@ async function signup(name, email, password) {
 }
 
 
-
-
 //Signup form
 const signupForm = document.getElementById("signupForm");
 if(signupForm) {
