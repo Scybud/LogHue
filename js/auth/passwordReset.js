@@ -33,3 +33,37 @@ await sendPasswordResetEmail(
 });
 }
 
+
+//PASSWORD CHANGE NEW PASSWORD FORM SUBMISSON FUNCTION
+async function sendPasswordResetNewPassword(password) {
+   const { error } = await supabase.auth.updateUser({
+     password: password,
+   });
+
+     if (error) {
+       console.error(error);
+       alert(error.message);
+     } else {
+       alert("Password reset Complete!");
+       window.location.href = "../dashboard.html"
+     }
+}
+
+
+
+//PASSWORD RESET EMAIL FORM SUBMISSON
+const passwordChangeForm = document.getElementById("passwordChangeForm")
+
+if (passwordChangeForm) {
+  passwordChangeForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const password = document
+      .getElementById("passwordResetNewPassword")
+      .value.trim();
+
+    await sendPasswordResetEmail(
+      password
+    );
+  });
+}
