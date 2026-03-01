@@ -26,7 +26,10 @@ if (passwordResetEmailForm) {
 
 const email = document.getElementById("passwordResetEmail").value.trim();
 
-await sendPasswordResetEmail(email, "./passwordChange.html");
+await sendPasswordResetEmail(
+  email,
+  "https://scyflix.github.io/LogHue/pages/auth/passwordChange.html",
+);
 });
 }
 
