@@ -46,8 +46,8 @@ body {
 --chevron-color: #c5c5c5;
 
   --brand-h: 17;
-  --brand-s: 100%;
-  --brand-l: 60%;
+  --brand-s: 70%;
+  --brand-l: 50%;
 
   --brand: hsl(var(--brand-h), var(--brand-s), var(--brand-l));
   --brand-hover: hsl(var(--brand-h), var(--brand-s), 50%);
