@@ -254,8 +254,9 @@ summary {
   position: relative;
   cursor: pointer;
 }
-.deleteBtn.tooltip::after {
+.deleteBtn.tooltip::after, button.danger {
   background: red;
+  color: var(--chevron);
 }
 /* Tooltip bubble */
 .tooltip::after {
