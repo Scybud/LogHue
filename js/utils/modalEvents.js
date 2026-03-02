@@ -1,5 +1,5 @@
 import { closeModal } from "../ui.js";
-import { formatDateTime, loadCreatedTasks } from "../workspace.js";
+import { formatDateTime, loadCreatedTasks } from "../features/workspace-admin.js";
 
 export function attachCreateTaskEvent(tasksArr) {
   tasksArr = tasksArr || [];

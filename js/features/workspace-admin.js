@@ -1,6 +1,6 @@
-import { state } from "./data/state.js";
-import {attachSidebarEvents} from "./components/sidebar.js"
-import { openCreateTaskModal } from "./utils/modals.js";
+import { state } from "./../data/state.js";
+import {attachSidebarEvents} from "./../components/sidebar.js"
+import { openCreateTaskModal } from "./../utils/modals.js";
 
 
 document.addEventListener("click", (e) => {

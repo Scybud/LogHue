@@ -32,10 +32,17 @@
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  min-width: 100%;
 }
 
 .settingsCard.danger {
   border-color: var(--danger);
+}
+.settingsCard .danger{
+  max-width: 300px;
 }
 
 .settingsCardTitle {
@@ -68,8 +75,8 @@
 }
 
 .settingsAvatar {
-  width: 48px;
-  height: 48px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -94,9 +101,19 @@
 }
 
 .settingsSaveBtn {
-  margin-top: 1.2rem;
+  display: block;
+  margin: 1.2rem auto 1.2rem;
 }
-
+.settingsLongBtn {
+  width: 100%;
+  max-width: 300px;
+}
+.changePasswordBtn {
+  color: #000000;
+  display: block;
+  max-width: 200px;
+  text-decoration: none;
+}
 </style>
 </head>
 <body>
@@ -165,18 +182,18 @@
       <div class="settingsField full">
         <label class="settingsLabel">Profile Photo</label>
         <div class="settingsAvatarRow">
-          <img src="../assets/images/default-avatar.png" class="settingsAvatar" />
+          <img src="../assets/images/default_profile.png" class="settingsAvatar" />
           <button class="btn secondary">Upload</button>
         </div>
       </div>
 
       <div class="settingsField full">
         <label class="settingsLabel">Change Password</label>
-        <button class="btn secondary">Update Password</button>
+        <a href="auth/passwordReset.html" class="btn changePasswordBtn">Update Password</a>
       </div>
     </div>
 
-    <button class="btn primary settingsSaveBtn">Save Changes</button>
+    <button class="btn primary settingsSaveBtn settingsLongBtn">Save Changes</button>
   </div>
 
   <!-- APPEARANCE -->
@@ -249,12 +266,12 @@
 
     <div class="settingsField full">
       <label class="settingsLabel">Two‑Factor Authentication</label>
-      <button class="btn secondary">Enable 2FA</button>
+      <button class="btn secondary settingsLongBtn">Enable 2FA</button>
     </div>
 
     <div class="settingsField full">
       <label class="settingsLabel">Active Sessions</label>
-      <button class="btn secondary">View Devices</button>
+      <button class="btn secondary settingsLongBtn">View Devices</button>
     </div>
   </div>
 
@@ -292,7 +309,6 @@
       </article>
     </main>
     <script type="module" src="../js/utils/noAuthSessionProtect.js"></script>
-<script type="module" src="../js/history.js"></script>
         <script type="module" src="../js/app.js"></script>
 </body>
 </html>
