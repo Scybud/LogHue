@@ -54,7 +54,7 @@ PERSONAL LOGGED TASK SECTION
 ===================*/
 
 /*PERSONAL INPUT CONTAINER IN DASHBOARD*/
-.container {
+.personalLogInputContainer .container {
   width: 100%;
   margin: 20px 0;
 }

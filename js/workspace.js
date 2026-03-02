@@ -105,7 +105,7 @@ export function loadCreatedTasks(tasks, container) {
   sectionTitle.textContent = "Created Tasks";
 
   const divGrid = document.createElement("div");
-  divGrid.classList.add("grid");
+  divGrid.classList.add("container");
 
 
   tasks.forEach((tsk) => {
