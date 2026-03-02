@@ -11,7 +11,7 @@
 }
 
 .mainContent::-webkit-scrollbar-thumb {
-  background: var(--primary);
+  background: #393838;
   border-radius: var(--radius);
   border: 2px solid var(--card-bg);
 }

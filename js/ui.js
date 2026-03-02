@@ -65,3 +65,34 @@ preLoaderContainer.append(waveLoader)
 container.innerHTML = ""
 container.append(preLoaderContainer)
 }
+
+export function preferedPrimary() {
+  document.addEventListener("DOMContentLoaded", () => {
+      const picker = document.getElementById("primaryColor")
+        
+        const saved = JSON.parse(localStorage.getItem("preferedPrimary"));
+
+if (saved) {
+  document.documentElement.style.setProperty("--accent", saved);
+  if(picker) {
+  picker.value = saved;
+  }
+}
+
+if(picker) {
+
+  picker.addEventListener("input", () => {
+    const color = picker.value;
+    document.documentElement.style.setProperty("--primary", color);
+    
+    localStorage.setItem("preferedPrimary", JSON.stringify(color))
+  })
+}
+});
+
+const reseToDefaultPrimary = document.getElementById("reseToDefaultPrimary");
+reseToDefaultPrimary.addEventListener("click", () => {
+  localStorage.removeItem("preferedPrimary");
+  window.location.reload()
+})
+}

@@ -349,7 +349,7 @@ summary {
 
 /*BUTTONS*/
 .btn {
-  background: var(--brand);
+  background: var(--accent);
   padding: 12px;
   border-radius: 8px;
   font-size: 1rem;

@@ -1,4 +1,4 @@
-import { loadComponent, removeLoader } from "./ui.js";
+import { loadComponent, removeLoader, preferedPrimary } from "./ui.js";
 import { attachSidebarEvents } from "./components/sidebar.js";
 import {
   openCreateTaskModal,
@@ -39,6 +39,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   //LOADER
 removeLoader()
 
+
   //Login function
   loginFuntion()
 //Logout function
@@ -58,3 +59,6 @@ removeLoader()
 
   autoExpandTextarea();
 });
+
+//preffered primary color
+preferedPrimary();
