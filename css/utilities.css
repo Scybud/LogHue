@@ -139,7 +139,9 @@ header.pageHeader::-webkit-scrollbar-thumb:hover {
   color: #ff0000;
 
 }
-
+.showFlex {
+  display: flex;
+}
 .hide {
   display: none;
 }
@@ -232,7 +234,8 @@ align-items: center;
   font-size: 0.9rem;
   font-weight: 600;
   color: #555;
-  margin: 20px;
+  position: absolute;
+  right: 20px;
   max-width: 300px;
 }
 
@@ -263,3 +266,4 @@ align-items: center;
 /* Step widths */
 .step-1 { width: 50%; }
 .step-2 { width: 100%; }
+

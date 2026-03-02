@@ -1,16 +1,22 @@
 import { supabase } from "../supabase.js";
+import {buttonLoading} from "../ui.js";
 
 //PASSWORD RESET EMAIL FORM SUBMISSON FUNCTION
 async function sendPasswordResetEmail(email, redirectPage) {
    const { error } = await supabase.auth.resetPasswordForEmail(email, {
      redirectTo: redirectPage,
    });
-
      if (error) {
        console.error(error);
        alert(error.message);
      } else {
        alert("Password reset email sent!");
+       const successCard = document.querySelector(".success-card");
+const passwordResetEmailForm = document.getElementById(
+  "passwordResetEmailForm",
+);
+           passwordResetEmailForm.classList.add("hide");
+           successCard.classList.add("showFlex");
      }
 }
 
@@ -26,10 +32,31 @@ if (passwordResetEmailForm) {
 
 const email = document.getElementById("passwordResetEmail").value.trim();
 
-await sendPasswordResetEmail(
-  email,
-  "https://scyflix.github.io/LogHue/pages/auth/passwordChange.html",
-);
+const button = document.getElementById("passwordResetEmailSubmitBtn");
+button.disabled = true;
+buttonLoading(button);
+
+
+const successCard = document.querySelector(".success-card");
+try {
+  const success = await sendPasswordResetEmail(
+    email,
+    "https://scyflix.github.io/LogHue/pages/auth/passwordChange.html",
+  );
+  
+  if(success) {
+    passwordResetEmailForm.classList.add("hide")
+      successCard.classList.add("showFlex");
+    }
+    
+  } finally {
+    button.disabled = false;
+    buttonLoading(button)
+
+    document.getElementById("passwordResetEmail").value = "";
+  }
+
+
 });
 }
 

@@ -389,7 +389,12 @@ summary {
   opacity: 0.4;
   cursor: not-allowed;
 }
-
+.backLink {
+  position: sticky;
+  top: 30px;
+  left: 20px;
+  opacity: 0.9;
+}
 /*CARDS*/
 .card {
   background: var(--card-bg);

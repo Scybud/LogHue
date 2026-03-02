@@ -159,6 +159,14 @@
   padding: 0 auto;
   display: none;
   width: fit-content;
+  background: none;
+  color: var(--link);
+}
+.backLink {
+  position: sticky;
+  top: 30px;
+  left: 20px;
+  opacity: 0.9;
 }
 </style>
 </head>
@@ -166,12 +174,14 @@
   
   <button type="button" class="btn backBtn btn-sm">← Back</button>
     <main class="main">
+      <a href="../index.html" class="backLink">← Home</a>
+
      <!-- AUTH GATEWAY -->
 <div class="authGateway">
+
   <img src="../assets/images/loghue-logo.png" class="logo" alt="LogHue Logo">
 
   <h1>Welcome to LogHue</h1>
-
   <!-- GOOGLE -->
   <button class="oauthBtn google">
     <span class="icon">
@@ -224,6 +234,7 @@
          <label for="userLoginPasswordInput">Password</label>
          <input type="password" name="userLoginPasswordInput" id="userLoginPasswordInput" class="inputField" placeholder="Your account password" required>
          <button class="btn btn-primary" id="loginBtn" type="submit">Login</button>
+         <a href="auth/passwordReset.html">Forgot password?</a>
       </form>
 
 
@@ -244,6 +255,8 @@
 
     <script>
       const backBtn = document.querySelector(".backBtn")
+      const backLink = document.querySelector(".backLink")
+
       backBtn.addEventListener("click", () => {
         window.location.reload()
       })
@@ -255,22 +268,23 @@
       const emailSignupBtn = document.querySelectorAll(".emailSignup")
 
 
-      function hideConatiner(hideCont1, hideCont2, showCont, showBtn) {
+      function hideConatiner(hideCont1, hideCont2, showCont, showBtn, hideLink) {
         hideCont1.classList.add("hide")
         hideCont2.classList.add("hide")
+        hideLink.classList.add("hide")
         showCont.classList.add("show")
         showBtn.classList.add("show")
       }
 
       emailLoginBtn.forEach((btn) => {
         btn.addEventListener("click", () => {
-          hideConatiner(authGatewayContainer, SignupForm, loginForm, backBtn)
+          hideConatiner(authGatewayContainer, SignupForm, loginForm, backBtn, backLink)
         })
       })
 
       emailSignupBtn.forEach((btn) => {
         btn.addEventListener("click", () => {
-          hideConatiner(authGatewayContainer, loginForm, SignupForm, backBtn)
+          hideConatiner(authGatewayContainer, loginForm, SignupForm, backBtn, backLink)
         })
       })
     </script>
