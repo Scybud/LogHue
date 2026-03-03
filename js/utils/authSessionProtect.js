@@ -10,3 +10,12 @@ async function protectPage() {
   }
 }
 protectPage();
+
+// Detect session after redirect
+supabase.auth.getSession().then(({ data: { session } }) => {
+  if (session) {
+    console.log("Logged in:", session.user);
+    window.location.href = "dashboard.html"
+    // update UI here
+  }
+});
