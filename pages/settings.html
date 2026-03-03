@@ -114,6 +114,13 @@
   max-width: 200px;
   text-decoration: none;
 }
+.colorPicker {
+  width: 100%;
+  max-width: 200px;
+  height: 40px;
+  margin: 8px auto;
+  cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -170,12 +177,12 @@
 
     <div class="settingsGrid">
       <div class="settingsField">
-        <label class="settingsLabel">Full Name</label>
+        <label class="settingsLabel" for="accName">Full Name</label>
         <input type="text" class="inputField" id="accName" placeholder="Your name" />
       </div>
 
       <div class="settingsField">
-        <label class="settingsLabel">Email</label>
+        <label class="settingsLabel" for="accEmail">Email</label>
         <input type="email" class="inputField" id="accEmail" placeholder="you@example.com" />
       </div>
 
@@ -212,9 +219,9 @@
 
       <div class="settingsField">
         <label class="settingsLabel">Primary Color</label>
-        <input type="color" class="colorPicker" id="primaryColor" value="#ff6b35" />
+        <input type="color" class="colorPicker" id="primaryColor" value="#393838" />
 
-        <button type="button" class="btn btn-sm btn-secondary" id="reseToDefaultPrimary">Reset</button>
+        <button type="button" class="btn btn-sm btn-primary" id="reseToDefaultPrimary">Reset</button>
       </div>
 
       <div class="settingsField full">
@@ -233,17 +240,17 @@
 
     <div class="settingsToggleRow">
       <span>Email Notifications</span>
-      <label class="switch"><input type="checkbox" checked /><span class="slider"></span></label>
+      <label for="emailNotification" class="switch"><input id="emailNotification" type="checkbox" checked /><span class="slider"></span></label>
     </div>
 
     <div class="settingsToggleRow">
       <span>In‑App Alerts</span>
-      <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+      <label for="inAppNotification" class="switch"><input id="inAppNotification" type="checkbox" /><span class="slider"></span></label>
     </div>
 
     <div class="settingsToggleRow">
       <span>Marketing Emails</span>
-      <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+      <label for="marketingEmails" class="switch"><input type="checkbox" id="marketingEmails" /><span class="slider"></span></label>
     </div>
   </div>
 
@@ -310,10 +317,6 @@
          
       </article>
     </main>
-
-    <script>
-    
-    </script>
 
     <!--
       <script type="module" src="../js/utils/noAuthSessionProtect.js"></script>

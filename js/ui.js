@@ -73,7 +73,7 @@ export function preferedPrimary() {
         const saved = JSON.parse(localStorage.getItem("preferedPrimary"));
 
 if (saved) {
-  document.documentElement.style.setProperty("--accent", saved);
+  document.documentElement.style.setProperty("--primary", saved);
   if(picker) {
   picker.value = saved;
   }

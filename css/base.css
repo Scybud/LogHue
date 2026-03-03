@@ -33,6 +33,7 @@ body {
   --header-bg: rgba(128, 128, 128, 0.258);
   --mainContent-bg: #1f1e1e;
   --navBtn-bg: #222;
+  --active: #393838;
   --primary: #393838;
   --secondary: #4caf50;
   --link: #0393d6;

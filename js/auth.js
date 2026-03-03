@@ -47,7 +47,7 @@ if (signupForm) {
       .value.trim();
 
     if (!name || !password || !email || !confirmPassword) {
-      alert("All filed must not be empty");
+      alert("All fields must not be empty");
       return;
     } else if (!email.includes("@")) {
       alert("Please enter a valid email");

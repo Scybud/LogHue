@@ -123,9 +123,8 @@ header.pageHeader::-webkit-scrollbar-thumb:hover {
 
 
 .active {
-  color: var(--bg);
   font-weight: 900;
-  background: var(--brand);
+  background: var(--active);
 }
 #logoutBtn {
   background: none;
@@ -267,3 +266,6 @@ align-items: center;
 .step-1 { width: 50%; }
 .step-2 { width: 100%; }
 
+input.error {
+border: #ff0000 soldid 2px;
+}
