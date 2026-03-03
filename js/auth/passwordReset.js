@@ -10,7 +10,6 @@ async function sendPasswordResetEmail(email, redirectPage) {
        console.error(error);
        alert(error.message);
      } else {
-       alert("Password reset email sent!");
        const successCard = document.querySelector(".success-card");
 const passwordResetEmailForm = document.getElementById(
   "passwordResetEmailForm",
