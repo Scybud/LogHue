@@ -152,7 +152,6 @@ export function attachSignoutEvents() {
 //OAuth funtion
 const LOGHUE_REDIRECT = "https://scyflix.github.io/LogHue/";
 function setupOAuthButton(buttonId, provider) {
-
   const btn = document.getElementById(buttonId);
 
   if (!btn) return;
@@ -170,3 +169,12 @@ function setupOAuthButton(buttonId, provider) {
 
 //Google Auth
 setupOAuthButton("googleAuth", "google");
+
+// Detect session after redirect
+supabase.auth.getSession().then(({ data: { session } }) => {
+  if (session) {
+    console.log("Logged in:", session.user);
+    window.location.href = "dashboard.html"
+    // update UI here
+  }
+});

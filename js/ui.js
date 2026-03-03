@@ -91,6 +91,7 @@ if(picker) {
 });
 
 const reseToDefaultPrimary = document.getElementById("reseToDefaultPrimary");
+if(!reseToDefaultPrimary) return;
 reseToDefaultPrimary.addEventListener("click", () => {
   localStorage.removeItem("preferedPrimary");
   window.location.reload()
