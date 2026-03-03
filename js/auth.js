@@ -1,28 +1,27 @@
 import { supabase } from "./supabase.js";
-import {buttonLoading} from "./ui.js"
+import { buttonLoading } from "./ui.js";
 
 //Signup funtion
 async function signup(name, email, password) {
-   const {data, error} = await supabase.auth.signUp({
-      email, 
-      password,
-   })
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+  });
 
-   if(error) {
-      alert(error.message);
-      return false;
-   }
+  if (error) {
+    alert(error.message);
+    return false;
+  }
 
   if (data.user) {
-    const {error: profileError } = 
-    await supabase.from("profiles").insert([
+    const { error: profileError } = await supabase.from("profiles").insert([
       {
         id: data.user.id,
         full_name: name,
       },
     ]);
 
-    if(profileError) {
+    if (profileError) {
       alert(profileError.message);
       return false;
     }
@@ -32,135 +31,142 @@ async function signup(name, email, password) {
   return true;
 }
 
-
 //Signup form
 const signupForm = document.getElementById("signupForm");
-if(signupForm) {
-  
+if (signupForm) {
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    
+
     const name = document.getElementById("userSignupNameInput").value.trim();
     const email = document.getElementById("userSignupEmailInput").value.trim();
     const password = document
-    .getElementById("userSignupPasswordInput")
-    .value.trim();
-    const confirmPassword = document.getElementById(
-      "userSignupConfirmPasswordInput",
-    ).value.trim();
+      .getElementById("userSignupPasswordInput")
+      .value.trim();
+    const confirmPassword = document
+      .getElementById("userSignupConfirmPasswordInput")
+      .value.trim();
 
-    
-  if (!name || !password || !email || !confirmPassword) {
-    alert("All filed must not be empty");
-    return;
-  }else if(!email.includes("@")) {
-    alert("Please enter a valid email")
-    return
-  } else if (password != confirmPassword) {
-    alert("Passords do not match");
-    return;
-  } else if(password.length < 6) {
-    alert("Password must be at least 6 characters")
-    return
-  }
-  
-  //disable button
-const button = signupForm.querySelector("button");
-button.disabled = true;
-buttonLoading(button);
+    if (!name || !password || !email || !confirmPassword) {
+      alert("All filed must not be empty");
+      return;
+    } else if (!email.includes("@")) {
+      alert("Please enter a valid email");
+      return;
+    } else if (password != confirmPassword) {
+      alert("Passords do not match");
+      return;
+    } else if (password.length < 6) {
+      alert("Password must be at least 6 characters");
+      return;
+    }
 
-const success = await signup(name, email, password);
+    //disable button
+    const button = signupForm.querySelector("button");
+    button.disabled = true;
+    buttonLoading(button);
 
-button.disabled = false;
+    const success = await signup(name, email, password);
 
-if(success) {
-  window.location.href = "dashboard.html";
+    button.disabled = false;
+
+    if (success) {
+      window.location.href = "dashboard.html";
+    }
+  });
 }
-
-});
-}
-
 
 //login funtion
 async function login(email, password) {
-   const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 
-      if (error) {
-        alert(error.message);
-        return false;
-      }
+  if (error) {
+    alert(error.message);
+    return false;
+  }
 
-      return true;
+  return true;
 }
 
 //Login form
 export function loginFuntion() {
-
   const loginForm = document.getElementById("loginForm");
-  if(loginForm) {
+  if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-  loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault()
-    
-    const email = document.getElementById("userLoginEmailInput").value.trim();
-  const password = document
-    .getElementById("userLoginPasswordInput")
-    .value.trim();
+      const email = document.getElementById("userLoginEmailInput").value.trim();
+      const password = document
+        .getElementById("userLoginPasswordInput")
+        .value.trim();
 
-  if (!password || !email) {
-    alert("All filed must not be empty");
-    return;
+      if (!password || !email) {
+        alert("All filed must not be empty");
+        return;
+      }
+
+      const button = document.getElementById("loginBtn");
+      button.disabled = true;
+      buttonLoading(button);
+
+      try {
+        const success = await login(email, password);
+
+        if (success) {
+          window.location.href = "dashboard.html";
+        }
+      } finally {
+        button.disabled = false;
+        buttonLoading(button);
+      }
+    });
   }
-
-  const button = document.getElementById("loginBtn")
-    button.disabled = true;
-    buttonLoading(button)
-
-  try {
-    const success = await login(email, password);
-  
-    
-    if(success) {
-      window.location.href = "dashboard.html"
-    }
-    
-  } finally {
-    button.disabled = false;
-    buttonLoading(button)
-  }
-  
-});
 }
-}
-
-
 
 //signout
 async function signout() {
-  const {error} = await supabase.auth.signOut()
+  const { error } = await supabase.auth.signOut();
 
-  if(error) {
-    alert(error.message)
+  if (error) {
+    alert(error.message);
     return;
   }
-alert("Logged out successfully!")
-window.location.href = "auth.html"
+  alert("Logged out successfully!");
+  window.location.href = "auth.html";
 }
-
 
 export function attachSignoutEvents() {
-
   document.addEventListener("click", (e) => {
-    const btn = e.target.closest("#logoutBtn")
+    const btn = e.target.closest("#logoutBtn");
 
-    
-    if(btn) {
+    if (btn) {
       if (!confirm("Are you sure you want to logout?")) return;
-      
+
       signout();
     }
-  })
+  });
 }
+
+//OAuth funtion
+const LOGHUE_REDIRECT = "https://scyflix.github.io/LogHue/";
+function setupOAuthButton(buttonId, provider) {
+
+  const btn = document.getElementById(buttonId);
+
+  if (!btn) return;
+
+  btn.addEventListener("click", async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: LOGHUE_REDIRECT },
+    });
+    if (error) alert("OAuth error:", error);
+  });
+}
+
+//Implement oAuths
+
+//Google Auth
+setupOAuthButton("googleAuth", "google");
