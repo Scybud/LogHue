@@ -150,7 +150,7 @@ export function attachSignoutEvents() {
 }
 
 //OAuth funtion
-const LOGHUE_REDIRECT = "https://scyflix.github.io/LogHue/";
+const LOGHUE_REDIRECT = "https://scyflix.github.io/LogHue/pages/dashboard.html";
 function setupOAuthButton(buttonId, provider) {
   const btn = document.getElementById(buttonId);
 
