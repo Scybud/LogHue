@@ -169,5 +169,6 @@ function setupOAuthButton(buttonId, provider) {
 
 //Google Auth
 setupOAuthButton("googleAuth", "google");
+setupOAuthButton("microsoftAuth", "azure");
 
 
