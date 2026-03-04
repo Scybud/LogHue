@@ -161,7 +161,10 @@ function setupOAuthButton(buttonId, provider) {
       provider,
       options: { redirectTo: LOGHUE_REDIRECT },
     });
-    if (error) alert("OAuth error:", error);
+    if (error) {
+alert("OAuth error:", error);
+window.location.href = "https://scyflix.github.io/LogHue/pages/auth.html";
+    } 
   });
 }
 
