@@ -173,3 +173,5 @@ window.location.href = "https://scyflix.github.io/LogHue/pages/auth.html";
 //Google Auth
 setupOAuthButton("googleAuth", "google");
 setupOAuthButton("microsoftAuth", "azure");
+setupOAuthButton("githubAuth", "github");
+
