@@ -53,7 +53,7 @@ if (signupForm) {
       alert("Please enter a valid email");
       return;
     } else if (password != confirmPassword) {
-      alert("Passords do not match");
+      alert("Passwords do not match");
       return;
     } else if (password.length < 6) {
       alert("Password must be at least 6 characters");
@@ -103,7 +103,7 @@ export function loginFuntion() {
         .value.trim();
 
       if (!password || !email) {
-        alert("All filed must not be empty");
+        alert("All fields must not be empty");
         return;
       }
 
@@ -150,7 +150,6 @@ export function attachSignoutEvents() {
 }
 
 //OAuth funtion
-const LOGHUE_REDIRECT = "https://scyflix.github.io/LogHue/pages/dashboard.html";
 function setupOAuthButton(buttonId, provider) {
   const btn = document.getElementById(buttonId);
 
@@ -159,12 +158,15 @@ function setupOAuthButton(buttonId, provider) {
   btn.addEventListener("click", async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: LOGHUE_REDIRECT },
+      options: {
+        redirectTo: "https://qqactsebaxdottiiyrng.supabase.co/auth/v1/callback",
+      },
     });
-    if (error) {
-alert("OAuth error:", error);
-window.location.href = "https://scyflix.github.io/LogHue/pages/auth.html";
-    } 
+   if (error) {
+     alert(`OAuth error: ${error.message}`);
+     window.location.href = "https://scyflix.github.io/LogHue/pages/auth.html";
+   }
+
   });
 }
 
