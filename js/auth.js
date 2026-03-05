@@ -170,7 +170,7 @@ function setupOAuthButton(buttonId, provider) {
   });
 }
 
-//Implement oAuths
+//Implement OAuths
 
 //Google Auth
 setupOAuthButton("googleAuth", "google");
