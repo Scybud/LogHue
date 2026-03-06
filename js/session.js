@@ -54,7 +54,9 @@ function userInfoUi() {
   // AVATAR
   if (profileImg) {
     if (sessionState.profile.avatar_url) {
-      profileImg.src = `https://scyflix.github.io/LogHue${sessionState.profile.avatar_url}`;
+      profileImg.src =
+        sessionState.profile.avatar_url ||
+        "https://scyflix.github.io/LogHue/assets/images/default_profile.png";
     } else {
       profileImg.src =
         "https://scyflix.github.io/LogHue/assets/images/default_profile.png";

@@ -1,7 +1,8 @@
 import { sessionState } from "./session.js";
 import { supabase } from "./supabase.js";
-async function initUserSettingsData () {
 
+
+async function initUserSettingsData () {
     const {
     data: { user },
     error,
@@ -26,6 +27,10 @@ async function initUserSettingsData () {
      sessionState.user = user;
      sessionState.profile = profile;
 
+     sessionState.originalName = profile.full_name
+     sessionState.originalEmail = user.email
+     sessionState.originalAvatar = profile.avatar_url
+
      loadData()
 }
 
@@ -33,6 +38,7 @@ async function initUserSettingsData () {
 function loadData() {
    const accNameEl = document.getElementById("accName")
 const accEmailEl = document.getElementById("accEmail")
+const settingsAvatarEl = document.querySelector(".settingsAvatar")
 
 if(accNameEl) {
    accNameEl.value = sessionState.profile.full_name;
@@ -40,6 +46,11 @@ if(accNameEl) {
 if(accEmailEl) {
    accEmailEl.value = sessionState.user.email;
 }
+
+  if (settingsAvatarEl && sessionState.profile.avatar_url) {
+  settingsAvatarEl.src = sessionState.profile.avatar_url;
+  console.log(sessionState.profile.avatar_url);
+  }
 }
 
 initUserSettingsData()
@@ -55,10 +66,103 @@ profileUploadBtn.addEventListener("click", () => {
   profilePhotoInput.click();
 });
 
-//SHOW PREVIEW
-profilePhotoInput.addEventListener("change", () => {
-  const file = profilePhotoInput.files[0]
-  if(!file) return;
 
-  settingsAvatar.src = URL.createObjectURL(file)
+let pendingAvatarProfile = null
+
+const MAX_SIZE = 20 * 1024; // 20 KB limit
+
+profilePhotoInput.addEventListener("change", () => {
+  const file = profilePhotoInput.files[0];
+  if (!file) return;
+
+  const img = new Image();
+  img.src = URL.createObjectURL(file);
+
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    // Keep original dimensions (or resize if you want)
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    ctx.drawImage(img, 0, 0);
+
+    // Convert to WebP (quality 0.7 is usually perfect)
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) return;
+
+        if (blob.size > MAX_SIZE) {
+          alert("Image must be smaller than 20 KB after compression.");
+          profilePhotoInput.value = "";
+          return;
+        }
+
+        // Replace the original file with the WebP blob
+        pendingAvatarProfile = new File([blob], "avatar.webp", {
+          type: "image/webp",
+        });
+
+        // Update preview
+        settingsAvatar.src = URL.createObjectURL(blob);
+      },
+      "image/webp",
+      0.7,
+    );
+  };
+});
+
+
+  //SAVE SETTINGS CHANGES
+  const saveBtn = document.querySelector(".settingsSaveBtn");
+
+saveBtn.addEventListener("click", async () => {
+  const updates = {};
+  const user = sessionState.user;
+
+  //NAME CHANGED?
+  const newName = document.getElementById("accName").value;
+  if (newName != sessionState.originalName) {
+    updates.full_name = newName;
+  }
+
+  //EMAIL CHANGED?
+  const newEmail = document.getElementById("accEmail").value;
+  if (newEmail != sessionState.originalEmail) {
+    updates.email = newEmail;
+  }
+
+  //AVATAR CHANGED?
+if(pendingAvatarProfile) {
+      const filePath = `${user.id}-${Date.now()}.webp`;
+      
+      const {error: uploadError} = await supabase.storage.from("avatars").upload(filePath, pendingAvatarProfile, {upsert: true})
+
+      if(uploadError) {
+        console.error(uploadError)
+        return;
+      }
+
+      const {data: urlData} = supabase.storage.from("avatars").getPublicUrl(filePath);
+
+      updates.avatar_url = urlData.publicUrl;
+}
+
+ // Save only changed fields
+  if (Object.keys(updates).length > 0) {
+    const { error } = await supabase
+      .from("profiles")
+      .update(updates)
+      .eq("id", user.id);
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    alert("Changes saved!")
+  }
+
+  pendingAvatarProfile = null;
 })
