@@ -159,7 +159,7 @@ function setupOAuthButton(buttonId, provider) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: "https://qqactsebaxdottiiyrng.supabase.co/auth/v1/callback",
+        redirectTo: "https://scyflix.github.io/LogHue/pages/dashboard.html",
       },
     });
    if (error) {
