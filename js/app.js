@@ -11,7 +11,8 @@ import {
   attachSidebarToggle,
   personalLogInputContainerPanelToggle,
 } from "./utils/toggle.js";
-
+import {initSession
+} from "./session.js"
 import { initPersonalTasks } from "./features/personalTasks.js";
 import { initWorkspaces } from "./features/workspaceData.js";
 import { autoExpandTextarea } from "./utils/textarea.js";
@@ -39,7 +40,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   //LOADER
 removeLoader()
 
-
+initSession()
   //Login function
   loginFuntion()
 //Logout function

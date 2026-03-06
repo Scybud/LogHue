@@ -2,7 +2,6 @@ import { state } from "./../data/state.js";
 import {attachSidebarEvents} from "./../components/sidebar.js"
 import { openCreateTaskModal } from "./../utils/modals.js";
 
-
 document.addEventListener("click", (e) => {
     const btn = e.target.closest(".navBtn");
     if (!btn) return;

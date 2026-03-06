@@ -130,6 +130,7 @@ header.pageHeader::-webkit-scrollbar-thumb:hover {
   background: none;
   border: none;
   margin-left: auto;
+  height: 100%;
   cursor: pointer;
   color: var(--color);
   transition: all 0.4s ease;

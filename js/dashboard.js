@@ -1,6 +1,17 @@
 import { state } from "./data/state.js";
 import { dataCount } from "./utils.js";
 
+
+
+
+
+
+
+
+
+
+
+//MOCK DATA FOR DASHBOARD POPULATION
 const createdWorkspaces = state.workspaces.filter(
   (ws) => ws.role === "admin" && ws.status === "active",
 );
