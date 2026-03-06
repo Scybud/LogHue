@@ -189,8 +189,17 @@
       <div class="settingsField full">
         <label class="settingsLabel">Profile Photo</label>
         <div class="settingsAvatarRow">
+
           <img src="../assets/images/default_profile.png" class="settingsAvatar" />
-          <button class="btn secondary">Upload</button>
+          <button class="btn secondary" id="profileUploadBtn">Upload</button>
+
+           <!-- Hidden input -->
+  <input 
+    type="file" 
+    id="profilePhotoInput" 
+    accept="image/*" 
+    style="display:none"
+  >
         </div>
       </div>
 

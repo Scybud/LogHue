@@ -42,5 +42,23 @@ if(accEmailEl) {
 }
 }
 
-
 initUserSettingsData()
+
+
+//PROFILE PHOTO UPLOAD
+const profilePhotoInput = document.getElementById("profilePhotoInput")
+const profileUploadBtn = document.getElementById("profileUploadBtn")
+const settingsAvatar = document.querySelector(".settingsAvatar")
+
+//TRIGGER IMAGE INPUT FIELD
+profileUploadBtn.addEventListener("click", () => {
+  profilePhotoInput.click();
+});
+
+//SHOW PREVIEW
+profilePhotoInput.addEventListener("change", () => {
+  const file = profilePhotoInput.files[0]
+  if(!file) return;
+
+  settingsAvatar.src = URL.createObjectURL(file)
+})
