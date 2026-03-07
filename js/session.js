@@ -14,6 +14,7 @@ export async function initSession() {
 
   if (error) {
     console.error(error);
+    window.location.href = "auth.js"
     return;
   }
 
@@ -25,6 +26,9 @@ export async function initSession() {
 
   if (profileError) {
     console.error(profileError);
+    /*
+        window.location.href = "auth.html";
+        */
     return;
   }
 

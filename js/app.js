@@ -11,7 +11,6 @@ import {
   openLogTaskModal,
   openCreateWorkspaceModal,
   openLoginModal,
-  
 } from "./utils/modals.js";
 import {
   attachSidebarToggle,

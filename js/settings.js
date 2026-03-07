@@ -10,7 +10,7 @@ async function initUserSettingsData () {
 
   if (error || !user) {
     console.error(error);
-    alert(error.message + "Redirecting to login")
+    alert(error.message +"." + " " + "Redirecting to login")
     window.location.href = "auth.html"
     return;
   }
@@ -34,6 +34,7 @@ async function initUserSettingsData () {
      sessionState.originalAvatar = profile.avatar_url
 
      loadData()
+     deleteAccount()
 }
 
 
@@ -174,3 +175,65 @@ if(pendingAvatarProfile) {
 
   pendingAvatarProfile = null;
 })
+
+
+
+//ACCOUNT DELETION
+export async function deleteAccount() {
+  const deleteAccountBtn = document.getElementById("deleteAccount");
+
+  if(!deleteAccountBtn) return;
+
+  deleteAccountBtn.addEventListener("click", async () => {
+    const confirmAction = confirm("Are you sure you want to delete this account? This action cannot be undone.")
+
+    if(!confirmAction) return;
+
+    if(confirmAction) {
+      const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return;
+
+  // 1. Delete user-related data
+
+  //Fetch all workspaces created by user
+  const { data: workspaces, error: wsError } = await supabase
+    .from("workspaces")
+    .select("status")
+    .eq("created_by", user.id);
+
+   if(wsError) {
+    console.error(wsError)
+    alert(wsError.message)
+    return;
+   }
+
+   //Check for active workspaces
+   const hasActive = workspaces.some(ws => ws.status === "active");
+
+  if (hasActive) {
+    alert("Some created workspaces are still active. Close workspaces to delete account ")
+    return
+  }
+  await supabase.from("workspaces").delete().eq("user_id", user.id);
+  await supabase.from("tasks").delete().eq("user_id", user.id);
+    await supabase.from("task_comments").delete().eq("user_id", user.id);
+  await supabase.from("workspace_members").delete().eq("user_id", user.id);
+  await supabase.from("discussion_comments").delete().eq("user_id", user.id);
+  await supabase.from("discussions").delete().eq("user_id", user.id);
+  await supabase.from("profiles").delete().eq("id", user.id);
+  await supabase.from("plan").delete().eq("user_id", user.id);
+localStorage.clear();
+  // 2. Delete the user from Auth
+  const { error } = await supabase.auth.deleteUser();
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  // 3. Redirect or show goodbye screen
+  window.location.href = "auth.html";
+    }
+  })
+}
