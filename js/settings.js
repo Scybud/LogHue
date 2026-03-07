@@ -8,8 +8,10 @@ async function initUserSettingsData () {
     error,
   } = await supabase.auth.getUser();
 
-  if (error) {
+  if (error || !user) {
     console.error(error);
+    alert(error.message + "Redirecting to login")
+    window.location.href = "auth.html"
     return;
   }
 
@@ -49,7 +51,6 @@ if(accEmailEl) {
 
   if (settingsAvatarEl && sessionState.profile.avatar_url) {
   settingsAvatarEl.src = sessionState.profile.avatar_url;
-  console.log(sessionState.profile.avatar_url);
   }
 }
 
@@ -120,15 +121,22 @@ profilePhotoInput.addEventListener("change", () => {
 saveBtn.addEventListener("click", async () => {
   const updates = {};
   const user = sessionState.user;
+  
+  const newName = document.getElementById("accName").value;
+  const newEmail = document.getElementById("accEmail").value;
+
+  //EMPTY FIELD?
+  if(newName === "" || newEmail === "") {
+    alert("All fields must be filled")
+    return;
+  }
 
   //NAME CHANGED?
-  const newName = document.getElementById("accName").value;
   if (newName != sessionState.originalName) {
     updates.full_name = newName;
   }
 
   //EMAIL CHANGED?
-  const newEmail = document.getElementById("accEmail").value;
   if (newEmail != sessionState.originalEmail) {
     updates.email = newEmail;
   }

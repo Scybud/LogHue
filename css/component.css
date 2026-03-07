@@ -137,14 +137,14 @@ input[type="number"]::-webkit-inner-spin-button:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 0;
-  margin-top: .5rem;
-  font-size: .85rem;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
 }
 
 .loggedActivityContainer .metaRow span {
   display: inline-flex;
   align-items: center;
-  padding: 0 .4rem;
+  padding: 0 0.4rem;
   background: var(--surface-2);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-light);
@@ -161,9 +161,8 @@ input[type="number"]::-webkit-inner-spin-button:hover {
 }
 
 .loggedActivityContainer .taskTime {
-  opacity: .8;
+  opacity: 0.8;
 }
-
 
 /* LOG ITEM */
 details {
@@ -232,11 +231,13 @@ summary {
   display: flex;
   gap: var(--space-sm);
 }
-.actionConatiner button svg, .deleteBtn svg {
+.actionConatiner button svg,
+.deleteBtn svg {
   width: 25px;
   height: 25px;
 }
-.actionConatiner button, .deleteBtn {
+.actionConatiner button,
+.deleteBtn {
   background-color: #000000;
   border: none;
   display: flex;
@@ -254,9 +255,11 @@ summary {
   position: relative;
   cursor: pointer;
 }
-.deleteBtn.tooltip::after, button.danger {
-  background: red;
-  color: var(--chevron);
+.deleteBtn.tooltip::after,
+button.danger {
+  background: var(--danger);
+  font-weight: 700;
+  color: var(--bg);
 }
 /* Tooltip bubble */
 .tooltip::after {
@@ -303,7 +306,6 @@ summary {
   color: #ff0000;
 }
 
-
 #personalCreatedLogs {
   margin: 10px 0 50px;
 }
@@ -327,7 +329,8 @@ summary {
   transform: translateY(-6px);
 }
 
-.placeholderText, .commonPlaceholderText {
+.placeholderText,
+.commonPlaceholderText {
   text-align: center;
   opacity: 0.6;
   margin-top: 20px;
@@ -413,11 +416,11 @@ summary {
 /*MODAL CONTAINER*/
 .modalContainer {
   position: fixed;
-  
+
   display: flex;
   justify-content: center;
   align-items: center;
-  
+
   top: 0;
   left: 0;
   z-index: 2;
@@ -468,8 +471,8 @@ summary {
   border-radius: 0;
   border-top: 1px solid;
 }
-.text p{
-margin: 0;
+.text p {
+  margin: 0;
 }
 .profileImg {
   width: 40px;

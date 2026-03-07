@@ -30,11 +30,11 @@
 .settingsCard {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius);
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem 2rem;
   min-width: 100%;
 }
 
@@ -121,6 +121,9 @@
   margin: 8px auto;
   cursor: pointer;
 }
+.descText {
+  opacity: 0.5;
+}
 </style>
 </head>
 <body>
@@ -174,6 +177,8 @@
   <!-- ACCOUNT -->
   <div class="settingsCard">
     <h3 class="settingsCardTitle">Account</h3>
+
+<p class="descText">Type into any input field to edit account</p>
 
     <div class="settingsGrid">
       <div class="settingsField">
