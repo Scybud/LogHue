@@ -204,7 +204,7 @@ details span:nth-child(2) {
 }
 details p {
   margin-top: 10px;
-  color: #cfcfcf;
+  color: var(--chevron-color);
   line-height: 1.5;
   text-align: left;
 }
@@ -374,8 +374,8 @@ button.danger {
   margin-top: 10px;
 }
 .btn-primary {
-  color: #fff;
   background: var(--primary);
+  color: var(--primary-color);
 }
 
 .btn-secondary {

@@ -27,6 +27,8 @@ body {
 }
 
 /*VARIABLES*/
+
+/*DARK THEME*/
 :root {
   --bg: #000;
   --color: #fff;
@@ -35,6 +37,7 @@ body {
   --navBtn-bg: #222;
   --active: #393838;
   --primary: #393838;
+  --primary-color: #fff;
   --secondary: #4caf50;
   --link: #0393d6;
   --tag: var(--accent);
@@ -66,6 +69,101 @@ body {
   --space-xl: 32px;
 }
 
+/*LIGHT THEME SYSTEM*/
+@media (prefers-color-scheme: light) {
+
+  :root {
+    --bg: #ffffff;
+    --color: #000000;
+
+  --header-bg: rgba(240, 240, 240, 0.8);
+  --mainContent-bg: #f7f7f7;
+
+  --navBtn-bg: #f0f0f0;
+  --active: #e6e6e6;
+
+  --primary: #e6e6e6;
+  --primary-color: #000
+  --secondary: #0366d6;
+
+  --link: #0366d6;
+
+  --accent: #ff6b35;
+  --tag: var(--accent);
+
+  --card-bg: #ffffff;
+  --border: #dcdcdc;
+
+  --form-bg: #ffffff;
+  --input-bg: #f2f2f2;
+  --input-color: #000000;
+
+  --chevron-color: #555555;
+  --danger: #d6453d;
+  
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  
+}
+}
+
+
+/*MANUALLY SELECTED LIGHT THEME*/
+:root[data-theme="light"] {
+    --bg: #ffffff;
+    --color: #000000;
+
+  --header-bg: rgba(240, 240, 240, 0.8);
+  --mainContent-bg: #f7f7f7;
+
+  --navBtn-bg: #f0f0f0;
+  --active: #e6e6e6;
+
+  --primary: #e6e6e6;
+  --primary-color: #000
+  --secondary: #0366d6;
+
+  --link: #0366d6;
+
+  --accent: #ff6b35;
+  --tag: var(--accent);
+
+  --card-bg: #ffffff;
+  --border: #dcdcdc;
+
+  --form-bg: #ffffff;
+  --input-bg: #f2f2f2;
+  --input-color: #000000;
+
+  --chevron-color: #555555;
+  --danger: #d6453d;
+  
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+/*MANUALLY SELECTED DARK THEME*/
+:root[data-theme="dark"] {
+  --bg: #000;
+  --color: #fff;
+  --header-bg: rgba(128, 128, 128, 0.258);
+  --mainContent-bg: #1f1e1e;
+  --navBtn-bg: #222;
+  --active: #393838;
+  --primary: #393838;
+  --primary-color: #fff;
+  --secondary: #4caf50;
+  --link: #0393d6;
+  --tag: var(--accent);
+  --accent: #ff6b35;
+  --card-bg: #111;
+  --border: #333;
+  --form-bg: #111;
+  --input-bg: #1c1c1c;
+  --input-color: #ffffff;
+--chevron-color: #c5c5c5;
+--danger:#e56458;
+  
+--shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
 /*Smooth text rendering*/
 body {
   -webkit-font-smoothing: antialiased;

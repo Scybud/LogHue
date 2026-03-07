@@ -97,3 +97,37 @@ reseToDefaultPrimary.addEventListener("click", () => {
   window.location.reload()
 })
 }
+
+
+//SET THEME
+export function setTheme() {
+const themeSelect = document.getElementById("themeSelect");
+
+if(themeSelect) {
+  themeSelect.addEventListener("change", () => {
+const value = themeSelect.value
+
+if(value === "system") {
+  document.documentElement.removeAttribute("data-theme")
+
+  localStorage.setItem("theme", "system")
+  return;
+}
+
+document.documentElement.setAttribute("data-theme", value)
+  localStorage.setItem("theme", value);
+
+  });
+}
+
+//LOAD SAVED THEME
+const savedTheme = localStorage.getItem("theme")
+if(savedTheme && themeSelect) {
+  themeSelect.value = savedTheme;
+}
+if (savedTheme === "light" || savedTheme === "dark") {
+  document.documentElement.setAttribute("data-theme", savedTheme);
+} else {
+  document.documentElement.removeAttribute("data-theme");
+}
+}

@@ -1,4 +1,9 @@
-import { loadComponent, removeLoader, preferedPrimary } from "./ui.js";
+import {
+  loadComponent,
+  removeLoader,
+  preferedPrimary,
+  setTheme,
+} from "./ui.js";
 import { attachSidebarEvents } from "./components/sidebar.js";
 import {
   openCreateTaskModal,
@@ -37,10 +42,16 @@ window.addEventListener("DOMContentLoaded", async () => {
     "generalSidebarContainer",
   );
 
+  //SESSION FUNTION
+  initSession()
+
+  
+  //ADD THEME PREFFERENCE
+  setTheme()
+  
   //LOADER
 removeLoader()
 
-initSession()
   //Login function
   loginFuntion()
 //Logout function
