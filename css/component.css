@@ -237,7 +237,7 @@ summary {
   width: 25px;
   height: 25px;
 }
-.actionConatiner button,
+.actionContainer button,
 .deleteBtn {
   background-color: var(--color);
   border: none;
@@ -377,7 +377,6 @@ button.danger {
 }
 .btn-primary {
   background: var(--primary);
-  color: var(--primary-color);
 }
 
 .btn-secondary {

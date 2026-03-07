@@ -14,7 +14,8 @@ export async function initSession() {
 
   if (error) {
     console.error(error);
-    window.location.href = "auth.js"
+    await supabase.auth.signOut();
+    
     return;
   }
 
@@ -46,10 +47,15 @@ function userInfoUi() {
 
   if (!sessionState.user || !sessionState.profile) return;
 
+  const email = sessionState.user.email;
+  const [local, domain] = email.split("@");
+
+  const shortEmail = `${local.slice(0, 9)}...@${domain}`;
+
   // NAME
   if (userName) {
     if (sessionState.profile.full_name === "User") {
-      userName.textContent = sessionState.user.email;
+      userName.textContent = shortEmail;
     } else {
       userName.textContent = sessionState.profile.full_name;
     }

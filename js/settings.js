@@ -1,75 +1,73 @@
 import { sessionState } from "./session.js";
 import { supabase } from "./supabase.js";
+import {buttonLoading} from "./ui.js"
 
-
-async function initUserSettingsData () {
-    const {
+async function initUserSettingsData() {
+  const {
     data: { user },
     error,
   } = await supabase.auth.getUser();
 
   if (error || !user) {
     console.error(error);
-    alert(error.message +"." + " " + "Redirecting to login")
-    window.location.href = "auth.html"
+    alert(error.message + "." + " " + "Redirecting to login");
+    window.location.href = "auth.html";
     return;
   }
 
-   const { data: profile, error: profileError } = await supabase
-       .from("profiles")
-       .select("*")
-       .eq("id", user.id)
-       .single();
-   
-     if (profileError) {
-       console.error(profileError);
-       return;
-     }
-   
-     sessionState.user = user;
-     sessionState.profile = profile;
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
 
-     sessionState.originalName = profile.full_name
-     sessionState.originalEmail = user.email
-     sessionState.originalAvatar = profile.avatar_url
+  if (profileError) {
+    console.error(profileError);
+    return;
+  }
 
-     loadData()
-     deleteAccount()
+  sessionState.user = user;
+  sessionState.profile = profile;
+
+  sessionState.originalName = profile.full_name;
+  sessionState.originalEmail = user.email;
+  sessionState.originalAvatar = profile.avatar_url;
+
+  loadData();
+  deleteAccount();
 }
-
 
 function loadData() {
-   const accNameEl = document.getElementById("accName")
-const accEmailEl = document.getElementById("accEmail")
-const settingsAvatarEl = document.querySelector(".settingsAvatar")
+  const accNameEl = document.getElementById("accName");
+  const accEmailEl = document.getElementById("accEmail");
+  const settingsAvatarEl = document.querySelector(".settingsAvatar");
 
-if(accNameEl) {
-   accNameEl.value = sessionState.profile.full_name;
-}
-if(accEmailEl) {
-   accEmailEl.value = sessionState.user.email;
-}
+  if (accNameEl) {
+    accNameEl.value = sessionState.profile.full_name;
+  }
+  if (accEmailEl) {
+    accEmailEl.value = sessionState.user.email;
+  }
 
   if (settingsAvatarEl && sessionState.profile.avatar_url) {
-  settingsAvatarEl.src = sessionState.profile.avatar_url;
+    settingsAvatarEl.src = sessionState.profile.avatar_url;
   }
 }
 
-initUserSettingsData()
-
+initUserSettingsData();
 
 //PROFILE PHOTO UPLOAD
-const profilePhotoInput = document.getElementById("profilePhotoInput")
-const profileUploadBtn = document.getElementById("profileUploadBtn")
-const settingsAvatar = document.querySelector(".settingsAvatar")
+const profilePhotoInput = document.getElementById("profilePhotoInput");
+const profileUploadBtn = document.getElementById("profileUploadBtn");
+const settingsAvatar = document.querySelector(".settingsAvatar");
 
 //TRIGGER IMAGE INPUT FIELD
 profileUploadBtn.addEventListener("click", () => {
+  buttonLoading(profileUploadBtn);
   profilePhotoInput.click();
 });
 
-
-let pendingAvatarProfile = null
+let pendingAvatarProfile = null;
 
 const MAX_SIZE = 20 * 1024; // 20 KB limit
 
@@ -115,20 +113,22 @@ profilePhotoInput.addEventListener("change", () => {
   };
 });
 
-
-  //SAVE SETTINGS CHANGES
-  const saveBtn = document.querySelector(".settingsSaveBtn");
+//SAVE SETTINGS CHANGES
+const saveBtn = document.querySelector(".settingsSaveBtn");
 
 saveBtn.addEventListener("click", async () => {
+  buttonLoading(saveBtn)
+
   const updates = {};
   const user = sessionState.user;
-  
+
   const newName = document.getElementById("accName").value;
   const newEmail = document.getElementById("accEmail").value;
 
   //EMPTY FIELD?
-  if(newName === "" || newEmail === "") {
-    alert("All fields must be filled")
+  if (newName === "" || newEmail === "") {
+    buttonLoading(saveBtn);
+    alert("All fields must be filled");
     return;
   }
 
@@ -143,22 +143,28 @@ saveBtn.addEventListener("click", async () => {
   }
 
   //AVATAR CHANGED?
-if(pendingAvatarProfile) {
-      const filePath = `${user.id}-${Date.now()}.webp`;
-      
-      const {error: uploadError} = await supabase.storage.from("avatars").upload(filePath, pendingAvatarProfile, {upsert: true})
+  if (pendingAvatarProfile) {
+    const filePath = `${user.id}-${Date.now()}.webp`;
 
-      if(uploadError) {
-        console.error(uploadError)
-        return;
-      }
+    const { error: uploadError } = await supabase.storage
+      .from("avatars")
+      .upload(filePath, pendingAvatarProfile, { upsert: true });
 
-      const {data: urlData} = supabase.storage.from("avatars").getPublicUrl(filePath);
+    if (uploadError) {
+          buttonLoading(saveBtn);
 
-      updates.avatar_url = urlData.publicUrl;
-}
+      console.error(uploadError);
+      return;
+    }
 
- // Save only changed fields
+    const { data: urlData } = supabase.storage
+      .from("avatars")
+      .getPublicUrl(filePath);
+
+    updates.avatar_url = urlData.publicUrl;
+  }
+
+  // Save only changed fields
   if (Object.keys(updates).length > 0) {
     const { error } = await supabase
       .from("profiles")
@@ -166,74 +172,103 @@ if(pendingAvatarProfile) {
       .eq("id", user.id);
 
     if (error) {
+          buttonLoading(saveBtn);
+
       console.error(error);
       return;
     }
 
-    alert("Changes saved!")
+    alert("Changes saved!");
   }
 
   pendingAvatarProfile = null;
-})
-
+});
 
 
 //ACCOUNT DELETION
 export async function deleteAccount() {
   const deleteAccountBtn = document.getElementById("deleteAccount");
 
-  if(!deleteAccountBtn) return;
+  if (!deleteAccountBtn) return;
 
   deleteAccountBtn.addEventListener("click", async () => {
-    const confirmAction = confirm("Are you sure you want to delete this account? This action cannot be undone.")
+        buttonLoading(deleteAccountBtn);
 
-    if(!confirmAction) return;
+    const confirmAction = confirm(
+      "Are you sure you want to delete this account? This action cannot be undone.",
+    );
 
-    if(confirmAction) {
-      const { data: { user } } = await supabase.auth.getUser();
+    if (!confirmAction) {
+          buttonLoading(deleteAccountBtn);
+return
+    } 
 
-  if (!user) return;
+    if (confirmAction) {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-  // 1. Delete user-related data
+      if (!user) return;
 
-  //Fetch all workspaces created by user
-  const { data: workspaces, error: wsError } = await supabase
-    .from("workspaces")
-    .select("status")
-    .eq("created_by", user.id);
+      // 1. Delete user-related data
 
-   if(wsError) {
-    console.error(wsError)
-    alert(wsError.message)
-    return;
-   }
+      //Fetch all workspaces created by user
+      const { data: workspaces, error: wsError } = await supabase
+        .from("workspaces")
+        .select("status")
+        .eq("created_by", user.id);
 
-   //Check for active workspaces
-   const hasActive = workspaces.some(ws => ws.status === "active");
+      if (wsError) {
+            buttonLoading(deleteAccountBtn);
 
-  if (hasActive) {
-    alert("Some created workspaces are still active. Close workspaces to delete account ")
-    return
-  }
-  await supabase.from("workspaces").delete().eq("user_id", user.id);
-  await supabase.from("tasks").delete().eq("user_id", user.id);
-    await supabase.from("task_comments").delete().eq("user_id", user.id);
-  await supabase.from("workspace_members").delete().eq("user_id", user.id);
-  await supabase.from("discussion_comments").delete().eq("user_id", user.id);
-  await supabase.from("discussions").delete().eq("user_id", user.id);
-  await supabase.from("profiles").delete().eq("id", user.id);
-  await supabase.from("plan").delete().eq("user_id", user.id);
-localStorage.clear();
-  // 2. Delete the user from Auth
-  const { error } = await supabase.auth.deleteUser();
+        console.error(wsError);
+        alert(wsError.message);
+        return;
+      }
 
-  if (error) {
-    console.error(error);
-    return;
-  }
+      //Check for active workspaces
+      const hasActive = workspaces.some((ws) => ws.status === "active");
 
-  // 3. Redirect or show goodbye screen
-  window.location.href = "auth.html";
+      if (hasActive) {
+            buttonLoading(deleteAccountBtn);
+
+        alert(
+          "Some created workspaces are still active. Close workspaces to delete account ",
+        );
+        return;
+      }
+      await supabase.from("workspaces").delete().eq("user_id", user.id);
+      await supabase.from("tasks").delete().eq("user_id", user.id);
+      await supabase.from("task_comments").delete().eq("user_id", user.id);
+      await supabase.from("workspace_members").delete().eq("user_id", user.id);
+      await supabase
+        .from("discussion_comments")
+        .delete()
+        .eq("user_id", user.id);
+      await supabase.from("discussions").delete().eq("user_id", user.id);
+      await supabase.from("profiles").delete().eq("id", user.id);
+      await supabase.from("plan").delete().eq("user_id", user.id);
+      localStorage.clear();
+
+      // 2. Delete the user from Auth
+       const { data, error } = await supabase.functions.invoke('self-delete-user', {
+    method: 'POST',
+    body: { confirm: true },
+  });
+
+      if (error) {
+            buttonLoading(deleteAccountBtn);
+
+        console.error(error);
+        alert(error.message);
+        return;
+      }
+
+      console.log(data);
+      alert("Account deleted");
+      await supabase.auth.signOut();
+      // 3. Redirect or show goodbye screen
+      window.location.href = "auth.html";
     }
-  })
+  });
 }
