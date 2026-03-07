@@ -41,6 +41,7 @@ export function removeLoader() {
 
 export function buttonLoading(container) {
   if(container.dataset.loading === "true") {
+    container.classList.add("disabled")
     container.innerHTML = container.dataset.originalText
     container.dataset.loading = "false"; 
     return;
@@ -63,6 +64,7 @@ for(let i = 1; i <= 3; i++) {
 preLoaderContainer.append(waveLoader)
 
 container.innerHTML = ""
+container.classList.add("disabled");
 container.append(preLoaderContainer)
 }
 
