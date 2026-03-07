@@ -131,3 +131,25 @@ if (savedTheme === "light" || savedTheme === "dark") {
   document.documentElement.removeAttribute("data-theme");
 }
 }
+
+export function setInterfaceDensity() {
+  const interfaceSelect = document.getElementById("interfaceSelect");
+
+  if (interfaceSelect) {
+    interfaceSelect.addEventListener("change", () => {
+      const value = interfaceSelect.value;
+
+        document.documentElement.setAttribute("data-density", value);
+        localStorage.setItem("density", value);
+    });
+  }
+
+  //LOAD SAVED THEME
+  const savedDensity = localStorage.getItem("density");
+  if (savedDensity && interfaceSelect) {
+    document.documentElement.setAttribute("data-density", savedDensity);
+    interfaceSelect.value = savedDensity;
+  } else {
+    document.documentElement.removeAttribute("data-density");
+  }
+}

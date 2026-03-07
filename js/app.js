@@ -3,6 +3,7 @@ import {
   removeLoader,
   preferedPrimary,
   setTheme,
+  setInterfaceDensity,
 } from "./ui.js";
 import { attachSidebarEvents } from "./components/sidebar.js";
 import {
@@ -49,6 +50,8 @@ window.addEventListener("DOMContentLoaded", async () => {
   //ADD THEME PREFFERENCE
   setTheme()
   
+  //ADD INTERFACE DENSITY PREFFERENCE
+  setInterfaceDensity()
   //LOADER
 removeLoader()
 

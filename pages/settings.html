@@ -23,7 +23,7 @@
    .settingsWrapper {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: var(--space-lg);
   padding: 1rem 0;
 }
 
@@ -31,10 +31,10 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.5rem;
+  padding: calc(var(--space-md) + 8px);
   display: flex;
   flex-direction: column;
-  gap: 1rem 2rem;
+  gap: var(--space-md) var(--space-lg);
   min-width: 100%;
 }
 
@@ -48,13 +48,13 @@
 .settingsCardTitle {
   font-size: 1.2rem;
   font-weight: 600;
-  margin-bottom: 1.2rem;
+  margin-bottom: calc(var(--space-md) + 2px);
 }
 
 .settingsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.2rem 1.5rem;
+  gap: calc(var(--space-md) + 2px) calc(var(--space-md) + 8px);
 }
 
 .settingsField.full {
@@ -64,14 +64,14 @@
 .settingsLabel {
   display: block;
   font-size: 0.9rem;
-  margin-bottom: 0.4rem;
+  margin-bottom: var(--space-xs);
   color: var(--text-muted);
 }
 
 .settingsAvatarRow {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--space-md);
 }
 
 .settingsAvatar {
@@ -83,16 +83,16 @@
 
 .settingsTags {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-sm);
   flex-wrap: wrap;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--space-sm);
 }
 
 .settingsToggleRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.6rem 0;
+  padding: var(--space-sm) 0;
   border-bottom: 1px solid var(--border);
 }
 
@@ -102,7 +102,7 @@
 
 .settingsSaveBtn {
   display: block;
-  margin: 1.2rem auto 1.2rem;
+  margin: calc(var(--space-md) + 4px) auto calc(var(--space-md) + 4px);
 }
 .settingsLongBtn {
   width: 100%;
@@ -118,7 +118,7 @@
   width: 100%;
   max-width: 200px;
   height: 40px;
-  margin: 8px auto;
+  margin: var(--space-sm) auto;
   cursor: pointer;
 }
 .descText {
@@ -158,7 +158,6 @@
                   />
                 </svg>
               </span>
-              <span class="iconText">Menu</span>
             </button>
     
             <h2 class="pageTitle">
@@ -178,7 +177,7 @@
   <div class="settingsCard">
     <h3 class="settingsCardTitle">Account</h3>
 
-<p class="descText">Type into any input field to edit account</p>
+<p class="descText">Edit your account information.</p>
 
     <div class="settingsGrid">
       <div class="settingsField">
@@ -220,6 +219,7 @@
   <!-- APPEARANCE -->
   <div class="settingsCard">
     <h3 class="settingsCardTitle">Appearance</h3>
+<p class="descText">Customize your space.</p>
 
     <div class="settingsGrid">
       <div class="settingsField">
@@ -233,14 +233,14 @@
 
       <div class="settingsField">
         <label class="settingsLabel">Primary Color</label>
-        <input type="color" class="colorPicker" id="primaryColor" value="#393838" />
+        <input type="color" class="colorPicker" id="primaryColor" value="#0393d6" />
 
         <button type="button" class="btn btn-sm btn-primary" id="reseToDefaultPrimary">Reset</button>
       </div>
 
       <div class="settingsField full">
         <label class="settingsLabel">Interface Density</label>
-        <select class="inputField">
+        <select class="inputField" id="interfaceSelect">
           <option value="comfortable">Comfortable</option>
           <option value="compact">Compact</option>
         </select>
@@ -251,6 +251,7 @@
   <!-- NOTIFICATIONS -->
   <div class="settingsCard">
     <h3 class="settingsCardTitle">Notifications</h3>
+<p class="descText">Manage how you recieve updates.</p>
 
     <div class="settingsToggleRow">
       <span>Email Notifications</span>
@@ -271,6 +272,7 @@
   <!-- PRIVACY -->
   <div class="settingsCard">
     <h3 class="settingsCardTitle">Privacy</h3>
+<p class="descText">Manage your privacy settings.</p>
 
     <div class="settingsGrid">
 
@@ -289,6 +291,7 @@
   <!-- SECURITY -->
   <div class="settingsCard">
     <h3 class="settingsCardTitle">Security</h3>
+<p class="descText">Keep your account secure.</p>
 
     <div class="settingsGrid">
 
@@ -308,6 +311,7 @@
   <!-- LANGUAGE & REGION -->
   <div class="settingsCard">
     <h3 class="settingsCardTitle">Language & Region</h3>
+<p class="descText">Set your language and regional preferences.</p>
 
     <div class="settingsGrid">
       <div class="settingsField">
@@ -330,6 +334,7 @@
   <!-- DANGER ZONE -->
   <div class="settingsCard danger">
     <h3 class="settingsCardTitle">Danger Zone</h3>
+<p class="descText danger">These actions are permanent and cannot be undone</p>
 
     <button class="btn danger">Delete Account</button>
   </div>
@@ -339,10 +344,7 @@
       </article>
     </main>
 
-    <!--
-      <script type="module" src="../js/utils/noAuthSessionProtect.js"></script>
-      -->
-
+  <script type="module" src="../js/utils/noAuthSessionProtect.js"></script>
 <script type="module" src="./../js/settings.js"></script>
         <script type="module" src="../js/app.js"></script>
 </body>

@@ -8,22 +8,22 @@ overflow: hidden;
 }
 .mainContent h2 {
   text-align: left;
-  padding-left: 10px;
+  padding-left: calc(var( --space-sm) + 2px);
 }
 .sidebarNav {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 0 10px;
+  gap: var(--space-sm);
+  padding: 0 calc(var( --space-sm) + 2px);
   margin-bottom: auto;
 }
 
 #dashboardLink {
-  margin-bottom: 10px;
+  margin-bottom: calc(var( --space-sm) + 2px);
 }
 .navBtn,
 .actionBtn {
-  padding: 8px;
+  padding: var(--space-sm);
   font-size: 1rem;
   font-weight: 600;
   border-radius: var(--radius);
@@ -34,7 +34,7 @@ overflow: hidden;
   transition: 0.2s;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: calc(var( --space-xs) + 1px);
 }
 .actionBtn:hover {
   background: #ffffff;
@@ -54,16 +54,16 @@ h3 {
   position: absolute;
   top: -10px;
   border-radius: var(--radius);
-  padding: 2px;
+  padding: calc(var( --space-xs) - 2px);
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: calc(var( --space-md) + 4px);
 }
 .section:last-child {
-  margin-bottom: 20px;
+  margin-bottom: calc(var( --space-md) + 4px);
 }
 
 .sectionTitle {
@@ -74,29 +74,29 @@ h3 {
 .taskList {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: calc(var( --space-sm) + 4px);
 }
 
 .taskCard {
   background: var(--card-bg);
-  padding: 16px;
+  padding: var(--space-md);
   border-radius: var(--radius);
   border: 1px solid var(--border);
 }
 
 .taskTitle {
   font-size: 1.1rem;
-  margin-bottom: 6px;
+  margin-bottom: calc(var( --space-sm) - 2px);
 }
 
 .meta {
   font-size: 0.85rem;
   opacity: 0.8;
-  margin-bottom: 10px;
+  margin-bottom: calc(var( --space-sm) + 2px);
 }
 
 .btn-sm {
-  padding: 8px 12px;
+  padding: var(--space-sm) calc(var( --space-sm) + 4px);
   font-size: 0.85rem;
 }
 
@@ -104,7 +104,7 @@ h3 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   justify-content: space-evenly;
-  gap: 16px;
+  gap: var(--space-md);
   margin-bottom: 40px;
 }
 .grid .card {
@@ -114,24 +114,24 @@ h3 {
   box-shadow: var(--shadow);
 }
 section {
-  margin: 10px auto;
+  margin: calc(var( --space-sm) + 2px) auto;
 }
 .memberList {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: calc(var( --space-sm) + 4px);
 }
 
 .memberCard {
   background: var(--card-bg);
-  padding: 16px;
+  padding: var(--space-md);
   border-radius: var(--radius);
   border: 1px solid var(--border);
 }
 
 .memberName {
   font-size: 1.1rem;
-  margin-bottom: 4px;
+  margin-bottom: var(--space-xs);
 }
 
 .memberRole {
@@ -142,13 +142,13 @@ section {
 .activityList {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: calc(var( --space-md) - 2px);
 }
 
 .activityItem {
   position: relative;
   background: var(--card-bg);
-  padding: 14px;
+  padding: calc(var( --space-md) - 2px);
   min-height: 150px;
   border-radius: var(--radius);
   border: 1px solid var(--border);

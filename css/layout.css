@@ -23,7 +23,7 @@
    grid-area: sidebar;
   background: var(--card-bg);
   height: 100%;
-  padding-top: 10px;
+  padding-top: calc(var( --space-sm) + 2px);
 }
 #sidebar {
    height: 100%;
