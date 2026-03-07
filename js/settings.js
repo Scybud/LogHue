@@ -179,6 +179,8 @@ saveBtn.addEventListener("click", async () => {
     }
 
     alert("Changes saved!");
+        buttonLoading(saveBtn);
+
   }
 
   pendingAvatarProfile = null;
@@ -266,6 +268,7 @@ return
 
       console.log(data);
       alert("Account deleted");
+      buttonLoading(deleteAccountBtn);
       await supabase.auth.signOut();
       // 3. Redirect or show goodbye screen
       window.location.href = "auth.html";
