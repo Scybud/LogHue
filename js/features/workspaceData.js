@@ -62,7 +62,18 @@ export async function initWorkspaces() {
     ...normalizedMemberWorkspaces,
   ];
 
-  savedWorkspaceData = combinedWorkspaceData;
+// Remove duplicates by workspace id
+const uniqueWorkspaces = [];
+const seen = new Set();
+
+for (const ws of combinedWorkspaceData) {
+  if (!seen.has(ws.id)) {
+    seen.add(ws.id);
+    uniqueWorkspaces.push(ws);
+  }
+}
+
+  savedWorkspaceData = uniqueWorkspaces;
 
   renderExistingWorkspaces();
   updateworkspaceCount();
@@ -94,14 +105,13 @@ function formatDateTime(timestamp) {
 }
 
 async function attachCreateWorkspaceEvent() {
-
   if (!createWorkspaceBtn) return;
+
+  if (createWorkspaceBtn.__listenerAttached) return;
+createWorkspaceBtn.__listenerAttached = true;
 
   //When log task button is clicked to create new log
   createWorkspaceBtn.addEventListener("click", async (e) => {
-    if (createWorkspaceBtn.__listenerAttached) return;
-createWorkspaceBtn.__listenerAttached = true;
-
 
     e.preventDefault();
 
@@ -137,9 +147,17 @@ if (!user) return alert("You must be logged in.");
     const {data: existing} = await supabase.from("workspace_members").select("*").eq("workspace_id", newWorkspace.id).eq("user_id", user.id).maybeSingle();
     
     if (!existing) {
-      await supabase.from("workspace_members").insert({
-        workspace_id: newWorkspace.id, user_id: user.id, role: "admin"
+    const { error: memberInsertError } = await supabase
+      .from("workspace_members")
+      .insert({
+        workspace_id: newWorkspace.id,
+        user_id: user.id,
+        role: "admin",
       });
+
+    if (memberInsertError) {
+      console.error(memberInsertError);
+    }
     }
 
     savedWorkspaceData.unshift(newWorkspace);
@@ -200,7 +218,7 @@ export function createWorkspaceCardElement(ws) {
            <summary>Description</summary>
            <p>${ws.description}</p>
            </details>
-           <button class="btn btn-primary openWorkspaceBtn" data-id=${ws.id} data-role=${ws.role}>Open Workspace</button> 
+           <button class="btn btn-primary openWorkspaceBtn" data-id="${ws.id}" data-role="${ws.role}">Open Workspace</button> 
 `;
 
   return workspaceCard;
@@ -244,10 +262,11 @@ function renderExistingWorkspaces() {
 
 function attachOpenWorkspaceClickEvent() {
   document.addEventListener("click", (e) => {
-    if (!e.target.classList.contains("openWorkspaceBtn")) return;
+   const btn = e.target.closest(".openWorkspaceBtn");
+   if (!btn) return;
 
-    const wsId = e.target.dataset.id;
-    const role = e.target.dataset.role;
+   const wsId = btn.dataset.id;
+   const role = btn.dataset.role;
 
     if (role === "admin") {
       window.location.href = `workspace-dashboard-admin.html?ws=${wsId}`;
