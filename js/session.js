@@ -6,16 +6,22 @@ export const sessionState = {
   plan: null,
 };
 
+// Promise that resolves when session is fully loaded
+let resolveSessionReady;
+export const sessionReady = new Promise((resolve) => {
+  resolveSessionReady = resolve;
+});
+
 export async function initSession() {
   const {
     data: { user },
     error,
   } = await supabase.auth.getUser();
 
-  if (error) {
+  if (error || !user) {
     console.error(error);
     await supabase.auth.signOut();
-    
+    resolveSessionReady(); // still resolve to avoid blocking
     return;
   }
 
@@ -27,15 +33,15 @@ export async function initSession() {
 
   if (profileError) {
     console.error(profileError);
-    /*
-        window.location.href = "auth.html";
-        */
+    resolveSessionReady();
     return;
   }
 
   sessionState.user = user;
   sessionState.profile = profile;
   sessionState.plan = profile.plan;
+
+  resolveSessionReady(); // session is now ready
 
   userInfoUi();
 }
@@ -49,7 +55,6 @@ function userInfoUi() {
 
   const email = sessionState.user.email;
   const [local, domain] = email.split("@");
-
   const shortEmail = `${local.slice(0, 9)}...@${domain}`;
 
   // NAME
@@ -63,14 +68,9 @@ function userInfoUi() {
 
   // AVATAR
   if (profileImg) {
-    if (sessionState.profile.avatar_url) {
-      profileImg.src =
-        sessionState.profile.avatar_url ||
-        "https://scyflix.github.io/LogHue/assets/images/default_profile.png";
-    } else {
-      profileImg.src =
-        "https://scyflix.github.io/LogHue/assets/images/default_profile.png";
-    }
+    profileImg.src =
+      sessionState.profile.avatar_url ||
+      "https://scyflix.github.io/LogHue/assets/images/default_profile.png";
   }
 
   // PLAN

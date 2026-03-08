@@ -1,6 +1,5 @@
 import { sessionState } from "./session.js";
 import { supabase } from "./supabase.js";
-import {buttonLoading} from "./ui.js"
 
 async function initUserSettingsData() {
   const {
@@ -34,7 +33,6 @@ async function initUserSettingsData() {
   sessionState.originalAvatar = profile.avatar_url;
 
   loadData();
-  deleteAccount();
 }
 
 function loadData() {
@@ -63,7 +61,6 @@ const settingsAvatar = document.querySelector(".settingsAvatar");
 
 //TRIGGER IMAGE INPUT FIELD
 profileUploadBtn.addEventListener("click", () => {
-  buttonLoading(profileUploadBtn);
   profilePhotoInput.click();
 });
 
@@ -117,7 +114,7 @@ profilePhotoInput.addEventListener("change", () => {
 const saveBtn = document.querySelector(".settingsSaveBtn");
 
 saveBtn.addEventListener("click", async () => {
-  buttonLoading(saveBtn)
+  
 
   const updates = {};
   const user = sessionState.user;
@@ -127,7 +124,7 @@ saveBtn.addEventListener("click", async () => {
 
   //EMPTY FIELD?
   if (newName === "" || newEmail === "") {
-    buttonLoading(saveBtn);
+   
     alert("All fields must be filled");
     return;
   }
@@ -151,7 +148,7 @@ saveBtn.addEventListener("click", async () => {
       .upload(filePath, pendingAvatarProfile, { upsert: true });
 
     if (uploadError) {
-          buttonLoading(saveBtn);
+         
 
       console.error(uploadError);
       return;
@@ -172,106 +169,112 @@ saveBtn.addEventListener("click", async () => {
       .eq("id", user.id);
 
     if (error) {
-          buttonLoading(saveBtn);
+         
 
       console.error(error);
       return;
     }
 
     alert("Changes saved!");
-        buttonLoading(saveBtn);
+       
 
   }
 
   pendingAvatarProfile = null;
-});
-
-
+  });
+  
+  
+  /*
 //ACCOUNT DELETION
 export async function deleteAccount() {
   const deleteAccountBtn = document.getElementById("deleteAccount");
-
   if (!deleteAccountBtn) return;
 
   deleteAccountBtn.addEventListener("click", async () => {
-        buttonLoading(deleteAccountBtn);
+    // Prevent double clicks if (deleteAccountBtn.disabled) return; deleteAccountBtn.disabled = true; 
 
     const confirmAction = confirm(
       "Are you sure you want to delete this account? This action cannot be undone.",
     );
 
     if (!confirmAction) {
-          buttonLoading(deleteAccountBtn);
-return
-    } 
+      
+      deleteAccountBtn.disabled = false;
+      return;
+    }
 
-    if (confirmAction) {
+    try {
+      // Get current session
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
 
-      if (!user) return;
-
-      // 1. Delete user-related data
-
-      //Fetch all workspaces created by user
-      const { data: workspaces, error: wsError } = await supabase
-        .from("workspaces")
-        .select("status")
-        .eq("created_by", user.id);
-
-      if (wsError) {
-            buttonLoading(deleteAccountBtn);
-
-        console.error(wsError);
-        alert(wsError.message);
+      if (sessionError) {
+        console.error("Session error:", sessionError);
+        alert("Unable to get session.");
         return;
       }
 
-      //Check for active workspaces
-      const hasActive = workspaces.some((ws) => ws.status === "active");
-
-      if (hasActive) {
-            buttonLoading(deleteAccountBtn);
-
-        alert(
-          "Some created workspaces are still active. Close workspaces to delete account ",
-        );
+      if (!session) {
+        alert("You are not logged in.");
         return;
       }
-      await supabase.from("workspaces").delete().eq("user_id", user.id);
-      await supabase.from("tasks").delete().eq("user_id", user.id);
-      await supabase.from("task_comments").delete().eq("user_id", user.id);
-      await supabase.from("workspace_members").delete().eq("user_id", user.id);
-      await supabase
-        .from("discussion_comments")
-        .delete()
-        .eq("user_id", user.id);
-      await supabase.from("discussions").delete().eq("user_id", user.id);
-      await supabase.from("profiles").delete().eq("id", user.id);
-      await supabase.from("plan").delete().eq("user_id", user.id);
-      localStorage.clear();
 
-      // 2. Delete the user from Auth
-       const { data, error } = await supabase.functions.invoke('self-delete-user', {
-    method: 'POST',
-    body: { confirm: true },
-  });
+      const userId = session.user.id;
 
+      // Call Edge Function with auth header and proper body
+      const { data, error } = await supabase.functions.invoke(
+        "self-delete-user",
+        {
+          body: { user_id: userId },
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      // Handle invocation-level error
       if (error) {
-            buttonLoading(deleteAccountBtn);
-
-        console.error(error);
-        alert(error.message);
+        console.error("Edge function invocation error:", error);
+        alert(error.message || "Failed to call delete function.");
         return;
       }
 
-      console.log(data);
-      alert("Account deleted");
-      buttonLoading(deleteAccountBtn);
-      await supabase.auth.signOut();
-      // 3. Redirect or show goodbye screen
-      window.location.href = "auth.html";
+      // Edge function returned data — inspect shape
+      // Expected success: { ok: true, rpc: {...}, storage: 'attempted', auth_deleted: true }
+      // Expected RPC error about active workspaces surfaced as { error: 'user owns X active workspace(s); aborting deletion' }
+      if (data?.error) {
+        // Show RPC-level or function-level error message
+        alert(data.error);
+        return;
+      }
+
+      if (data?.ok) {
+        // Successful full deletion
+        await supabase.auth.signOut();
+        alert("Account deleted successfully.");
+        window.location.href = "auth.html";
+        return;
+      }
+
+      // Partial success handling: show details if present
+      console.warn("Delete function returned unexpected response:", data);
+      const msg =
+        data?.rpc?.message ||
+        data?.auth_delete_error ||
+        "Account deletion did not complete. Check server logs.";
+      alert(msg);
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      alert(err?.message || "Something went wrong.");
+    } finally {
+      
+      deleteAccountBtn.disabled = false;
     }
   });
 }
+
+
+*/
