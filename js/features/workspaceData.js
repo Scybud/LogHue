@@ -9,12 +9,11 @@ if (window.__workspaceInit) {
   window.__workspaceInit = true;
 }
 
-
 let workspaceNameEl;
 let workspaceDescriptionEl;
 let createWorkspaceBtn;
 let upperDashboardContainer;
-let savedWorkspaceData = [];
+export let savedWorkspaceData = [];
 
 export async function initWorkspaces() {
   await sessionReady;
@@ -28,29 +27,27 @@ export async function initWorkspaces() {
     .eq("created_by", user.id)
     .order("created_at", { ascending: false });
 
-    if(createdError) {
-      console.error(createdError)
-      alert(createdError)
-    }
+  if (createdError) {
+    console.error(createdError);
+    alert(createdError);
+  }
 
-    //GET WORKSPACES THE USER IS A MEMBER OF
-     const { data: memberWorkspaces, error: memberError } = await supabase
-       .from("workspace_members")
-       .select("role, workspaces: workspace_id(*)")
-       .eq("user_id", user.id)
+  //GET WORKSPACES THE USER IS A MEMBER OF
+  const { data: memberWorkspaces, error: memberError } = await supabase
+    .from("workspace_members")
+    .select("role, workspaces: workspace_id(*)")
+    .eq("user_id", user.id);
 
-           if (memberError) {
-             console.error(memberError);
-             alert(memberError);
-           }
+  if (memberError) {
+    console.error(memberError);
+    alert(memberError);
+  }
 
-           
-       //NORMALISE MEMBER WORKSPACES
-       const normalizedMemberWorkspaces = (memberWorkspaces || []).map((m) => ({
-         ...m.workspaces,
-         role: m.role, // override role from membership table
-       }));
-
+  //NORMALISE MEMBER WORKSPACES
+  const normalizedMemberWorkspaces = (memberWorkspaces || []).map((m) => ({
+    ...m.workspaces,
+    role: m.role, // override role from membership table
+  }));
 
   workspaceNameEl = document.getElementById("workspacename");
   workspaceDescriptionEl = document.getElementById("workspaceDescription");
@@ -62,16 +59,16 @@ export async function initWorkspaces() {
     ...normalizedMemberWorkspaces,
   ];
 
-// Remove duplicates by workspace id
-const uniqueWorkspaces = [];
-const seen = new Set();
+  // Remove duplicates by workspace id
+  const uniqueWorkspaces = [];
+  const seen = new Set();
 
-for (const ws of combinedWorkspaceData) {
-  if (!seen.has(ws.id)) {
-    seen.add(ws.id);
-    uniqueWorkspaces.push(ws);
+  for (const ws of combinedWorkspaceData) {
+    if (!seen.has(ws.id)) {
+      seen.add(ws.id);
+      uniqueWorkspaces.push(ws);
+    }
   }
-}
 
   savedWorkspaceData = uniqueWorkspaces;
 
@@ -108,19 +105,17 @@ async function attachCreateWorkspaceEvent() {
   if (!createWorkspaceBtn) return;
 
   if (createWorkspaceBtn.__listenerAttached) return;
-createWorkspaceBtn.__listenerAttached = true;
+  createWorkspaceBtn.__listenerAttached = true;
 
   //When log task button is clicked to create new log
   createWorkspaceBtn.addEventListener("click", async (e) => {
-
     e.preventDefault();
 
     const workspaceNameValue = workspaceNameEl.value.trim();
     const workspaceDescriptionValue = workspaceDescriptionEl.value.trim();
 
-const user = sessionState.user;
-if (!user) return alert("You must be logged in.");
-
+    const user = sessionState.user;
+    if (!user) return alert("You must be logged in.");
 
     //DEFINE DATA CONTENT
     const workspaceData = {
@@ -140,24 +135,29 @@ if (!user) return alert("You must be logged in.");
       alert("Failed to create workspace.");
       return;
     }
-    
+
     const newWorkspace = data[0];
 
     //ADD WORKSPACE ADMIN AS MEMBER
-    const {data: existing} = await supabase.from("workspace_members").select("*").eq("workspace_id", newWorkspace.id).eq("user_id", user.id).maybeSingle();
-    
-    if (!existing) {
-    const { error: memberInsertError } = await supabase
+    const { data: existing } = await supabase
       .from("workspace_members")
-      .insert({
-        workspace_id: newWorkspace.id,
-        user_id: user.id,
-        role: "admin",
-      });
+      .select("*")
+      .eq("workspace_id", newWorkspace.id)
+      .eq("user_id", user.id)
+      .maybeSingle();
 
-    if (memberInsertError) {
-      console.error(memberInsertError);
-    }
+    if (!existing) {
+      const { error: memberInsertError } = await supabase
+        .from("workspace_members")
+        .insert({
+          workspace_id: newWorkspace.id,
+          user_id: user.id,
+          role: "admin",
+        });
+
+      if (memberInsertError) {
+        console.error(memberInsertError);
+      }
     }
 
     savedWorkspaceData.unshift(newWorkspace);
@@ -205,16 +205,20 @@ export function createWorkspaceCardElement(ws) {
   workspaceCard.classList.add("workspaceCard", "card");
   workspaceCard.dataset.id = ws.id;
   workspaceCard.innerHTML = `
-<h3>
-           ${ws.name} 
-           <span class="tag ${ws.role}">
-           ${ws.role}
-           </span>
-           </h3> 
-           <p>
-           <span class="meta">Created on: ${formattedTDate}</span>
-           </p>
-           <details>
+  <div class="workspaceCardHeader">
+  <h3>
+  ${ws.name} 
+  <span class="tag ${ws.role}">
+  ${ws.role}
+  </span>
+  </h3> 
+  <p>
+  <span class="meta">Created on: ${formattedTDate}</span>
+  </p>
+
+  
+  </div>
+  <details>
            <summary>Description</summary>
            <p>${ws.description}</p>
            </details>
@@ -225,7 +229,6 @@ export function createWorkspaceCardElement(ws) {
 }
 
 function renderExistingWorkspaces() {
-
   if (!upperDashboardContainer) return;
 
   upperDashboardContainer.innerHTML = "";
@@ -262,11 +265,11 @@ function renderExistingWorkspaces() {
 
 function attachOpenWorkspaceClickEvent() {
   document.addEventListener("click", (e) => {
-   const btn = e.target.closest(".openWorkspaceBtn");
-   if (!btn) return;
+    const btn = e.target.closest(".openWorkspaceBtn");
+    if (!btn) return;
 
-   const wsId = btn.dataset.id;
-   const role = btn.dataset.role;
+    const wsId = btn.dataset.id;
+    const role = btn.dataset.role;
 
     if (role === "admin") {
       window.location.href = `workspace-dashboard-admin.html?ws=${wsId}`;
@@ -275,3 +278,6 @@ function attachOpenWorkspaceClickEvent() {
     }
   });
 }
+
+//EXPORT PROMISE WHEN WORKSPACE IS READY
+export const workspacesReady = initWorkspaces();

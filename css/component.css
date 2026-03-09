@@ -376,6 +376,7 @@ button.danger {
   margin-top: calc(var( --space-sm) + 2px);
 }
 .btn-primary {
+  color: #000;
   background: var(--primary);
 }
 

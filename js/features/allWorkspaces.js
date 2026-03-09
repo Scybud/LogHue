@@ -1,9 +1,8 @@
-import { state } from "./data/state.js";
-import {createWorkspaceCardElement} from "./features/workspaceData.js"
-const savedWorkspaceData = state.workspaces
+import { savedWorkspaceData, workspacesReady } from "./workspaceData.js";
+import {createWorkspaceCardElement} from "./workspaceData.js"
 
-function renderAllWorkspaces() {
-
+async function renderAllWorkspaces() {
+await workspacesReady;
   const div = document.createElement("div");
   div.classList.add("allWorkspaceContainer");
 

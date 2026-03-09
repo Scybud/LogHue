@@ -159,12 +159,12 @@ function setupOAuthButton(buttonId, provider) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: "https://scyflix.github.io/LogHue/pages/dashboard.html",
+        redirectTo: "https://loghue.com/pages/dashboard.html",
       },
     });
    if (error) {
      alert(`OAuth error: ${error.message}`);
-     window.location.href = "https://scyflix.github.io/LogHue/pages/auth.html";
+     window.location.href = "https://loghue.com/pages/auth.html";
    }
 
   });
