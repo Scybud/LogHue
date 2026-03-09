@@ -148,10 +148,46 @@ export function setInterfaceDensity() {
 
   //LOAD SAVED THEME
   const savedDensity = localStorage.getItem("density");
+  document.documentElement.setAttribute("data-density", savedDensity);
   if (savedDensity && interfaceSelect) {
-    document.documentElement.setAttribute("data-density", savedDensity);
     interfaceSelect.value = savedDensity;
-  } else {
-    document.documentElement.removeAttribute("data-density");
   }
+}
+
+
+export function createDropdown(items = []) {
+  const container = document.createElement("div");
+  container.classList.add("dropdown");
+
+  const list = document.createElement("div");
+  list.classList.add("dropdown-list");
+
+  items.forEach((item) => {
+    const btn = document.createElement("button");
+    btn.classList.add("dropdown-item", "btn-sm", "btn", "btn-secondary");
+    btn.textContent = item.label;
+
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      item.action();
+      container.classList.remove("open");
+    });
+
+    list.append(btn);
+  });
+
+  container.prepend(list);
+
+  // Toggle logic
+  container.addEventListener("click", (e) => {
+    e.stopPropagation();
+    container.classList.toggle("open");
+  });
+
+  // Close on outside click
+  document.addEventListener("click", () => {
+    container.classList.remove("open");
+  });
+
+  return container;
 }

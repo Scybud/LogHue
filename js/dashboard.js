@@ -1,16 +1,38 @@
-import { state } from "./data/state.js";
+import {
+  savedWorkspaceData,
+  workspacesReady, createWorkspaceCardElement
+} from "./features/workspaceData.js";
 import { dataCount } from "./utils.js";
+import { createDropdown } from "./ui.js";
 
+//WORKSPACE MENU
+const dropdown = createDropdown([
+  { label: "Open", action: () => openWorkspace(wsData.id) },
+  { label: "Rename", action: () => renameWorkspace(wsData.id) },
+  { label: "Delete", action: () => deleteWorkspace(wsData.id) },
+]);
 
+function dropdownClick() {
+  const workspaceMenuBtn = document.querySelectorAll(".workspaceMenuBtn");
+
+  workspaceMenuBtn.forEach((btn) => {
+
+    if(btn) {
+      btn.addEventListener("click", () => {
+        btn.appendChild(dropdown);
+      });
+    }
+  })
+}
 
 //MOCK DATA FOR DASHBOARD POPULATION
-const createdWorkspaces = state.workspaces.filter(
+const createdWorkspaces = savedWorkspaceData.filter(
   (ws) => ws.role === "admin" && ws.status === "active",
 );
-const openedWorkspaces = state.workspaces.filter(
+const openedWorkspaces = savedWorkspaceData.filter(
   (ws) => ws.status === "active",
 );
-const closedWorkspaces = state.workspaces.filter(
+const closedWorkspaces = savedWorkspaceData.filter(
   (ws) => ws.status === "closed",
 );
 
@@ -23,37 +45,47 @@ dataCount(activeWorkspaceCount, openedWorkspaces);
 dataCount(createdWorkspacesCount, createdWorkspaces);
 dataCount(closedWorkspacesCount, closedWorkspaces);
 
-export function renderDashboard() {
-  const dashboardContainer = document.querySelector("#upperDashboardContainer");
-  const header = document.createElement("h2");
-  header.textContent = "Recent Workspaces";
+export async function renderDashboard() {
+await workspacesReady;
 
-  const div = document.createElement("div");
-  div.classList.add("recentContainer");
+   if (!upperDashboardContainer) return;
+  
+    upperDashboardContainer.innerHTML = "";
+  
+    const header = document.createElement("h2");
+    header.textContent = "Recent Workspaces";
+  
+    const sectionDescription = document.createElement("p")
+    sectionDescription.classList.add("sectionDescription");
+    sectionDescription.textContent = "Two of your most recent workspaces:"
 
-  div.innerHTML = state.workspaces
-    .filter((ws) => ws.status === "active")
-    .map(
-      (ws) =>
-        `
-        <div class="workspaceCard card"> 
-        <h3>
-        ${ws.name} 
-        <span class="tag ${ws.role}">
-        ${ws.role}
-        </span>
-        </h3> 
-        <p>
-        <span class="meta">Created on: ${ws.created_at}</span>
-        </p>
-        <details>
-        <summary>Description</summary>
-        <p>${ws.description}</p>
-        </details>
-        <button class="btn btn-sm openWorkspaceBtn">Open Workspace</button> 
-        </div> `,
-    )
-    .join("");
+    const div = document.createElement("div");
+    div.classList.add("recentContainer");
+  
+    const createdWorkspaces = savedWorkspaceData.filter(
+      (ws) => ws.role === "admin" && ws.status === "active",
+    );
+  
+    const activeWorkspaces = savedWorkspaceData.filter(
+      (ws) => ws.status === "active",
+    );
+  
+    const closedWorkspaces = savedWorkspaceData.filter(
+      (ws) => ws.status === "closed",
+    );
+  
+    const recentWorkspaces = activeWorkspaces
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 2);
+  
+    recentWorkspaces.forEach((wsData) => {
+      const wsCard = createWorkspaceCardElement(wsData);
+  
+      div.append(wsCard);
+    });
+    upperDashboardContainer.prepend(header, sectionDescription, div);
 
-  dashboardContainer.prepend(header, div);
+    dropdownClick();
 }
+
+renderDashboard();

@@ -159,7 +159,7 @@ main {
 .hero {
   padding: var(--space-xl) var(--space-xl) var(--space-xl);
   background: var(--bg);
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .hero-inner {

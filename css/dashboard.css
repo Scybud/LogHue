@@ -1,5 +1,5 @@
 body {
-overflow: hidden;
+  overflow: hidden;
 }
 #workspaceName {
   position: relative;
@@ -8,18 +8,18 @@ overflow: hidden;
 }
 .mainContent h2 {
   text-align: left;
-  padding-left: calc(var( --space-sm) + 2px);
+  padding-left: calc(var(--space-sm) + 2px);
 }
 .sidebarNav {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
-  padding: 0 calc(var( --space-sm) + 2px);
+  padding: 0 calc(var(--space-sm) + 2px);
   margin-bottom: auto;
 }
 
 #dashboardLink {
-  margin-bottom: calc(var( --space-sm) + 2px);
+  margin-bottom: calc(var(--space-sm) + 2px);
 }
 .navBtn,
 .actionBtn {
@@ -34,7 +34,7 @@ overflow: hidden;
   transition: 0.2s;
   display: flex;
   align-items: center;
-  gap: calc(var( --space-xs) + 1px);
+  gap: calc(var(--space-xs) + 1px);
 }
 .actionBtn:hover {
   background: #ffffff;
@@ -42,7 +42,6 @@ overflow: hidden;
 }
 .navBtn:hover {
   opacity: 0.6;
-
 }
 h3 {
   position: relative;
@@ -54,16 +53,16 @@ h3 {
   position: absolute;
   top: -10px;
   border-radius: var(--radius);
-  padding: calc(var( --space-xs) - 2px);
+  padding: calc(var(--space-xs) - 2px);
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: calc(var( --space-md) + 4px);
+  gap: calc(var(--space-md) + 4px);
 }
 .section:last-child {
-  margin-bottom: calc(var( --space-md) + 4px);
+  margin-bottom: calc(var(--space-md) + 4px);
 }
 
 .sectionTitle {
@@ -74,7 +73,7 @@ h3 {
 .taskList {
   display: flex;
   flex-direction: column;
-  gap: calc(var( --space-sm) + 4px);
+  gap: calc(var(--space-sm) + 4px);
 }
 
 .taskCard {
@@ -86,17 +85,17 @@ h3 {
 
 .taskTitle {
   font-size: 1.1rem;
-  margin-bottom: calc(var( --space-sm) - 2px);
+  margin-bottom: calc(var(--space-sm) - 2px);
 }
 
 .meta {
   font-size: 0.85rem;
   opacity: 0.8;
-  margin-bottom: calc(var( --space-sm) + 2px);
+  margin-bottom: calc(var(--space-sm) + 2px);
 }
 
 .btn-sm {
-  padding: var(--space-sm) calc(var( --space-sm) + 4px);
+  padding: var(--space-sm) calc(var(--space-sm) + 4px);
   font-size: 0.85rem;
 }
 
@@ -114,12 +113,12 @@ h3 {
   box-shadow: var(--shadow);
 }
 section {
-  margin: calc(var( --space-sm) + 2px) auto;
+  margin: calc(var(--space-sm) + 2px) auto;
 }
 .memberList {
   display: flex;
   flex-direction: column;
-  gap: calc(var( --space-sm) + 4px);
+  gap: calc(var(--space-sm) + 4px);
 }
 
 .memberCard {
@@ -142,13 +141,13 @@ section {
 .activityList {
   display: flex;
   flex-direction: column;
-  gap: calc(var( --space-md) - 2px);
+  gap: calc(var(--space-md) - 2px);
 }
 
 .activityItem {
   position: relative;
   background: var(--card-bg);
-  padding: calc(var( --space-md) - 2px);
+  padding: calc(var(--space-md) - 2px);
   min-height: 150px;
   border-radius: var(--radius);
   border: 1px solid var(--border);
@@ -166,4 +165,17 @@ section {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 10px;
+}
+
+.workspaceCardHeader {
+  display: flex;
+  justify-content: space-between;
+}
+.workspaceCardHeader .workspaceMenuBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.workspaceMenuBtn svg {
+  fill: var(--primary);
 }

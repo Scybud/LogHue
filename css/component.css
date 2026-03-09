@@ -404,7 +404,7 @@ button.danger {
 /*CARDS*/
 .card {
   background: var(--card-bg);
-  padding: calc(var( --space-md) + 4px);
+  padding: calc(var( --space-md) );
   margin: var(--space-sm) 0;
   border-radius: var(--radius);
   box-shadow: var(--shadow);

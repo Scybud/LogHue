@@ -1,5 +1,7 @@
 import { attachSidebarEvents } from "./../components/sidebar.js";
 import { openCreateTaskModal } from "./../utils/modals.js";
+import { supabase } from "../supabase.js";
+
 
 document.addEventListener("click", async (e) => {
   const btn = e.target.closest(".navBtn");

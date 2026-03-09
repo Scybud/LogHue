@@ -70,9 +70,8 @@ export async function initWorkspaces() {
     }
   }
 
-  savedWorkspaceData = uniqueWorkspaces;
+  savedWorkspaceData = uniqueWorkspaces || [];
 
-  renderExistingWorkspaces();
   updateworkspaceCount();
   checkIfEmpty();
   attachCreateWorkspaceEvent();
@@ -163,7 +162,6 @@ async function attachCreateWorkspaceEvent() {
     savedWorkspaceData.unshift(newWorkspace);
 
     //RE-RENDER UI
-    renderExistingWorkspaces();
     updateworkspaceCount();
     checkIfEmpty();
 
@@ -206,6 +204,7 @@ export function createWorkspaceCardElement(ws) {
   workspaceCard.dataset.id = ws.id;
   workspaceCard.innerHTML = `
   <div class="workspaceCardHeader">
+  <div class="workspaceCardHeaderLeft">
   <h3>
   ${ws.name} 
   <span class="tag ${ws.role}">
@@ -215,7 +214,15 @@ export function createWorkspaceCardElement(ws) {
   <p>
   <span class="meta">Created on: ${formattedTDate}</span>
   </p>
-
+  </div>
+  
+  <div class="workspaceCardHeaderRight">
+  <button class="workspaceMenuBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+  <circle cx="12" cy="5" r="2"/>
+  <circle cx="12" cy="12" r="2"/>
+  <circle cx="12" cy="19" r="2"/>
+  </svg></button>
+  </div>
   
   </div>
   <details>
@@ -228,40 +235,7 @@ export function createWorkspaceCardElement(ws) {
   return workspaceCard;
 }
 
-function renderExistingWorkspaces() {
-  if (!upperDashboardContainer) return;
 
-  upperDashboardContainer.innerHTML = "";
-
-  const header = document.createElement("h2");
-  header.textContent = "Recent Workspaces";
-
-  const div = document.createElement("div");
-  div.classList.add("recentContainer");
-
-  const createdWorkspaces = savedWorkspaceData.filter(
-    (ws) => ws.role === "admin" && ws.status === "active",
-  );
-
-  const activeWorkspaces = savedWorkspaceData.filter(
-    (ws) => ws.status === "active",
-  );
-
-  const closedWorkspaces = savedWorkspaceData.filter(
-    (ws) => ws.status === "closed",
-  );
-
-  const recentWorkspaces = activeWorkspaces
-    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-    .slice(0, 2);
-
-  recentWorkspaces.forEach((wsData) => {
-    const wsCard = createWorkspaceCardElement(wsData);
-
-    div.append(wsCard);
-  });
-  upperDashboardContainer.prepend(header, div);
-}
 
 function attachOpenWorkspaceClickEvent() {
   document.addEventListener("click", (e) => {

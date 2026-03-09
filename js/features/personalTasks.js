@@ -1,6 +1,8 @@
 import { personalLogInputContainerPanelToggle } from "../utils/toggle.js";
 import {dataCount} from "../utils.js"
-import { state } from "../data/state.js";
+import { supabase } from "../supabase.js";
+import { sessionState, sessionReady } from "../session.js";
+
 
 let taskEl
 let timeEl
@@ -12,7 +14,21 @@ let loggedTasksCount
 let savedLogDetails = []
 
 
-export function initPersonalTasks() {
+export async function initPersonalTasks() {
+    await sessionReady;
+  
+  const user = sessionState.user;
+
+    //GET CREATED PERSONAL TASKS
+    const { data: createdPersonalTasks, error: createdError } = await supabase
+      .from("personal_tasks")
+      .select("*")
+      .eq("user_id", user.id)
+  
+    if (createdError) {
+      console.error(createdError);
+      alert(createdError);
+    }
 
     taskEl = document.getElementById("task");
     timeEl = document.getElementById("taskTime");
@@ -23,7 +39,7 @@ export function initPersonalTasks() {
    
     loggedTasksCount = document.getElementById("loggedTasksCount");
 
-    savedLogDetails = state.tasks || [];
+    savedLogDetails = createdPersonalTasks || [];
 
      renderExistingLogs()
      updateTaskCount()
@@ -113,30 +129,42 @@ function renderExistingLogs() {
    });
 }
 
-function attachCreateLogEvent() {
+async function attachCreateLogEvent() {
   if (!logTaskBtn) return;
-
+  
   //When log task button is clicked to create new log
-  logTaskBtn.addEventListener("click", () => {
+  logTaskBtn.addEventListener("click", async () => {
     const taskValue = taskEl.value.trim();
     const timeValue = timeEl.value.trim();
     const noteValue = noteEl.value.trim();
-
+    
     if (!taskValue || !timeValue || !noteValue) {
       alert("Input field must not be empty");
       return;
     }
-    
-    
-    const logData = {
-      id: crypto.randomUUID(),
-      taskValue,
-      timeValue,
-      noteValue,
-    };
+      //DEFINE DATA CONTENT
+      const logData = {
+        name: taskValue,
+        description: noteValue,
+        created_at: timeValue,
+      };
+  
+      //INSERT INTO SUPABASE
+      const { data, error } = await supabase
+        .from("personal_tasks")
+        .insert(logData)
+        .select();
+  
+      if (error) {
+        console.error(error);
+        alert("Failed to create task.");
+        return;
+      }
+  
+      const newLog = data[0];
+
     
     savedLogDetails.unshift(logData);
-    state.tasks = savedLogDetails;
     
     /*
     localStorage.setItem("logDetails", JSON.stringify(savedLogDetails));

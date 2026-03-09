@@ -16,13 +16,12 @@ import {
   attachSidebarToggle,
   personalLogInputContainerPanelToggle,
 } from "./utils/toggle.js";
-import {initSession
-} from "./session.js"
+import { initSession } from "./session.js";
 import { initPersonalTasks } from "./features/personalTasks.js";
 import { initWorkspaces } from "./features/workspaceData.js";
 import { autoExpandTextarea } from "./utils/textarea.js";
 
-import {loginFuntion, attachSignoutEvents} from "./auth.js"
+import { loginFuntion, attachSignoutEvents } from "./auth.js";
 
 window.addEventListener("DOMContentLoaded", async () => {
   await loadComponent(
@@ -43,21 +42,18 @@ window.addEventListener("DOMContentLoaded", async () => {
   );
 
   //SESSION FUNTION
-  initSession()
+  initSession();
 
-  
   //ADD THEME PREFFERENCE
-  setTheme()
-  
-  //ADD INTERFACE DENSITY PREFFERENCE
-  setInterfaceDensity()
+  setTheme();
+
   //LOADER
-removeLoader()
+  removeLoader();
 
   //Login function
-  loginFuntion()
-//Logout function
-  attachSignoutEvents()
+  loginFuntion();
+  //Logout function
+  attachSignoutEvents();
 
   attachSidebarToggle();
   attachSidebarEvents();
@@ -76,3 +72,6 @@ removeLoader()
 
 //preffered primary color
 preferedPrimary();
+
+//ADD INTERFACE DENSITY PREFFERENCE
+setInterfaceDensity();
