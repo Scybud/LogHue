@@ -24,8 +24,7 @@ body {
   --space-lg: 24px;
   --space-xl: 32px;
 
-
-    margin: 0;
+  margin: 0;
   background: var(--bg);
   color: var(--color);
   font-family: "Inter", sans-serif, system-ui;
@@ -45,7 +44,11 @@ html {
   align-items: center;
   justify-content: space-between;
   padding: var(--space-sm) var(--space-xl);
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.9),
+    rgba(0, 0, 0, 0.7)
+  );
   backdrop-filter: blur(10px);
 }
 
@@ -144,7 +147,11 @@ html {
 /* MAIN LAYOUT */
 
 main {
-  background: radial-gradient(circle at top left, #050505, var(--mainContent-bg));
+  background: radial-gradient(
+    circle at top left,
+    #050505,
+    var(--mainContent-bg)
+  );
 }
 
 /* HERO */
@@ -296,7 +303,6 @@ main {
 }
 
 .mock-main {
-
   flex: 1;
   padding: var(--space-md);
   display: flex;
