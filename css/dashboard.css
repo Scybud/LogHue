@@ -179,3 +179,20 @@ section {
 .workspaceMenuBtn svg {
   fill: var(--primary);
 }
+
+.dropdown {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  width: 100vw;
+  height: 70%;
+}
+.dropdown-list {
+position: absolute;
+bottom: 0;
+width: 100%;
+background: var(--card-bg);
+padding: var(--space-md) var(--space-sm);
+}

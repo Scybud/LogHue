@@ -19,7 +19,7 @@ function dropdownClick() {
 
     if(btn) {
       btn.addEventListener("click", () => {
-        btn.appendChild(dropdown);
+        document.querySelector("main").appendChild(dropdown);
       });
     }
   })

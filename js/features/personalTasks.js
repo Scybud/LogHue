@@ -197,7 +197,7 @@ document.getElementById("upperDashboardContainer").classList.toggle("hide")
 //For Delete Button
 function attachDeleteLogEvent() {
   if(!personalCreatedLogs) return
-  personalCreatedLogs.addEventListener("click", (e) => {
+  personalCreatedLogs.addEventListener("click", async (e) => {
     const btn = e.target.closest(".deleteBtn");
     if (!btn) return;
 
@@ -209,18 +209,16 @@ function attachDeleteLogEvent() {
     const logToDelete = btn.closest(".taskContainer");
     const id = logToDelete.dataset.id;
 
+    const {error} = await supabase.from("personal_tasks").delete().eq("id", id);
+
+    if(error) {
+      console.error(error)
+      alert(error.message)
+      return;
+    }
+
     const index = savedLogDetails.findIndex((log) => log.id === id);
-    if (index === -1) return;
-
-    savedLogDetails.splice(index, 1);
-    state.tasks = savedLogDetails;
-
-    /*
-                     localStorage.setItem(
-                       "logDetails",
-                       JSON.stringify(savedLogDetails),
-                     );
-*/
+    if (!index !== -1) savedLogDetails.splice(index, 1);
 
     // Add animation class
     logToDelete.classList.add("removing");

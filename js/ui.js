@@ -155,6 +155,8 @@ export function setInterfaceDensity() {
 }
 
 
+
+//Create dropdown
 export function createDropdown(items = []) {
   const container = document.createElement("div");
   container.classList.add("dropdown");
