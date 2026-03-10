@@ -7,8 +7,8 @@ import { createDropdown } from "./ui.js";
 
 //WORKSPACE MENU
 const dropdown = createDropdown([
-  { label: "Open", action: () => openWorkspace(wsData.id) },
-  { label: "Rename", action: () => renameWorkspace(wsData.id) },
+  { label: "Archeive", action: () => openWorkspace(wsData.id) },
+  { label: "Edit", action: () => renameWorkspace(wsData.id) },
   { label: "Delete", action: () => deleteWorkspace(wsData.id) },
 ]);
 
@@ -17,9 +17,21 @@ function dropdownClick() {
 
   workspaceMenuBtn.forEach((btn) => {
 
-    if(btn) {
-      btn.addEventListener("click", () => {
-        document.querySelector("main").appendChild(dropdown);
+    if (btn) {
+      btn.addEventListener("click", (e) => {
+                e.stopPropagation();
+
+        document.querySelector("main").append(dropdown);
+
+        
+        setTimeout(() => {
+          dropdown.classList.add("open");
+        }, 200)
+        
+      });
+      // Toggle logic
+      dropdown.addEventListener("click", () => {
+         dropdown.remove();
       });
     }
   })

@@ -181,10 +181,7 @@ export function createDropdown(items = []) {
   container.prepend(list);
 
   // Toggle logic
-  container.addEventListener("click", (e) => {
-    e.stopPropagation();
-    container.classList.toggle("open");
-  });
+
 
   // Close on outside click
   document.addEventListener("click", () => {

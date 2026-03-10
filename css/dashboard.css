@@ -187,12 +187,20 @@ section {
   background: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(10px);
   width: 100vw;
-  height: 70%;
+  height: 100%;
 }
 .dropdown-list {
 position: absolute;
-bottom: 0;
+bottom: -100%;
+max-height: 200px;
+height: 200px;
 width: 100%;
 background: var(--card-bg);
 padding: var(--space-md) var(--space-sm);
+
+transition: bottom 0.5s ease;
+}
+
+.dropdown.open .dropdown-list {
+  bottom: 0;
 }
