@@ -1,4 +1,8 @@
-import { savedWorkspaceData, workspacesReady } from "./workspaceData.js";
+import {
+  savedWorkspaceData,
+  workspacesReady,
+  dropdownClick,
+} from "./workspaceData.js";
 import {createWorkspaceCardElement} from "./workspaceData.js"
 
 async function renderAllWorkspaces() {
@@ -15,6 +19,7 @@ await workspacesReady;
 
   dashboardContent.append( div);
 
+  dropdownClick()
 }
 
 renderAllWorkspaces();

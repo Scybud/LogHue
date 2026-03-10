@@ -15,6 +15,37 @@ let createWorkspaceBtn;
 let upperDashboardContainer;
 export let savedWorkspaceData = [];
 
+import { createDropdown } from "../ui.js";
+
+//WORKSPACE MENU
+const dropdown = createDropdown([
+  { label: "Archeive", action: () => openWorkspace(wsData.id) },
+  { label: "Edit", action: () => renameWorkspace(wsData.id) },
+  { label: "Delete", action: () => deleteWorkspace(wsData.id) },
+]);
+
+export function dropdownClick() {
+  const workspaceMenuBtn = document.querySelectorAll(".workspaceMenuBtn");
+
+  workspaceMenuBtn.forEach((btn) => {
+    if (btn) {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        document.querySelector("main").append(dropdown);
+
+        setTimeout(() => {
+          dropdown.classList.add("open");
+        }, 200);
+      });
+      // Toggle logic
+      dropdown.addEventListener("click", () => {
+        dropdown.remove();
+      });
+    }
+  });
+}
+
 export async function initWorkspaces() {
   await sessionReady;
 

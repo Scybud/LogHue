@@ -1,41 +1,11 @@
 import {
   savedWorkspaceData,
-  workspacesReady, createWorkspaceCardElement
+  workspacesReady,
+  createWorkspaceCardElement,
+  dropdownClick,
 } from "./features/workspaceData.js";
 import { dataCount } from "./utils.js";
-import { createDropdown } from "./ui.js";
 
-//WORKSPACE MENU
-const dropdown = createDropdown([
-  { label: "Archeive", action: () => openWorkspace(wsData.id) },
-  { label: "Edit", action: () => renameWorkspace(wsData.id) },
-  { label: "Delete", action: () => deleteWorkspace(wsData.id) },
-]);
-
-function dropdownClick() {
-  const workspaceMenuBtn = document.querySelectorAll(".workspaceMenuBtn");
-
-  workspaceMenuBtn.forEach((btn) => {
-
-    if (btn) {
-      btn.addEventListener("click", (e) => {
-                e.stopPropagation();
-
-        document.querySelector("main").append(dropdown);
-
-        
-        setTimeout(() => {
-          dropdown.classList.add("open");
-        }, 200)
-        
-      });
-      // Toggle logic
-      dropdown.addEventListener("click", () => {
-         dropdown.remove();
-      });
-    }
-  })
-}
 
 //MOCK DATA FOR DASHBOARD POPULATION
 const createdWorkspaces = savedWorkspaceData.filter(
