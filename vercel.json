@@ -2,13 +2,13 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/pages/auth.html",
       "has": [
         {
           "type": "host",
           "value": "auth.loghue.com"
         }
-      ]
+      ],
+      "destination": "/pages/auth.html"
     }
   ]
 }
