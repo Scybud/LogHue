@@ -69,7 +69,7 @@ function updateTaskCount() {
 function checkIfEmpty() {
   if (savedLogDetails.length === 0) {
     if(personalCreatedLogs) {
-      personalCreatedLogs.innerHTML = `<p class="placeholderText">No task logged yet. Add one by using the "Open Input Panel" button in the sidebar.</p>`;
+      personalCreatedLogs.innerHTML = `            <img src="../assets/illustrations/empty_tasks_field_placeholder.png" alt="" class="emptyStateImg">`;
     }
   } else {
     const placeholder = document.querySelector(".placeholderText");

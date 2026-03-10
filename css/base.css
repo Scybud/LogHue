@@ -190,3 +190,10 @@ a:hover {
   text-decoration: underline;
 }
 
+.emptyStateImg {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  display: block;
+  border-radius: var(--radius);
+}
