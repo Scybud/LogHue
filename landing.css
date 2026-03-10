@@ -429,6 +429,7 @@ main {
   margin-bottom: var(--space-lg);
 }
 
+
 /* FEATURES */
 
 .feature-grid {
@@ -455,6 +456,23 @@ main {
   margin: 0;
   font-size: 0.92rem;
   color: rgba(255, 255, 255, 0.8);
+}
+
+#joinWaitlist {
+  flex-direction: column;
+}
+/*SINGLE INPUT FIELD*/
+.singleInput {
+  display: flex;
+  gap: calc(var(--space-xs) + 2px);
+  width: 100%;
+}
+.singleInput .inputField {
+  flex: 1;
+}
+.singleInput .btn {
+  width: auto;
+  min-height: 100%;
 }
 
 /* WHAT */
