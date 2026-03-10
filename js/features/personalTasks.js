@@ -69,7 +69,105 @@ function updateTaskCount() {
 function checkIfEmpty() {
   if (savedLogDetails.length === 0) {
     if(personalCreatedLogs) {
-      personalCreatedLogs.innerHTML = `            <img src="../assets/illustrations/empty_tasks_field_placeholder.png" alt="" class="emptyStateImg">`;
+      personalCreatedLogs.innerHTML = `<svg
+class="emptyStateImg"
+  viewBox="0 0 480 320"
+  xmlns="http://www.w3.org/2000/svg"
+  role="img"
+  aria-labelledby="title desc"
+>
+  <title id="title">No tasks logged</title>
+  <desc id="desc">
+    Clipboard illustration with message: No tasks logged yet. Use the sidebar to open the input panel and add your first task.
+  </desc>
+
+  <!-- Background (kept neutral; you can remove or override with CSS) -->
+  <rect width="100%" height="100%" fill="none" />
+
+  <!-- Clipboard icon -->
+  <g transform="translate(190,40)" fill="none" stroke="#777" stroke-width="2">
+    <!-- Shadow -->
+    <ellipse cx="50" cy="120" rx="46" ry="6" fill="#000" opacity="0.06" stroke="none" />
+
+    <!-- Clipboard body -->
+    <rect x="10" y="10" width="80" height="100" rx="6" ry="6" fill="#f5f5f5" />
+    <!-- Paper -->
+    <rect x="18" y="18" width="64" height="84" rx="4" ry="4" fill="#ffffff" />
+
+    <!-- Clip -->
+    <rect x="36" y="4" width="32" height="12" rx="3" ry="3" fill="#e0e0e0" stroke="none" />
+    <rect x="42" y="2" width="20" height="8" rx="2" ry="2" fill="#d0d0d0" stroke="none" />
+
+    <!-- Plus sign -->
+    <g stroke="#777" stroke-width="2" stroke-linecap="round">
+      <line x1="30" y1="30" x2="30" y2="38" />
+      <line x1="26" y1="34" x2="34" y2="34" />
+    </g>
+
+    <!-- First checkbox (empty) -->
+    <rect x="26" y="46" width="10" height="10" rx="2" ry="2" />
+    <line x1="40" y1="51" x2="72" y2="51" />
+
+    <!-- Second checkbox (checked) -->
+    <rect x="26" y="64" width="10" height="10" rx="2" ry="2" />
+    <polyline points="28,69 31,73 36,66" stroke-linecap="round" stroke-linejoin="round" />
+    <line x1="40" y1="69" x2="72" y2="69" />
+
+    <!-- Small star -->
+    <path
+      d="M82 30 l2 4 4 1 -3 3 1 4 -4-2 -4 2 1-4 -3-3 4-1z"
+      fill="#999"
+      stroke="none"
+    />
+  </g>
+
+  <!-- Main text: 4rem equivalent -->
+  <!-- 4rem ~ 64px (assuming 16px base) -->
+  <text
+    x="50%"
+    y="190"
+    text-anchor="middle"
+    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    font-size="44"
+    font-weight="700"
+    fill="#4e4e4e"
+  >
+    No tasks logged yet.
+  </text>
+
+  <!-- Divider line -->
+  <line
+    x1="120"
+    y1="205"
+    x2="360"
+    y2="205"
+    stroke="#ccc"
+    stroke-width="1"
+  />
+
+  <!-- Secondary text -->
+  <text
+    x="50%"
+    y="235"
+    text-anchor="middle"
+    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    font-size="26"
+    fill="#666"
+  >
+    Use the sidebar to open the input panel
+  </text>
+  <text
+    x="50%"
+    y="255"
+    text-anchor="middle"
+    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    font-size="26"
+    fill="#666"
+  >
+    and add your first task.
+  </text>
+</svg>
+`;
     }
   } else {
     const placeholder = document.querySelector(".placeholderText");
