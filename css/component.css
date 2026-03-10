@@ -382,7 +382,11 @@ button.danger {
 
 .btn-secondary {
   background: var(--secondary);
-  color: #000;
+  color: #fff;
+  border: none;
+}
+.btn-secondary:hover {
+  background:  #3ecf8e4d;
 }
 .btn:hover {
   opacity: 0.6;

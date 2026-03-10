@@ -15,7 +15,7 @@ document.addEventListener("click", async (e) => {
   .from("workspaces")
   .select("*, workspace_tasks(*), workspace_members(*)")
   .eq("id", workspaceId)
-  .single();
+  .maybeSingle();
 
 if(error) {
   console.error(error)
