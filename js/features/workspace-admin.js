@@ -9,13 +9,18 @@ document.addEventListener("click", async (e) => {
 
   const params = new URLSearchParams(window.location.search);
   const workspaceId = params.get("ws");
+  if(!workspaceId) return;
+
   const { data: workspace, error } = await supabase
   .from("workspaces")
   .select("*, workspace_tasks(*), workspace_members(*)")
   .eq("id", workspaceId)
   .single();
 
-
+if(error) {
+  console.error(error)
+  alert(error.message)
+}
   const container = document.getElementById("adminWorkspaceDashboardContent");
   if (!workspace || !container) return;
 
@@ -28,9 +33,22 @@ export async function initWorkspaceData() {
   //Get workspace url
   const params = new URLSearchParams(window.location.search);
   const workspaceId = params.get("ws");
-  //Load data
-  const workspace = workspace.find((w) => w.id === workspaceId);
 
+  if (!workspaceId) {
+    window.location.href = "dashboard.html";
+    return;
+  }
+
+  //Load data
+  const {data: workspace, error} = await supabase.from("workspaces").select("*, workspace_tasks(*), workspace_members(*)").eq("id", workspaceId).single();
+
+  if(error) {
+    console.error(error);
+    alert(error.message);
+return;
+  }
+
+  
   const adminWorkspaceDashboardContent = document.getElementById(
     "adminWorkspaceDashboardContent",
   );

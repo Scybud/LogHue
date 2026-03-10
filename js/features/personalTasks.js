@@ -132,6 +132,8 @@ function renderExistingLogs() {
 async function attachCreateLogEvent() {
   if (!logTaskBtn) return;
   
+    const user = sessionState.user;
+
   //When log task button is clicked to create new log
   logTaskBtn.addEventListener("click", async () => {
     const taskValue = taskEl.value.trim();
@@ -147,6 +149,7 @@ async function attachCreateLogEvent() {
         name: taskValue,
         description: noteValue,
         created_at: timeValue,
+        user_id: user.id,
       };
   
       //INSERT INTO SUPABASE
