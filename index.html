@@ -76,7 +76,9 @@
             </p>
 
             <div class="hero-actions">
-              <a href="pages/auth/index.html" class="cta-btn">Create your account</a>
+              <a href="pages/auth/index.html" class="cta-btn"
+                >Create your account</a
+              >
               <a href="#what" class="secondary-btn">See what you can do</a>
             </div>
 
@@ -186,18 +188,28 @@
       </section>
 
       <section class="section" id="joinWaitlist">
-          <h2>Join Waitlist</h2>
-          <p style="text-align: center;">Be the first to experience a calm, focused workflow built for real teams. </p>
-          <p style="text-align: center;">You’ll hear from us the moment LogHue goes live.</p>
-          <form class="form"
+        <h2>Join Waitlist</h2>
+        <p style="text-align: center">
+          Be the first to experience a calm, focused workflow built for real
+          teams.
+        </p>
+        <p style="text-align: center">
+          You’ll hear from us the moment LogHue goes live.
+        </p>
+        <form
+          class="form"
           action="https://formspree.io/f/xeeralbq"
           method="POST"
-          >
-          <label for="waitlistEmailInput">
-            Your email:
-          </label>
+        >
+          <label for="waitlistEmailInput"> Your email: </label>
           <div class="singleInput">
-            <input placeholder="example@gmail.com" id="waitlistEmailInput" class="inputField" type="email" name="email">
+            <input
+              placeholder="example@gmail.com"
+              id="waitlistEmailInput"
+              class="inputField"
+              type="email"
+              name="email"
+            />
             <button class="btn" type="submit">Join</button>
           </div>
         </form>
@@ -401,17 +413,19 @@
     </main>
 
     <footer class="footer">
-        <form
-          action="https://formspree.io/f/xeeralbq"
-          method="POST"
-          >
+      <form action="https://formspree.io/f/xeeralbq" method="POST">
+        <div class="singleInput">
+          <input
+            placeholder="Join waitlist"
+            id="waitlistEmailInput"
+            class="inputField"
+            type="email"
+            name="email"
+          />
+          <button class="btn" type="submit">Join</button>
+        </div>
+      </form>
 
-          <div class="singleInput">
-            <input placeholder="Join waitlist" id="waitlistEmailInput" class="inputField" type="email" name="email">
-            <button class="btn" type="submit">Join</button>
-          </div>
-        </form>
-        
       <p>&copy;2026 LogHue. All rights reserved.</p>
     </footer>
 
