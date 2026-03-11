@@ -99,10 +99,6 @@ header.pageHeader::-webkit-scrollbar-thumb:hover {
   justify-content: center;
   align-items: center;
 }
-#closeSidebar svg {
-  width: 25px;
-  background: none;
-}
 
 .closeModalBtn {
   width: 50px;
