@@ -10,14 +10,14 @@ async function protectPage() {
   } = await supabase.auth.getSession();
 
   if (!session) {
-    window.location.href = "auth.html";
+    window.location.href = "auth/index.html";
     return;
   }
 
   // Wait for Supabase to restore the session after OAuth redirect
   supabase.auth.onAuthStateChange((_event, session) => {
     if (!session) {
-      window.location.href = "auth.html";
+      window.location.href = "auth/index.html";
     }
   });
 }

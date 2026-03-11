@@ -70,7 +70,7 @@ if (signupForm) {
     button.disabled = false;
 
     if (success) {
-      window.location.href = "dashboard.html";
+      window.location.href = "../dashboard.html";
     }
   });
 }
@@ -115,7 +115,7 @@ export function loginFuntion() {
         const success = await login(email, password);
 
         if (success) {
-          window.location.href = "dashboard.html";
+          window.location.href = "../dashboard.html";
         }
       } finally {
         button.disabled = false;
@@ -134,7 +134,7 @@ async function signout() {
     return;
   }
   alert("Logged out successfully!");
-  window.location.href = "auth.html";
+  window.location.href = "https://loghue.com/auth/index.html";
 }
 
 export function attachSignoutEvents() {
@@ -164,7 +164,7 @@ function setupOAuthButton(buttonId, provider) {
     });
    if (error) {
      alert(`OAuth error: ${error.message}`);
-     window.location.href = "https://loghue.com/pages/auth.html";
+     window.location.href = "https://loghue.com/pages/auth/index.html";
    }
 
   });
