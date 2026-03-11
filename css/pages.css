@@ -1,6 +1,9 @@
 .pageTitle {
   text-align: center;
 }
+#modalContainer h2 {
+  text-align: center;
+}
 .sectionDescription {
   color: gray;
 }
@@ -9,6 +12,7 @@ section {
   border: 1px solid var(--border);
   min-height: 400px;
   border-radius: var(--radius);
+  padding: var(--space-xs);
 }
 #inputContainer {
   border: none;

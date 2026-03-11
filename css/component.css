@@ -374,6 +374,7 @@ button.danger {
 }
 #toggleInputContainer {
   margin-top: calc(var( --space-sm) + 2px);
+  width: fit-content;
 }
 .btn-primary {
   color: #000;

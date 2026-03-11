@@ -47,6 +47,7 @@ body {
   --input-bg: #1c1c1c;
   --input-color: #ffffff;
 --chevron-color: #c5c5c5;
+--filter: blur(10px);
 --danger:#e56458;
 
   --brand-h: 17;

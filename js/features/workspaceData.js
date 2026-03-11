@@ -394,12 +394,14 @@ async function editWorkspace(ws, id) {
     "modalContainer",
   );
 
+  const pageTitle = modalContainer.querySelector(".pageTitle");
   const workspaceNameEl = document.getElementById("workspacename");
   const workspaceDescriptionEl = document.getElementById(
     "workspaceDescription",
   );
   const updateWorkspaceBtn = document.getElementById("createWorkspace");
 
+  pageTitle.textContent = "Update Workspace"
   workspaceNameEl.value = ws.name;
   workspaceDescriptionEl.value = ws.description;
   updateWorkspaceBtn.textContent = "Update Workspace";

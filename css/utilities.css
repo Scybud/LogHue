@@ -31,7 +31,8 @@ header.pageHeader {
   border-radius: var(--radius);
   z-index: 1;
   width: 100%;
-  padding: calc(var( --space-sm) + 2px) calc(var( --space-md) - 4px) calc(var( --space-sm) + 2px);
+  margin-bottom: var(--space-md);
+  padding: var( --space-sm) calc(var( --space-md) - 4px);
   overflow-x: auto;
 }
 /* CHROME, EDGE, SAFARI */
