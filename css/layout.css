@@ -20,15 +20,18 @@
    height: 100dvh;
 }
 .sidebarContainer {
+   z-index: 3;
    grid-area: sidebar;
   background: var(--card-bg);
   height: 100%;
-  padding-top: 0;
+  padding-top: var(--space-md);
+  display: flex;
+  flex-direction: column;
 }
 #sidebar {
    height: 100%;
    width: 100%;
-
+min-height: 100%;
    overflow-y: auto;
    position: relative;
 }
@@ -49,7 +52,6 @@
    }
 
    .sidebarContainer {
-      z-index: 3;
       width: 85%;
       max-width: 300px;
       transform: translateX(-100%);

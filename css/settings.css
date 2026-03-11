@@ -1,0 +1,103 @@
+ .settingsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  padding: 1rem 0;
+}
+
+.settingsCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: calc(var(--space-md) + 8px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md) var(--space-lg);
+  min-width: 100%;
+}
+
+.settingsCard.danger {
+  border-color: var(--danger);
+}
+.settingsCard .danger{
+  max-width: 300px;
+}
+
+.settingsCardTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: calc(var(--space-md) + 2px);
+}
+
+.settingsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: calc(var(--space-md) + 2px) calc(var(--space-md) + 8px);
+}
+
+.settingsField.full {
+  grid-column: 1 / -1;
+}
+
+.settingsLabel {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: var(--space-xs);
+  color: var(--text-muted);
+}
+
+.settingsAvatarRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.settingsAvatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.settingsTags {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-sm);
+}
+
+.settingsToggleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.settingsToggleRow:last-child {
+  border-bottom: none;
+}
+
+.settingsSaveBtn {
+  display: block;
+  margin: calc(var(--space-md) + 4px) auto calc(var(--space-md) + 4px);
+}
+.settingsLongBtn {
+  width: 100%;
+  max-width: 300px;
+}
+.changePasswordBtn {
+  color: #000000;
+  display: block;
+  max-width: 200px;
+  text-decoration: none;
+}
+.colorPicker {
+  width: 100%;
+  max-width: 200px;
+  margin: var(--space-sm) auto;
+  cursor: pointer;
+}
+.descText {
+  opacity: 0.5;
+}

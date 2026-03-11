@@ -15,7 +15,7 @@ await workspacesReady;
 
     div.prepend(wsCard);
   });
-  const dashboardContent = document.getElementById("dashboardContent");
+  const dashboardContent = document.getElementById("allWorkspacesContainer");
 
   dashboardContent.append( div);
 

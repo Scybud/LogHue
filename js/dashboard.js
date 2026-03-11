@@ -7,7 +7,6 @@ import {
 import { dataCount } from "./utils.js";
 
 
-//MOCK DATA FOR DASHBOARD POPULATION
 const createdWorkspaces = savedWorkspaceData.filter(
   (ws) => ws.role === "admin" && ws.status === "active",
 );

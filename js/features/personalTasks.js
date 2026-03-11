@@ -81,7 +81,6 @@ class="emptyStateImg"
     Clipboard illustration with message: No tasks logged yet. Use the sidebar to open the input panel and add your first task.
   </desc>
 
-  <!-- Background (kept neutral; you can remove or override with CSS) -->
   <rect width="100%" height="100%" fill="none" />
 
   <!-- Clipboard icon -->

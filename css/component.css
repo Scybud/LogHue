@@ -386,6 +386,7 @@ button.danger {
   border: none;
 }
 .btn-secondary:hover {
+  opacity: 1;
   background:  #3ecf8e4d;
 }
 .btn:hover {
@@ -429,7 +430,7 @@ button.danger {
 
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 4;
   width: 100%;
   height: 100%;
 
@@ -465,17 +466,18 @@ button.danger {
 
 .navAccountIdentityCard {
   padding: calc(var( --space-xs) - 2px) calc(var( --space-xs) + 1px) calc(var( --space-sm) + 2px);
-  margin: 0 0 var(--space-xs);
+  margin: var(--space-sm) 0 var(--space-xs);
   position: sticky;
   bottom: 0;
   max-width: 100%;
+  max-height: fit-content;
   flex: 1;
   display: flex;
   justify-content: space-between;
   background: var(--card-bg);
   gap: var(--space-md);
   border-radius: 0;
-  border-bottom: 1px solid;
+  border-top: 1px solid;
 }
 .text p {
   margin: 0;

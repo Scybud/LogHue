@@ -160,33 +160,28 @@ export function setInterfaceDensity() {
 export function createDropdown(items = []) {
   const container = document.createElement("div");
   container.classList.add("dropdown");
+const text = document.createElement("p")
+text.classList.add("placeholderText")
+text.textContent = "Menu"
 
   const list = document.createElement("div");
   list.classList.add("dropdown-list");
 
   items.forEach((item) => {
     const btn = document.createElement("button");
-    btn.classList.add("dropdown-item", "btn-sm", "btn", "btn-secondary");
+    btn.classList.add("dropdown-item", "btn-md", "btn", "btn-secondary");
     btn.textContent = item.label;
 
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       item.action();
-      container.classList.remove("open");
+      container.remove();
     });
 
-    list.append(btn);
+    list.prepend(text, btn);
   });
 
   container.prepend(list);
-
-  // Toggle logic
-
-
-  // Close on outside click
-  document.addEventListener("click", () => {
-    container.classList.remove("open");
-  });
 
   return container;
 }

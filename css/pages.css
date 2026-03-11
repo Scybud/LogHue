@@ -4,3 +4,12 @@
 .sectionDescription {
   color: gray;
 }
+
+section {
+  border: 1px solid var(--border);
+  min-height: 400px;
+}
+#inputContainer {
+  border: none;
+  min-height: 0;
+}
