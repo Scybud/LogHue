@@ -7,6 +7,7 @@ import {createWorkspaceCardElement} from "./workspaceData.js"
 
 async function renderAllWorkspaces() {
 await workspacesReady;
+
   const div = document.createElement("div");
   div.classList.add("allWorkspaceContainer");
 

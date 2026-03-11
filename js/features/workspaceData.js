@@ -1,5 +1,5 @@
 import { dataCount } from "../utils.js";
-import { closeModal } from "../ui.js";
+import { closeModal, loadComponent } from "../ui.js";
 import { supabase } from "../supabase.js";
 import { sessionState, sessionReady } from "../session.js";
 
@@ -17,16 +17,15 @@ export let savedWorkspaceData = [];
 
 import { createDropdown } from "../ui.js";
 
- function getWorkspaceDropdown(ws) {
-  if(ws.role !== "admin") return null;
+function getWorkspaceDropdown(ws) {
+  if (ws.role !== "admin") return null;
 
- return createDropdown([
-   { label: "Delete", action: () => deleteWorkspace(ws.id) },
-   { label: "Edit", action: () => renameWorkspace(ws.id) },
-   { label: "Archive", action: () => archiveWorkspace(ws.id) },
- ]);
+  return createDropdown([
+    { label: "Delete", action: () => deleteWorkspace(ws.id) },
+    { label: "Edit", action: () => editWorkspace(ws, ws.id) },
+    { label: "Archive", action: () => archiveWorkspace(ws.id) },
+  ]);
 }
-
 
 export function dropdownClick() {
   document.addEventListener("click", (e) => {
@@ -44,14 +43,12 @@ export function dropdownClick() {
     if (!dropdown) return;
 
     document.querySelector("main").append(dropdown);
-dropdown.classList.add("show")
+    dropdown.classList.add("show");
     setTimeout(() => dropdown.classList.add("open"), 50);
 
     dropdown.addEventListener("click", () => dropdown.remove(), { once: true });
   });
 }
-
-
 
 export async function initWorkspaces() {
   await sessionReady;
@@ -181,7 +178,7 @@ function checkIfEmpty() {
   }
 }
 
-function formatDateTime(timestamp) {
+export function formatDateTime(timestamp) {
   const date = new Date(timestamp);
   return date.toLocaleString("en-US", {
     month: "long", // February
@@ -325,15 +322,13 @@ export function createWorkspaceCardElement(ws) {
            <button class="btn btn-primary openWorkspaceBtn" data-id="${ws.id}" data-role="${ws.role}">Open Workspace</button> 
 `;
 
-if (ws.role === "admin") {
-  const dropdown = getWorkspaceDropdown(ws);
-  workspaceCard.appendChild(dropdown);
-}
+  if (ws.role === "admin") {
+    const dropdown = getWorkspaceDropdown(ws);
+    workspaceCard.appendChild(dropdown);
+  }
 
   return workspaceCard;
 }
-
-
 
 function attachOpenWorkspaceClickEvent() {
   document.addEventListener("click", (e) => {
@@ -365,7 +360,72 @@ async function deleteWorkspace(id) {
   }
 
   // Refresh UI
-window.location.reload()
+  window.location.reload();
+}
+
+//ARCHEIVE WORKSPACE
+async function archiveWorkspace(id) {
+  const ok = confirm("Archeive this workspace? It will be inactive.");
+  if (!ok) return;
+const utcNow = new Date().toISOString();
+
+const { error } = await supabase
+    .from("workspaces")
+    .update({
+      status: "closed",
+      closed_at: utcNow
+    })
+    .eq("id", id);
+
+  if (error) {
+    console.error(error);
+    alert("Failed to archeive workspace");
+    return;
+  }
+
+  // Refresh UI
+  window.location.reload();
+}
+
+//EDIT WORKSPACE
+async function editWorkspace(ws, id) {
+  await loadComponent(
+    "../components/modals/create-workspace.html",
+    "modalContainer",
+  );
+
+  const workspaceNameEl = document.getElementById("workspacename");
+  const workspaceDescriptionEl = document.getElementById(
+    "workspaceDescription",
+  );
+  const updateWorkspaceBtn = document.getElementById("createWorkspace");
+
+  workspaceNameEl.value = ws.name;
+  workspaceDescriptionEl.value = ws.description;
+  updateWorkspaceBtn.textContent = "Update Workspace";
+
+  updateWorkspaceBtn.addEventListener("click", async () => {
+    const updatedWorkspaceNameValue = workspaceNameEl.value.trim();
+    const updatedWorkspaceDescriptionValue =
+      workspaceDescriptionEl.value.trim();
+
+    const { error } = await supabase
+      .from("workspaces")
+      .update({
+        name: updatedWorkspaceNameValue,
+        description: updatedWorkspaceDescriptionValue,
+      })
+      .eq("id", id);
+
+    if (error) {
+      console.error(error);
+      alert("Failed to update data");
+      return;
+    }
+
+    // Refresh UI
+    window.location.reload();
+  });
 }
 
 //EXPORT PROMISE WHEN WORKSPACE IS READY
