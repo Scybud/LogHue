@@ -8,7 +8,7 @@
           "value": "auth.loghue.com"
         }
       ],
-      "destination": "/auth/$1"
+      "destination": "/auth"
     }
   ]
 }
