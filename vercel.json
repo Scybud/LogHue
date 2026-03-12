@@ -12,6 +12,12 @@
           "value": "GET"
         }
       ]
+    },
+    {
+      "source": "/components/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
     }
   ]
 }
