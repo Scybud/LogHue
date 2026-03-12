@@ -1,12 +1,22 @@
 {
   "headers": [
     {
-      "source": "/auth/auth.js",
+      "source": "/auth/(.*)",
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
           "value": "https://auth.loghue.com"
         }
+      ]
+    },
+    {
+      "source": "/js/app.js",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://app.loghue.com"
+        }
+        
       ]
     }
   ]

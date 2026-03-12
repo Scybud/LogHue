@@ -25,19 +25,19 @@ import { loginFuntion, attachSignoutEvents } from "./auth/auth.js";
 
 window.addEventListener("DOMContentLoaded", async () => {
   await loadComponent(
-    "../components/sidebar-admin.html",
+    "https://loghue.com/components/sidebar-admin.html",
     "adminSidebarContainer",
   );
   await loadComponent(
-    "../components/sidebar-member.html",
+    "https://loghue.com/components/sidebar-member.html",
     "memberSidebarContainer",
   );
   await loadComponent(
-    "../components/sidebar-dashboard.html",
+    "https://loghue.com/components/sidebar-dashboard.html",
     "dashboardSidebarContainer",
   );
   await loadComponent(
-    "../components/sidebar-general.html",
+    "https://loghue.com/components/sidebar-general.html",
     "generalSidebarContainer",
   );
 
