@@ -70,7 +70,7 @@ if (signupForm) {
     button.disabled = false;
 
     if (success) {
-      window.location.href = "/pages";
+      window.location.href = "https://app.loghue.com";
     }
   });
 }
@@ -115,7 +115,7 @@ export function loginFuntion() {
         const success = await login(email, password);
 
         if (success) {
-          window.location.href = "/pages";
+          window.location.href = "https://app.loghue.com";
         }
       } finally {
         button.disabled = false;
@@ -159,12 +159,12 @@ function setupOAuthButton(buttonId, provider) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: "https://loghue.com/pages/index.html",
+        redirectTo: "https://app.loghue.com",
       },
     });
    if (error) {
      alert(`OAuth error: ${error.message}`);
-     window.location.href = "https://loghue.com/pages/auth/index.html";
+     window.location.href = "https://auth.loghue.com";
    }
 
   });
