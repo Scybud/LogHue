@@ -1,53 +1,61 @@
 import { personalLogInputContainerPanelToggle } from "../utils/toggle.js";
-import {dataCount} from "../utils.js"
+import { dataCount } from "../utils.js";
 import { supabase } from "../supabase.js";
 import { sessionState, sessionReady } from "../session.js";
 
+let taskEl;
+let timeEl;
+let noteEl;
+let personalCreatedLogs;
+let logTaskBtn;
+let loggedTasksCount;
 
-let taskEl
-let timeEl
-let noteEl
-let personalCreatedLogs
-let logTaskBtn
-let loggedTasksCount
+let savedLogDetails = [];
 
-let savedLogDetails = []
+let isLoading = false;
 
-
-export async function initPersonalTasks() {
-    await sessionReady;
-  
-  const user = sessionState.user;
-
-    //GET CREATED PERSONAL TASKS
-    const { data: createdPersonalTasks, error: createdError } = await supabase
-      .from("personal_tasks")
-      .select("*")
-      .eq("user_id", user.id)
-  
-    if (createdError) {
-      console.error(createdError);
-      alert(createdError);
-    }
-
-    taskEl = document.getElementById("task");
-    timeEl = document.getElementById("taskTime");
-   noteEl = document.getElementById("note");
-   
-   personalCreatedLogs = document.getElementById("personalCreatedLogs");
-   logTaskBtn = document.getElementById("logTask");
-   
-    loggedTasksCount = document.getElementById("loggedTasksCount");
-
-    savedLogDetails = createdPersonalTasks || [];
-
-     renderExistingLogs()
-     updateTaskCount()
-     attachCreateLogEvent()
-     attachDeleteLogEvent()
-     checkIfEmpty()
+function setLoading(state) {
+  isLoading = state;
+  if (!personalCreatedLogs) return;
+  personalCreatedLogs.classList.toggle("isLoading", state);
 }
 
+export async function initPersonalTasks() {
+  await sessionReady;
+  const user = sessionState.user;
+
+  // cache DOM first
+  taskEl = document.getElementById("task");
+  timeEl = document.getElementById("taskTime");
+  noteEl = document.getElementById("note");
+  personalCreatedLogs = document.getElementById("personalCreatedLogs");
+  logTaskBtn = document.getElementById("logTask");
+  loggedTasksCount = document.getElementById("loggedTasksCount");
+
+  setLoading(true);
+
+  // GET CREATED PERSONAL TASKS
+  const { data: createdPersonalTasks, error: createdError } = await supabase
+    .from("personal_tasks")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  setLoading(false);
+
+  if (createdError) {
+    console.error(createdError);
+    alert(createdError);
+  }
+
+  savedLogDetails = createdPersonalTasks || [];
+
+  renderExistingLogs();
+  updateTaskCount();
+  attachCreateLogEvent();
+  attachDeleteLogEvent();
+  checkIfEmpty();
+}
 
 function formatDateTime(isoString) {
   const date = new Date(isoString);
@@ -57,18 +65,18 @@ function formatDateTime(isoString) {
     year: "numeric", // 2026
     hour: "2-digit", // 12
     minute: "2-digit", // 27
-   });
+  });
 }
 
 function updateTaskCount() {
-   //Count number of created tasks
-   if(!loggedTasksCount) return
-   dataCount(loggedTasksCount, savedLogDetails);
+  //Count number of created tasks
+  if (!loggedTasksCount) return;
+  dataCount(loggedTasksCount, savedLogDetails);
 }
 
 function checkIfEmpty() {
   if (savedLogDetails.length === 0) {
-    if(personalCreatedLogs) {
+    if (personalCreatedLogs) {
       personalCreatedLogs.innerHTML = `<svg
 class="emptyStateImg"
   viewBox="0 0 480 320"
@@ -170,26 +178,26 @@ class="emptyStateImg"
     }
   } else {
     const placeholder = document.querySelector(".placeholderText");
-   if(placeholder) placeholder.remove()
+    if (placeholder) placeholder.remove();
   }
 }
 
-function createLogElement(log) {   
+function createLogElement(log) {
   /*
    let savedLogDetails = JSON.parse(localStorage.getItem("logDetails")) || [];
 */
 
-    /*
+  /*
      localStorage.setItem("logDetails", JSON.stringify(savedLogDetails));
      */
 
- const taskDetails = document.createElement("details");
- taskDetails.classList.add("taskContainer");
- taskDetails.dataset.id = log.id;
+  const taskDetails = document.createElement("details");
+  taskDetails.classList.add("taskContainer");
+  taskDetails.dataset.id = log.id;
 
- const taskSummary = document.createElement("summary");
- taskSummary.title = "click to see details";
- taskSummary.innerHTML = `<span class="personalTaskName">${log.name}</span> <button data-title="Delete Task" type="button" class="deleteBtn tooltip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+  const taskSummary = document.createElement("summary");
+  taskSummary.title = "click to see details";
+  taskSummary.innerHTML = `<span class="personalTaskName">${log.name}</span> <button data-title="Delete Task" type="button" class="deleteBtn tooltip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <polyline points="3 6 5 6 21 6" />
   <path d="M19 6l-1 14H6L5 6" />
@@ -199,101 +207,132 @@ function createLogElement(log) {
 </svg>
 </button>`;
 
- const taskTime = document.createElement("span");
- taskTime.textContent = formatDateTime(log.created_at);
+  const taskTime = document.createElement("span");
+  taskTime.textContent = formatDateTime(log.created_at);
 
- const taskNote = document.createElement("p");
- taskNote.textContent = log.description;
+  const taskNote = document.createElement("p");
+  taskNote.textContent = log.description;
 
- taskDetails.append(taskSummary, taskTime, taskNote);
- return taskDetails
+  taskDetails.append(taskSummary, taskTime, taskNote);
+  return taskDetails;
 }
-
 
 function renderExistingLogs() {
   if (personalCreatedLogs) personalCreatedLogs.innerHTML = "";
 
+  // add a class for reorder animation
+  if (personalCreatedLogs) personalCreatedLogs.classList.add("reordering");
 
-   savedLogDetails.forEach(log => {
-      
-      const el = createLogElement(log);
-      if(!personalCreatedLogs)  return
-        personalCreatedLogs.append(el);
-      
-      requestAnimationFrame(() => {
-         el.classList.add("show");
-      });
-   });
+  savedLogDetails.forEach((log) => {
+    const el = createLogElement(log);
+    if (!personalCreatedLogs) return;
+    personalCreatedLogs.append(el); // ⬅️ changed from prepend to append
+
+    requestAnimationFrame(() => {
+      el.classList.add("show");
+    });
+  });
+
+  // remove animation class after a short delay
+  if (personalCreatedLogs) {
+    setTimeout(() => {
+      personalCreatedLogs.classList.remove("reordering");
+    }, 300);
+  }
 }
 
 async function attachCreateLogEvent() {
   if (!logTaskBtn) return;
-  
-    const user = sessionState.user;
+
+  const user = sessionState.user;
 
   //When log task button is clicked to create new log
   logTaskBtn.addEventListener("click", async () => {
     const taskValue = taskEl.value.trim();
     const timeValue = timeEl.value.trim();
     const noteValue = noteEl.value.trim();
-    
+
     if (!taskValue || !timeValue || !noteValue) {
       alert("Input field must not be empty");
       return;
     }
-      //DEFINE DATA CONTENT
-      const logData = {
+
+    const user = sessionState.user;
+
+    // temporary id for optimistic entry
+    const tempId = `temp-${Date.now()}`;
+
+    const logData = {
+      id: tempId,
+      name: taskValue,
+      description: noteValue,
+      created_at: timeValue,
+      user_id: user.id,
+    };
+
+    // optimistic UI: update state + DOM immediately
+    savedLogDetails.unshift(logData);
+    const el = createLogElement(logData);
+    personalCreatedLogs.prepend(el);
+
+    requestAnimationFrame(() => {
+      el.classList.add("show");
+    });
+
+    updateTaskCount();
+    checkIfEmpty();
+
+    // clear inputs + close panel
+    taskEl.value = "";
+    timeEl.value = "";
+    noteEl.value = "";
+    document
+      .querySelector(".personalLogInputContainer")
+      .classList.toggle("expand");
+    document.getElementById("upperDashboardContainer").classList.toggle("hide");
+
+    // send to Supabase
+    const { data, error } = await supabase
+      .from("personal_tasks")
+      .insert({
         name: taskValue,
         description: noteValue,
         created_at: timeValue,
         user_id: user.id,
-      };
-  
-      //INSERT INTO SUPABASE
-      const { data, error } = await supabase
-        .from("personal_tasks")
-        .insert(logData)
-        .select();
-  
-      if (error) {
-        console.error(error);
-        alert("Failed to create task.");
-        return;
-      }
-  
-      const newLog = data[0];
+      })
+      .select()
+      .single();
 
-    
-    savedLogDetails.unshift(logData);
-    
-    /*
-    localStorage.setItem("logDetails", JSON.stringify(savedLogDetails));
-    */
-   
-   const el = createLogElement(logData);
+    if (error) {
+      console.error(error);
+      alert("Failed to create task.");
 
-   personalCreatedLogs.prepend(el);
-    
-   updateTaskCount()
-   checkIfEmpty();
-   
-   requestAnimationFrame(() => {
-     el.classList.add("show");
-    });
-    
-    taskEl.value = "";
-    timeEl.value = "";
-    noteEl.value = "";
+      // rollback optimistic UI
+      const index = savedLogDetails.findIndex((log) => log.id === tempId);
+      if (index !== -1) savedLogDetails.splice(index, 1);
 
-    document.querySelector(".personalLogInputContainer").classList.toggle("expand");
-document.getElementById("upperDashboardContainer").classList.toggle("hide")
+      el.classList.add("removing");
+      setTimeout(() => {
+        el.remove();
+        updateTaskCount();
+        checkIfEmpty();
+      }, 300);
+
+      return;
+    }
+
+    // replace temp id with real id
+    const index = savedLogDetails.findIndex((log) => log.id === tempId);
+    if (index !== -1) {
+      savedLogDetails[index] = data;
+    }
+    el.dataset.id = data.id;
   });
 }
 
-
 //For Delete Button
 function attachDeleteLogEvent() {
-  if(!personalCreatedLogs) return
+  if (!personalCreatedLogs) return;
   personalCreatedLogs.addEventListener("click", async (e) => {
     const btn = e.target.closest(".deleteBtn");
     if (!btn) return;
@@ -306,16 +345,21 @@ function attachDeleteLogEvent() {
     const logToDelete = btn.closest(".taskContainer");
     const id = logToDelete.dataset.id;
 
-    const {error} = await supabase.from("personal_tasks").delete().eq("id", id);
+    const { error } = await supabase
+      .from("personal_tasks")
+      .delete()
+      .eq("id", id);
 
-    if(error) {
-      console.error(error)
-      alert(error.message)
+    if (error) {
+      console.error(error);
+      alert(error.message);
       return;
     }
 
-    const index = savedLogDetails.findIndex((log) => log.id === id);
-    if (!index !== -1) savedLogDetails.splice(index, 1);
+    const index = savedLogDetails.findIndex(
+      (log) => String(log.id) === String(id),
+    );
+    if (index !== -1) savedLogDetails.splice(index, 1);
 
     // Add animation class
     logToDelete.classList.add("removing");
@@ -325,9 +369,9 @@ function attachDeleteLogEvent() {
       logToDelete.remove();
 
       //update count
-      updateTaskCount()
+      updateTaskCount();
       //check if task log conatiner is empty
       checkIfEmpty();
-    }, 250); // matches CSS transition time
+    }, 550); // matches CSS transition time
   });
 }
