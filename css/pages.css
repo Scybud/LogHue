@@ -10,9 +10,9 @@
 
 section {
   border: 1px solid var(--border);
-  min-height: 400px;
   border-radius: var(--radius);
   padding: var(--space-xs);
+  min-height: 400px;
 }
 #inputContainer {
   border: none;

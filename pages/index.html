@@ -58,9 +58,9 @@
             </span>
           </button>
       
-          <h2 class="pageTitle">
+          <h1 class="pageTitle">
             Dashboard
-          </h2>
+          </h1>
         </div>
 
         <div class="headerRight">
@@ -117,11 +117,71 @@
           </div>
         </div>
 
-        <section id="upperDashboardContainer">
+        <section>
+          <h2>Recent Workspaces</h2>
+          <p class="sectionDescription">Two of your most recent workspaces</p>
           
-           <!-- Dynamic content will load here -->
+          <div id="upperDashboardContainer">
+            <!-- Dynamic content will load here -->
+<svg
+    class="emptyStateImg"
+  viewBox="0 0 220 160"
+  fill="none"
+  role="img"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+>
+  <!-- Background card -->
+"100%" height="100%" fill="currentColor"  <rect x="28" y="40" width="80" height="10" rx="5" fill="#E0E0E6" />
+  <rect x="28" y="58" width="140" height="8" rx="4" fill="#E8E8EE" />
+  <rect x="28" y="72" width="110" height="8" rx="4" fill="#E8E8EE" />
+  <rect x="28" y="86" width="90" height="8" rx="4" fill="#E8E8EE" />
+
+  <!-- Dotted workspace placeholder -->
+  <rect
+    x="130"
+    y="44"
+    width="56"
+    height="40"
+    rx="8"
+    fill="none"
+    stroke="#D3D3E0"
+    stroke-dasharray="4 4"
+  />
+  <circle cx="158" cy="64" r="10" fill="#FF6B35" opacity="0.12" />
+  <path
+    d="M158 58V70M152 64H164"
+    stroke="#FF6B35"
+    stroke-width="2"
+    stroke-linecap="round"
+  />
+
+  <!-- Bottom bar -->
+  <rect x="28" y="106" width="60" height="10" rx="5" fill="#E0E0E6" />
+  <rect x="94" y="106" width="40" height="10" rx="5" fill="#E0E0E6" />
+
+  <!-- Subtle background circles -->
+  <circle cx="40" cy="26" r="4" fill="#FFE4D8" />
+  <circle cx="190" cy="120" r="5" fill="#FFE4D8" />
+  <circle cx="32" cy="118" r="3" fill="#FFE4D8" />
+
+  <!-- Hint text -->
+  <text
+    x="110"
+    y="160"
+    text-anchor="middle"
+    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
+    font-size="9"
+    fill="#8A8A99"
+  >
+    No workspaces yet — create your first one
+  </text>
+</svg>
+          </div>
 
          </section>
+
+
           <section class="container" id="inputContainer">
             <form class="personalLogInputContainer form">
               <h2>Log Task</h2>
@@ -138,14 +198,17 @@
             </form>
         </section>
 
-        <div class="personalCreatedLogsContainer">
+        <section class="personalCreatedLogsContainer">
           <h2>Personal Logged Tasks</h2>
     <p class="sectionDescription">List of all tasks you logged. They are not related to your workpaces.</p>
-          <section id="personalCreatedLogs" class="logs">
+          <div id="personalCreatedLogs" class="logs">
 
-          </section>
-        </div>
+          </div>
+        </section>
+
+
       </article>
+
     </main>
 
   <script type="module" src="../js/utils/noAuthSessionProtect.js"></script>

@@ -115,6 +115,7 @@ h3 {
 }
 section {
   margin: calc(var(--space-sm) + 2px) auto;
+  width: 100%;
 }
 .memberList {
   display: flex;

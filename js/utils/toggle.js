@@ -39,8 +39,8 @@ export function personalLogInputContainerPanelToggle() {
       
       personalLogInputContainer.classList.toggle("expand");
       toggleInputContainer.classList.toggle("panelClosed");
-        
-        upperDashboardContainer.classList.toggle("hide");
+      
+      upperDashboardContainer.classList.toggle("hide");
     });
   }
 }

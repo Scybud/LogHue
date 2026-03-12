@@ -265,7 +265,7 @@ async function attachCreateWorkspaceEvent() {
 
 function updateworkspaceCount() {
   const createdWorkspaces = savedWorkspaceData.filter(
-    (ws) => ws.role === "admin" && ws.status === "active",
+    (ws) => ws.role === "admin"
   );
   const openedWorkspaces = savedWorkspaceData.filter(
     (ws) => ws.status === "active",

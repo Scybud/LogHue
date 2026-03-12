@@ -32,13 +32,6 @@ await workspacesReady;
    if (!upperDashboardContainer) return;
   
     upperDashboardContainer.innerHTML = "";
-  
-    const header = document.createElement("h2");
-    header.textContent = "Recent Workspaces";
-  
-    const sectionDescription = document.createElement("p")
-    sectionDescription.classList.add("sectionDescription");
-    sectionDescription.textContent = "Two of your most recent workspaces:"
 
     const div = document.createElement("div");
     div.classList.add("recentContainer");
@@ -47,7 +40,7 @@ await workspacesReady;
       (ws) => ws.role === "admin" && ws.status === "active",
     );
   
-    const activeWorkspaces = savedWorkspaceData.filter(
+     const activeWorkspaces = savedWorkspaceData.filter(
       (ws) => ws.status === "active",
     );
   
@@ -55,6 +48,52 @@ await workspacesReady;
       (ws) => ws.status === "closed",
     );
   
+    if(activeWorkspaces.length === 0) {
+      upperDashboardContainer.innerHTML = `
+     
+ <svg
+    class="emptyStateImg"
+  viewBox="0 0 220 160"
+  fill="none"
+  role="img"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+>
+  <!-- Background card -->
+"100%" height="100%" fill="currentColor"  <rect x="28" y="40" width="80" height="10" rx="5" fill="#E0E0E6" />
+  <rect x="28" y="58" width="140" height="8" rx="4" fill="#E8E8EE" />
+  <rect x="28" y="72" width="110" height="8" rx="4" fill="#E8E8EE" />
+  <rect x="28" y="86" width="90" height="8" rx="4" fill="#E8E8EE" />
+
+  <!-- Dotted workspace placeholder -->
+  <rect
+    x="130"
+    y="44"
+    width="56"
+    height="40"
+    rx="8"
+    fill="none"y="106" width="60" height="10" rx="5" fill="#E0E0E6" />
+  <rect x="94" y="106" width="40" height="10" rx="5" fill="#E0E0E6" />
+
+  <!-- Subtle background circles -->
+  <circle cx="40" cy="26" r="4" fill="#FFE4D8" />
+  <circle cx="190" cy="120" r="5" fill="#FFE4D8" />
+  <circle cx="32" cy="118" r="3" fill="#FFE4D8" />
+
+  <!-- Hint text -->
+  <text
+    x="110"
+    y="140"
+    text-anchor="middle"
+    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
+    font-size="9"
+    fill="#8A8A99"
+  >
+    You don't have any active workspaces.
+  </text>
+</svg>
+      `
+    }
     const recentWorkspaces = activeWorkspaces
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
       .slice(0, 2);
@@ -64,7 +103,7 @@ await workspacesReady;
   
       div.append(wsCard);
     });
-    upperDashboardContainer.prepend(header, sectionDescription, div);
+    upperDashboardContainer.prepend(div);
 
     dropdownClick();
 }

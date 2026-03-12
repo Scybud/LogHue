@@ -3,6 +3,7 @@
   flex-direction: column;
   gap: var(--space-lg);
   padding: 1rem 0;
+  border: none;
 }
 
 .settingsCard {

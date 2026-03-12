@@ -70,7 +70,7 @@ if (signupForm) {
     button.disabled = false;
 
     if (success) {
-      window.location.href = "https://loghue.com/pages/index.html";
+      window.location.href = "/pages";
     }
   });
 }
@@ -115,7 +115,7 @@ export function loginFuntion() {
         const success = await login(email, password);
 
         if (success) {
-          window.location.href = "https://loghue.com/pages/index.html";
+          window.location.href = "/pages";
         }
       } finally {
         button.disabled = false;
