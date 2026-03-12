@@ -71,7 +71,7 @@ function userInfoUi() {
   if (profileImg) {
     profileImg.src =
       sessionState.profile.avatar_url ||
-      "https://scyflix.github.io/LogHue/assets/images/default_profile.png";
+      "https://loghue.com/assets/images/default_profile.png";
   }
 
   // PLAN

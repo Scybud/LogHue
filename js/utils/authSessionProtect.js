@@ -11,6 +11,8 @@ async function protectPage() {
   } = await supabase.auth.getSession();
 
   if (session) {
+        alert("user logged in. Redirecting...");
+
     window.location.href = "https://app.loghue.com";
     return;
   }
@@ -18,6 +20,8 @@ async function protectPage() {
   // Wait for Supabase to restore the session after OAuth redirect
   supabase.auth.onAuthStateChange((_event, session) => {
     if (session) {
+          alert("user logged in. Redirecting...");
+
       window.location.href = "https://app.loghue.com";
     }
   });
