@@ -1,7 +1,7 @@
 {
   "headers": [
     {
-      "source": "/js/auth.js",
+      "source": "/auth/auth.js",
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
