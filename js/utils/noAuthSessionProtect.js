@@ -10,14 +10,14 @@ async function protectPage() {
   } = await supabase.auth.getSession();
 
   if (!session) {
-    window.location.href = "auth.loghue.com";
+    window.location.href = "https://auth.loghue.com";
     return;
   }
 
   // Wait for Supabase to restore the session after OAuth redirect
   supabase.auth.onAuthStateChange((_event, session) => {
     if (!session) {
-      window.location.href = "auth.loghue.com";
+      window.location.href = "https://auth.loghue.com";
     }
   });
 }
