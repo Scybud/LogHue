@@ -53,10 +53,12 @@ html {
 }
 
 .logo {
+  color: #fff;
   font-weight: 600;
   font-size: 1.5rem;
   letter-spacing: 0;
 }
+
 .logo span {
   color: var(--primary);
 }
