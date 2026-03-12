@@ -19,9 +19,8 @@ export async function initSession() {
   } = await supabase.auth.getUser();
 
 
-  if (error || !user) {
+  if (error) {
     console.error(error);
-    await supabase.auth.signOut();
     resolveSessionReady(); // resolve to avoid blocking
     return;
   }
