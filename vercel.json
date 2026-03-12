@@ -1,14 +1,13 @@
 {
-  "rewrites": [
+  "headers": [
     {
-      "source": "/(.*)",
-      "has": [
+      "source": "/js/auth.js",
+      "headers": [
         {
-          "type": "host",
-          "value": "auth.loghue.com"
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://auth.loghue.com"
         }
-      ],
-      "destination": "/auth"
+      ]
     }
   ]
 }
