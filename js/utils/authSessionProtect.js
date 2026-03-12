@@ -1,16 +1,23 @@
 import { supabase } from "../supabase.js";
+import { sessionState, sessionReady } from "../session.js";
 
 // LOGIN PAGE PROTECTION
 // If the user is already logged in, send them to dashboard.
 // Otherwise, stay on the login page.
 
 async function protectPage() {
+     await sessionReady;
+  
+  const user = sessionState.user;
+
   // Check if a session already exists
+  /*
   const {
     data: { session },
   } = await supabase.auth.getSession();
+*/
 
-  if (session) {
+  if (user) {
         alert("user logged in. Redirecting...");
 
     window.location.href = "https://app.loghue.com";
