@@ -10,7 +10,7 @@ async function initUserSettingsData() {
   if (error || !user) {
     console.error(error);
     alert(error.message + "." + " " + "Redirecting to login");
-    window.location.href = "auth.html";
+    window.location.href = "../auth";
     return;
   }
 

@@ -71,7 +71,7 @@ async function sendPasswordResetNewPassword(password) {
        alert(error.message);
      } else {
        alert("Password reset Complete!");
-       window.location.href = "../dashboard.html"
+       window.location.href = "https://loghue.com/pages/index.html";
      }
 }
 
