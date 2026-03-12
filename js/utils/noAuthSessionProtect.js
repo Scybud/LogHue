@@ -1,35 +1,14 @@
-import { supabase } from "../supabase.js";
 import { sessionState, sessionReady } from "../session.js";
 
-// LOGIN PAGE PROTECTION
-// If the user is already logged in, send them to dashboard.
-// Otherwise, stay on the login page.
-async function protectPage() {
+async function protectAppPage() {
+  await sessionReady;
 
-      await sessionReady;
-  
-  const user = sessionState.user;
-
-  // Check if a session already exists
-  /*
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-*/
-
-  if (!user) {
-    alert("user not logged in. Redirecting...")
+  if (!sessionState.user) {
     window.location.href = "https://auth.loghue.com";
     return;
   }
 
-  // Wait for Supabase to restore the session after OAuth redirect
-  supabase.auth.onAuthStateChange((_event, session) => {
-    if (!session) {
-          alert("user not logged in. Redirecting...");
-      window.location.href = "https://auth.loghue.com";
-    }
-  });
+  // User is logged in, continue loading the page
 }
 
-protectPage();
+protectAppPage();
