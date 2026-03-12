@@ -40,7 +40,7 @@ const successCard = document.querySelector(".success-card");
 try {
   const success = await sendPasswordResetEmail(
     email,
-    "https://scyflix.github.io/LogHue/pages/auth/passwordChange.html",
+    "https://auth.loghue.com/passwordChange.html",
   );
   
   if(success) {
@@ -71,7 +71,7 @@ async function sendPasswordResetNewPassword(password) {
        alert(error.message);
      } else {
        alert("Password reset Complete!");
-       window.location.href = "https://loghue.com/pages/index.html";
+       window.location.href = "https://app.loghue.com";
      }
 }
 
