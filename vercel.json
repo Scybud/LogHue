@@ -1,22 +1,21 @@
 {
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/components/(.*)",
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "*"
+          "value": "https://app.loghue.com"
         },
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "GET"
-        }
+        { "key": "Access-Control-Allow-Methods", "value": "GET, OPTIONS" },
+        { "key": "Cache-Control", "value": "no-store" }
       ]
     },
     {
-      "source": "/components/(.*)",
+      "source": "/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "no-store" }
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET" }
       ]
     }
   ]
