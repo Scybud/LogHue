@@ -1,47 +1,54 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Settings | LogHue</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings | LogHue</title>
 
-   <!--CSS LINKS-->
-    <link rel="stylesheet" href="../css/base.css" />
-    <link rel="stylesheet" href="../css/theme.css" />
-    <link rel="stylesheet" href="../css/pages.css">
-    <link rel="stylesheet" href="../css/component.css" />
-    <link rel="stylesheet" href="../css/layout.css" />
-    <link rel="stylesheet" href="../css/dashboard.css" />
-    <link rel="stylesheet" href="../css/settings.css">
-    <link rel="stylesheet" href="../css/utilities.css" />
+    <!--CSS LINKS-->
+    <link rel="stylesheet" href="https://loghue.com/css/base.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/theme.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/pages.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/component.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/layout.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/dashboard.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/settings.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/utilities.css" />
 
-          <!--FAVICONS-->
-  <link rel="apple-touch-icon" sizes="180x180" href="./../assets/icons/favicons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="./../assets/icons/favicons/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="./../assets/icons/favicons/favicon-16x16.png">
-
-
-</head>
-<body>
-
-   <!--PRELOADER-->
-   <div class="preLoaderContainer">
-        <div class="tt-wave-loader">
-          <span></span><span></span><span></span>
-        </div>
-        <div class="label">Log<span>Hue</span></div>
-      </div>
-  
-  <main class="main">
-    <!-- SIDEBAR -->
-    <div class="sidebarContainer" id="generalSidebarContainer">
-      
+    <!--FAVICONS-->
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="https://loghue.com/assets/icons/favicons/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="https://loghue.com/assets/icons/favicons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="https://loghue.com/assets/icons/favicons/favicon-16x16.png"
+    />
+  </head>
+  <body>
+    <!--PRELOADER-->
+    <div class="preLoaderContainer">
+      <div class="tt-wave-loader"><span></span><span></span><span></span></div>
+      <div class="label">Log<span>Hue</span></div>
     </div>
-    
-    <!-- MAIN CONTENT -->
-    <article class="mainContent" id="dashboardContent">
-      <header class="pageHeader">
-        <div class="headerLeft">
+
+    <main class="main">
+      <!-- SIDEBAR -->
+      <div class="sidebarContainer" id="generalSidebarContainer"></div>
+
+      <!-- MAIN CONTENT -->
+      <article class="mainContent" id="dashboardContent">
+        <header class="pageHeader">
+          <div class="headerLeft">
             <button class="menuBtn" id="toggleSidebar">
               <span class="menuIcon">
                 <!-- Menu Icon -->
@@ -55,198 +62,239 @@
                 </svg>
               </span>
             </button>
-    
-            <h1 class="pageTitle">
-              Settings
-            </h1>
+
+            <h1 class="pageTitle">Settings</h1>
           </div>
         </header>
 
-        <div  id="modalContainer">
-        
-        </div>
-        
-        
-<section class="settingsWrapper">
+        <div id="modalContainer"></div>
 
-  <!-- ACCOUNT -->
-  <div class="settingsCard">
-    <h3 class="settingsCardTitle">Account</h3>
+        <section class="settingsWrapper">
+          <!-- ACCOUNT -->
+          <div class="settingsCard">
+            <h3 class="settingsCardTitle">Account</h3>
 
-<p class="descText">Edit your account information.</p>
+            <p class="descText">Edit your account information.</p>
 
-    <div class="settingsGrid">
-      <div class="settingsField">
-        <label class="settingsLabel" for="accName">Full Name</label>
-        <input type="text" class="inputField" id="accName" placeholder="Your name" />
-      </div>
+            <div class="settingsGrid">
+              <div class="settingsField">
+                <label class="settingsLabel" for="accName">Full Name</label>
+                <input
+                  type="text"
+                  class="inputField"
+                  id="accName"
+                  placeholder="Your name"
+                />
+              </div>
 
-      <div class="settingsField">
-        <label class="settingsLabel" for="accEmail">Email</label>
-        <input type="email" class="inputField" id="accEmail" placeholder="you@example.com" />
-      </div>
+              <div class="settingsField">
+                <label class="settingsLabel" for="accEmail">Email</label>
+                <input
+                  type="email"
+                  class="inputField"
+                  id="accEmail"
+                  placeholder="you@example.com"
+                />
+              </div>
 
-      <div class="settingsField full">
-        <label class="settingsLabel">Profile Photo</label>
-        <div class="settingsAvatarRow">
+              <div class="settingsField full">
+                <label class="settingsLabel">Profile Photo</label>
+                <div class="settingsAvatarRow">
+                  <img
+                    src="https://loghue.com/assets/images/default_profile.png"
+                    class="settingsAvatar"
+                  />
+                  <button class="btn secondary" id="profileUploadBtn">
+                    Upload
+                  </button>
 
-          <img src="../assets/images/default_profile.png" class="settingsAvatar" />
-          <button class="btn secondary" id="profileUploadBtn">Upload</button>
+                  <!-- Hidden input -->
+                  <input
+                    type="file"
+                    id="profilePhotoInput"
+                    accept="image/*"
+                    style="display: none"
+                  />
+                </div>
+              </div>
 
-           <!-- Hidden input -->
-  <input 
-    type="file" 
-    id="profilePhotoInput" 
-    accept="image/*" 
-    style="display:none"
-  >
-        </div>
-      </div>
+              <div class="settingsField full">
+                <label class="settingsLabel">Change Password</label>
+                <a href="auth/passwordReset.html" class="btn changePasswordBtn"
+                  >Update Password</a
+                >
+              </div>
+            </div>
 
-      <div class="settingsField full">
-        <label class="settingsLabel">Change Password</label>
-        <a href="auth/passwordReset.html" class="btn changePasswordBtn">Update Password</a>
-      </div>
-    </div>
+            <button class="btn primary settingsSaveBtn settingsLongBtn">
+              Save Changes
+            </button>
+          </div>
 
-    <button class="btn primary settingsSaveBtn settingsLongBtn">Save Changes</button>
-  </div>
+          <!-- APPEARANCE -->
+          <div class="settingsCard">
+            <h3 class="settingsCardTitle">Appearance</h3>
+            <p class="descText">Customize your space.</p>
 
-  <!-- APPEARANCE -->
-  <div class="settingsCard">
-    <h3 class="settingsCardTitle">Appearance</h3>
-<p class="descText">Customize your space.</p>
+            <div class="settingsGrid">
+              <div class="settingsField">
+                <label class="settingsLabel">Theme</label>
+                <select class="inputField" id="themeSelect">
+                  <option value="system">System</option>
+                  <option value="light">Light</option>
+                  <option value="dark">Dark</option>
+                </select>
+              </div>
 
-    <div class="settingsGrid">
-      <div class="settingsField">
-        <label class="settingsLabel">Theme</label>
-        <select class="inputField" id="themeSelect">
-          <option value="system">System</option>
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-        </select>
-      </div>
+              <div class="settingsField">
+                <label class="settingsLabel">Primary Color</label>
+                <input
+                  type="color"
+                  class="colorPicker"
+                  id="primaryColor"
+                  value="#0393d6"
+                />
 
-      <div class="settingsField">
-        <label class="settingsLabel">Primary Color</label>
-        <input type="color" class="colorPicker" id="primaryColor" value="#0393d6" />
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary"
+                  id="reseToDefaultPrimary"
+                >
+                  Reset
+                </button>
+              </div>
 
-        <button type="button" class="btn btn-sm btn-primary" id="reseToDefaultPrimary">Reset</button>
-      </div>
+              <div class="settingsField full">
+                <label class="settingsLabel">Interface Density</label>
+                <select class="inputField" id="interfaceSelect">
+                  <option value="comfortable">Comfortable</option>
+                  <option value="compact">Compact</option>
+                </select>
+              </div>
+            </div>
+          </div>
 
-      <div class="settingsField full">
-        <label class="settingsLabel">Interface Density</label>
-        <select class="inputField" id="interfaceSelect">
-          <option value="comfortable">Comfortable</option>
-          <option value="compact">Compact</option>
-        </select>
-      </div>
-    </div>
-  </div>
+          <!-- NOTIFICATIONS -->
+          <div class="settingsCard">
+            <h3 class="settingsCardTitle">Notifications</h3>
+            <p class="descText">Manage how you recieve updates.</p>
 
-  <!-- NOTIFICATIONS -->
-  <div class="settingsCard">
-    <h3 class="settingsCardTitle">Notifications</h3>
-<p class="descText">Manage how you recieve updates.</p>
+            <div class="settingsToggleRow">
+              <span>Email Notifications</span>
+              <label for="emailNotification" class="switch"
+                ><input id="emailNotification" type="checkbox" checked /><span
+                  class="slider"
+                ></span
+              ></label>
+            </div>
 
-    <div class="settingsToggleRow">
-      <span>Email Notifications</span>
-      <label for="emailNotification" class="switch"><input id="emailNotification" type="checkbox" checked /><span class="slider"></span></label>
-    </div>
+            <div class="settingsToggleRow">
+              <span>In‑App Alerts</span>
+              <label for="inAppNotification" class="switch"
+                ><input id="inAppNotification" type="checkbox" /><span
+                  class="slider"
+                ></span
+              ></label>
+            </div>
 
-    <div class="settingsToggleRow">
-      <span>In‑App Alerts</span>
-      <label for="inAppNotification" class="switch"><input id="inAppNotification" type="checkbox" /><span class="slider"></span></label>
-    </div>
+            <div class="settingsToggleRow">
+              <span>Marketing Emails</span>
+              <label for="marketingEmails" class="switch"
+                ><input type="checkbox" id="marketingEmails" /><span
+                  class="slider"
+                ></span
+              ></label>
+            </div>
+          </div>
 
-    <div class="settingsToggleRow">
-      <span>Marketing Emails</span>
-      <label for="marketingEmails" class="switch"><input type="checkbox" id="marketingEmails" /><span class="slider"></span></label>
-    </div>
-  </div>
+          <!-- PRIVACY -->
+          <div class="settingsCard">
+            <h3 class="settingsCardTitle">Privacy</h3>
+            <p class="descText">Manage your privacy settings.</p>
 
-  <!-- PRIVACY -->
-  <div class="settingsCard">
-    <h3 class="settingsCardTitle">Privacy</h3>
-<p class="descText">Manage your privacy settings.</p>
+            <div class="settingsGrid">
+              <div class="settingsField">
+                <label class="settingsLabel">Data Export</label>
+                <button class="btn secondary">Download My Data</button>
+              </div>
 
-    <div class="settingsGrid">
+              <div class="settingsField">
+                <label class="settingsLabel">Tracking Preferences</label>
+                <button class="btn secondary">Manage Tracking</button>
+              </div>
+            </div>
+          </div>
 
-      <div class="settingsField ">
-        <label class="settingsLabel">Data Export</label>
-        <button class="btn secondary">Download My Data</button>
-      </div>
-      
-      <div class="settingsField ">
-        <label class="settingsLabel">Tracking Preferences</label>
-        <button class="btn secondary">Manage Tracking</button>
-      </div>
-    </div>
-  </div>
+          <!-- SECURITY -->
+          <div class="settingsCard">
+            <h3 class="settingsCardTitle">Security</h3>
+            <p class="descText">Keep your account secure.</p>
 
-  <!-- SECURITY -->
-  <div class="settingsCard">
-    <h3 class="settingsCardTitle">Security</h3>
-<p class="descText">Keep your account secure.</p>
+            <div class="settingsGrid">
+              <div class="settingsField">
+                <label class="settingsLabel">Two‑Factor Authentication</label>
+                <button class="btn secondary settingsLongBtn">
+                  Enable 2FA
+                </button>
+              </div>
 
-    <div class="settingsGrid">
+              <div class="settingsField">
+                <label class="settingsLabel">Active Sessions</label>
+                <button class="btn secondary settingsLongBtn">
+                  View Devices
+                </button>
+              </div>
+            </div>
+          </div>
 
-      <div class="settingsField ">
-        <label class="settingsLabel">Two‑Factor Authentication</label>
-        <button class="btn secondary settingsLongBtn">Enable 2FA</button>
-      </div>
-      
-      <div class="settingsField ">
-        <label class="settingsLabel">Active Sessions</label>
-        <button class="btn secondary settingsLongBtn">View Devices</button>
-      </div>
+          <!-- LANGUAGE & REGION -->
+          <div class="settingsCard">
+            <h3 class="settingsCardTitle">Language & Region</h3>
+            <p class="descText">Set your language and regional preferences.</p>
 
-    </div>
-  </div>
+            <div class="settingsGrid">
+              <div class="settingsField">
+                <label class="settingsLabel">Language</label>
+                <select class="inputField">
+                  <option value="en">English</option>
+                  <option value="de">Deutsch</option>
+                </select>
+              </div>
 
-  <!-- LANGUAGE & REGION -->
-  <div class="settingsCard">
-    <h3 class="settingsCardTitle">Language & Region</h3>
-<p class="descText">Set your language and regional preferences.</p>
+              <div class="settingsField">
+                <label class="settingsLabel">Timezone</label>
+                <select class="inputField">
+                  <option value="CET">Central European Time (CET)</option>
+                </select>
+              </div>
+            </div>
+          </div>
 
-    <div class="settingsGrid">
-      <div class="settingsField">
-        <label class="settingsLabel">Language</label>
-        <select class="inputField">
-          <option value="en">English</option>
-          <option value="de">Deutsch</option>
-        </select>
-      </div>
+          <!-- DANGER ZONE -->
+          <div style="display: none" class="settingsCard danger">
+            <h3 class="settingsCardTitle">Danger Zone</h3>
+            <p class="descText danger">
+              These actions are permanent and cannot be undone
+            </p>
 
-      <div class="settingsField">
-        <label class="settingsLabel">Timezone</label>
-        <select class="inputField">
-          <option value="CET">Central European Time (CET)</option>
-        </select>
-      </div>
-    </div>
-  </div>
+            <button class="btn danger" id="deleteAccount">
+              Delete Account
+            </button>
+          </div>
 
-  <!-- DANGER ZONE -->
-  <div style="display: none" class="settingsCard danger">
-    <h3 class="settingsCardTitle">Danger Zone</h3>
-<p class="descText danger">These actions are permanent and cannot be undone</p>
+          <!--FOOTER-->
+          <footer class="footer">
+            <p>&copy; LogHue | All Rights reserved</p>
+          </footer>
+        </section>
+      </article>
+    </main>
 
-    <button class="btn danger" id="deleteAccount">Delete Account</button>
-  </div>
-
-  
-  <!--FOOTER-->
-  <footer class="footer">
-    <p>&copy; LogHue | All Rights reserved</p>
-  </footer>
-</section>
-</article>
-
-</main>
-
-  <script type="module" src="../js/utils/noAuthSessionProtect.js"></script>
-<script type="module" src="./../js/settings.js"></script>
-        <script type="module" src="../js/app.js"></script>
-</body>
+    <script
+      type="module"
+      src="https://loghue.com/js/utils/noAuthSessionProtect.js"
+    ></script>
+    <script type="module" src="https://loghue.com/js/settings.js"></script>
+    <script type="module" src="https://loghue.com/js/app.js"></script>
+  </body>
 </html>

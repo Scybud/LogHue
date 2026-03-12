@@ -1,84 +1,91 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Dashboard</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
 
-   <!--CSS LINKS-->
+    <!--CSS LINKS-->
     <link rel="stylesheet" href="https://loghue.com/css/base.css" />
     <link rel="stylesheet" href="https://loghue.com/css/layout.css" />
     <link rel="stylesheet" href="https://loghue.com/css/component.css" />
     <link rel="stylesheet" href="https://loghue.com/css/dashboard.css" />
     <link rel="stylesheet" href="https://loghue.com/css/theme.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/pages.css">
+    <link rel="stylesheet" href="https://loghue.com/css/pages.css" />
     <link rel="stylesheet" href="https://loghue.com/css/utilities.css" />
 
-      <!--FAVICONS-->
-  <link rel="apple-touch-icon" sizes="180x180" href="https://loghue.com/assets/icons/favicons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://loghue.com/assets/icons/favicons/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="https://loghue.com/assets/icons/favicons/favicon-16x16.png">
-<link rel="manifest" href="https://loghue.com/site.webmanifest">
-</head>
-<body>
+    <!--FAVICONS-->
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="https://loghue.com/assets/icons/favicons/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="https://loghue.com/assets/icons/favicons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="https://loghue.com/assets/icons/favicons/favicon-16x16.png"
+    />
+    <link rel="manifest" href="https://loghue.com/site.webmanifest" />
+  </head>
+  <body>
+    <!--PRELOADER-->
+    <div class="preLoaderContainer">
+      <div class="tt-wave-loader"><span></span><span></span><span></span></div>
+      <div class="label">Log<span>Hue</span></div>
+    </div>
 
-  <!--PRELOADER-->
-   <div class="preLoaderContainer">
-        <div class="tt-wave-loader">
-          <span></span><span></span><span></span>
-        </div>
-        <div class="label">Log<span>Hue</span></div>
-      </div>
-  
     <main class="main">
       <!-- SIDEBAR -->
-      <div class="sidebarContainer" id="dashboardSidebarContainer">
-        
-      </div>
-      
+      <div class="sidebarContainer" id="dashboardSidebarContainer"></div>
+
       <!-- MAIN CONTENT -->
       <article class="mainContent" id="dashboardContent">
-        
-        <div  id="modalContainer">
-        </div>
-        
+        <div id="modalContainer"></div>
+
         <header class="pageHeader">
-        <div class="headerLeft">
-          <button class="menuBtn" id="toggleSidebar">
-            <span class="menuIcon">
-              <!-- Menu Icon -->
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M4 6H20M4 12H20M4 18H20"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                />
-              </svg>
-            </span>
-          </button>
-      
-          <h1 class="pageTitle">
-            Dashboard
-          </h1>
-        </div>
+          <div class="headerLeft">
+            <button class="menuBtn" id="toggleSidebar">
+              <span class="menuIcon">
+                <!-- Menu Icon -->
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M4 6H20M4 12H20M4 18H20"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </span>
+            </button>
 
-        <div class="headerRight">
+            <h1 class="pageTitle">Dashboard</h1>
+          </div>
 
-          <button type="button" class="actionBtn btn btn-sm" id="toggleInputContainer">
-            Open Input Panel
-          </button>
-        </div>
-      </header>
-        
+          <div class="headerRight">
+            <button
+              type="button"
+              class="actionBtn btn btn-sm"
+              id="toggleInputContainer"
+            >
+              Open Input Panel
+            </button>
+          </div>
+        </header>
+
         <div class="grid" id="statsContainer">
           <div class="card">
             <span class="statsName">Active Workspaces</span>
             <div class="numContainer">
-<svg width="24" height="24" fill="#6CCF7F" viewBox="0 0 24 24">
-  <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/>
-</svg>
-
+              <svg width="24" height="24" fill="#6CCF7F" viewBox="0 0 24 24">
+                <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
+              </svg>
 
               <span class="statNum" id="activeWorkspaceCount">0</span>
             </div>
@@ -87,20 +94,22 @@
             <span class="statsName">Created Workspaces</span>
 
             <div class="numConatiner">
-<svg width="24" height="24" fill="#6FB7FF" viewBox="0 0 24 24">
-  <path d="M6 2h9l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/>
-</svg>
+              <svg width="24" height="24" fill="#6FB7FF" viewBox="0 0 24 24">
+                <path
+                  d="M6 2h9l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"
+                />
+              </svg>
 
               <span class="statNum" id="createdWorkspacesCount">0</span>
             </div>
           </div>
-           <div class="card">
+          <div class="card">
             <span class="statsName">Closed Workspaces</span>
 
             <div class="numConatiner">
-<svg width="24" height="24" fill="#9EA7B3" viewBox="0 0 24 24">
-  <path d="M3 4h18v4H3V4zm2 6h14v10H5V10z"/>
-</svg>
+              <svg width="24" height="24" fill="#9EA7B3" viewBox="0 0 24 24">
+                <path d="M3 4h18v4H3V4zm2 6h14v10H5V10z" />
+              </svg>
 
               <span class="statNum" id="closedWorkspacesCount">0</span>
             </div>
@@ -108,9 +117,11 @@
           <div class="card">
             <span class="statsName">Logged Tasks</span>
             <div class="numConatiner">
-<svg width="24" height="24" fill="#FFDD7A" viewBox="0 0 24 24">
-  <path d="M19 3H5a2 2 0 0 0-2 2v14l4-4h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"/>
-</svg>
+              <svg width="24" height="24" fill="#FFDD7A" viewBox="0 0 24 24">
+                <path
+                  d="M19 3H5a2 2 0 0 0-2 2v14l4-4h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"
+                />
+              </svg>
 
               <span class="statNum" id="loggedTasksCount">0</span>
             </div>
@@ -120,101 +131,149 @@
         <section>
           <h2>Recent Workspaces</h2>
           <p class="sectionDescription">Two of your most recent workspaces</p>
-          
+
           <div id="upperDashboardContainer">
             <!-- Dynamic content will load here -->
-<svg
-    class="emptyStateImg"
-  viewBox="0 0 220 160"
-  fill="none"
-  role="img"
-  xmlns="http://www.w3.org/2000/svg"
-  aria-hidden="true"
->
-  <!-- Background card -->
-"100%" height="100%" fill="currentColor"  <rect x="28" y="40" width="80" height="10" rx="5" fill="#E0E0E6" />
-  <rect x="28" y="58" width="140" height="8" rx="4" fill="#E8E8EE" />
-  <rect x="28" y="72" width="110" height="8" rx="4" fill="#E8E8EE" />
-  <rect x="28" y="86" width="90" height="8" rx="4" fill="#E8E8EE" />
+            <svg
+              class="emptyStateImg"
+              viewBox="0 0 220 160"
+              fill="none"
+              role="img"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <!-- Background card -->
+              "100%" height="100%" fill="currentColor"
+              <rect
+                x="28"
+                y="40"
+                width="80"
+                height="10"
+                rx="5"
+                fill="#E0E0E6"
+              />
+              <rect
+                x="28"
+                y="58"
+                width="140"
+                height="8"
+                rx="4"
+                fill="#E8E8EE"
+              />
+              <rect
+                x="28"
+                y="72"
+                width="110"
+                height="8"
+                rx="4"
+                fill="#E8E8EE"
+              />
+              <rect x="28" y="86" width="90" height="8" rx="4" fill="#E8E8EE" />
 
-  <!-- Dotted workspace placeholder -->
-  <rect
-    x="130"
-    y="44"
-    width="56"
-    height="40"
-    rx="8"
-    fill="none"
-    stroke="#D3D3E0"
-    stroke-dasharray="4 4"
-  />
-  <circle cx="158" cy="64" r="10" fill="#FF6B35" opacity="0.12" />
-  <path
-    d="M158 58V70M152 64H164"
-    stroke="#FF6B35"
-    stroke-width="2"
-    stroke-linecap="round"
-  />
+              <!-- Dotted workspace placeholder -->
+              <rect
+                x="130"
+                y="44"
+                width="56"
+                height="40"
+                rx="8"
+                fill="none"
+                stroke="#D3D3E0"
+                stroke-dasharray="4 4"
+              />
+              <circle cx="158" cy="64" r="10" fill="#FF6B35" opacity="0.12" />
+              <path
+                d="M158 58V70M152 64H164"
+                stroke="#FF6B35"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
 
-  <!-- Bottom bar -->
-  <rect x="28" y="106" width="60" height="10" rx="5" fill="#E0E0E6" />
-  <rect x="94" y="106" width="40" height="10" rx="5" fill="#E0E0E6" />
+              <!-- Bottom bar -->
+              <rect
+                x="28"
+                y="106"
+                width="60"
+                height="10"
+                rx="5"
+                fill="#E0E0E6"
+              />
+              <rect
+                x="94"
+                y="106"
+                width="40"
+                height="10"
+                rx="5"
+                fill="#E0E0E6"
+              />
 
-  <!-- Subtle background circles -->
-  <circle cx="40" cy="26" r="4" fill="#FFE4D8" />
-  <circle cx="190" cy="120" r="5" fill="#FFE4D8" />
-  <circle cx="32" cy="118" r="3" fill="#FFE4D8" />
+              <!-- Subtle background circles -->
+              <circle cx="40" cy="26" r="4" fill="#FFE4D8" />
+              <circle cx="190" cy="120" r="5" fill="#FFE4D8" />
+              <circle cx="32" cy="118" r="3" fill="#FFE4D8" />
 
-  <!-- Hint text -->
-  <text
-    x="110"
-    y="160"
-    text-anchor="middle"
-    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
-    font-size="9"
-    fill="#8A8A99"
-  >
-    No workspaces yet — create your first one
-  </text>
-</svg>
+              <!-- Hint text -->
+              <text
+                x="110"
+                y="160"
+                text-anchor="middle"
+                font-family="system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
+                font-size="9"
+                fill="#8A8A99"
+              >
+                No workspaces yet — create your first one
+              </text>
+            </svg>
           </div>
+        </section>
 
-         </section>
+        <section class="container" id="inputContainer">
+          <form class="personalLogInputContainer form">
+            <h2>Log Task</h2>
+            <label for="task">Task Completed</label>
+            <input
+              placeholder="e.g. Fixed API bug"
+              type="text"
+              id="task"
+              class="inputField"
+            />
 
+            <label for="taskTime">Date Completed</label>
+            <input type="datetime-local" id="taskTime" class="inputField" />
 
-          <section class="container" id="inputContainer">
-            <form class="personalLogInputContainer form">
-              <h2>Log Task</h2>
-                <label for="task">Task Completed</label>
-                <input placeholder="e.g. Fixed API bug" type="text" id="task" class="inputField">
+            <label for="note">Notes</label>
+            <textarea
+              id="note"
+              placeholder="Add details about what you finished…"
+              class="inputField textArea"
+            ></textarea>
 
-                <label for="taskTime">Date Completed</label>
-                <input type="datetime-local" id="taskTime" class="inputField">
-
-                <label for="note">Notes</label>
-                <textarea id="note" placeholder="Add details about what you finished…" class="inputField textArea"></textarea>
-
-                <button type="button" id="logTask" class="btn">Log Task</button>
-            </form>
+            <button type="button" id="logTask" class="btn">Log Task</button>
+          </form>
         </section>
 
         <section class="personalCreatedLogsContainer">
           <h2>Personal Logged Tasks</h2>
-    <p class="sectionDescription">List of all tasks you logged. They are not related to your workpaces.</p>
-          <div id="personalCreatedLogs" class="logs">
-
-          </div>
+          <p class="sectionDescription">
+            List of all tasks you logged. They are not related to your
+            workpaces.
+          </p>
+          <div id="personalCreatedLogs" class="logs"></div>
         </section>
-
-
       </article>
-
     </main>
 
-  <script type="module" src="../js/utils/noAuthSessionProtect.js"></script>
-  <script type="module" src="../js/session.js"></script>
-  <script type="module" src="../js/app.js"></script>
-  <script type="module" src="../js/dashboard.js" defer></script>
-  <script type="module" src="../js/logs.js"></script>
-</body>
+    <script
+      type="module"
+      src="https://loghue.com/js/utils/noAuthSessionProtect.js"
+    ></script>
+    <script type="module" src="https://loghue.com/js/session.js"></script>
+    <script type="module" src="https://loghue.com/js/app.js"></script>
+    <script
+      type="module"
+      src="https://loghue.com/js/dashboard.js"
+      defer
+    ></script>
+    <script type="module" src="https://loghue.com/js/logs.js"></script>
+  </body>
 </html>
