@@ -5,7 +5,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://auth.loghue.com"
+          "value": "https://loghue.com"
         },
         { "key": "Access-Control-Allow-Methods", "value": "GET" }
       ]
