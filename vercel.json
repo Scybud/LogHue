@@ -7,7 +7,10 @@
           "key": "Access-Control-Allow-Origin",
           "value": "https://loghue.com"
         },
-        { "key": "Access-Control-Allow-Methods", "value": "GET" }
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET"
+        }
       ]
     },
     {
@@ -15,9 +18,12 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://loghue.com"
+          "value": "https://auth.loghue.com https://app.loghue.com"
         },
-        { "key": "Access-Control-Allow-Methods", "value": "GET" }
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET"
+        }
       ]
     }
   ]
