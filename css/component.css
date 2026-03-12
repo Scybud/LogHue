@@ -11,11 +11,10 @@
   position: relative;
 
   gap: var(--space-md);
-  margin: auto;
+  margin: 60px auto 0;
   padding: calc(var(--space-md) + 4px) calc(var(--space-sm) + 2px);
   width: 95%;
   max-width: 500px;
-  border-radius: var(--space-sm);
 }
 
 /*FORM LABEL*/
@@ -402,8 +401,8 @@ button.danger {
   cursor: not-allowed;
 }
 .backLink {
-  position: sticky;
-  top: 30px;
+  position: absolute;
+  top: 20px;
   left: 20px;
   opacity: 0.9;
 }
