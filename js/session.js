@@ -18,10 +18,11 @@ export async function initSession() {
     error,
   } = await supabase.auth.getUser();
 
+
   if (error || !user) {
     console.error(error);
     await supabase.auth.signOut();
-    resolveSessionReady(); // still resolve to avoid blocking
+    resolveSessionReady(); // resolve to avoid blocking
     return;
   }
 

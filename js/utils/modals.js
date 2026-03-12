@@ -1,6 +1,6 @@
 import { loadComponent } from "../ui.js";
 import {initWorkspaces} from "../features/workspaceData.js"
-import { loginFuntion } from "../auth.js";
+import { loginFuntion } from "../auth/auth.js";
 import {attachCreateTaskEvent} from "./modalEvents.js"
 
 export function openCreateTaskModal(workspace) {

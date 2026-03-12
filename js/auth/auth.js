@@ -1,5 +1,5 @@
-import { supabase } from "./supabase.js";
-import { buttonLoading } from "./ui.js";
+import { supabase } from "../supabase.js";
+import { buttonLoading } from "../ui.js";
 
 //Signup funtion
 async function signup(name, email, password) {
@@ -70,7 +70,7 @@ if (signupForm) {
     button.disabled = false;
 
     if (success) {
-      window.location.href = "../dashboard.html";
+      window.location.href = "https://loghue.com/dashboard.html";
     }
   });
 }
@@ -115,7 +115,7 @@ export function loginFuntion() {
         const success = await login(email, password);
 
         if (success) {
-          window.location.href = "../dashboard.html";
+          window.location.href = "https://loghue.com/pages/dashboard.html";
         }
       } finally {
         button.disabled = false;
@@ -134,7 +134,7 @@ async function signout() {
     return;
   }
   alert("Logged out successfully!");
-  window.location.href = "https://loghue.com/auth/index.html";
+  window.location.href = "https://auth.loghue.com";
 }
 
 export function attachSignoutEvents() {
