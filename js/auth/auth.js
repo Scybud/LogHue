@@ -133,7 +133,8 @@ loginFuntion()
 
 //signout
 async function signout() {
-  const { error } = await supabase.auth.signOut({scope: "global"});
+  const { error } = await supabase.auth.signOut({ scope: "global" });
+
 
   if (error) {
     alert(error.message);
