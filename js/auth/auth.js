@@ -171,12 +171,12 @@ function setupOAuthButton(buttonId, provider) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: "https://auth.loghue.com",
+        redirectTo: "https://app.loghue.com",
       },
     });
     if (error) {
       alert(`OAuth error: ${error.message}`);
-      window.location.href = "https://auth.loghue.com";
+      window.location.href = "https://app.loghue.com";
     }
   });
 }
