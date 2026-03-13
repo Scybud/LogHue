@@ -77,7 +77,10 @@ if (signupForm) {
       const success = await signup(name, email, password);
 
       if (success) {
-        window.location.href = "https://app.loghue.com";
+        const { data } = await supabase.auth.getSession();
+        const session = encodeURIComponent(JSON.stringify(data.session));
+
+        window.location.href = `https://app.loghue.com/#session=${session}`;
       }
     } finally {
       button.disabled = false;
@@ -126,16 +129,10 @@ export function loginFuntion() {
         const success = await login(email, password);
 
         if (success) {
-          // Wait for Supabase to write the cookie
-          await new Promise((resolve) => setTimeout(resolve, 300));
+          const { data } = await supabase.auth.getSession();
+          const session = encodeURIComponent(JSON.stringify(data.session));
 
-           const { data } = await supabase.auth.getSession();
-
-           const session = encodeURIComponent(JSON.stringify(data.session));
-           if (data.session) {
-             window.location.href = `https://app.loghue.com/#session=${session}`;
-           }
-
+          window.location.href = `https://app.loghue.com/#session=${session}`;
 
         }
       } finally {

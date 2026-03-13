@@ -2,9 +2,11 @@ import { supabase } from "./supabase.js";
 
 const hash = window.location.hash;
 
-if (hash.includes("session=")) {
+if (hash.startsWith("#session=")) {
   const session = JSON.parse(decodeURIComponent(hash.replace("#session=", "")));
+
   await supabase.auth.setSession(session);
+
   window.location.hash = ""; // clean up URL
 }
 
