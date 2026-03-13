@@ -131,9 +131,12 @@ export function loginFuntion() {
 
            const { data } = await supabase.auth.getSession();
 
+           const session = encodeURIComponent(JSON.stringify(data.session));
            if (data.session) {
-             window.location.href = "https://app.loghue.com";
+             window.location.href = `https://app.loghue.com/#session=${session}`;
            }
+
+
         }
       } finally {
         button.disabled = false;
