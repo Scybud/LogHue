@@ -34,9 +34,9 @@ export async function initSession() {
     return;
   }
 
-  if (!user && window.location.href !== "auth.loghue.com") {
+  if (!user && window.location.hostname !== "auth.loghue.com") {
     console.warn("No active session — redirecting to login.");
-    window.location.href = "/";
+    window.location.href = "auth.loghue.com";
     resolveSessionReady();
     return;
   }
