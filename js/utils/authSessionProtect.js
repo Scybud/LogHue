@@ -2,7 +2,8 @@ import { sessionState, sessionReady } from "../session.js";
 import {supabase} from "https://loghue.com/js/supabase.js"
 async function protectLoginPage() {
   await sessionReady;
-
+  
+  /*
   setTimeout(() => {
 
     if (sessionState.user) {
@@ -10,9 +11,9 @@ async function protectLoginPage() {
       return;
     }
   }, 1000)
+  */
 
   // optional: listen once for OAuth redirect
-  /*
   setTimeout(() => {
 
     supabase.auth.onAuthStateChange((_event, session) => {
@@ -21,6 +22,5 @@ async function protectLoginPage() {
       }
     });
   }, 1000)
-  */
 }
 protectLoginPage();
