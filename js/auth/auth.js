@@ -67,14 +67,13 @@ if (signupForm) {
 
     try {
       const success = await signup(name, email, password);
-      
+
       if (success) {
         window.location.href = "https://app.loghue.com";
       }
     } finally {
-         button.disabled = false;
-         buttonLoading(button);
-
+      button.disabled = false;
+      buttonLoading(button);
     }
   });
 }
@@ -128,13 +127,11 @@ export function loginFuntion() {
     });
   }
 }
-loginFuntion()
-
+loginFuntion();
 
 //signout
 async function signout() {
   const { error } = await supabase.auth.signOut();
-
 
   if (error) {
     alert(error.message);
@@ -169,11 +166,10 @@ function setupOAuthButton(buttonId, provider) {
         redirectTo: "https://app.loghue.com",
       },
     });
-   if (error) {
-     alert(`OAuth error: ${error.message}`);
-     window.location.href = "https://auth.loghue.com";
-   }
-
+    if (error) {
+      alert(`OAuth error: ${error.message}`);
+      window.location.href = "https://auth.loghue.com";
+    }
   });
 }
 
@@ -183,4 +179,3 @@ function setupOAuthButton(buttonId, provider) {
 setupOAuthButton("googleAuth", "google");
 setupOAuthButton("microsoftAuth", "azure");
 setupOAuthButton("githubAuth", "github");
-
