@@ -65,12 +65,16 @@ if (signupForm) {
     button.disabled = true;
     buttonLoading(button);
 
-    const success = await signup(name, email, password);
+    try {
+      const success = await signup(name, email, password);
+      
+      if (success) {
+        window.location.href = "https://app.loghue.com";
+      }
+    } finally {
+         button.disabled = false;
+         buttonLoading(button);
 
-    button.disabled = false;
-
-    if (success) {
-      window.location.href = "https://app.loghue.com";
     }
   });
 }
@@ -115,11 +119,7 @@ export function loginFuntion() {
         const success = await login(email, password);
 
         if (success) {
-          const {data} = await supabase.auth.getSession();
-
-          const session = encodeURIComponent(JSON.stringify(data.session));
-
-          window.location.href = `https://app.loghue.com/#session=${session}`;
+          window.location.href = `https://app.loghue.com`;
         }
       } finally {
         button.disabled = false;

@@ -21,7 +21,7 @@ import { initPersonalTasks } from "./features/personalTasks.js";
 import { initWorkspaces } from "./features/workspaceData.js";
 import { autoExpandTextarea } from "./utils/textarea.js";
 
-import { loginFuntion, attachSignoutEvents } from "./auth/auth.js";
+import { attachSignoutEvents } from "./auth/auth.js";
 
 window.addEventListener("DOMContentLoaded", async () => {
   await loadComponent(
