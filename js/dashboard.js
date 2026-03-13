@@ -83,7 +83,7 @@ await workspacesReady;
   <!-- Hint text -->
   <text
     x="110"
-    y="140"
+    y="130"
     text-anchor="middle"
     font-family="system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
     font-size="9"
