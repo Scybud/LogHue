@@ -1,5 +1,13 @@
 import { supabase } from "./supabase.js";
 
+const hash = window.location.hash;
+
+if (hash.includes("session=")) {
+  const session = JSON.parse(decodeURIComponent(hash.replace("#session=", "")));
+  await supabase.auth.setSession(session);
+  window.location.hash = ""; // clean up URL
+}
+
 export const sessionState = {
   user: null,
   profile: null,
@@ -14,10 +22,11 @@ export const sessionReady = new Promise((resolve) => {
 
 export async function initSession() {
   const {
-    data: { user },
+    data: { session },
     error,
-  } = await supabase.auth.getUser();
+  } = await supabase.auth.getSession();
 
+const user = session?.user || null;
 
   if (error) {
     console.error(error);
