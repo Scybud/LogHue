@@ -9,7 +9,7 @@ async function protectLoginPage() {
       window.location.href = "https://app.loghue.com";
       return;
     }
-  },230)
+  }, 1000)
 
   // optional: listen once for OAuth redirect
   supabase.auth.onAuthStateChange((_event, session) => {
