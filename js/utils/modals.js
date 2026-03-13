@@ -11,7 +11,7 @@ export function openCreateTaskModal(workspace) {
 const ws = workspace;
 
       await loadComponent(
-        "../components/modals/create-task.html",
+        "https://loghue.com/components/modals/create-task.html",
         "modalContainer",
       );
 
@@ -25,7 +25,7 @@ export function openLogTaskModal() {
     btn.addEventListener("click", async () => {
 
       await loadComponent(
-        "../components/modals/log-entry.html",
+        "https://loghue.com/components/modals/log-entry.html",
         "modalContainer",
       );
 
@@ -39,7 +39,7 @@ export function openCreateWorkspaceModal() {
     btn.addEventListener("click", async () => {
 
       await loadComponent(
-        "../components/modals/create-workspace.html",
+        "https://loghue.com/components/modals/create-workspace.html",
         "modalContainer"
       );
 
@@ -56,7 +56,7 @@ function attachLoginModalEvents() {
      if (openSignupModalBtn) {
        openSignupModalBtn.addEventListener("click", async () => {
          await loadComponent(
-           "components/modals/signup.html",
+           "https://loghue.com/components/modals/signup.html",
            "modalContainer",
          );
 
@@ -69,7 +69,7 @@ function attachSignupModalEvents() {
  const openLoginModal = document.getElementById("openLoginModal");
  if (openLoginModal) {
    openLoginModal.addEventListener("click", async () => {
-     await loadComponent("components/modals/login.html", "modalContainer");
+     await loadComponent("https://loghue.com/components/modals/login.html", "modalContainer");
 
      attachLoginModalEvents()
     });
@@ -83,7 +83,7 @@ export function openLoginModal() {
   if(openLoginModalBtn) {
     openLoginModalBtn.addEventListener("click", async () => {
 
-      await loadComponent("components/modals/login.html", "modalContainer"); 
+      await loadComponent("https://loghue.com/components/modals/login.html", "modalContainer"); 
 
       attachLoginModalEvents()
 
