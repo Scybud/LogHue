@@ -50,8 +50,6 @@ window.addEventListener("DOMContentLoaded", async () => {
   //LOADER
   removeLoader();
 
-  //Login function
-  loginFuntion();
   //Logout function
   attachSignoutEvents();
 
