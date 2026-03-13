@@ -34,7 +34,7 @@ export async function initSession() {
     return;
   }
 
-  if (!user && window.location.hostname !== "auth.loghue.com") {
+  if (!user) {
     console.warn("No active session — redirecting to login.");
     window.location.href = "https://auth.loghue.com";
     resolveSessionReady();

@@ -4,14 +4,21 @@ const SUPABASE_URL = "https://qqactsebaxdottiiyrng.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_fWWIiWF4l_q-eNHU-Rs5qQ_zlaMggjo";
 
 //EXPORT CLIENT INFO
-export const supabase = createClient(
-   SUPABASE_URL,
-   SUPABASE_ANON_KEY,
-    {
-    auth: {
-      persistSession: true,      // saves session in localStorage
-      autoRefreshToken: true,    // refreshes token automatically
-      detectSessionInUrl: true,  // needed for OAuth redirects
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    flowType: "pkce",
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+
+    //disable localStorage → use cookies instead
+    storage: undefined,
+
+    // Shared cookie across all LogHue subdomains
+    cookieOptions: {
+      domain: ".loghue.com",
+      sameSite: "Lax",
+      secure: true,
     },
-   }
-);
+  },
+});
