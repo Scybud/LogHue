@@ -10,15 +10,5 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true,
-
-    //disable localStorage → use cookies instead
-    storage: undefined,
-
-    // Shared cookie across all LogHue subdomains
-    cookieOptions: {
-      domain: ".loghue.com",
-      sameSite: "Lax",
-      secure: true,
-    },
   },
 });

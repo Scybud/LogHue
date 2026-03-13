@@ -4,7 +4,7 @@ async function protectAppPage() {
   await sessionReady;
 
   if (!sessionState.user) {
-    window.location.href = "https://auth.loghue.com";
+    window.location.href = "/auth";
     return;
   }
 

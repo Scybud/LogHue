@@ -73,7 +73,7 @@ if (signupForm) {
         const { data } = await supabase.auth.getSession();
         const session = encodeURIComponent(JSON.stringify(data.session));
 
-        window.location.href = `https://app.loghue.com/#session=${session}`;
+        window.location.href = `../`;
       }
     } finally {
       button.disabled = false;
@@ -121,13 +121,10 @@ export function loginFuntion() {
       try {
         const success = await login(email, password);
 
-        if (success) {
-          const { data } = await supabase.auth.getSession();
-          const session = encodeURIComponent(JSON.stringify(data.session));
-
-          window.location.href = `https://app.loghue.com/#session=${session}`;
-
+        if (success) {       
+          window.location.href = `../`;
         }
+        
       } finally {
         button.disabled = false;
         buttonLoading(button);
@@ -146,7 +143,7 @@ async function signout() {
     return;
   }
   alert("Logged out successfully!");
-  window.location.href = "https://auth.loghue.com";
+  window.location.href = "/auth";
 }
 
 export function attachSignoutEvents() {
@@ -171,12 +168,12 @@ function setupOAuthButton(buttonId, provider) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: "https://app.loghue.com",
+        redirectTo: "https://app.loghue.com/auth/callback",
       },
     });
     if (error) {
       alert(`OAuth error: ${error.message}`);
-      window.location.href = "https://app.loghue.com";
+      window.location.href = "https://app.loghue.com/auth";
     }
   });
 }
