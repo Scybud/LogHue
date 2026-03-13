@@ -34,6 +34,13 @@ const user = session?.user || null;
     return;
   }
 
+   if (!user) {
+    console.warn("No active session — redirecting to login.");
+    window.location.href = "/login.html";
+    resolveSessionReady();
+    return;
+  }
+  
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("*, plan (id, name, max_workspaces, max_members, price)")
