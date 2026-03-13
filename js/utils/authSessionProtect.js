@@ -12,11 +12,14 @@ async function protectLoginPage() {
   }, 1000)
 
   // optional: listen once for OAuth redirect
-  supabase.auth.onAuthStateChange((_event, session) => {
-    if (session) {
-      window.location.href = "https://app.loghue.com";
-    }
-  });
+  setTimeout(() => {
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        window.location.href = "https://app.loghue.com";
+      }
+    });
+  }, 1000)
 }
 
 protectLoginPage();
