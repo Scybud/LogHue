@@ -12,11 +12,20 @@ document.addEventListener("click", async (e) => {
   if(!workspaceId) return;
 
   const { data: workspace, error } = await supabase
-  .from("workspaces")
-  .select("*, workspace_tasks(*), workspace_members(*)")
-  .eq("id", workspaceId)
-  .maybeSingle();
+    .from("workspace_members")
+    .select(
+      `
+    role,
+    profiles (
+      id,
+      name,
+      email
+    )
+  `,
+    )
+    .eq("workspace_id", workspaceId);
 
+    
 if(error) {
   console.error(error)
   alert(error.message)
