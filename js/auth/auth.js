@@ -1,13 +1,6 @@
 import { supabase } from "../supabase.js";
 import { buttonLoading } from "../ui.js";
 
-// Check if user is already logged in (after OAuth redirect)
-supabase.auth.getSession().then(async ({ data }) => {
-  if (data.session) {
-    window.location.href = "https://app.loghue.com";
-  }
-});
-
 
 //Signup funtion
 async function signup(name, email, password) {
