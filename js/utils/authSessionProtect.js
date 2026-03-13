@@ -1,5 +1,5 @@
 import { sessionState, sessionReady } from "../session.js";
-import {supabase} from "https://loghue.com/supabase.js"
+import {supabase} from "https://loghue.com/js/supabase.js"
 async function protectLoginPage() {
   await sessionReady;
 
