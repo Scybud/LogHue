@@ -26,7 +26,7 @@ export async function initSession() {
     error,
   } = await supabase.auth.getSession();
 
-const user = session?.user || null;
+  const user = session?.user || null;
 
   if (error) {
     console.error(error);
@@ -34,13 +34,13 @@ const user = session?.user || null;
     return;
   }
 
-   if (!user) {
+  if (!user) {
     console.warn("No active session — redirecting to login.");
-    window.location.href = "/login.html";
+    window.location.href = "/auth.html";
     resolveSessionReady();
     return;
   }
-  
+
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("*, plan (id, name, max_workspaces, max_members, price)")
