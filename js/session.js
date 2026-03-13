@@ -36,7 +36,7 @@ export async function initSession() {
 
   if (!user) {
     console.warn("No active session — redirecting to login.");
-    window.location.href = "/index.html";
+    window.location.href = "/";
     resolveSessionReady();
     return;
   }
