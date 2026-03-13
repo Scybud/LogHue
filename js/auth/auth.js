@@ -1,6 +1,14 @@
 import { supabase } from "../supabase.js";
 import { buttonLoading } from "../ui.js";
 
+// Check if user is already logged in (after OAuth redirect)
+supabase.auth.getSession().then(async ({ data }) => {
+  if (data.session) {
+    window.location.href = "https://app.loghue.com";
+  }
+});
+
+
 //Signup funtion
 async function signup(name, email, password) {
   const { data, error } = await supabase.auth.signUp({
@@ -118,7 +126,14 @@ export function loginFuntion() {
         const success = await login(email, password);
 
         if (success) {
-          window.location.href = `https://app.loghue.com`;
+          // Wait for Supabase to write the cookie
+          await new Promise((resolve) => setTimeout(resolve, 300));
+
+           const { data } = await supabase.auth.getSession();
+
+           if (data.session) {
+             window.location.href = "https://app.loghue.com";
+           }
         }
       } finally {
         button.disabled = false;
@@ -163,7 +178,7 @@ function setupOAuthButton(buttonId, provider) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: "https://app.loghue.com",
+        redirectTo: "https://auth.loghue.com",
       },
     });
     if (error) {
