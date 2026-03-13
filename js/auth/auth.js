@@ -128,6 +128,8 @@ export function loginFuntion() {
     });
   }
 }
+loginFuntion()
+
 
 //signout
 async function signout() {
