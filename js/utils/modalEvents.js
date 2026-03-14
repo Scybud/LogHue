@@ -17,9 +17,9 @@ console.log(loadedMembers)
   loadedMembers.forEach((lm) => {
     const options = document.createElement("option")
 options.value = lm.id;
-options.textContent = lm.name;
+options.textContent = lm.profiles.full_name;
 
-assignedTo.prepend(options)
+assignedTo.append(options)
   })
 
   // When create task button is clicked to create a new task
