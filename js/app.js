@@ -8,7 +8,6 @@ import {
 import { attachSidebarEvents } from "./components/sidebar.js";
 import {
   openCreateTaskModal,
-  openAddMemeberModal,
   openLogTaskModal,
   openCreateWorkspaceModal,
   openLoginModal,
@@ -81,7 +80,6 @@ window.addEventListener("DOMContentLoaded", async () => {
   openLogTaskModal();
   openCreateWorkspaceModal();
   openLoginModal();
-openAddMemeberModal();
 
 
   initPersonalTasks();

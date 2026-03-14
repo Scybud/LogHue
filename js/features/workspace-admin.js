@@ -1,5 +1,6 @@
 import { attachSidebarEvents } from "./../components/sidebar.js";
-import { openCreateTaskModal } from "./../utils/modals.js";
+import { openCreateTaskModal, openAddMemeberModal
+ } from "./../utils/modals.js";
 import { supabase } from "../supabase.js";
 
 let currentWorkspace = null;
@@ -84,6 +85,8 @@ export async function initWorkspaceData() {
   workspace.workspace_tasks = workspace.workspace_tasks || [];
 
   openCreateTaskModal(currentWorkspace.id);
+  openAddMemeberModal(currentWorkspace.id);
+
 }
 
 function renderSection(section, workspace, container) {

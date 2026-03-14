@@ -21,8 +21,8 @@ if (!workspaceId) return;
     }, {once: true});
 }
 
-export function openAddMemeberModal() {
-const btn = document.getElementById("addMemberOpen")
+export function openAddMemeberModal(workspaceId) {
+  const btn = document.getElementById("addMemberOpen");
   if (!btn) return;
 
   btn.addEventListener(
@@ -33,12 +33,10 @@ const btn = document.getElementById("addMemberOpen")
         "modalContainer",
       );
 
-      attachAddMemberEvents();
+      attachAddMemberEvents(workspaceId);
     },
     { once: true },
   );
-
-
 }
 
 export function openLogTaskModal() {
