@@ -20,7 +20,7 @@ import { initSession } from "./session.js";
 import { initPersonalTasks } from "./features/personalTasks.js";
 import { initWorkspaces } from "./features/workspaceData.js";
 import { autoExpandTextarea } from "./utils/textarea.js";
-
+import { handleConcentEvents, loadAnalytics } from "./js/consent";
 import { attachSignoutEvents } from "./auth/auth.js";
 
 window.addEventListener("DOMContentLoaded", async () => {
@@ -45,8 +45,21 @@ window.addEventListener("DOMContentLoaded", async () => {
      "actionsMessage",
    );
 
-  //SESSION FUNTION
+  //SESSION FUNCTION
   initSession();
+
+
+  // Auto-load analytics if user already accepted
+  const saved = localStorage.getItem("consent-preferences");
+  if (saved) {
+    const prefs = JSON.parse(saved);
+    if (prefs.analytics) {
+      loadAnalytics();
+    }
+  }
+
+  // Attach banner + modal events
+  handleConcentEvents();
 
   //ADD THEME PREFFERENCE
   setTheme();
