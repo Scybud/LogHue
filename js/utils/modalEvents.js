@@ -138,12 +138,17 @@ export async function attachAddMemberEvents(workspaceId) {
 
     const inviteUrl = `https://app.loghue.com/invite.html?token=${invite.token}`;
 
-    await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: inviteUrl,
+    await fetch(
+      "https://qqactsebaxdottiiyrng.supabase.co/functions/v1/send-invite",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          inviteUrl,
+        }),
       },
-    });
+    );
 
     alert("Invite sent!");
   };
@@ -169,5 +174,18 @@ export async function attachAddMemberEvents(workspaceId) {
       width: 180,
       height: 180,
     });
+  };
+
+  // COPY INVITE LINK
+  document.getElementById("copy-invite-link-btn").onclick = async () => {
+    const link = document.getElementById("invite-link-input").value;
+
+    try {
+      await navigator.clipboard.writeText(link);
+      alert("Invite link copied!");
+    } catch (err) {
+      console.error("Copy failed", err);
+      alert("Failed to copy link");
+    }
   };
 }
