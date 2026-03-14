@@ -1,4 +1,4 @@
-import { loadComponent, closeModal as closeConsentModal } from "./js/ui";
+import { loadComponent, closeModal as closeConsentModal } from "./js/ui.js";
 
 function loadAnalytics() {
   if (window.__analyticsLoaded) return;
