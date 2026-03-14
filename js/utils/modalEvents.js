@@ -16,7 +16,7 @@ export function attachCreateTaskEvent(tasksArr) {
 console.log(loadedMembers)
   loadedMembers.forEach((lm) => {
     const options = document.createElement("option")
-options.value = lm.id;
+options.value = lm.user_id;
 options.textContent = lm.profiles.full_name;
 
 assignedTo.append(options)
