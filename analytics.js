@@ -53,8 +53,8 @@ export function handleConcentEvents() {
   });
 
   // Customize (your working version)
-    if (!customizeBtn) return;
   customizeBtn.addEventListener("click", async () => {
+     console.log("here")
     await loadComponent(
       "https://loghue.com/components/modals/cookies-customize.html",
       "modalContainer"
