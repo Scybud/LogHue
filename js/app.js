@@ -41,7 +41,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     "generalSidebarContainer",
   );
    await loadComponent(
-     "https://loghue.com/components/cookies-banner.html",
+     "https://loghue.com/components/modals/cookies-banner.html",
      "actionsMessage",
    );
 
