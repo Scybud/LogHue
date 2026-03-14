@@ -2,20 +2,29 @@ import { loadComponent } from "../ui.js";
 import {initWorkspaces} from "../features/workspaceData.js"
 import { loginFuntion } from "../auth/auth.js";
 import {attachCreateTaskEvent} from "./modalEvents.js"
+import { supabase } from "../supabase.js";
 
 export function openCreateTaskModal(workspace) {
   const btn = document.getElementById("createTaskOpen");
+  if (!btn) return;
 
-  if (!btn) return
     btn.addEventListener("click", async () => {
-const ws = workspace;
+
+      const {data: tasks, error} = await supabase.from("workspace_tasks").select("*")
+
+      if (error) {
+        console.error("Error fetching tasks:", error);
+        alert("Failed to load tasks.");
+        return;
+      }
 
       await loadComponent(
         "https://loghue.com/components/modals/create-task.html",
         "modalContainer",
       );
 
-      attachCreateTaskEvent(ws)
+
+      attachCreateTaskEvent(tasks || []);
     });
 }
 

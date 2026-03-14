@@ -1,5 +1,10 @@
 import { closeModal } from "../ui.js";
-import { formatDateTime, loadCreatedTasks } from "../features/workspace-admin.js";
+import {
+  formatDateTime,
+  loadCreatedTasks,
+  loadedMembers,
+} from "../features/workspace-admin.js";
+import { supabase } from "../supabase.js";
 
 export function attachCreateTaskEvent(tasksArr) {
   tasksArr = tasksArr || [];
@@ -7,68 +12,89 @@ export function attachCreateTaskEvent(tasksArr) {
   const createTaskBtn = document.getElementById("createTaskBtn");
   if (!createTaskBtn) return;
 
-  //When create task button is clicked to create new task
-  createTaskBtn.addEventListener("click", () => {
+  const assignedTo = document.getElementById("assignToDropdown");
+console.log(loadedMembers)
+  loadedMembers.forEach((lm) => {
+    const options = document.createElement("option")
+options.value = lm.id;
+options.textContent = lm.name;
+
+assignedTo.prepend(options)
+  })
+
+  // When create task button is clicked to create a new task
+  createTaskBtn.addEventListener("click", async () => {
     const taskTitle = document.getElementById("taskTitle").value.trim();
     const taskDescription = document
       .getElementById("taskDescription")
       .value.trim();
-    const perasonAssigned = document.getElementById("assignToDropdown").value;
+const assignedToValue = assignedTo.value;
 
     if (!taskTitle || !taskDescription) {
-      alert("Input field must not be empty");
+      alert("Input fields must not be empty");
       return;
     }
 
     const formattedTDate = formatDateTime(Date.now());
 
     const taskData = {
-      id: crypto.randomUUID(),
       title: taskTitle,
       created_at: formattedTDate,
       status: "in-progress",
-      assigned_to: perasonAssigned,
+      assigned_to: assignedToValue || "", // Assign to empty if no one is selected
       description: taskDescription,
     };
 
-    tasksArr.unshift(taskData);
+    // Insert task into the database
+    const { data, error } = await supabase
+      .from("workspace_tasks")
+      .insert(taskData)
+      .select();
 
-//RENDER TASK IN THE UI
-     tasksArr.forEach((tsk) => {
-       const taskCard = document.createElement("div");
-       taskCard.classList.add("card", "taskCard");
+    if (error) {
+      console.error(error);
+      alert("Failed to create task.");
+      return;
+    }
 
-       const taskTitle = document.createElement("h3");
-       taskTitle.classList.add("taskTitle");
-       taskTitle.textContent = tsk.title;
+    // Assuming only one task is created, use the first item
+    const createdTask = data[0];
 
-       const taskMeta = document.createElement("p");
-       taskMeta.classList.add("taskMeta", "meta");
+    // Render the task in the UI
+    const taskCard = document.createElement("div");
+    taskCard.classList.add("card", "taskCard");
 
-       const assignToMemberBtn = document.createElement("button");
-       assignToMemberBtn.classList.add(
-         "btn",
-         "btn-primary",
-         "btn-sm",
-         "assignToMemberBtn",
-       );
-       assignToMemberBtn.textContent = "Assign to Member";
+    const taskTitleElem = document.createElement("h3");
+    taskTitleElem.classList.add("taskTitle");
+    taskTitleElem.textContent = createdTask.title;
 
-       if (tsk.assigned_to === "") {
-         taskMeta.textContent = `Unassigned`;
-         taskCard.append(taskTitle, taskMeta, assignToMemberBtn);
-       } else {
-         taskMeta.textContent = `Assigned to: ${tsk.assigned_to}`;
-         taskCard.append(taskTitle, taskMeta);
-       }
-const container = document.querySelector(".grid");
-if(container) {
-  container.prepend(taskCard);
-  
-}
-});
+    const taskMeta = document.createElement("p");
+    taskMeta.classList.add("taskMeta", "meta");
 
+    const assignToMemberBtn = document.createElement("button");
+    assignToMemberBtn.classList.add(
+      "btn",
+      "btn-primary",
+      "btn-sm",
+      "assignToMemberBtn",
+    );
+    assignToMemberBtn.textContent = "Assign to Member";
 
+    if (createdTask.assigned_to === "") {
+      taskMeta.textContent = "Unassigned";
+      taskCard.append(taskTitleElem, taskMeta, assignToMemberBtn);
+    } else {
+      taskMeta.textContent = `Assigned to: ${createdTask.assigned_to}`;
+      taskCard.append(taskTitleElem, taskMeta);
+    }
+
+    // Prepend the new task card to the grid
+    const container = document.querySelector(".grid");
+    if (container) {
+      container.prepend(taskCard);
+    }
+
+    // Close the modal after task creation
     closeModal();
   });
 }

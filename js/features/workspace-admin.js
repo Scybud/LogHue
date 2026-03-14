@@ -3,6 +3,7 @@ import { openCreateTaskModal } from "./../utils/modals.js";
 import { supabase } from "../supabase.js";
 
 let currentWorkspace = null;
+export let loadedMembers = [];
 
 document.addEventListener("click", async (e) => {
   const btn = e.target.closest(".navBtn");
@@ -75,8 +76,14 @@ export async function initWorkspaceData() {
 
   attachSidebarEvents();
 
+const members = Array.isArray(workspace.workspace_members)
+    ? workspace.workspace_members
+    : [workspace.workspace_members];
+
+loadedMembers = members;
+
   workspace.workspace_tasks = workspace.workspace_tasks || [];
-  openCreateTaskModal(workspace.workspace_tasks);
+  openCreateTaskModal(currentWorkspace);
 }
 
 function renderSection(section, workspace, container) {
@@ -91,13 +98,19 @@ function renderSection(section, workspace, container) {
 
   switch (section) {
     case "createdTasks":
-      loadCreatedTasks(workspace.workspace_tasks || [], container);
+      const tasks = Array.isArray(workspace.workspace_tasks)
+    ? workspace.workspace_tasks
+    : [workspace.workspace_tasks];
+
+      loadCreatedTasks(tasks|| [], container);
       break;
 
     case "members":
   const members = Array.isArray(workspace.workspace_members)
     ? workspace.workspace_members
     : [workspace.workspace_members];
+
+loadedMembers = members;
 
   loadMembers(members, container);
   break;
