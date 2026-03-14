@@ -29,7 +29,7 @@ export function openAddMemeberModal(workspaceId) {
     "click",
     async () => {
       await loadComponent(
-        "../components/modals/add-member.html",
+        "https://loghue.com/components/modals/add-member.html",
         "modalContainer",
       );
 
