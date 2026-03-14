@@ -20,7 +20,7 @@ import { initSession } from "./session.js";
 import { initPersonalTasks } from "./features/personalTasks.js";
 import { initWorkspaces } from "./features/workspaceData.js";
 import { autoExpandTextarea } from "./utils/textarea.js";
-import { handleConcentEvents, loadAnalytics } from "./js/consent";
+import { handleConcentEvents, loadAnalytics } from "../analytics.js";
 import { attachSignoutEvents } from "./auth/auth.js";
 
 window.addEventListener("DOMContentLoaded", async () => {
