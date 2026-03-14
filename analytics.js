@@ -24,44 +24,59 @@ export function loadAnalytics() {
 export function handleConcentEvents() {
   const actionsMessage = document.getElementById("actionsMessage");
 
+  // Banner buttons (now guaranteed to exist)
+  const acceptBtn = document.getElementById("accept-all");
+  const rejectBtn = document.getElementById("reject-all");
   const customizeBtn = document.getElementById("customize");
-  const saveBtn = document.getElementById("save-preferences");
 
-  // These will be assigned after modal loads
-  let analyticsToggle;
-  let marketingToggle;
+  // Accept All
+  acceptBtn.addEventListener("click", () => {
+    localStorage.setItem("consent-preferences", JSON.stringify({
+      analytics: true,
+      marketing: true
+    }));
 
-  // OPEN CUSTOMIZE MODAL
+    loadAnalytics();
+    actionsMessage.innerHTML = "";
+  });
+
+  // Reject All
+  rejectBtn.addEventListener("click", () => {
+    localStorage.setItem("consent-preferences", JSON.stringify({
+      analytics: false,
+      marketing: false
+    }));
+
+    actionsMessage.innerHTML = "";
+  });
+
+  // Customize (your working version)
   customizeBtn.addEventListener("click", async () => {
     await loadComponent(
       "https://loghue.com/components/modals/cookies-customize.html",
-      "modalContainer",
+      "modalContainer"
     );
 
-    // Now the modal exists — bind its elements
-    analyticsToggle = document.getElementById("toggle-analytics");
-    marketingToggle = document.getElementById("toggle-marketing");
-
+    const analyticsToggle = document.getElementById("toggle-analytics");
+    const marketingToggle = document.getElementById("toggle-marketing");
     const closeBtn = document.getElementById("close-modal");
-    closeBtn.addEventListener("click", () => {
+    const saveBtn = document.getElementById("save-preferences");
+
+    closeBtn.addEventListener("click", () => closeConsentModal());
+
+    saveBtn.addEventListener("click", () => {
+      const prefs = {
+        analytics: analyticsToggle.checked,
+        marketing: marketingToggle.checked
+      };
+
+      localStorage.setItem("consent-preferences", JSON.stringify(prefs));
+
+      if (prefs.analytics) loadAnalytics();
+
       closeConsentModal();
+      actionsMessage.innerHTML = "";
     });
   });
-
-  // SAVE PREFERENCES
-  saveBtn.addEventListener("click", () => {
-    const prefs = {
-      analytics: analyticsToggle?.checked ?? false,
-      marketing: marketingToggle?.checked ?? false,
-    };
-
-    localStorage.setItem("consent-preferences", JSON.stringify(prefs));
-
-    if (prefs.analytics) {
-      loadAnalytics();
-    }
-
-    closeConsentModal();
-    actionsMessage.innerHTML = "";
-  });
 }
+
