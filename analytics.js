@@ -1,6 +1,6 @@
 import { loadComponent, closeModal as closeConsentModal } from "./js/ui.js";
 
-function loadAnalytics() {
+export function loadAnalytics() {
   if (window.__analyticsLoaded) return;
   window.__analyticsLoaded = true;
 
