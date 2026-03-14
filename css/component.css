@@ -552,8 +552,14 @@ button.danger {
 
 .modal-content {
   padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  justify-content: space-between;
   border-radius: 12px;
   width: 360px;
+  max-width: 100%;
+  background: var(--card-bg);
   box-shadow: 0 8px 24px rgba(0,0,0,0.15);
 }
 
