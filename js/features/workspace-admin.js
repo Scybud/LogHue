@@ -162,7 +162,7 @@ export function loadCreatedTasks(tasks, container) {
       taskMeta.textContent = `Unassigned`;
       taskCard.append(taskTitle, taskMeta, assignToMemberBtn);
     } else {
-      taskMeta.textContent = `Assigned to: ${tsk.assigned_to}`;
+      taskMeta.textContent = `Assigned to: ${tsk.profiles.full_nameo}`;
       taskCard.append(taskTitle, taskMeta);
     }
 
