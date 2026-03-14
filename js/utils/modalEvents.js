@@ -113,38 +113,47 @@ export async function attachAddMemberEvents(workspaceId) {
   const emailSection = document.getElementById("invite-email-section");
   const qrSection = document.getElementById("invite-qr-section");
 
+  // SWITCH TO EMAIL MODE
   document.getElementById("invite-email-btn").onclick = () => {
     emailSection.style.display = "block";
     qrSection.style.display = "none";
   };
 
+  // SWITCH TO QR MODE
   document.getElementById("invite-qr-btn").onclick = () => {
     emailSection.style.display = "none";
     qrSection.style.display = "block";
   };
 
+  // SEND EMAIL INVITE
   document.getElementById("send-email-invite-btn").onclick = async () => {
     const email = document.getElementById("invite-email-input").value;
     const role = document.getElementById("invite-role-email").value;
 
     const invite = await createWorkspaceInvite({
-      workspaceId: workspaceId,
+      workspaceId,
       role,
       email,
+    });
+
+    const inviteUrl = `https://app.loghue.com/invite.html?token=${invite.token}`;
+
+    await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: inviteUrl,
+      },
     });
 
     alert("Invite sent!");
   };
 
-  //FOR QR INVITE
-  document.getElementById("invite-qr-btn").onclick = async () => {
-    emailSection.style.display = "none";
-    qrSection.style.display = "block";
-
+  // GENERATE QR INVITE
+  document.getElementById("generate-qr-btn").onclick = async () => {
     const role = document.getElementById("invite-role-qr").value;
 
     const invite = await createWorkspaceInvite({
-      workspaceId: workspaceId,
+      workspaceId,
       role,
     });
 
@@ -157,8 +166,8 @@ export async function attachAddMemberEvents(workspaceId) {
 
     new QRCode(qrContainer, {
       text: inviteUrl,
-      width: 200,
-      height: 200,
+      width: 180,
+      height: 180,
     });
   };
 }

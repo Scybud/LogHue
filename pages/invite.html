@@ -8,8 +8,6 @@
 <link rel="stylesheet" href="https://loghue.com/css/component.css">
 <link rel="stylesheet" href="https://loghue.com/css/utilities.css">
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
     body {
       padding: 40px;
@@ -52,10 +50,7 @@
   </div>
 
   <script>
-    const supabase = supabase.createClient(
-      "YOUR_SUPABASE_URL",
-      "YOUR_SUPABASE_ANON_KEY"
-    );
+    import {supabase} from "https://loghue.com/js/supabase.js"
 
     async function acceptInvite(token) {
       const status = document.getElementById("status");
@@ -77,8 +72,8 @@
       // 2. Ensure user is logged in
       const { data: auth } = await supabase.auth.getUser();
       if (!auth.user) {
-        const redirectUrl = `/invite.html?token=${encodeURIComponent(token)}`;
-        window.location.href = `/login.html?redirect=${encodeURIComponent(redirectUrl)}`;
+        const redirectUrl = `https://app.loghue.com/invite.html?token=${encodeURIComponent(token)}`;
+        window.location.href = `https://app.loghue.com/auth/index.html?redirect=${encodeURIComponent(redirectUrl)}`;
         return;
       }
 
