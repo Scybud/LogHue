@@ -144,7 +144,7 @@ export async function attachAddMemberEvents(workspaceId) {
     const role = document.getElementById("invite-role-qr").value;
 
     const invite = await createWorkspaceInvite({
-      workspaceId: currentWorkspaceId,
+      workspaceId: workspaceId,
       role,
     });
 
