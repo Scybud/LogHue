@@ -48,10 +48,14 @@
     <h2>Joining Workspace…</h2>
     <p id="status" class="loading">Please wait</p>
   </div>
-
+  
   <script type="module">
     import {supabase} from "https://loghue.com/js/supabase.js"
-
+    
+    // Run on page load
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    
     async function acceptInvite(token) {
       const status = document.getElementById("status");
 
@@ -109,16 +113,14 @@
       }, 800);
     }
 
-    // Run on page load
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
 
     if (!token) {
       document.getElementById("status").textContent = "Missing invite token.";
       document.getElementById("status").className = "error";
-    } else {
-      acceptInvite(token);
+      return;
     }
+      acceptInvite(token);
+    
   </script>
 </body>
 </html>
