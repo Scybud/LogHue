@@ -532,18 +532,6 @@ button.danger {
   justify-content: flex-end;
 }
 
-.btn {
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  border: none;
-}
-
-.btn.primary {
-  background: #ff6b35;
-}
-
 .btn.secondary {
   background: #f2f2f2;
 }
