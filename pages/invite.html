@@ -55,7 +55,7 @@
     // Run on page load
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
-    
+
     async function acceptInvite(token) {
       const status = document.getElementById("status");
 
@@ -117,9 +117,11 @@
     if (!token) {
       document.getElementById("status").textContent = "Missing invite token.";
       document.getElementById("status").className = "error";
-      return;
-    }
+      
+    } else {
+
       acceptInvite(token);
+    }
     
   </script>
 </body>
