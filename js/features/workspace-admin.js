@@ -305,3 +305,23 @@ function loadActivities(allLogs, container) {
   section.append(sectionTitle, divGrid);
   container.append(section);
 }
+
+
+export async function createWorkspaceInvite({ workspaceId, role, email = null }) {
+  const token = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '');
+
+  const { data, error } = await supabase
+    .from('workspace_invites')
+    .insert({
+      workspace_id: workspaceId,
+      role,
+      email,
+      token,
+      created_by: (await supabase.auth.getUser()).data.user.id
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}

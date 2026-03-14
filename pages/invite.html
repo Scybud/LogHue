@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Join Workspace</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f5f5f5;
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    .loading {
+      font-size: 18px;
+      opacity: 0.7;
+    }
+
+    .error {
+      color: #d33;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    .success {
+      color: #2a8f2a;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box">
+    <h2>Joining Workspace…</h2>
+    <p id="status" class="loading">Please wait</p>
+  </div>
+
+  <script>
+    const supabase = supabase.createClient(
+      "YOUR_SUPABASE_URL",
+      "YOUR_SUPABASE_ANON_KEY"
+    );
+
+    async function acceptInvite(token) {
+      const status = document.getElementById("status");
+
+      // 1. Fetch invite
+      const { data: invite, error } = await supabase
+        .from("workspace_invites")
+        .select("*")
+        .eq("token", token)
+        .eq("accepted", false)
+        .maybeSingle();
+
+      if (!invite) {
+        status.textContent = "This invite is invalid or expired.";
+        status.className = "error";
+        return;
+      }
+
+      // 2. Ensure user is logged in
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) {
+        const redirectUrl = `/invite.html?token=${encodeURIComponent(token)}`;
+        window.location.href = `/login.html?redirect=${encodeURIComponent(redirectUrl)}`;
+        return;
+      }
+
+      const userId = auth.user.id;
+
+      // 3. Add user to workspace_members
+      const { error: memberError } = await supabase
+        .from("workspace_members")
+        .insert({
+          workspace_id: invite.workspace_id,
+          user_id: userId,
+          role: invite.role
+        });
+
+      if (memberError) {
+        status.textContent = "You are already a member of this workspace.";
+        status.className = "error";
+        return;
+      }
+
+      // 4. Mark invite as accepted
+      await supabase
+        .from("workspace_invites")
+        .update({ accepted: true })
+        .eq("id", invite.id);
+
+      status.textContent = "Success! Redirecting…";
+      status.className = "success";
+
+      // 5. Redirect to workspace dashboard
+      setTimeout(() => {
+        window.location.href = `/pages/workspace-dashboard-admin.html?ws=${invite.workspace_id}`;
+      }, 800);
+    }
+
+    // Run on page load
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+
+    if (!token) {
+      document.getElementById("status").textContent = "Missing invite token.";
+      document.getElementById("status").className = "error";
+    } else {
+      acceptInvite(token);
+    }
+  </script>
+</body>
+</html>

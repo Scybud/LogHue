@@ -1,6 +1,6 @@
 import { closeModal } from "../ui.js";
 import {
-  loadCreatedTasks,
+  createWorkspaceInvite,
   loadedMembers,
 } from "../features/workspace-admin.js";
 import { supabase } from "../supabase.js";
@@ -105,4 +105,62 @@ if (!assignee) taskCard.append(assignToMemberBtn);
     // Close the modal after task creation
     closeModal();
   });
+}
+
+
+//ADD MEMEBR EVENTS
+export async function attachAddMemberEvents() {
+const emailSection = document.getElementById('invite-email-section');
+const qrSection = document.getElementById('invite-qr-section');
+
+document.getElementById('invite-email-btn').onclick = () => {
+  emailSection.style.display = 'block';
+  qrSection.style.display = 'none';
+};
+
+document.getElementById('invite-qr-btn').onclick = () => {
+  emailSection.style.display = 'none';
+  qrSection.style.display = 'block';
+};
+
+document.getElementById('send-email-invite-btn').onclick = async () => {
+  const email = document.getElementById('invite-email-input').value;
+  const role = document.getElementById('invite-role-email').value;
+
+  const invite = await createWorkspaceInvite({
+    workspaceId: currentWorkspaceId,
+    role,
+    email
+  });
+
+  alert("Invite sent!");
+};
+
+
+//FOR QR INVITE
+document.getElementById("invite-qr-btn").onclick = async () => {
+  emailSection.style.display = "none";
+  qrSection.style.display = "block";
+
+  const role = document.getElementById("invite-role-qr").value;
+
+  const invite = await createWorkspaceInvite({
+    workspaceId: currentWorkspaceId,
+    role,
+  });
+
+  const inviteUrl = `https://app.loghue.com/invite.html?token=${invite.token}`;
+
+  document.getElementById("invite-link-input").value = inviteUrl;
+
+  const qrContainer = document.getElementById("qr-container");
+  qrContainer.innerHTML = "";
+
+  new QRCode(qrContainer, {
+    text: inviteUrl,
+    width: 200,
+    height: 200,
+  });
+};
+
 }
