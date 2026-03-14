@@ -126,37 +126,33 @@ export async function attachAddMemberEvents(workspaceId) {
   };
 
   // SEND EMAIL INVITE
- document.getElementById("send-email-invite-btn").onclick = async () => {
-   const email = document.getElementById("invite-email-input").value;
-   const role = document.getElementById("invite-role-email").value;
+document.getElementById("send-email-invite-btn").onclick = async () => {
+  const email = document.getElementById("invite-email-input").value;
+  const role = document.getElementById("invite-role-email").value;
 
-   const invite = await createWorkspaceInvite({
-     workspaceId,
-     role,
-     email,
-   });
+  const invite = await createWorkspaceInvite({
+    workspaceId,
+    role,
+    email,
+  });
 
-   const {
-     data: { session },
-   } = await supabase.auth.getSession();
-console.log(session?.access_token);
-   await fetch(
-     "https://qqactsebaxdottiiyrng.supabase.co/functions/v1/send-invite",
-     {
-       method: "POST",
-       headers: {
-         "Content-Type": "application/json",
-         Authorization: `Bearer ${session.access_token}`,
-       },
-       body: JSON.stringify({
-         email,
-         token: invite.token,
-       }),
-     },
-   );
+  const inviteUrl = `https://app.loghue.com/invite.html?token=${invite.token}`;
 
-   alert("Invite sent!");
- };
+  const { data, error } = await supabase.functions.invoke("send-invite", {
+    body: {
+      email,
+      inviteUrl,
+    },
+  });
+
+  if (error) {
+    console.error(error);
+    alert("Failed to send invite");
+    return;
+  }
+
+  alert("Invite sent!");
+};
 
   // GENERATE QR INVITE
   document.getElementById("generate-qr-btn").onclick = async () => {
