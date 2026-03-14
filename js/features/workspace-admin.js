@@ -2,68 +2,53 @@ import { attachSidebarEvents } from "./../components/sidebar.js";
 import { openCreateTaskModal } from "./../utils/modals.js";
 import { supabase } from "../supabase.js";
 
+let currentWorkspace = null;
 
 document.addEventListener("click", async (e) => {
   const btn = e.target.closest(".navBtn");
   if (!btn) return;
 
-  const params = new URLSearchParams(window.location.search);
-  const workspaceId = params.get("ws");
-  if(!workspaceId) return;
-
-  const { data: workspace, error } = await supabase
-    .from("workspace_members")
-    .select(
-      `
-    role,
-    profiles (
-      id,
-      name,
-      email
-    )
-  `,
-    )
-    .eq("workspace_id", workspaceId);
-
-    
-if(error) {
-  console.error(error)
-  alert(error.message)
-}
   const container = document.getElementById("adminWorkspaceDashboardContent");
-  if (!workspace || !container) return;
 
   const section = btn.dataset.section;
 
-  renderSection(section, workspace, container);
+  renderSection(section, currentWorkspace, container);
 });
 
 export async function initWorkspaceData() {
+  
   //Get workspace url
   const params = new URLSearchParams(window.location.search);
   const workspaceId = params.get("ws");
 
   if (!workspaceId) {
-    window.location.href = "dashboard.html";
+    window.location.href = "index.html";
     return;
   }
 
   //Load data
-  const {data: workspace, error} = await supabase.from("workspaces").select("*, workspace_tasks(*), workspace_members(*)").eq("id", workspaceId).single();
+  const { data: workspace, error } = await supabase
+    .from("workspaces")
+    .select(
+      `*, workspace_tasks(*), workspace_members(role, profiles (id, full_name, avatar_url))`,
+    )
+    .eq("id", workspaceId)
+    .single();
 
-  if(error) {
+    currentWorkspace = workspace
+
+  if (error) {
     console.error(error);
     alert(error.message);
-return;
+    return;
   }
 
-  
   const adminWorkspaceDashboardContent = document.getElementById(
     "adminWorkspaceDashboardContent",
   );
 
-  if (!workspace) {
-    window.location.href = "dashboard.html";
+  if (!workspace || workspaceId.length < 10) {
+    window.location.href = "index.html";
     return;
   }
 
@@ -110,8 +95,12 @@ function renderSection(section, workspace, container) {
       break;
 
     case "members":
-      loadMembers(workspace.members || [], container);
-      break;
+  const members = Array.isArray(workspace.workspace_members)
+    ? workspace.workspace_members
+    : [workspace.workspace_members];
+
+  loadMembers(members, container);
+  break;
 
     case "activities":
       loadActivities(allLogs || [], container);
@@ -192,14 +181,31 @@ function loadMembers(members, container) {
 
     const memberName = document.createElement("h3");
     memberName.classList.add("memberName");
-    memberName.textContent = mbr.name;
+    memberName.textContent = mbr.profiles.full_name;
+
     const tag = document.createElement("span");
     tag.classList.add("tag");
     tag.textContent = mbr.role;
     memberName.append(tag);
 
-    memberCard.append(memberName);
+    const avatar = document.createElement("img")
+    avatar.classList.add("profileImg")
+    avatar.src = mbr.profiles.avatar_url;
 
+    const cardHeader = document.createElement("div")
+    cardHeader.classList.add("cardHeader");
+    cardHeader.append(avatar, memberName);
+
+    const assignTaskBtn = document.createElement("button");
+    assignTaskBtn.id = "assignTaskBtn";
+    assignTaskBtn.classList.add("btn", "btn-sm", "btn-primary")
+    assignTaskBtn.textContent = "Assign Task"
+
+    const adminActions = document.createElement("div")
+    adminActions.classList.add("adminActions")
+adminActions.append(assignTaskBtn)
+
+    memberCard.append(cardHeader, adminActions);
     divGrid.append(memberCard);
   });
 
