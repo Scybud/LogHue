@@ -313,7 +313,7 @@ export async function createWorkspaceInvite({ workspaceId, role, email = null })
   const { data, error } = await supabase
     .from('workspace_invites')
     .insert({
-      workspace_id: workspaceId,
+      workspace_id: currentWorkspace.id,
       role,
       email,
       token,

@@ -29,7 +29,7 @@ const btn = document.getElementById("addMemberOpen")
     "click",
     async () => {
       await loadComponent(
-        "https://loghue.com/components/modals/add-member.html",
+        "../components/modals/add-member.html",
         "modalContainer",
       );
 

@@ -4,14 +4,14 @@
   <h2>Add Member</h2>
 
   <div class="invite-methods">
-    <button id="invite-email-btn">Invite by Email</button>
-    <button id="invite-qr-btn">Invite via QR</button>
+    <button class="btn" id="invite-email-btn">Invite by Email</button>
+    <button class="btn" id="invite-qr-btn">Invite via QR</button>
   </div>
 
   <!-- Email Section -->
   <div id="invite-email-section">
     <label>Email</label>
-    <input id="invite-email-input" type="email" placeholder="user@example.com" />
+    <input class="inputField" id="invite-email-input" type="email" placeholder="user@example.com" />
 
     <label>Role</label>
     <select id="invite-role-email">
@@ -19,7 +19,7 @@
       <option value="admin">Admin</option>
     </select>
 
-    <button id="send-email-invite-btn">Send Invite</button>
+    <button class="btn" id="send-email-invite-btn">Send Invite</button>
   </div>
 
   <!-- QR Section -->
@@ -32,8 +32,8 @@
 
     <div id="qr-container" style="margin-top:20px;"></div>
 
-    <input id="invite-link-input" readonly />
-    <button id="copy-invite-link-btn">Copy Link</button>
+    <input class="inputField" id="invite-link-input" readonly />
+    <button class="btn" id="copy-invite-link-btn">Copy Link</button>
   </div>
 </div>
 
