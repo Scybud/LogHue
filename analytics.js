@@ -30,6 +30,7 @@ export function handleConcentEvents() {
   const customizeBtn = document.getElementById("customize");
 
   // Accept All
+  if(!acceptBtn) return;
   acceptBtn.addEventListener("click", () => {
     localStorage.setItem("consent-preferences", JSON.stringify({
       analytics: true,
@@ -41,6 +42,7 @@ export function handleConcentEvents() {
   });
 
   // Reject All
+    if (!rejectBtn) return;
   rejectBtn.addEventListener("click", () => {
     localStorage.setItem("consent-preferences", JSON.stringify({
       analytics: false,
@@ -51,6 +53,7 @@ export function handleConcentEvents() {
   });
 
   // Customize (your working version)
+    if (!customizeBtn) return;
   customizeBtn.addEventListener("click", async () => {
     await loadComponent(
       "https://loghue.com/components/modals/cookies-customize.html",
