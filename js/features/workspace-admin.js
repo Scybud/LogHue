@@ -17,7 +17,6 @@ document.addEventListener("click", async (e) => {
 });
 
 export async function initWorkspaceData() {
-  
   //Get workspace url
   const params = new URLSearchParams(window.location.search);
   const workspaceId = params.get("ws");
@@ -31,12 +30,12 @@ export async function initWorkspaceData() {
   const { data: workspace, error } = await supabase
     .from("workspaces")
     .select(
-      `*, workspace_tasks(*), workspace_members(role, profiles (id, full_name, avatar_url))`,
+      `*, workspace_tasks(*, profiles:assigned_to (id, full_name, avatar_url)), workspace_members(role, profiles (id, full_name, avatar_url))`,
     )
     .eq("id", workspaceId)
     .single();
 
-    currentWorkspace = workspace;
+  currentWorkspace = workspace;
 
   if (error) {
     console.error(error);
@@ -76,11 +75,11 @@ export async function initWorkspaceData() {
 
   attachSidebarEvents();
 
-const members = Array.isArray(workspace.workspace_members)
+  const members = Array.isArray(workspace.workspace_members)
     ? workspace.workspace_members
     : [workspace.workspace_members];
 
-loadedMembers = members;
+  loadedMembers = members;
 
   workspace.workspace_tasks = workspace.workspace_tasks || [];
 
@@ -100,21 +99,21 @@ function renderSection(section, workspace, container) {
   switch (section) {
     case "createdTasks":
       const tasks = Array.isArray(workspace.workspace_tasks)
-    ? workspace.workspace_tasks
-    : [workspace.workspace_tasks];
+        ? workspace.workspace_tasks
+        : [workspace.workspace_tasks];
 
-      loadCreatedTasks(tasks|| [], container);
+      loadCreatedTasks(tasks || [], container);
       break;
 
     case "members":
-  const members = Array.isArray(workspace.workspace_members)
-    ? workspace.workspace_members
-    : [workspace.workspace_members];
+      const members = Array.isArray(workspace.workspace_members)
+        ? workspace.workspace_members
+        : [workspace.workspace_members];
 
-loadedMembers = members;
+      loadedMembers = members;
 
-  loadMembers(members, container);
-  break;
+      loadMembers(members, container);
+      break;
 
     case "activities":
       loadActivities(allLogs || [], container);
@@ -202,22 +201,22 @@ function loadMembers(members, container) {
     tag.textContent = mbr.role;
     memberName.append(tag);
 
-    const avatar = document.createElement("img")
-    avatar.classList.add("profileImg")
+    const avatar = document.createElement("img");
+    avatar.classList.add("profileImg");
     avatar.src = mbr.profiles.avatar_url;
 
-    const cardHeader = document.createElement("div")
+    const cardHeader = document.createElement("div");
     cardHeader.classList.add("cardHeader");
     cardHeader.append(avatar, memberName);
 
     const assignTaskBtn = document.createElement("button");
     assignTaskBtn.id = "assignTaskBtn";
-    assignTaskBtn.classList.add("btn", "btn-sm", "btn-primary")
-    assignTaskBtn.textContent = "Assign Task"
+    assignTaskBtn.classList.add("btn", "btn-sm", "btn-primary");
+    assignTaskBtn.textContent = "Assign Task";
 
-    const adminActions = document.createElement("div")
-    adminActions.classList.add("adminActions")
-adminActions.append(assignTaskBtn)
+    const adminActions = document.createElement("div");
+    adminActions.classList.add("adminActions");
+    adminActions.append(assignTaskBtn);
 
     memberCard.append(cardHeader, adminActions);
     divGrid.append(memberCard);
