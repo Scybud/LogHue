@@ -53,6 +53,9 @@ window.addEventListener("DOMContentLoaded", async () => {
   const saved = localStorage.getItem("consent-preferences");
   if (saved) {
     const prefs = JSON.parse(saved);
+      const actionsMessage = document.getElementById("actionsMessage");
+      actionsMessage.innerHTML = "";
+      
     if (prefs.analytics) {
       loadAnalytics();
     }
