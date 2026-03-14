@@ -44,7 +44,7 @@ const assignedToValue = assignedTo.value;
         workspace_id: workspaceId,
         created_by: user.id,
       title: taskTitle,
-      status: "in-progress",
+      status: "created",
       assigned_to: assignedToValue || "", // Assign to empty if no one is selected
       description: taskDescription,
     };
