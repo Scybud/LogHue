@@ -139,7 +139,7 @@ export async function attachAddMemberEvents(workspaceId) {
    const {
      data: { session },
    } = await supabase.auth.getSession();
-
+console.log(session?.access_token);
    await fetch(
      "https://qqactsebaxdottiiyrng.supabase.co/functions/v1/send-invite",
      {
