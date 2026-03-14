@@ -503,11 +503,11 @@ button.danger {
 #actionsMessage {
   z-index: 9999;
   position: fixed;
+  top: 20px;
+  right: 20px;
 }
 .consent-banner {
   position: absolute;
-  top: 20px;
-  right: 20px;
   max-width: 360px;
   background: #fff;
   border: 1px solid #e5e5e5;
