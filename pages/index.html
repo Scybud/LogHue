@@ -48,7 +48,8 @@
       <!-- MAIN CONTENT -->
       <article class="mainContent" id="dashboardContent">
         <div id="modalContainer"></div>
-
+        <div id="actionsMessage"></div>
+        
         <header class="pageHeader">
           <div class="headerLeft">
             <button class="menuBtn" id="toggleSidebar">
@@ -127,8 +128,9 @@
             </div>
           </div>
         </div>
-
+        
         <section>
+          <!--ACTION MESSAGES-->
           <h2>Recent Workspaces</h2>
           <p class="sectionDescription">Two of your most recent workspaces</p>
 
@@ -197,8 +199,8 @@
                 height="10"
                 rx="5"
                 fill="#E0E0E6"
-              />
-              <rect
+                />
+                <rect
                 x="94"
                 y="106"
                 width="40"
@@ -226,7 +228,7 @@
             </svg>
           </div>
         </section>
-
+        
         <section class="container" id="inputContainer">
           <form class="personalLogInputContainer form">
             <h2>Log Task</h2>
@@ -236,7 +238,7 @@
               type="text"
               id="task"
               class="inputField"
-            />
+              />
 
             <label for="taskTime">Date Completed</label>
             <input type="datetime-local" id="taskTime" class="inputField" />
@@ -251,7 +253,7 @@
             <button type="button" id="logTask" class="btn">Log Task</button>
           </form>
         </section>
-
+        
         <section class="personalCreatedLogsContainer">
           <h2>Personal Logged Tasks</h2>
           <p class="sectionDescription">
@@ -261,7 +263,10 @@
           <div id="personalCreatedLogs" class="logs"></div>
         </section>
       </article>
+      
+      
     </main>
+    
 
     <script type="module" src="https://loghue.com/js/session.js"></script>
     <script

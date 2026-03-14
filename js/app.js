@@ -40,6 +40,10 @@ window.addEventListener("DOMContentLoaded", async () => {
     "https://loghue.com/components/sidebar-general.html",
     "generalSidebarContainer",
   );
+   await loadComponent(
+     "https://loghue.com/components/cookies-banner.html",
+     "actionsMessage",
+   );
 
   //SESSION FUNTION
   initSession();
