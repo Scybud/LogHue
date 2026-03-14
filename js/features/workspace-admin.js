@@ -36,7 +36,7 @@ export async function initWorkspaceData() {
     .eq("id", workspaceId)
     .single();
 
-    currentWorkspace = workspace
+    currentWorkspace = workspace;
 
   if (error) {
     console.error(error);

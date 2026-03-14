@@ -1,29 +1,31 @@
 import { closeModal } from "../ui.js";
 import {
-  formatDateTime,
   loadCreatedTasks,
   loadedMembers,
 } from "../features/workspace-admin.js";
 import { supabase } from "../supabase.js";
 
-export function attachCreateTaskEvent(tasksArr) {
-  tasksArr = tasksArr || [];
+export function attachCreateTaskEvent(workspaceId) {
 
   const createTaskBtn = document.getElementById("createTaskBtn");
   if (!createTaskBtn) return;
 
   const assignedTo = document.getElementById("assignToDropdown");
-console.log(loadedMembers)
+ if (loadedMembers && Array.isArray(loadedMembers)) {
   loadedMembers.forEach((lm) => {
-    const options = document.createElement("option")
-options.value = lm.profiles.id;
-options.textContent = lm.profiles.full_name;
-
-assignedTo.append(options)
-  })
+    if (lm.profiles) {
+      const option = document.createElement("option");
+      option.value = lm.profiles.id;
+      option.textContent = lm.profiles.full_name;
+      assignedTo.append(option);
+    }
+  });
+}
 
   // When create task button is clicked to create a new task
   createTaskBtn.addEventListener("click", async () => {
+    createTaskBtn.disabled = true;
+
     const taskTitle = document.getElementById("taskTitle").value.trim();
     const taskDescription = document
       .getElementById("taskDescription")
@@ -35,11 +37,10 @@ const assignedToValue = assignedTo.value;
       return;
     }
 
-    const formattedTDate = formatDateTime(Date.now());
 
     const taskData = {
+        workspace_id: workspaceId,
       title: taskTitle,
-      created_at: formattedTDate,
       status: "in-progress",
       assigned_to: assignedToValue || "", // Assign to empty if no one is selected
       description: taskDescription,
@@ -57,6 +58,8 @@ const assignedToValue = assignedTo.value;
       return;
     }
 
+    createTaskBtn.disabled = false;
+    
     // Assuming only one task is created, use the first item
     const createdTask = data[0];
 
@@ -80,13 +83,15 @@ const assignedToValue = assignedTo.value;
     );
     assignToMemberBtn.textContent = "Assign to Member";
 
-    if (createdTask.assigned_to === "") {
-      taskMeta.textContent = "Unassigned";
-      taskCard.append(taskTitleElem, taskMeta, assignToMemberBtn);
-    } else {
-      taskMeta.textContent = `Assigned to: ${createdTask.assigned_to}`;
+    const assignee = loadedMembers.find(
+      (m) => m.profiles.id === createdTask.assigned_to,
+    );
+    taskMeta.textContent = assignee
+      ? `Assigned to: ${assignee.profiles.full_name}`
+      : "Unassigned";
+
       taskCard.append(taskTitleElem, taskMeta);
-    }
+if (!assignee) taskCard.append(assignToMemberBtn);
 
     // Prepend the new task card to the grid
     const container = document.querySelector(".grid");

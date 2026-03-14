@@ -8,15 +8,10 @@ export function openCreateTaskModal(workspace) {
   const btn = document.getElementById("createTaskOpen");
   if (!btn) return;
 
+const workspaceId = workspace?.id;
+if (!workspaceId) return;
+
     btn.addEventListener("click", async () => {
-
-      const {data: tasks, error} = await supabase.from("workspace_tasks").select("*")
-
-      if (error) {
-        console.error("Error fetching tasks:", error);
-        alert("Failed to load tasks.");
-        return;
-      }
 
       await loadComponent(
         "https://loghue.com/components/modals/create-task.html",
@@ -24,7 +19,9 @@ export function openCreateTaskModal(workspace) {
       );
 
 
-      attachCreateTaskEvent(tasks || []);
+      attachCreateTaskEvent(workspaceId);
+        btn.removeEventListener("click", handler);
+
     });
 }
 
