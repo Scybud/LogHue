@@ -2,13 +2,11 @@ import { loadComponent } from "../ui.js";
 import {initWorkspaces} from "../features/workspaceData.js"
 import { loginFuntion } from "../auth/auth.js";
 import {attachCreateTaskEvent} from "./modalEvents.js"
-import { supabase } from "../supabase.js";
 
-export function openCreateTaskModal(workspace) {
+export function openCreateTaskModal(workspaceId) {
   const btn = document.getElementById("createTaskOpen");
   if (!btn) return;
 
-const workspaceId = workspace?.id;
 if (!workspaceId) return;
 
     btn.addEventListener("click", async () => {
@@ -20,9 +18,7 @@ if (!workspaceId) return;
 
 
       attachCreateTaskEvent(workspaceId);
-        btn.removeEventListener("click", handler);
-
-    });
+    }, {once: true});
 }
 
 export function openLogTaskModal() {

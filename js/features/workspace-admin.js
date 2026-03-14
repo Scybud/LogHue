@@ -83,7 +83,8 @@ const members = Array.isArray(workspace.workspace_members)
 loadedMembers = members;
 
   workspace.workspace_tasks = workspace.workspace_tasks || [];
-  openCreateTaskModal(currentWorkspace);
+
+  openCreateTaskModal(currentWorkspace.id);
 }
 
 function renderSection(section, workspace, container) {

@@ -37,9 +37,12 @@ const assignedToValue = assignedTo.value;
       return;
     }
 
+     // Get the authenticated user ID
+    const { data: { user } } = await supabase.auth.getUser();
 
     const taskData = {
         workspace_id: workspaceId,
+        created_by: user.id,
       title: taskTitle,
       status: "in-progress",
       assigned_to: assignedToValue || "", // Assign to empty if no one is selected
@@ -59,7 +62,7 @@ const assignedToValue = assignedTo.value;
     }
 
     createTaskBtn.disabled = false;
-    
+
     // Assuming only one task is created, use the first item
     const createdTask = data[0];
 
