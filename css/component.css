@@ -500,22 +500,17 @@ button.danger {
 
 
 /*CONSENT*/
-#actionsMessage {
-  z-index: 9999;
-  position: fixed;
-  top: 20px;
-  right: 20px;
-}
 .consent-banner {
-  position: absolute;
+  position: fixed;
+  bottom: 5px;
+  right: 20px;
   max-width: 360px;
-  background: #fff;
-  border: 1px solid #e5e5e5;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.1);
   z-index: 9999;
-  font-family: system-ui, sans-serif;
 }
 
 .consent-content h3 {
@@ -527,12 +522,13 @@ button.danger {
 .consent-content p {
   margin: 0 0 16px;
   font-size: 14px;
-  color: #444;
+  color: var(--chevron-color);
 }
 
 .consent-actions {
   display: flex;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 0 8px;
   justify-content: flex-end;
 }
 
@@ -546,12 +542,10 @@ button.danger {
 
 .btn.primary {
   background: #ff6b35;
-  color: white;
 }
 
 .btn.secondary {
   background: #f2f2f2;
-  color: #333;
 }
 
 .consent-modal {
