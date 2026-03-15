@@ -118,9 +118,13 @@
     status.textContent = "Success! Redirecting...";
     status.className = "success";
 
-    setTimeout(() => {
-      window.location.href = `/workspace-dashboard-admin.html?ws=${invite.workspace_id}`;
-    }, 1000);
+ setTimeout(() => {
+  if (invite.role === 'admin' || invite.role === 'owner') {
+    window.location.href = `/workspace-dashboard-admin.html?ws=${invite.workspace_id}`;
+  } else {
+    window.location.href = `/workspace-dashboard-member.html?ws=${invite.workspace_id}`;
+  }
+}, 1500);
   }
 
   // --- EXECUTION ---

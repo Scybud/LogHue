@@ -17,7 +17,26 @@ document.addEventListener("click", async (e) => {
   renderSection(section, currentWorkspace, container);
 });
 
+
+//CHECK ADMIN ACCESS
+async function checkAdminAccess(workspaceId) {
+  const { data: membership, error } = await supabase
+    .from("workspace_members")
+    .select("role")
+    .eq("workspace_id", workspaceId)
+    .eq("user_id", (await supabase.auth.getUser()).data.user.id)
+    .single();
+
+  if (error || (membership.role !== "admin" && membership.role !== "owner")) {
+    alert(
+      "Access Denied: You do not have admin permissions for this workspace.",
+    );
+    window.location.href = "/dashboard.html"; // Send them to their main list
+  }
+}
+
 export async function initWorkspaceData() {
+  
   //Get workspace url
   const params = new URLSearchParams(window.location.search);
   const workspaceId = params.get("ws");
@@ -26,6 +45,9 @@ export async function initWorkspaceData() {
     window.location.href = "index.html";
     return;
   }
+
+  //SECURE ADMIN WORKSPACE BY CHECKING FOR ADMIN ROLE
+checkAdminAccess(workspaceId)
 
   //Load data
   const { data: workspace, error } = await supabase
