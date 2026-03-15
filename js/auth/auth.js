@@ -70,10 +70,18 @@ if (signupForm) {
       const success = await signup(name, email, password);
 
       if (success) {
-        const { data } = await supabase.auth.getSession();
-        const session = encodeURIComponent(JSON.stringify(data.session));
 
-        window.location.href = `../`;
+        // After successful login/signup:
+        const params = new URLSearchParams(window.location.search);
+        const redirectTo = params.get("redirect");
+
+        if (redirectTo) {
+          // Send them back to the invite page with the token
+          window.location.href = decodeURIComponent(redirectTo);
+        } else {
+          // Default behavior
+          window.location.href = "../index.html";
+        }
       }
     } finally {
       button.disabled = false;
@@ -121,8 +129,18 @@ export function loginFuntion() {
       try {
         const success = await login(email, password);
 
-        if (success) {       
-          window.location.href = `../`;
+        if (success) {
+          // After successful login/signup:
+          const params = new URLSearchParams(window.location.search);
+          const redirectTo = params.get("redirect");
+
+          if (redirectTo) {
+            // Send them back to the invite page with the token
+            window.location.href = decodeURIComponent(redirectTo);
+          } else {
+            // Default behavior
+            window.location.href = "../index.html";
+          }
         }
         
       } finally {
