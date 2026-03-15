@@ -265,7 +265,7 @@ async function attachCreateWorkspaceEvent() {
 
 function updateworkspaceCount() {
   const createdWorkspaces = savedWorkspaceData.filter(
-    (ws) => ws.role === "admin"
+    (ws) => ws.role === "admin",
   );
   const openedWorkspaces = savedWorkspaceData.filter(
     (ws) => ws.status === "active",
@@ -367,13 +367,13 @@ async function deleteWorkspace(id) {
 async function archiveWorkspace(id) {
   const ok = confirm("Archeive this workspace? It will be inactive.");
   if (!ok) return;
-const utcNow = new Date().toISOString();
+  const utcNow = new Date().toISOString();
 
-const { error } = await supabase
+  const { error } = await supabase
     .from("workspaces")
     .update({
       status: "closed",
-      closed_at: utcNow
+      closed_at: utcNow,
     })
     .eq("id", id);
 
@@ -401,7 +401,7 @@ async function editWorkspace(ws, id) {
   );
   const updateWorkspaceBtn = document.getElementById("createWorkspace");
 
-  pageTitle.textContent = "Update Workspace"
+  pageTitle.textContent = "Update Workspace";
   workspaceNameEl.value = ws.name;
   workspaceDescriptionEl.value = ws.description;
   updateWorkspaceBtn.textContent = "Update Workspace";
