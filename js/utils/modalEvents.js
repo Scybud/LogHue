@@ -130,20 +130,32 @@ document.getElementById("send-email-invite-btn").onclick = async () => {
   const email = document.getElementById("invite-email-input").value;
   const role = document.getElementById("invite-role-email").value;
 
+  if (!email) return alert("Please enter an email");
+
   const invite = await createWorkspaceInvite({
     workspaceId,
     role,
     email,
   });
 
-  const inviteUrl = `https://app.loghue.com/invite.html?token=${invite.token}`;
+  if (!invite?.token) {
+    console.error("Invite creation failed - no token returned");
+    return;
+  }
 
-  const { data, error } = await supabase.functions.invoke("send-invite", {
-    body: {
-      email,
-      inviteUrl,
-    },
-  });
+  
+const inviteUrl = `${window.location.origin}/invite.html?token=${invite.token}`;
+
+ const {
+   data: { session },
+ } = await supabase.auth.getSession();
+
+ const { data, error } = await supabase.functions.invoke("send-invite", {
+   body: { email, inviteUrl },
+   headers: {
+     Authorization: `Bearer ${session?.access_token}`,
+   },
+ });
 
   if (error) {
     console.error(error);
