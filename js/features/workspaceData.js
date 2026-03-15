@@ -390,7 +390,7 @@ const { error } = await supabase
 //EDIT WORKSPACE
 async function editWorkspace(ws, id) {
   await loadComponent(
-    "https://app.loghue.com/components/modals/create-workspace.html",
+    "https://loghue.com/components/modals/create-workspace.html",
     "modalContainer",
   );
 

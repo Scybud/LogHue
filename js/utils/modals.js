@@ -27,7 +27,6 @@ export function openAddMemeberModal(workspaceId) {
 
   // Remove { once: true } so the button works every time
   btn.onclick = async () => {
-    const container = document.getElementById("modalContainer");
 
     await loadComponent(
       "https://loghue.com/components/modals/add-member.html",
