@@ -310,21 +310,32 @@ function loadActivities(allLogs, container) {
 }
 
 
-export async function createWorkspaceInvite({ workspaceId, role, email = null }) {
-  const token = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '');
+export async function createWorkspaceInvite({workspaceId, role, email = null }) {
+  // 1. Get the user FIRST
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+  if (authError || !user)
+    throw new Error("Authentication required to create invites");
+
+  const token = crypto.randomUUID()
 
   const { data, error } = await supabase
-    .from('workspace_invites')
+    .from("workspace_invites")
     .insert({
-      workspace_id: currentWorkspace.id,
+      workspace_id: workspaceId,
       role,
       email,
       token,
-      created_by: (await supabase.auth.getUser()).data.user.id
+      created_by: user.id,
     })
     .select()
     .single();
 
-  if (error) throw error;
+  if (error) {
+    console.error("Supabase Insert Error:", error);
+    throw error;
+  }
   return data;
 }

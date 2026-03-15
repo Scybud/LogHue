@@ -158,12 +158,14 @@ document.getElementById("send-email-invite-btn").onclick = async () => {
   document.getElementById("generate-qr-btn").onclick = async () => {
     const role = document.getElementById("invite-role-qr").value;
 
-    const invite = await createWorkspaceInvite({
-      workspaceId,
-      role,
-    });
+   const invite = await createWorkspaceInvite({ workspaceId, role });
+   if (!invite || !invite.token) {
+     alert("Error: Invite token was not generated.");
+     return;
+   }
 
-    const inviteUrl = `https://app.loghue.com/invite.html?token=${invite.token}`;
+    const baseUrl = window.location.origin; // Automatically uses localhost or app.loghue.com
+    const inviteUrl = `${baseUrl}/invite.html?token=${invite.token}`;
 
     document.getElementById("invite-link-input").value = inviteUrl;
 

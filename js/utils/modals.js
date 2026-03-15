@@ -25,18 +25,20 @@ export function openAddMemeberModal(workspaceId) {
   const btn = document.getElementById("addMemberOpen");
   if (!btn) return;
 
-  btn.addEventListener(
-    "click",
-    async () => {
-      await loadComponent(
-        "https://loghue.com/components/modals/add-member.html",
-        "modalContainer",
-      );
+  // Remove { once: true } so the button works every time
+  btn.onclick = async () => {
+    const container = document.getElementById("modalContainer");
 
+    await loadComponent(
+      "https://loghue.com/components/modals/add-member.html",
+      "modalContainer",
+    );
+
+    // Give the DOM a tiny heartbeat to settle, then attach events
+    setTimeout(() => {
       attachAddMemberEvents(workspaceId);
-    },
-    { once: true },
-  );
+    }, 10);
+  };
 }
 
 export function openLogTaskModal() {

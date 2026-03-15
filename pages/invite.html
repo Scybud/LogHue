@@ -50,78 +50,82 @@
   </div>
   
   <script type="module">
-    import {supabase} from "https://loghue.com/js/supabase.js"
-    
-    // Run on page load
+  import { supabase } from "https://loghue.com/js/supabase.js";
+
+  // --- THE DATA GRABBER ---
+  // This looks at the browser address bar for "?token=..."
+  const getUrlToken = () => {
     const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
+    return params.get("token");
+  };
 
-    async function acceptInvite(token) {
-      const status = document.getElementById("status");
+  async function acceptInvite(token) {
+    const status = document.getElementById("status");
 
-      // 1. Fetch invite
-      const { data: invite, error } = await supabase
-        .from("workspace_invites")
-        .select("*")
-        .eq("token", token)
-        .eq("accepted", false)
-        .maybeSingle();
-
-      if (!invite) {
-        status.textContent = "This invite is invalid or expired.";
-        status.className = "error";
-        return;
-      }
-
-      // 2. Ensure user is logged in
-      const { data: auth } = await supabase.auth.getUser();
-      if (!auth.user) {
-        const redirectUrl = `https://app.loghue.com/invite.html?token=${encodeURIComponent(token)}`;
-        window.location.href = `https://app.loghue.com/auth/index.html?redirect=${encodeURIComponent(redirectUrl)}`;
-        return;
-      }
-
-      const userId = auth.user.id;
-
-      // 3. Add user to workspace_members
-      const { error: memberError } = await supabase
-        .from("workspace_members")
-        .insert({
-          workspace_id: invite.workspace_id,
-          user_id: userId,
-          role: invite.role
-        });
-
-      if (memberError) {
-        status.textContent = "You are already a member of this workspace.";
-        status.className = "error";
-        return;
-      }
-
-      // 4. Mark invite as accepted
-      await supabase
-        .from("workspace_invites")
-        .update({ accepted: true })
-        .eq("id", invite.id);
-
-      status.textContent = "Success! Redirecting…";
-      status.className = "success";
-
-      // 5. Redirect to workspace dashboard
-      setTimeout(() => {
-        window.location.href = `/workspace-dashboard-admin.html?ws=${invite.workspace_id}`;
-      }, 800);
-    }
-
-
+    // Check if token exists before even trying Supabase
     if (!token) {
-      document.getElementById("status").textContent = "Missing invite token.";
-      document.getElementById("status").className = "error";
-      
-    } else {
-
-      acceptInvite(token);
+      status.textContent = "No invite token found in the URL.";
+      status.className = "error";
+      return;
     }
+
+    // 1. Ensure user is logged in
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (!user || authError) {
+      // Save current URL so we can come back after login
+      const redirectUrl = encodeURIComponent(window.location.href);
+      window.location.href = `https://app.loghue.com/auth/index.html?redirect=${redirectUrl}`;
+      return;
+    }
+
+    // 2. Fetch invite 
+    const { data: invite, error: fetchError } = await supabase
+      .from("workspace_invites")
+      .select("*")
+      .eq("token", token)
+      .eq("accepted", false)
+      .maybeSingle();
+
+    if (fetchError || !invite) {
+      status.textContent = "This invite is invalid or has already been used.";
+      status.className = "error";
+      return;
+    }
+
+    // 3. Add user to workspace
+    const { error: memberError } = await supabase
+      .from("workspace_members")
+      .insert({
+        workspace_id: invite.workspace_id,
+        user_id: user.id,
+        role: invite.role
+      });
+
+    if (memberError) {
+      console.error("Member Error:", memberError);
+      status.textContent = "You are already a member or there was a permission error.";
+      status.className = "error";
+      return;
+    }
+
+    // 4. Mark invite used
+    await supabase
+      .from("workspace_invites")
+      .update({ accepted: true })
+      .eq("id", invite.id);
+
+    status.textContent = "Success! Redirecting...";
+    status.className = "success";
+
+    setTimeout(() => {
+      window.location.href = `/workspace-dashboard-admin.html?ws=${invite.workspace_id}`;
+    }, 1000);
+  }
+
+  // --- EXECUTION ---
+  const token = getUrlToken();
+  acceptInvite(token);
     
   </script>
 </body>
