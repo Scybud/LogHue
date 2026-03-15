@@ -362,6 +362,10 @@ button.danger {
   border: none;
   box-shadow: var(--shadow);
 }
+.btn-sm {
+  padding: var(--space-sm) calc(var(--space-sm) + 4px);
+  font-size: 0.85rem;
+}
 @media (max-width: 600px) {
   .btn {
     width: 100%;
@@ -578,4 +582,44 @@ button.danger {
   padding: var(--space-md);
   margin: var(--space-md);
   background: var(--form-bg);
+}
+
+
+/*NOTES PAGE STYLE*/
+.notesConatiner {
+  display: grid;
+  grid-template-columns: minmax(200px, 400px) 1fr;
+}
+.ql-toolbar {
+  color: #f2f2f2 !important;
+}
+#editor {
+  border: none;
+  background: var(--mainContent-bg); /* your theme variable */
+  color: var(--color);
+  border-radius: var(--radius);
+  min-height: 300px !important;
+}
+.ql-container.ql-snow {
+  background-color: var(--input-bg);
+}
+.ql-toolbar.ql-snow {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border);
+}
+#editorContainer {
+  color: var(--color);
+  position: relative;
+  padding: 0;
+}
+.ql-editor.ql-blank::before {
+  color: #888;              /* muted placeholder color */
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.95rem;
+}
+#saveNoteBtn {
+  position: absolute;
+  right: 10px;
+  bottom: 5px;
 }

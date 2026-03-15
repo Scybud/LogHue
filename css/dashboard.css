@@ -49,10 +49,12 @@ h3 {
 }
 .tag {
   font-size: 0.8rem;
-  background: var(--accent);
-  color: #000000;
+  border: 1px solid var(--accent);
+  backdrop-filter: blur(30px);
+  background: rgba(255, 119, 0, 0.29);
+  color: #faf8f8;
   position: absolute;
-  top: -10px;
+  top: -5px;
   border-radius: var(--radius);
   padding: calc(var(--space-xs) - 2px);
 }

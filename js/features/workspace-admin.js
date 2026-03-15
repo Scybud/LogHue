@@ -3,7 +3,7 @@ import { openCreateTaskModal, openAddMemeberModal
  } from "./../utils/modals.js";
 import { supabase } from "../supabase.js";
 
-let currentWorkspace = null;
+export let currentWorkspace = null;
 export let loadedMembers = [];
 
 document.addEventListener("click", async (e) => {
