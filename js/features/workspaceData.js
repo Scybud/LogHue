@@ -2,6 +2,7 @@ import { dataCount } from "../utils.js";
 import { closeModal, loadComponent } from "../ui.js";
 import { supabase } from "../supabase.js";
 import { sessionState, sessionReady } from "../session.js";
+import { confirmAction } from "../utils/modals.js";
 
 if (window.__workspaceInit) {
   console.warn("workspaceData.js already initialized");
@@ -348,43 +349,60 @@ function attachOpenWorkspaceClickEvent() {
 
 //DELETE WORKSPACE
 async function deleteWorkspace(id) {
-  const ok = confirm("Delete this workspace permanently?");
-  if (!ok) return;
-
-  const { error } = await supabase.from("workspaces").delete().eq("id", id);
-
-  if (error) {
-    console.error(error);
-    alert("Failed to delete workspace");
-    return;
-  }
-
-  // Refresh UI
-  window.location.reload();
+  confirmAction("Are you sure you want to delete this?", [
+    { label: "Cancel", type: "cancel" },
+    { label: "Delete", type: "confirm", onClick: () => performWorkspaceDelete(id) },
+  ]);
 }
+//PERFORM WORKSPACE DELETE IF CONFIRMED
+async function performWorkspaceDelete(id) {
+
+    const { error } = await supabase.from("workspaces").delete().eq("id", id);
+
+    if (error) {
+      console.error(error);
+      alert("Failed to delete workspace");
+      return;
+    }
+
+    // Refresh UI
+    window.location.reload();
+}
+
 
 //ARCHEIVE WORKSPACE
 async function archiveWorkspace(id) {
-  const ok = confirm("Archeive this workspace? It will be inactive.");
-  if (!ok) return;
-  const utcNow = new Date().toISOString();
+  confirmAction("Are you sure you want to Archeive this?", [
+    { label: "Cancel", type: "cancel" },
+    {
+      label: "Archeive",
+      type: "confirm",
+      onClick: () => performWorkspaceArcheive(id),
+    },
+  ]);
+  
+}
 
-  const { error } = await supabase
-    .from("workspaces")
-    .update({
-      status: "closed",
-      closed_at: utcNow,
-    })
-    .eq("id", id);
+//PERFORM WORKSPACE ARCHEIVE IF CONFIRMED
+async function performWorkspaceArcheive(id) {
+const utcNow = new Date().toISOString();
 
-  if (error) {
-    console.error(error);
-    alert("Failed to archeive workspace");
-    return;
-  }
+const { error } = await supabase
+  .from("workspaces")
+  .update({
+    status: "closed",
+    closed_at: utcNow,
+  })
+  .eq("id", id);
 
-  // Refresh UI
-  window.location.reload();
+if (error) {
+  console.error(error);
+  alert("Failed to archeive workspace");
+  return;
+}
+
+// Refresh UI
+window.location.reload();
 }
 
 //EDIT WORKSPACE

@@ -1,5 +1,5 @@
 import { supabase } from "../supabase.js";
-
+import {confirmAction} from "../utils/modals.js"
 /*
 --------------------------------
 GLOBAL STATE
@@ -195,7 +195,10 @@ SAVE NOTE
 async function saveNote() {
 
   if (!currentNoteId) {
-    alert("Create or select a note first");
+    confirmAction("Create or select a note first", {
+      label: "Okay",
+      type: "cancel",
+    });
     return;
   }
 

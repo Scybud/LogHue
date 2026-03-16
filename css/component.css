@@ -598,7 +598,7 @@ button.danger {
   background: var(--mainContent-bg); /* your theme variable */
   color: var(--color);
   border-radius: var(--radius);
-  min-height: 300px !important;
+  min-height: 300px;
 }
 .ql-container.ql-snow {
   background-color: var(--input-bg);
@@ -625,11 +625,12 @@ button.danger {
   bottom: 5px;
 }
 #notesList {
-  height: calc(var(--space-lg) * 2 );
+  height: calc(var(--space-lg));
   transition: all 0.4s ease;
 }
 #notesListCntainer:hover #notesList {
-  height: auto;
+  height: 300px;
+  overflow: auto;
 }
 .noteItem {
   background: var(--card-bg);

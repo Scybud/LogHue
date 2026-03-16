@@ -1,4 +1,4 @@
-import { loadComponent } from "../ui.js";
+import { closeModal, loadComponent } from "../ui.js";
 import {initWorkspaces} from "../features/workspaceData.js"
 import { loginFuntion } from "../auth/auth.js";
 import { attachCreateTaskEvent, attachAddMemberEvents } from "./modalEvents.js";
@@ -110,4 +110,39 @@ export function openLoginModal() {
 
     })
   }  
+}
+
+export async function confirmAction(message, actions = []) {
+  // Load modal only when needed
+  await loadComponent(
+    "../components/modals/confirm-action.html",
+    "modalContainer",
+  );
+
+  const msg = document.querySelector(".modalMessage");
+  const actionsBox = document.querySelector(".modalActions");
+
+  msg.textContent = message;
+  actionsBox.innerHTML = "";
+
+  // Normalize single action into array
+  const normalized = Array.isArray(actions) ? actions : [actions];
+
+  normalized.forEach((a) => {
+    const btn = document.createElement("button");
+    btn.textContent = a.label;
+    btn.id = a.type;
+    btn.classList.add(
+      "btn",
+      "btn-sm",
+      a.type === "confirm" ? "primary" : "secondary",
+    );
+
+    btn.onclick = () => {
+      closeModal();
+      a.onClick && a.onClick();
+    };
+
+    actionsBox.appendChild(btn);
+  });
 }
