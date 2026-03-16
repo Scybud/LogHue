@@ -118,24 +118,29 @@ RENDER NOTES LIST
 --------------------------------
 */
 function renderNotesList(notes) {
-
   const notesList = document.getElementById("notesList");
   if (!notesList) return;
 
   notesList.innerHTML = "";
 
   notes.forEach((note) => {
-
     const item = document.createElement("div");
     item.classList.add("noteItem");
 
-    item.textContent = note.title || "Untitled";
+    const noteTitle = note.title || "Untitled";
+
+    // truncate safely
+    const shortenedTitle =
+      noteTitle.length > 25 ? noteTitle.slice(0, 25) + "..." : noteTitle;
+
+    item.textContent = shortenedTitle;
 
     item.onclick = () => openNote(note);
 
     notesList.appendChild(item);
   });
 }
+
 
 
 /*

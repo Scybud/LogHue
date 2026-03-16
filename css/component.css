@@ -590,16 +590,20 @@ button.danger {
 .notesConatiner {
   display: grid;
   grid-template-columns: minmax(200px, 400px) 1fr;
+  max-height: 90%;
 }
-.ql-toolbar {
-  color: #f2f2f2 !important;
+#createNote {
+  right: 0;
 }
+
 #editor {
+  overflow: auto;
   border: none;
   background: var(--mainContent-bg); /* your theme variable */
   color: var(--color);
   border-radius: var(--radius);
   min-height: 300px;
+  max-height: 100%;
 }
 .ql-container.ql-snow {
   background-color: var(--input-bg);
@@ -609,9 +613,7 @@ button.danger {
   border: 1px solid var(--border);
 }
 #editorContainer {
-  margin-top: var(--space-md);
   color: var(--color);
-  position: relative;
   padding: 0;
 }
 .ql-editor.ql-blank::before {
@@ -621,17 +623,35 @@ button.danger {
   font-size: 0.95rem;
 }
 #saveNoteBtn {
-  position: absolute;
+  position: fixed;
   right: 10px;
   bottom: 5px;
+  min-width: 100px;
 }
 #notesList {
-  height: calc(var(--space-lg));
-  transition: all 0.4s ease;
+position: sticky;
+top: 0;
+overflow-y: auto;
+max-height: 600px;
 }
-#notesListCntainer:hover #notesList {
-  height: 300px;
-  overflow: auto;
+#notesList::-webkit-scrollbar {
+  width: var(--space-xs);
+  height: var(--space-sm);
+}
+
+#notesList::-webkit-scrollbar-track {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+}
+
+#notesList::-webkit-scrollbar-thumb {
+  background: #393838;
+  border-radius: var(--radius);
+  border: 2px solid var(--card-bg);
+}
+
+#notesList::-webkit-scrollbar-thumb:hover {
+  background: #0393d6; /* slightly brighter primary */
 }
 .noteItem {
   background: var(--card-bg);
@@ -650,4 +670,12 @@ button.danger {
 display: flex;
 flex-direction: column;
   }
+  #notesList {
+  height: calc(var(--space-lg));
+  transition: all 0.4s ease;
+}
+#notesListCntainer:hover #notesList {
+  height: 300px;
+  overflow: auto;
+}
 }
