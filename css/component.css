@@ -355,6 +355,7 @@ button.danger {
   background: var(--accent);
   padding: calc(var( --space-xs) * 3);
   border-radius: var(--radius);
+  margin: 0 var(--space-xs);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
