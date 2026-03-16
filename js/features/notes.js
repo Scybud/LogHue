@@ -28,7 +28,7 @@ function initNotes() {
   /*
   Create Quill AFTER editor exists in DOM
   */
-  quill = new Quill("#editor", {
+   quill = new Quill("#editor", {
     modules: {
       toolbar: [
         [{ header: [1, 2, false] }],
@@ -41,6 +41,27 @@ function initNotes() {
     placeholder: "Write your note...",
     theme: "snow",
   });
+
+  // ⬇️ Add this RIGHT AFTER the Quill initialization
+  const toolbar = quill.getModule("toolbar");
+
+  toolbar.addHandler("link", function () {
+    const range = quill.getSelection();
+
+    if (!range || range.length === 0) {
+      const url = prompt("Enter URL:");
+      if (url) {
+        quill.insertText(range.index, url, "link", url);
+      }
+      return;
+    }
+
+    const value = prompt("Enter URL:");
+    if (value) {
+      quill.format("link", value);
+    }
+  });
+
 
   loadNotes();
   

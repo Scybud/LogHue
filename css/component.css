@@ -608,6 +608,7 @@ button.danger {
   border: 1px solid var(--border);
 }
 #editorContainer {
+  margin-top: var(--space-md);
   color: var(--color);
   position: relative;
   padding: 0;
@@ -622,4 +623,29 @@ button.danger {
   position: absolute;
   right: 10px;
   bottom: 5px;
+}
+#notesList {
+  height: calc(var(--space-lg) * 2 );
+  transition: all 0.4s ease;
+}
+#notesListCntainer:hover #notesList {
+  height: auto;
+}
+.noteItem {
+  background: var(--card-bg);
+  padding: var(--space-md) var(--space-sm);
+  margin: var(--space-sm);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+.noteItem:hover {
+  background: var(--active);
+}
+
+@media (max-width: 800px) {
+  .notesConatiner {
+display: flex;
+flex-direction: column;
+  }
 }
