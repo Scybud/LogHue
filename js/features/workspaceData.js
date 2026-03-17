@@ -340,9 +340,9 @@ function attachOpenWorkspaceClickEvent() {
     const role = btn.dataset.role;
 
     if (role === "admin") {
-      window.location.href = `workspace-dashboard-admin.html?ws=${wsId}`;
+      window.location.href = `workspace-dashboard-admin?ws=${wsId}`;
     } else {
-      window.location.href = `workspace-dashboard-member.html?ws=${wsId}`;
+      window.location.href = `workspace-dashboard-member?ws=${wsId}`;
     }
   });
 }
@@ -408,7 +408,7 @@ window.location.reload();
 //EDIT WORKSPACE
 async function editWorkspace(ws, id) {
   await loadComponent(
-    "https://loghue.com/components/modals/create-workspace.html",
+    "https://loghue.com/components/modals/create-workspace",
     "modalContainer",
   );
 

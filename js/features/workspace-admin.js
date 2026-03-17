@@ -31,7 +31,7 @@ async function checkAdminAccess(workspaceId) {
     alert(
       "Access Denied: You do not have admin permissions for this workspace.",
     );
-    window.location.href = "/dashboard.html"; // Send them to their main list
+    window.location.href = "/dashboard"; // Send them to their main list
   }
 }
 
@@ -42,7 +42,7 @@ export async function initWorkspaceData() {
   const workspaceId = params.get("ws");
 
   if (!workspaceId) {
-    window.location.href = "index.html";
+    window.location.href = "index";
     return;
   }
 
@@ -71,7 +71,7 @@ checkAdminAccess(workspaceId)
   );
 
   if (!workspace || workspaceId.length < 10) {
-    window.location.href = "index.html";
+    window.location.href = "index";
     return;
   }
 

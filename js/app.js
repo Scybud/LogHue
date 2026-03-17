@@ -25,23 +25,23 @@ import { attachSignoutEvents } from "./auth/auth.js";
 
 window.addEventListener("DOMContentLoaded", async () => {
   await loadComponent(
-    "https://loghue.com/components/sidebar-admin.html",
+    "https://loghue.com/components/sidebar-admin",
     "adminSidebarContainer",
   );
   await loadComponent(
-    "https://loghue.com/components/sidebar-member.html",
+    "https://loghue.com/components/sidebar-member",
     "memberSidebarContainer",
   );
   await loadComponent(
-    "https://loghue.com/components/sidebar-dashboard.html",
+    "https://loghue.com/components/sidebar-dashboard",
     "dashboardSidebarContainer",
   );
   await loadComponent(
-    "https://loghue.com/components/sidebar-general.html",
+    "https://loghue.com/components/sidebar-general",
     "generalSidebarContainer",
   );
    await loadComponent(
-     "https://loghue.com/components/modals/cookies-banner.html",
+     "https://loghue.com/components/modals/cookies-banner",
      "actionsMessage",
    );
 

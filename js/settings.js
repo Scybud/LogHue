@@ -34,7 +34,6 @@ async function initUserSettingsData() {
 
   loadData();
 }
-
 function loadData() {
   const accNameEl = document.getElementById("accName");
   const accEmailEl = document.getElementById("accEmail");
