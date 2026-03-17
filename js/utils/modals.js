@@ -146,3 +146,22 @@ export async function confirmAction(message, actions = []) {
     actionsBox.appendChild(btn);
   });
 }
+
+export async function actionMsg(message, typeClass) {
+  // Load modal only when needed
+  await loadComponent(
+    "https://loghue.com/components/modals/action-message.html",
+    "actionsMessage",
+  );
+
+  const msg = document.querySelector(".modalMessage");
+const actionsMessage = document.getElementById("actionsMessage");
+
+  msg.textContent = message;
+actionsMessage.classList.add("slideIn", typeClass)
+
+setTimeout(() => {
+actionsMessage.classList.remove("slideIn");
+
+}, 5000)
+}

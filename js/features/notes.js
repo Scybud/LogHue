@@ -1,5 +1,5 @@
 import { supabase } from "../supabase.js";
-import {confirmAction} from "../utils/modals.js"
+import { confirmAction, actionMsg } from "../utils/modals.js";
 /*
 --------------------------------
 GLOBAL STATE
@@ -64,7 +64,7 @@ function initNotes() {
 
 
   loadNotes();
-  attachDeletenoteEvent();
+  deleteNote();
   /*
   Attach save handler
   */
@@ -215,10 +215,7 @@ SAVE NOTE
 async function saveNote() {
 
   if (!currentNoteId) {
-    confirmAction("Create or select a note first", {
-      label: "Okay",
-      type: "cancel",
-    });
+    actionMsg("Create note or select a note first.", "error")
     return;
   }
 
@@ -239,25 +236,37 @@ async function saveNote() {
     return;
   }
 
+  actionMsg("Note saved successfully", "success");
+
   await loadNotes();
 }
 
-
-//For Delete Button
-function attachDeletenoteEvent() {
-  const notelist = document.getElementById("notesList")
+function deleteNote() {
+    const notelist = document.getElementById("notesList")
   if (!notelist) return;
   notelist.addEventListener("click", async (e) => {
-    const btn = e.target.closest(".deleteBtn");
-    if (!btn) return;
+       const btn = e.target.closest(".deleteBtn");
+       if (!btn) return;
 
-    e.preventDefault();
-    e.stopPropagation();
+           e.preventDefault();
+           e.stopPropagation();
 
-    if (!confirm("Delete this task note?")) return;
-
+           
     const noteToDelete = btn.closest(".noteItem");
     const id = noteToDelete.dataset.id;
+
+  confirmAction("Delete this note?", [
+    { label: "Cancel", type: "cancel" },
+    {
+      label: "Delete",
+      type: "confirm",
+      onClick: () => attachDeletenoteEvent(noteToDelete, id),
+    },
+  ]);
+})
+}
+//For Delete Button
+async function attachDeletenoteEvent(noteToDelete, id) {
 
     const { error } = await supabase
       .from("personal_notes")
@@ -282,10 +291,5 @@ function attachDeletenoteEvent() {
     setTimeout(() => {
       noteToDelete.remove();
 
-      //update count
-      updateTaskCount();
-      //check if task note conatiner is empty
-      checkIfEmpty();
     }, 550); // matches CSS transition time
-  });
 }
