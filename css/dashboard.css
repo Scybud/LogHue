@@ -56,7 +56,7 @@ h3 {
   border: 1px solid var(--accent);
   backdrop-filter: blur(30px);
   background: rgba(255, 119, 0, 0.29);
-  color: #faf8f8;
+  color: var(--color);
   position: absolute;
   top: -5px;
   border-radius: var(--radius);
