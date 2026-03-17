@@ -75,7 +75,7 @@
     if (!user || authError) {
       // Save current URL so we can come back after login
       const redirectUrl = encodeURIComponent(window.location.href);
-      window.location.href = `https://app.loghue.com/auth/index.html?redirect=${redirectUrl}`;
+      window.location.href = `https://app.loghue.com/auth/index?redirect=${redirectUrl}`;
       return;
     }
 
@@ -120,9 +120,9 @@
 
  setTimeout(() => {
   if (invite.role === 'admin' || invite.role === 'owner') {
-    window.location.href = `/workspace-dashboard-admin.html?ws=${invite.workspace_id}`;
+    window.location.href = `/workspace-dashboard-admin?ws=${invite.workspace_id}`;
   } else {
-    window.location.href = `/workspace-dashboard-member.html?ws=${invite.workspace_id}`;
+    window.location.href = `/workspace-dashboard-member?ws=${invite.workspace_id}`;
   }
 }, 1500);
   }
