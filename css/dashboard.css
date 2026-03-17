@@ -17,10 +17,14 @@ body {
   padding: 0 calc(var(--space-sm) + 2px);
   margin-bottom: auto;
 }
+#dashboardLink {
+  color: var(--link);
+}
 
-
-.navBtn,
+.navBtn, button.navBtn,
 .actionBtn {
+  background: none;
+  border: none;
   padding: var(--space-sm);
   font-size: 1rem;
   font-weight: 600;
