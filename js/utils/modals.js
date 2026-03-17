@@ -115,7 +115,7 @@ export function openLoginModal() {
 export async function confirmAction(message, actions = []) {
   // Load modal only when needed
   await loadComponent(
-    "../components/modals/confirm-action.html",
+    "https://loghue.com/components/modals/confirm-action.html",
     "modalContainer",
   );
 
