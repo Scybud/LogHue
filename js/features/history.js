@@ -121,7 +121,7 @@ export async function renderHistory() {
       restoreSection = btn;
     } else {
       const placeholder = document.createElement("p");
-      placeholder.className = "placeholderText";
+      placeholder.className = "";
       placeholder.textContent =
         "Only admin(s) of this workspace can restore it.";
       restoreSection = placeholder;
