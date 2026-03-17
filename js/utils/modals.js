@@ -12,7 +12,7 @@ if (!workspaceId) return;
     btn.addEventListener("click", async () => {
 
       await loadComponent(
-        "https://loghue.com/components/modals/create-task.html",
+        "https://loghue.com/components/modals/create-task",
         "modalContainer",
       );
 
@@ -29,7 +29,7 @@ export function openAddMemeberModal(workspaceId) {
   btn.onclick = async () => {
 
     await loadComponent(
-      "https://loghue.com/components/modals/add-member.html",
+      "https://loghue.com/components/modals/add-member",
       "modalContainer",
     );
 
@@ -46,7 +46,7 @@ export function openLogTaskModal() {
     btn.addEventListener("click", async () => {
 
       await loadComponent(
-        "https://loghue.com/components/modals/log-entry.html",
+        "https://loghue.com/components/modals/log-entry",
         "modalContainer",
       );
 
@@ -60,7 +60,7 @@ export function openCreateWorkspaceModal() {
     btn.addEventListener("click", async () => {
 
       await loadComponent(
-        "https://loghue.com/components/modals/create-workspace.html",
+        "https://loghue.com/components/modals/create-workspace",
         "modalContainer"
       );
 
@@ -77,7 +77,7 @@ function attachLoginModalEvents() {
      if (openSignupModalBtn) {
        openSignupModalBtn.addEventListener("click", async () => {
          await loadComponent(
-           "https://loghue.com/components/modals/signup.html",
+           "https://loghue.com/components/modals/signup",
            "modalContainer",
          );
 
@@ -90,7 +90,7 @@ function attachSignupModalEvents() {
  const openLoginModal = document.getElementById("openLoginModal");
  if (openLoginModal) {
    openLoginModal.addEventListener("click", async () => {
-     await loadComponent("https://loghue.com/components/modals/login.html", "modalContainer");
+     await loadComponent("https://loghue.com/components/modals/login", "modalContainer");
 
      attachLoginModalEvents()
     });
@@ -104,7 +104,7 @@ export function openLoginModal() {
   if(openLoginModalBtn) {
     openLoginModalBtn.addEventListener("click", async () => {
 
-      await loadComponent("https://loghue.com/components/modals/login.html", "modalContainer"); 
+      await loadComponent("https://loghue.com/components/modals/login", "modalContainer"); 
 
       attachLoginModalEvents()
 
@@ -115,7 +115,7 @@ export function openLoginModal() {
 export async function confirmAction(message, actions = []) {
   // Load modal only when needed
   await loadComponent(
-    "https://loghue.com/components/modals/confirm-action.html",
+    "https://loghue.com/components/modals/confirm-action",
     "modalContainer",
   );
 

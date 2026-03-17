@@ -4,13 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LogHue</title>
-
-    <link rel="stylesheet" href="landing.css" />
+    <link rel="stylesheet" href="css/landing.css" />
     <link rel="stylesheet" href="css/component.css" />
     <link rel="stylesheet" href="css/utilities.css" />
     <link rel="stylesheet" href="css/base.css" />
-
-    <!--FAVICONS-->
+    <!-- FAVICONS -->
     <link
       rel="apple-touch-icon"
       sizes="180x180"
@@ -29,67 +27,50 @@
       href="./assets/icons/favicons/favicon-16x16.png"
     />
   </head>
-
   <body>
+    <!-- Global Modal Container -->
     <div id="modalContainer"></div>
-
+    <!-- HEADER -->
     <header class="header">
-      <a href="https/loghue.com">
+      <a href="https://loghue.com" class="logo-link">
         <div class="logo">Log<span>Hue</span></div>
       </a>
-
       <nav class="nav desktop-nav">
-        <a href="#features">Features</a>
-        <a href="#what">What LogHue does</a>
-        <a href="#how">How it works</a>
-        <a href="#who">Who it is for</a>
-        <a href="pages/auth" id="openLoginPage" class="btn nav-login"
-          >Login</a
-        >
+        <a href="#features">Features</a> <a href="#what">What LogHue does</a>
+        <a href="#how">How it works</a> <a href="#who">Who it is for</a>
+        <a href="/auth" id="loginBtn" class="btn nav-login">Login</a>
         <button id="themeToggle" class="theme-toggle">🌙</button>
       </nav>
-
       <button id="mobileMenuBtn" class="mobile-menu-btn">☰</button>
     </header>
-
+    <!-- MOBILE SIDEBAR -->
     <aside id="mobileSidebar" class="mobile-sidebar">
       <button id="closeSidebar" class="close-sidebar">×</button>
-
-      <a href="#features">Features</a>
-      <a href="#what">What LogHue does</a>
-      <a href="#how">How it works</a>
-      <a href="#who">Who it is for</a>
-      <a href="pages/auth" id="openLoginPage" class="btn nav-login"
-        >Login</a
-      >
+      <a href="#features">Features</a> <a href="#what">What LogHue does</a>
+      <a href="#how">How it works</a> <a href="#who">Who it is for</a>
+      <a href="/auth" id="loginBtnMobile" class="btn nav-login">Login</a>
     </aside>
-
     <main>
+      <!-- HERO -->
       <section class="hero">
         <div class="hero-inner">
           <div class="hero-content">
             <p class="hero-tag">Workspace centered collaboration</p>
             <h1>Give every team a clear place to work</h1>
-
             <p class="hero-text">
               LogHue lets teams create workspaces, assign tasks, log what was
               done, and review progress in a calm and focused environment.
             </p>
-
             <div class="hero-actions">
-              <a href="pages/auth" class="cta-btn"
-                >Create your account</a
-              >
+              <a href="/auth" class="cta-btn">Create your account</a>
               <a href="#what" class="secondary-btn">See what you can do</a>
             </div>
-
             <div class="hero-highlights">
               <div class="hero-pill">Workspaces with clear tasks</div>
               <div class="hero-pill">Logs with notes and dates</div>
               <div class="hero-pill">Admins review and close work</div>
             </div>
           </div>
-
           <div class="hero-illustration">
             <div class="mock-shell">
               <div class="mock-sidebar">
@@ -105,16 +86,13 @@
                   <div class="mock-title"></div>
                   <div class="mock-user"></div>
                 </div>
-
                 <div class="mock-stats-row">
                   <div class="mock-stat-card"></div>
                   <div class="mock-stat-card"></div>
                   <div class="mock-stat-card"></div>
                   <div class="mock-stat-card"></div>
                 </div>
-
                 <div class="mock-section-title"></div>
-
                 <div class="mock-workspace-list">
                   <div class="mock-workspace-card">
                     <div class="mock-workspace-main">
@@ -126,7 +104,6 @@
                       <div class="mock-chip primary"></div>
                     </div>
                   </div>
-
                   <div class="mock-workspace-card">
                     <div class="mock-workspace-main">
                       <div class="mock-workspace-name"></div>
@@ -143,7 +120,7 @@
           </div>
         </div>
       </section>
-
+      <!-- FEATURES -->
       <section id="features" class="section features">
         <div class="section-inner">
           <h2>Why teams choose LogHue</h2>
@@ -151,7 +128,6 @@
             LogHue gives structure to the way work moves from idea to
             completion, without adding noise or clutter.
           </p>
-
           <div class="feature-grid">
             <div class="feature-card">
               <h3>Workspace centered</h3>
@@ -160,7 +136,6 @@
                 keep tasks, logs, and members together.
               </p>
             </div>
-
             <div class="feature-card">
               <h3>Task and progress tracking</h3>
               <p>
@@ -168,7 +143,6 @@
                 what is in progress or complete.
               </p>
             </div>
-
             <div class="feature-card">
               <h3>Clear roles</h3>
               <p>
@@ -176,7 +150,6 @@
                 everyone sees what matters to them.
               </p>
             </div>
-
             <div class="feature-card">
               <h3>Calm and modern design</h3>
               <p>
@@ -187,38 +160,40 @@
           </div>
         </div>
       </section>
-
-      <section class="section" id="joinWaitlist">
-        <h2>Join Waitlist</h2>
-        <p style="text-align: center">
-          Be the first to experience a calm, focused workflow built for real
-          teams.
-        </p>
-        <p style="text-align: center">
-          You’ll hear from us the moment LogHue goes live.
-        </p>
-        <form
-          class="form"
-          action="https://formspree.io/f/xeeralbq"
-          method="POST"
-        >
-          <label for="waitlistEmailInput"> Your email: </label>
-          <div class="singleInput">
-            <input
-              placeholder="example@gmail.com"
-              id="waitlistEmailInput"
-              class="inputField"
-              type="email"
-              name="email"
-            />
-            <button class="btn" type="submit">Join</button>
-          </div>
-        </form>
+      <!-- JOIN WAITLIST -->
+      <section id="joinWaitlist" class="section join-waitlist">
+        <div class="section-inner">
+          <h2>Join Waitlist</h2>
+          <p style="text-align: center">
+            Be the first to experience a calm, focused workflow built for real
+            teams.
+          </p>
+          <p style="text-align: center">
+            You’ll hear from us the moment LogHue goes live.
+          </p>
+          <form
+            class="form"
+            action="https://formspree.io/f/xeeralbq"
+            method="POST"
+          >
+            <label for="waitlistEmailInputMain">Your email:</label>
+            <div class="singleInput">
+              <input
+                placeholder="example@gmail.com"
+                id="waitlistEmailInputMain"
+                class="inputField"
+                type="email"
+                name="email"
+              />
+              <button class="btn" type="submit">Join</button>
+            </div>
+          </form>
+        </div>
       </section>
+      <!-- WHAT -->
       <section id="what" class="section what">
         <div class="section-inner">
           <h2>What you can do with LogHue</h2>
-
           <div class="what-grid">
             <div class="what-item">
               <h3>Create workspaces</h3>
@@ -227,7 +202,6 @@
                 logs, and members in one place.
               </p>
             </div>
-
             <div class="what-item">
               <h3>Assign tasks with clarity</h3>
               <p>
@@ -235,7 +209,6 @@
                 where to log their work.
               </p>
             </div>
-
             <div class="what-item">
               <h3>Log real work</h3>
               <p>
@@ -243,7 +216,6 @@
                 mark progress as in progress or complete.
               </p>
             </div>
-
             <div class="what-item">
               <h3>Review and comment</h3>
               <p>
@@ -251,7 +223,6 @@
                 constant calls or messages.
               </p>
             </div>
-
             <div class="what-item">
               <h3>Track progress</h3>
               <p>
@@ -259,7 +230,6 @@
                 done across all workspaces.
               </p>
             </div>
-
             <div class="what-item">
               <h3>Close tasks with confidence</h3>
               <p>
@@ -270,11 +240,10 @@
           </div>
         </div>
       </section>
-
+      <!-- HOW -->
       <section id="how" class="section how">
         <div class="section-inner">
           <h2>How LogHue fits into a workday</h2>
-
           <div class="how-steps">
             <div class="how-step">
               <span class="step-number">1</span>
@@ -283,7 +252,6 @@
                 Sign in and create a workspace for a team, project, or group.
               </p>
             </div>
-
             <div class="how-step">
               <span class="step-number">2</span>
               <h3>Add your team</h3>
@@ -292,7 +260,6 @@
                 work.
               </p>
             </div>
-
             <div class="how-step">
               <span class="step-number">3</span>
               <h3>Assign tasks</h3>
@@ -301,7 +268,6 @@
                 people.
               </p>
             </div>
-
             <div class="how-step">
               <span class="step-number">4</span>
               <h3>Log what was done</h3>
@@ -309,7 +275,6 @@
                 Members log their work with notes, dates, and progress state.
               </p>
             </div>
-
             <div class="how-step">
               <span class="step-number">5</span>
               <h3>Review and respond</h3>
@@ -317,7 +282,6 @@
                 Admins review logs, leave comments, and guide the next steps.
               </p>
             </div>
-
             <div class="how-step">
               <span class="step-number">6</span>
               <h3>Close the task</h3>
@@ -329,11 +293,10 @@
           </div>
         </div>
       </section>
-
+      <!-- WHO -->
       <section id="who" class="section who">
         <div class="section-inner">
           <h2>Who LogHue is for</h2>
-
           <div class="who-grid">
             <div class="who-card">
               <h3>Teams in growing companies</h3>
@@ -342,7 +305,6 @@
                 live together.
               </p>
             </div>
-
             <div class="who-card">
               <h3>Managers who want clarity</h3>
               <p>
@@ -350,7 +312,6 @@
                 reports.
               </p>
             </div>
-
             <div class="who-card">
               <h3>People who do the work</h3>
               <p>
@@ -358,7 +319,6 @@
                 complete.
               </p>
             </div>
-
             <div class="who-card">
               <h3>Small groups that need structure</h3>
               <p>
@@ -369,7 +329,7 @@
           </div>
         </div>
       </section>
-
+      <!-- EXAMPLE -->
       <section class="section example">
         <div class="section-inner example-inner">
           <div class="example-text">
@@ -412,54 +372,47 @@
         </div>
       </section>
     </main>
-
+    <!-- FOOTER -->
     <footer class="footer">
-      <form action="https://formspree.io/f/xeeralbq" method="POST">
-        <div class="singleInput">
-          <input
-            placeholder="Join waitlist"
-            id="waitlistEmailInput"
-            class="inputField"
-            type="email"
-            name="email"
-          />
-          <button class="btn" type="submit">Join</button>
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="logo">Log<span>Hue</span></div>
+          <p>Calm workspace management for modern teams.</p>
         </div>
-      </form>
-
-      <p>&copy;2026 LogHue. All rights reserved.</p>
+        <div class="footer-links">
+          <div>
+            <h4>Product</h4>
+            <ul>
+              <li><a href="/features">Features</a></li>
+              <li><a href="/pricing">Pricing</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Company</h4>
+            <ul>
+              <li><a href="/about">About</a></li>
+              <li><a href="/contact">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="/privacy">Privacy Policy</a></li>
+              <li><a href="/terms">Terms of Service</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Scybud</h4>
+            <ul>
+              <li><a href="#">Other apps</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 LogHue. All rights reserved.</p>
+        </div>
+      </div>
     </footer>
-
-    <script>
-      const themeToggle = document.getElementById("themeToggle");
-      themeToggle.addEventListener("click", () => {
-        document.body.classList.toggle("dark");
-        const isDark = document.body.classList.contains("dark");
-        themeToggle.textContent = isDark ? "☀️" : "🌙";
-      });
-    </script>
-
-    <script>
-      const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-      const mobileSidebar = document.getElementById("mobileSidebar");
-      const closeSidebar = document.getElementById("closeSidebar");
-
-      mobileMenuBtn.addEventListener("click", () => {
-        mobileSidebar.classList.add("open");
-      });
-
-      closeSidebar.addEventListener("click", () => {
-        mobileSidebar.classList.remove("open");
-      });
-
-      mobileSidebar.addEventListener("click", (event) => {
-        if (
-          event.target.tagName === "A" ||
-          event.target.classList.contains("btn")
-        ) {
-          mobileSidebar.classList.remove("open");
-        }
-      });
-    </script>
+    <script type="module" src="js/landing.js"></script>
   </body>
 </html>

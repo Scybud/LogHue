@@ -144,7 +144,7 @@ document.getElementById("send-email-invite-btn").onclick = async () => {
   }
 
   
-const inviteUrl = `${window.location.origin}/invite.html?token=${invite.token}`;
+const inviteUrl = `${window.location.origin}/invite?token=${invite.token}`;
 
  const {
    data: { session },
@@ -177,7 +177,7 @@ const inviteUrl = `${window.location.origin}/invite.html?token=${invite.token}`;
    }
 
     const baseUrl = window.location.origin; // Automatically uses localhost or app.loghue.com
-    const inviteUrl = `${baseUrl}/invite.html?token=${invite.token}`;
+    const inviteUrl = `${baseUrl}/invite?token=${invite.token}`;
 
     document.getElementById("invite-link-input").value = inviteUrl;
 
