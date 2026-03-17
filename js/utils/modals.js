@@ -150,7 +150,7 @@ export async function confirmAction(message, actions = []) {
 export async function actionMsg(message, typeClass) {
   // Load modal only when needed
   await loadComponent(
-    "https://loghue.com/components/modals/action-message.html",
+    "https://loghue.com/components/modals/action-message",
     "actionsMessage",
   );
 
