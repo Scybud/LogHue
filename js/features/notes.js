@@ -7,7 +7,7 @@ GLOBAL STATE
 */
 let quill = null;
 let currentNoteId = null;
-
+let savednoteDetails = [];
 /*
 --------------------------------
 INITIALIZE NOTES UI
@@ -64,7 +64,7 @@ function initNotes() {
 
 
   loadNotes();
-  
+  attachDeletenoteEvent();
   /*
   Attach save handler
   */
@@ -103,6 +103,8 @@ async function loadNotes() {
     return;
   }
 
+  savednoteDetails = notes || [];
+
   renderNotesList(notes);
 
   // Automatically open the most recent note
@@ -126,15 +128,28 @@ function renderNotesList(notes) {
   notes.forEach((note) => {
     const item = document.createElement("div");
     item.classList.add("noteItem");
+  item.dataset.id = note.id;
 
     const noteTitle = note.title || "Untitled";
 
+    const deleteBtn = document.createElement("button")
+    deleteBtn.type = "button"
+    deleteBtn.classList.add("deleteBtn", "btn", "btn-sm")
+    deleteBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <polyline points="3 6 5 6 21 6" />
+  <path d="M19 6l-1 14H6L5 6" />
+  <path d="M10 11v6" />
+  <path d="M14 11v6" />
+  <path d="M9 6V4h6v2" />
+</svg>
+`;
     // truncate safely
     const shortenedTitle =
       noteTitle.length > 25 ? noteTitle.slice(0, 25) + "..." : noteTitle;
 
     item.textContent = shortenedTitle;
-
+item.append(deleteBtn)
     item.onclick = () => openNote(note);
 
     notesList.appendChild(item);
@@ -225,4 +240,52 @@ async function saveNote() {
   }
 
   await loadNotes();
+}
+
+
+//For Delete Button
+function attachDeletenoteEvent() {
+  const notelist = document.getElementById("notesList")
+  if (!notelist) return;
+  notelist.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".deleteBtn");
+    if (!btn) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!confirm("Delete this task note?")) return;
+
+    const noteToDelete = btn.closest(".noteItem");
+    const id = noteToDelete.dataset.id;
+
+    const { error } = await supabase
+      .from("personal_notes")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      console.error(error);
+      alert(error.message);
+      return;
+    }
+
+    const index = savednoteDetails.findIndex(
+      (note) => String(note.id) === String(id),
+    );
+    if (index !== -1) savednoteDetails.splice(index, 1);
+
+    // Add animation class
+    noteToDelete.classList.add("removing");
+
+    // Remove after animation ends
+    setTimeout(() => {
+      noteToDelete.remove();
+
+      //update count
+      updateTaskCount();
+      //check if task note conatiner is empty
+      checkIfEmpty();
+    }, 550); // matches CSS transition time
+  });
 }
