@@ -2,7 +2,7 @@ import { dataCount } from "../utils.js";
 import { closeModal, loadComponent } from "../ui.js";
 import { supabase } from "../supabase.js";
 import { sessionState, sessionReady } from "../session.js";
-import { confirmAction } from "../utils/modals.js";
+import { confirmAction, actionMsg } from "../utils/modals.js";
 
 if (window.__workspaceInit) {
   console.warn("workspaceData.js already initialized");
@@ -365,8 +365,14 @@ async function performWorkspaceDelete(id) {
       return;
     }
 
-    // Refresh UI
-    window.location.reload();
+    actionMsg("Note deleted successfully!", "success");
+
+       setTimeout(() => {
+         noteToDelete.remove();
+         // Refresh UI
+         window.location.reload();
+   
+       }, 5000);
 }
 
 
