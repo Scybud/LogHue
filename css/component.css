@@ -706,8 +706,7 @@ flex-direction: column;
 }
 }
 
-.modal-actions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
+.modal-actions btn{
+  
+  margin-top: var(--space-md);
 }
