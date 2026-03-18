@@ -260,6 +260,7 @@ button.danger {
   background: var(--danger);
   font-weight: 700;
   color: var(--bg);
+  margin-top: var(--space-sm);
 }
 /* Tooltip bubble */
 .tooltip::after {
@@ -598,6 +599,11 @@ button.danger {
   grid-template-columns: minmax(200px, 400px) 1fr;
   max-height: 100%;
 }
+.notesConatiner #noteTitle {
+  border-width: 2px;
+  width: fit-content;
+  background-color: var(--card-bg);
+}
 #createNote {
   right: 0;
 }
@@ -610,6 +616,10 @@ button.danger {
   border-radius: var(--radius);
   min-height: 300px;
   max-height: 100%;
+}
+#editor img {
+  border-radius: var(--radius);
+  width: 300px;
 }
 .ql-container.ql-snow {
   background-color: var(--input-bg);
@@ -633,6 +643,7 @@ button.danger {
   right: 10px;
   bottom: 5px;
   min-width: 100px;
+  max-width: fit-content;
 }
 #notesList {
 position: sticky;
@@ -671,9 +682,10 @@ max-height: 600px;
 }
 .noteItem .deleteBtn {
   background-color: var(--color);
-  padding: 0;
+  padding: var(--space-sm);
   margin: 0;
   align-items: center;
+  max-width: fit-content;
 }
 .noteItem:hover {
   opacity: 0.9;

@@ -20,7 +20,7 @@ function initNotes() {
   if (!editorContainer) return;
 
   editorContainer.innerHTML = `
-    <input id="noteTitle" value="Untitled" placeholder="Note title" class="noteTitle inputField" />
+    <input id="noteTitle" placeholder="Note title" class="noteTitle inputField" />
     <div id="editor"></div>
     <button id="saveNoteBtn" class="btn-sm btn">Save</button>
   `;
@@ -31,10 +31,11 @@ function initNotes() {
    quill = new Quill("#editor", {
     modules: {
       toolbar: [
-        [{ header: [1, 2, false] }],
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
         ["bold", "italic", "underline"],
         [{ list: "ordered" }, { list: "bullet" }],
         ["link"],
+        ["image"],
         ["code-block"],
       ],
     },
@@ -42,7 +43,6 @@ function initNotes() {
     theme: "snow",
   });
 
-  // ⬇️ Add this RIGHT AFTER the Quill initialization
   const toolbar = quill.getModule("toolbar");
 
   toolbar.addHandler("link", function () {
@@ -201,6 +201,9 @@ async function createNote() {
 
   await loadNotes();
   openNote(data);
+
+        actionMsg("Note created. Start typing!", "success");
+
 }
 
 document.getElementById("createNote").addEventListener("click", () => {
@@ -236,7 +239,7 @@ async function saveNote() {
     return;
   }
 
-  actionMsg("Note saved successfully", "success");
+  actionMsg("Note saved successfully!", "success");
 
   await loadNotes();
 }
@@ -292,4 +295,6 @@ async function attachDeletenoteEvent(noteToDelete, id) {
       noteToDelete.remove();
 
     }, 550); // matches CSS transition time
+      actionMsg("Note deleted successfully!", "success");
+
 }

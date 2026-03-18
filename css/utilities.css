@@ -313,7 +313,7 @@ input.error {
 }
 
 #actionsMessage {
-  position: absolute;
+  position: fixed;
   z-index: 9999;
   right: -100%;
   top: 70px;
@@ -344,4 +344,8 @@ input.error {
 #confirmActionModal {
   width: 100%;
   max-width: 300px;
+}
+#confirmActionModal p {
+  margin: 0;
+  padding: 0;
 }
