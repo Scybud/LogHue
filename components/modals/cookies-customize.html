@@ -1,28 +1,70 @@
 <div class="modalContainer">
 
-<div id="consent-modal" class="consent-modal">
-  <div class="modal-content">
-    <h3>Cookie Preferences</h3>
+  <div id="consent-modal" class="consent-modal" role="dialog" aria-labelledby="consent-title">
+    <div class="modal-content">
 
-    <label class="toggle">
-      <span>Essential Cookies</span>
-      <input type="checkbox" checked disabled>
-    </label>
+      <!-- Header -->
+      <h3 id="consent-title">Privacy & Cookie Preferences</h3>
+      <p class="modal-subtext">
+        We use cookies to improve your experience, analyze usage, and support our services.
+        You can choose what you allow below.
+      </p>
 
-    <label class="toggle">
-      <span>Analytics</span>
-      <input id="toggle-analytics" type="checkbox">
-    </label>
+      <!-- Essential -->
+      <div class="consent-item">
+        <label class="toggle">
+          <div class="consent-text">
+            <span>Essential Cookies</span>
+            <small>Required for login, security, and core functionality.</small>
+          </div>
+          <input type="checkbox" checked disabled>
+        </label>
+      </div>
 
-    <label class="toggle">
-      <span>Marketing</span>
-      <input id="toggle-marketing" type="checkbox">
-    </label>
+      <!-- Analytics -->
+      <div class="consent-item">
+        <label class="toggle">
+          <div class="consent-text">
+            <span>Analytics</span>
+            <small>Helps us understand how LogHue is used so we can improve it.</small>
+          </div>
+          <input id="toggle-analytics" type="checkbox" data-consent="analytics">
+        </label>
+      </div>
 
-    <div class="modal-actions">
-      <button id="save-preferences" class="btn primary">Save Preferences</button>
-      <button id="close-modal" class="btn secondary">Cancel</button>
+      <!-- Marketing -->
+      <div class="consent-item">
+        <label class="toggle">
+          <div class="consent-text">
+            <span>Marketing</span>
+            <small>Used to deliver relevant content and measure campaigns.</small>
+          </div>
+          <input id="toggle-marketing" type="checkbox" data-consent="marketing">
+        </label>
+      </div>
+
+      <!-- Actions -->
+      <div class="modal-actions">
+
+        <div class="action-left">
+          <button id="accept-all" class="btn primary" type="button">Accept All</button>
+          <button id="reject-all" class="btn secondary" type="button">Reject All</button>
+        </div>
+
+        <div class="action-right">
+          <button id="save-preferences" class="btn primary" type="button">Save Preferences</button>
+          <button id="close-modal" class="btn secondary" type="button">Cancel</button>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/cookie-policy">Cookie Policy</a>
+      </div>
+
     </div>
   </div>
-</div>
+
 </div>
