@@ -260,7 +260,9 @@ async function attachCreateWorkspaceEvent() {
     workspaceDescriptionEl.value = "";
 
     closeModal();
-    window.location.reload();
+
+   actionMsg("Workspace created successfully!", "success");
+
   });
 }
 
@@ -349,7 +351,7 @@ function attachOpenWorkspaceClickEvent() {
 
 //DELETE WORKSPACE
 async function deleteWorkspace(id) {
-  confirmAction("Are you sure you want to delete this?", [
+  confirmAction("Are you sure you want to delete this? It cannot be reversed", [
     { label: "Cancel", type: "cancel" },
     { label: "Delete", type: "confirm", onClick: () => performWorkspaceDelete(id) },
   ]);
@@ -365,7 +367,7 @@ async function performWorkspaceDelete(id) {
       return;
     }
 
-    actionMsg("Note deleted successfully!", "success");
+    actionMsg("Workspace deleted!", "success");
 
        setTimeout(() => {
          noteToDelete.remove();
@@ -407,8 +409,13 @@ if (error) {
   return;
 }
 
+    actionMsg("Workspace archieved!", "success");
+
 // Refresh UI
-window.location.reload();
+setTimeout(() => {
+
+  window.location.reload();
+}, 5000)
 }
 
 //EDIT WORKSPACE
@@ -448,9 +455,15 @@ async function editWorkspace(ws, id) {
       alert("Failed to update data");
       return;
     }
+    actionMsg("Workspace edited!", "success");
+
+    closeModal()
 
     // Refresh UI
-    window.location.reload();
+    setTimeout(() => {
+
+      window.location.reload();
+    }, 5000)
   });
 }
 
