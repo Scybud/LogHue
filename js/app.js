@@ -54,7 +54,10 @@ window.addEventListener("DOMContentLoaded", async () => {
   if (saved) {
     const prefs = JSON.parse(saved);
       const actionsMessage = document.getElementById("actionsMessage");
-      actionsMessage.innerHTML = "";
+      if(actionsMessage) {
+        actionsMessage.innerHTML = "";
+
+      }
 
     if (prefs.analytics) {
       loadAnalytics();
