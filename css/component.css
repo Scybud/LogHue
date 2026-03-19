@@ -411,6 +411,8 @@ button.danger {
   top: 20px;
   left: 20px;
   opacity: 0.9;
+  display: flex;
+  align-items: center;
 }
 /*CARDS*/
 .card {
