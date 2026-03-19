@@ -6,21 +6,20 @@ import {
 import { supabase } from "../supabase.js";
 
 export function attachCreateTaskEvent(workspaceId) {
-
   const createTaskBtn = document.getElementById("createTaskBtn");
   if (!createTaskBtn) return;
 
   const assignedTo = document.getElementById("assignToDropdown");
- if (loadedMembers && Array.isArray(loadedMembers)) {
-  loadedMembers.forEach((lm) => {
-    if (lm.profiles) {
-      const option = document.createElement("option");
-      option.value = lm.profiles.id;
-      option.textContent = lm.profiles.full_name;
-      assignedTo.append(option);
-    }
-  });
-}
+  if (loadedMembers && Array.isArray(loadedMembers)) {
+    loadedMembers.forEach((lm) => {
+      if (lm.profiles) {
+        const option = document.createElement("option");
+        option.value = lm.profiles.id;
+        option.textContent = lm.profiles.full_name;
+        assignedTo.append(option);
+      }
+    });
+  }
 
   // When create task button is clicked to create a new task
   createTaskBtn.addEventListener("click", async () => {
@@ -30,19 +29,21 @@ export function attachCreateTaskEvent(workspaceId) {
     const taskDescription = document
       .getElementById("taskDescription")
       .value.trim();
-const assignedToValue = assignedTo.value;
+    const assignedToValue = assignedTo.value;
 
     if (!taskTitle || !taskDescription) {
       alert("Input fields must not be empty");
       return;
     }
 
-     // Get the authenticated user ID
-    const { data: { user } } = await supabase.auth.getUser();
+    // Get the authenticated user ID
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     const taskData = {
-        workspace_id: workspaceId,
-        created_by: user.id,
+      workspace_id: workspaceId,
+      created_by: user.id,
       title: taskTitle,
       status: "todo",
       assigned_to: assignedToValue || "", // Assign to empty if no one is selected
@@ -93,8 +94,8 @@ const assignedToValue = assignedTo.value;
       ? `Assigned to: ${assignee.profiles.full_name}`
       : "Unassigned";
 
-      taskCard.append(taskTitleElem, taskMeta);
-if (!assignee) taskCard.append(assignToMemberBtn);
+    taskCard.append(taskTitleElem, taskMeta);
+    if (!assignee) taskCard.append(assignToMemberBtn);
 
     // Prepend the new task card to the grid
     const container = document.querySelector(".grid");
@@ -106,7 +107,6 @@ if (!assignee) taskCard.append(assignToMemberBtn);
     closeModal();
   });
 }
-
 
 //ADD MEMEBR EVENTS
 export async function attachAddMemberEvents(workspaceId) {
@@ -126,55 +126,54 @@ export async function attachAddMemberEvents(workspaceId) {
   };
 
   // SEND EMAIL INVITE
-document.getElementById("send-email-invite-btn").onclick = async () => {
-  const email = document.getElementById("invite-email-input").value;
-  const role = document.getElementById("invite-role-email").value;
+  document.getElementById("send-email-invite-btn").onclick = async () => {
+    const email = document.getElementById("invite-email-input").value;
+    const role = document.getElementById("invite-role-email").value;
 
-  if (!email) return alert("Please enter an email");
+    if (!email) return alert("Please enter an email");
 
-  const invite = await createWorkspaceInvite({
-    workspaceId,
-    role,
-    email,
-  });
+    const invite = await createWorkspaceInvite({
+      workspaceId,
+      role,
+      email,
+    });
 
-  if (!invite?.token) {
-    console.error("Invite creation failed - no token returned");
-    return;
-  }
+    if (!invite?.token) {
+      console.error("Invite creation failed - no token returned");
+      return;
+    }
 
-  
-const inviteUrl = `${window.location.origin}/invite?token=${invite.token}`;
+    const inviteUrl = `${window.location.origin}/invite?token=${invite.token}`;
 
- const {
-   data: { session },
- } = await supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
 
- const { data, error } = await supabase.functions.invoke("send-invite", {
-   body: { email, inviteUrl },
-   headers: {
-     Authorization: `Bearer ${session?.access_token}`,
-   },
- });
+    const { data, error } = await supabase.functions.invoke("send-invite", {
+      body: { email, inviteUrl },
+      headers: {
+        Authorization: `Bearer ${session?.access_token}`,
+      },
+    });
 
-  if (error) {
-    console.error(error);
-    alert("Failed to send invite");
-    return;
-  }
+    if (error) {
+      console.error(error);
+      alert("Failed to send invite");
+      return;
+    }
 
-  alert("Invite sent!");
-};
+    alert("Invite sent!");
+  };
 
   // GENERATE QR INVITE
   document.getElementById("generate-qr-btn").onclick = async () => {
     const role = document.getElementById("invite-role-qr").value;
 
-   const invite = await createWorkspaceInvite({ workspaceId, role });
-   if (!invite || !invite.token) {
-     alert("Error: Invite token was not generated.");
-     return;
-   }
+    const invite = await createWorkspaceInvite({ workspaceId, role });
+    if (!invite || !invite.token) {
+      alert("Error: Invite token was not generated.");
+      return;
+    }
 
     const baseUrl = window.location.origin; // Automatically uses localhost or app.loghue.com
     const inviteUrl = `${baseUrl}/invite?token=${invite.token}`;
@@ -203,4 +202,92 @@ const inviteUrl = `${window.location.origin}/invite?token=${invite.token}`;
       alert("Failed to copy link");
     }
   };
+}
+
+export async function attachCreateLogEvent() {
+    taskEl = document.getElementById("task");
+    timeEl = document.getElementById("taskTime");
+    noteEl = document.getElementById("note");
+    logTaskBtn = document.getElementById("logTask");
+    
+  if (!logTaskBtn) return;
+
+  const user = sessionState.user;
+
+  //When log task button is clicked to create new log
+  logTaskBtn.addEventListener("click", async () => {
+    const taskValue = taskEl.value.trim();
+    const timeValue = timeEl.value.trim();
+    const noteValue = noteEl.value.trim();
+
+    if (!taskValue || !timeValue || !noteValue) {
+      alert("Input field must not be empty");
+      return;
+    }
+
+    const logData = {
+      name: taskValue,
+      description: noteValue,
+      created_at: timeValue,
+      user_id: user.id,
+    };
+
+    // optimistic UI: update state + DOM immediately
+    savedLogDetails.unshift(logData);
+    const el = createLogElement(logData);
+    personalCreatedLogs.prepend(el);
+
+    requestAnimationFrame(() => {
+      el.classList.add("show");
+    });
+
+    updateTaskCount();
+    checkIfEmpty();
+
+    // clear inputs + close panel
+    taskEl.value = "";
+    timeEl.value = "";
+    noteEl.value = "";
+    document
+      .querySelector(".personalLogInputContainer")
+      .classList.toggle("expand");
+    document.getElementById("upperDashboardContainer").classList.toggle("hide");
+
+    // send to Supabase
+    const { data, error } = await supabase
+      .from("personal_tasks")
+      .insert({
+        name: taskValue,
+        description: noteValue,
+        created_at: timeValue,
+        user_id: user.id,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error(error);
+      alert("Failed to create task.");
+
+      // rollback optimistic UI
+      const index = savedLogDetails.findIndex((log) => log.id === tempId);
+      if (index !== -1) savedLogDetails.splice(index, 1);
+
+      el.classList.add("removing");
+      setTimeout(() => {
+        el.remove();
+        updateTaskCount();
+        checkIfEmpty();
+      }, 300);
+
+      return;
+    }
+
+    // replace temp id with real id
+    const index = savedLogDetails.findIndex((log) => log.id === tempId);
+    if (index !== -1) {
+      savedLogDetails[index] = data;
+    }
+    el.dataset.id = data.id;
+  });
 }

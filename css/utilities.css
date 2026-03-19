@@ -21,17 +21,16 @@
 
 header.pageHeader {
   white-space: nowrap;
+  background-color: var(--header-bg);
   backdrop-filter: blur(30px) brightness(80%);
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: sticky;
-  top: -8px;
-  border-radius: var(--radius);
+  top: 0;
   z-index: 1;
   width: 100%;
-  margin-bottom: var(--space-md);
-  padding: var(--space-sm) calc(var(--space-md) - 4px);
+  padding: 0 calc(var(--space-md) - 4px);
   overflow-x: auto;
 }
 /* CHROME, EDGE, SAFARI */
@@ -62,7 +61,11 @@ header.pageHeader::-webkit-scrollbar-thumb:hover {
   align-items: center;
   gap: calc(var(--space-xs) + 1px);
 }
-
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
 /*SIDEBAR TOGGLE MENU ICON*/
 /*NAVICATION ICON SVG*/
 .navIcon svg,

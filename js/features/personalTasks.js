@@ -1,18 +1,13 @@
-import { personalLogInputContainerPanelToggle } from "../utils/toggle.js";
 import { dataCount } from "../utils.js";
 import { supabase } from "../supabase.js";
 import { sessionState, sessionReady } from "../session.js";
+import {openLogPersonalTaskModal} from "../utils/modals.js"
 
-let taskEl;
-let timeEl;
-let noteEl;
 let personalCreatedLogs;
-let logTaskBtn;
 let loggedTasksCount;
+let isLoading = false
 
 let savedLogDetails = [];
-
-let isLoading = false;
 
 function setLoading(state) {
   isLoading = state;
@@ -25,11 +20,7 @@ export async function initPersonalTasks() {
   const user = sessionState.user;
 
   // cache DOM first
-  taskEl = document.getElementById("task");
-  timeEl = document.getElementById("taskTime");
-  noteEl = document.getElementById("note");
   personalCreatedLogs = document.getElementById("personalCreatedLogs");
-  logTaskBtn = document.getElementById("logTask");
   loggedTasksCount = document.getElementById("loggedTasksCount");
 
   setLoading(true);
@@ -52,7 +43,7 @@ export async function initPersonalTasks() {
 
   renderExistingLogs();
   updateTaskCount();
-  attachCreateLogEvent();
+  openLogPersonalTaskModal();
   attachDeleteLogEvent();
   checkIfEmpty();
 }
@@ -151,18 +142,6 @@ class="emptyStateImg"
     stroke="#ccc"
     stroke-width="1"
   />
-
-  <!-- Secondary text -->
-  <text
-    x="50%"
-    y="235"
-    text-anchor="middle"
-    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-    font-size="26"
-    fill="#666"
-  >
-    Use the sidebar to open the input panel
-  </text>
   <text
     x="50%"
     y="255"
@@ -171,7 +150,7 @@ class="emptyStateImg"
     font-size="26"
     fill="#666"
   >
-    and add your first task.
+    Add your first task.
   </text>
 </svg>
 `;
@@ -241,94 +220,6 @@ function renderExistingLogs() {
   }
 }
 
-async function attachCreateLogEvent() {
-  if (!logTaskBtn) return;
-
-  const user = sessionState.user;
-
-  //When log task button is clicked to create new log
-  logTaskBtn.addEventListener("click", async () => {
-    const taskValue = taskEl.value.trim();
-    const timeValue = timeEl.value.trim();
-    const noteValue = noteEl.value.trim();
-
-    if (!taskValue || !timeValue || !noteValue) {
-      alert("Input field must not be empty");
-      return;
-    }
-
-    const user = sessionState.user;
-
-    // temporary id for optimistic entry
-    const tempId = `temp-${Date.now()}`;
-
-    const logData = {
-      id: tempId,
-      name: taskValue,
-      description: noteValue,
-      created_at: timeValue,
-      user_id: user.id,
-    };
-
-    // optimistic UI: update state + DOM immediately
-    savedLogDetails.unshift(logData);
-    const el = createLogElement(logData);
-    personalCreatedLogs.prepend(el);
-
-    requestAnimationFrame(() => {
-      el.classList.add("show");
-    });
-
-    updateTaskCount();
-    checkIfEmpty();
-
-    // clear inputs + close panel
-    taskEl.value = "";
-    timeEl.value = "";
-    noteEl.value = "";
-    document
-      .querySelector(".personalLogInputContainer")
-      .classList.toggle("expand");
-    document.getElementById("upperDashboardContainer").classList.toggle("hide");
-
-    // send to Supabase
-    const { data, error } = await supabase
-      .from("personal_tasks")
-      .insert({
-        name: taskValue,
-        description: noteValue,
-        created_at: timeValue,
-        user_id: user.id,
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error(error);
-      alert("Failed to create task.");
-
-      // rollback optimistic UI
-      const index = savedLogDetails.findIndex((log) => log.id === tempId);
-      if (index !== -1) savedLogDetails.splice(index, 1);
-
-      el.classList.add("removing");
-      setTimeout(() => {
-        el.remove();
-        updateTaskCount();
-        checkIfEmpty();
-      }, 300);
-
-      return;
-    }
-
-    // replace temp id with real id
-    const index = savedLogDetails.findIndex((log) => log.id === tempId);
-    if (index !== -1) {
-      savedLogDetails[index] = data;
-    }
-    el.dataset.id = data.id;
-  });
-}
 
 //For Delete Button
 function attachDeleteLogEvent() {

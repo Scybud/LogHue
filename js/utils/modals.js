@@ -1,7 +1,11 @@
 import { closeModal, loadComponent } from "../ui.js";
 import {initWorkspaces} from "../features/workspaceData.js"
 import { loginFuntion } from "../auth/auth.js";
-import { attachCreateTaskEvent, attachAddMemberEvents } from "./modalEvents.js";
+import {
+  attachCreateTaskEvent,
+  attachAddMemberEvents,
+  attachCreateLogEvent,
+} from "./modalEvents.js";
 
 export function openCreateTaskModal(workspaceId) {
   const btn = document.getElementById("createTaskOpen");
@@ -21,6 +25,24 @@ if (!workspaceId) return;
     }, {once: true});
 }
 
+export function openLogPersonalTaskModal() {
+   const btn = document.getElementById("logTaskOpen");
+
+ if (!btn) return;
+
+ btn.addEventListener(
+   "click",
+   async () => {
+     await loadComponent(
+       "https://loghue.com/components/modals/personal-log-entry",
+       "modalContainer",
+     );
+
+     attachCreateLogEvent();
+   },
+   { once: true },
+ );
+}
 export function openAddMemeberModal(workspaceId) {
   const btn = document.getElementById("addMemberOpen");
   if (!btn) return;

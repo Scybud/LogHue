@@ -23,24 +23,3 @@ export function attachSidebarToggle() {
   }
 }
 
-// Attaches the personal log input panel toggle behavior
-export function personalLogInputContainerPanelToggle() {
-  const toggleInputContainer = document.getElementById("toggleInputContainer");
-  const upperDashboardContainer = document.getElementById("upperDashboardContainer");
-  const personalLogInputContainer = document.querySelector(".personalLogInputContainer");
-
-  if (toggleInputContainer || upperDashboardContainer || personalLogInputContainer) {
-    toggleInputContainer.addEventListener("click", () => {
-      
-      toggleInputContainer.textContent =
-      toggleInputContainer.textContent === "Close Input Panel"
-      ? "Open Input Panel"
-      : "Close Input Panel";
-      
-      personalLogInputContainer.classList.toggle("expand");
-      toggleInputContainer.classList.toggle("panelClosed");
-      
-      upperDashboardContainer.classList.toggle("hide");
-    });
-  }
-}
