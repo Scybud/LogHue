@@ -86,7 +86,6 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   initPersonalTasks();
   initWorkspaces();
-  personalLogInputContainerPanelToggle();
 
   autoExpandTextarea();
 });
