@@ -30,6 +30,7 @@ header.pageHeader {
   top: 0;
   z-index: 1;
   width: 100%;
+  height: var(--header-height);
   padding: 0 calc(var(--space-md) - 4px);
   overflow-x: auto;
 }

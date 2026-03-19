@@ -208,8 +208,9 @@ export async function attachCreateLogEvent() {
     taskEl = document.getElementById("task");
     timeEl = document.getElementById("taskTime");
     noteEl = document.getElementById("note");
-    logTaskBtn = document.getElementById("logTask");
     
+    logTaskBtn = document.getElementById("logTask");
+
   if (!logTaskBtn) return;
 
   const user = sessionState.user;
