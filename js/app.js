@@ -14,7 +14,6 @@ import {
 } from "./utils/modals.js";
 import {
   attachSidebarToggle,
-  personalLogInputContainerPanelToggle,
 } from "./utils/toggle.js";
 import { initSession } from "./session.js";
 import { initPersonalTasks } from "./features/personalTasks.js";
