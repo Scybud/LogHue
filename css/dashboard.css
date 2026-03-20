@@ -62,7 +62,12 @@ h3 {
   border-radius: var(--radius);
   padding: calc(var(--space-xs) - 2px);
 }
-
+.cardHeader {
+  position: relative;
+}
+.cardHeader .tag {
+    right: 0;
+}
 .section {
   display: flex;
   flex-direction: column;

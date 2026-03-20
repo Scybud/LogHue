@@ -276,7 +276,15 @@ export function loadCreatedTasks(tasks, container) {
     taskTitle.classList.add("taskTitle");
     taskTitle.textContent = tsk.title;
 
+    const summary = document.createElement("summary")
+    summary.textContent = "Description"
     
+    const descriptionText = document.createElement("p")
+    descriptionText.textContent = tsk.description;
+
+    const details = document.createElement("details")
+details.append(summary, descriptionText);
+
     const assignee = document.createElement("p")
     assignee.classList.add("meta");
     
@@ -298,10 +306,10 @@ export function loadCreatedTasks(tasks, container) {
 
     if (tsk.assigned_to === "") {
       assignee.textContent = `Unassigned`;
-      taskCard.append(taskTitle, taskMeta, assignToMemberBtn);
+      taskCard.append(taskTitle, taskMeta, details, assignToMemberBtn);
     } else {
       assignee.textContent = `Assigned to: ${tsk.profiles.full_name}`;
-      taskCard.append(taskTitle, taskMeta);
+      taskCard.append(taskTitle, taskMeta, details);
     }
 
     divGrid.append(taskCard);
@@ -346,7 +354,7 @@ function loadMembers(members, container) {
 
     const cardHeader = document.createElement("div");
     cardHeader.classList.add("cardHeader");
-    cardHeader.append(avatar, memberName);
+    cardHeader.append(tag, avatar, memberName);
 
     const assignTaskBtn = document.createElement("button");
     assignTaskBtn.id = mbr.profiles.id;
