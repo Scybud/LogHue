@@ -14,7 +14,3 @@ section {
   padding: var(--space-xs);
   min-height: 400px;
 }
-#inputContainer {
-  border: none;
-  min-height: 0;
-}

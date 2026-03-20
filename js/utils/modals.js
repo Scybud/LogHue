@@ -42,8 +42,7 @@ return;
      );
 
      attachCreateLogEvent();
-   },
-   { once: true },
+   }
  );
 }
 

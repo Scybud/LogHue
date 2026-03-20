@@ -58,28 +58,12 @@ PERSONAL LOGGED TASK SECTION
   margin: calc(var(--space-lg) - 4px) 0;
 }
 .personalLogInputContainer {
-  max-width: 0;
-  max-height: 0;
-  padding: 0;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: calc(var(--space-md) - 2px);
   border-radius: var(--radius);
-  transition:
-    max-height 1s ease,
-    max-width 1s ease,
-    padding 1s ease;
 }
-.expand {
-  max-width: 700px;
-  max-height: 600px;
-  padding: calc(var(--space-lg) - 4px);
-}
-.expand label {
-  color: #ffffff;
-  font-size: 0.9rem;
-}
+
 input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
   opacity: 1;
@@ -213,7 +197,7 @@ details[open] {
   background: var(--form-bg);
 }
 details[open] button {
-  background-color: var(--chevron-color);
+  background-color: var(--card-bg);
 }
 summary {
   padding: calc(var(--space-xs) / 2) calc(var(--space-xs) + 1px);
@@ -238,7 +222,7 @@ summary {
 }
 .actionContainer button,
 .deleteBtn {
-  background-color: var(--color);
+  background-color: var(--bg);
   border: none;
   display: flex;
   justify-content: center;
@@ -247,7 +231,7 @@ summary {
   width: 40px;
   height: 40px;
   font-size: 1.5rem;
-  color: var(--bg);
+  color: var(--color);
   transition:
     color 0.4s ease,
     background-color 0.5s ease,
@@ -304,7 +288,7 @@ button.danger {
   transform: translateX(-50%) translateY(0);
 }
 .deleteBtn:hover {
-  color: #ff0000;
+  color: var(--danger);
 }
 
 #personalCreatedLogs {
@@ -377,10 +361,7 @@ button.danger {
     flex-direction: column;
   }
 }
-#toggleInputContainer {
-  margin-top: calc(var( --space-sm) + 2px);
-  width: fit-content;
-}
+
 .btn-primary {
   color: #000;
   background: var(--primary);

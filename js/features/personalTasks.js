@@ -1,33 +1,35 @@
 import { dataCount } from "../utils.js";
 import { supabase } from "../supabase.js";
 import { sessionState, sessionReady } from "../session.js";
-import {openLogPersonalTaskModal} from "../utils/modals.js"
+import { openLogPersonalTaskModal } from "../utils/modals.js";
 
-let personalCreatedLogs;
-let loggedTasksCount;
+let personalCreatedLogs = null;
+let loggedTasksCount = null;
 
-let isLoading = false
+export let savedLogDetails = [];
+let isLoading = false;
 
-let savedLogDetails = [];
-
+// -------------------------------
+// Loading State
+// -------------------------------
 function setLoading(state) {
   isLoading = state;
-  if (!personalCreatedLogs) return;
-  personalCreatedLogs.classList.toggle("isLoading", state);
+  personalCreatedLogs?.classList.toggle("isLoading", state);
 }
 
+// -------------------------------
+// Initialization
+// -------------------------------
 export async function initPersonalTasks() {
   await sessionReady;
   const user = sessionState.user;
 
-  // cache DOM first
   personalCreatedLogs = document.getElementById("personalCreatedLogs");
   loggedTasksCount = document.getElementById("loggedTasksCount");
 
   setLoading(true);
 
-  // GET CREATED PERSONAL TASKS
-  const { data: createdPersonalTasks, error: createdError } = await supabase
+  const { data, error } = await supabase
     .from("personal_tasks")
     .select("*")
     .eq("user_id", user.id)
@@ -35,149 +37,68 @@ export async function initPersonalTasks() {
 
   setLoading(false);
 
-  if (createdError) {
-    console.error(createdError);
-    alert(createdError);
+  if (error) {
+    console.error(error);
+    alert(error.message);
+    return;
   }
 
-  savedLogDetails = createdPersonalTasks || [];
+  savedLogDetails = data || [];
 
   renderExistingLogs();
   updateTaskCount();
-  openLogPersonalTaskModal();
-  attachDeleteLogEvent();
   checkIfEmpty();
+  attachDeleteLogEvent(user.id);
+  openLogPersonalTaskModal();
 }
 
-function formatDateTime(isoString) {
-  const date = new Date(isoString);
-  return date.toLocaleString("en-US", {
-    month: "long", // February
-    day: "numeric", // 11
-    year: "numeric", // 2026
-    hour: "2-digit", // 12
-    minute: "2-digit", // 27
+// -------------------------------
+// Helpers
+// -------------------------------
+function formatDateTime(iso) {
+  return new Date(iso).toLocaleString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 }
 
-function updateTaskCount() {
-  //Count number of created tasks
-  if (!loggedTasksCount) return;
-  dataCount(loggedTasksCount, savedLogDetails);
+export function updateTaskCount() {
+  if (loggedTasksCount) dataCount(loggedTasksCount, savedLogDetails);
 }
 
-function checkIfEmpty() {
+// -------------------------------
+// Empty State
+// -------------------------------
+export function checkIfEmpty() {
+  if (!personalCreatedLogs) return;
+
   if (savedLogDetails.length === 0) {
-    if (personalCreatedLogs) {
-      personalCreatedLogs.innerHTML = `<svg
-class="emptyStateImg"
-  viewBox="0 0 480 320"
-  xmlns="http://www.w3.org/2000/svg"
-  role="img"
-  aria-labelledby="title desc"
->
-  <title id="title">No tasks logged</title>
-  <desc id="desc">
-    Clipboard illustration with message: No tasks logged yet. Use the sidebar to open the input panel and add your first task.
-  </desc>
-
-  <rect width="100%" height="100%" fill="none" />
-
-  <!-- Clipboard icon -->
-  <g transform="translate(190,40)" fill="none" stroke="#777" stroke-width="2">
-    <!-- Shadow -->
-    <ellipse cx="50" cy="120" rx="46" ry="6" fill="#000" opacity="0.06" stroke="none" />
-
-    <!-- Clipboard body -->
-    <rect x="10" y="10" width="80" height="100" rx="6" ry="6" fill="#f5f5f5" />
-    <!-- Paper -->
-    <rect x="18" y="18" width="64" height="84" rx="4" ry="4" fill="#ffffff" />
-
-    <!-- Clip -->
-    <rect x="36" y="4" width="32" height="12" rx="3" ry="3" fill="#e0e0e0" stroke="none" />
-    <rect x="42" y="2" width="20" height="8" rx="2" ry="2" fill="#d0d0d0" stroke="none" />
-
-    <!-- Plus sign -->
-    <g stroke="#777" stroke-width="2" stroke-linecap="round">
-      <line x1="30" y1="30" x2="30" y2="38" />
-      <line x1="26" y1="34" x2="34" y2="34" />
-    </g>
-
-    <!-- First checkbox (empty) -->
-    <rect x="26" y="46" width="10" height="10" rx="2" ry="2" />
-    <line x1="40" y1="51" x2="72" y2="51" />
-
-    <!-- Second checkbox (checked) -->
-    <rect x="26" y="64" width="10" height="10" rx="2" ry="2" />
-    <polyline points="28,69 31,73 36,66" stroke-linecap="round" stroke-linejoin="round" />
-    <line x1="40" y1="69" x2="72" y2="69" />
-
-    <!-- Small star -->
-    <path
-      d="M82 30 l2 4 4 1 -3 3 1 4 -4-2 -4 2 1-4 -3-3 4-1z"
-      fill="#999"
-      stroke="none"
-    />
-  </g>
-
-  <!-- Main text: 4rem equivalent -->
-  <!-- 4rem ~ 64px (assuming 16px base) -->
-  <text
-    x="50%"
-    y="190"
-    text-anchor="middle"
-    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-    font-size="44"
-    font-weight="700"
-    fill="#4e4e4e"
-  >
-    No tasks logged yet.
-  </text>
-
-  <!-- Divider line -->
-  <line
-    x1="120"
-    y1="205"
-    x2="360"
-    y2="205"
-    stroke="#ccc"
-    stroke-width="1"
-  />
-  <text
-    x="50%"
-    y="255"
-    text-anchor="middle"
-    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-    font-size="26"
-    fill="#666"
-  >
-    Add your first task.
-  </text>
-</svg>
-`;
-    }
-  } else {
-    const placeholder = document.querySelector(".placeholderText");
-    if (placeholder) placeholder.remove();
+    personalCreatedLogs.innerHTML = EMPTY_STATE_SVG;
+    return;
   }
+
+  const placeholder = personalCreatedLogs.querySelector(".emptyStateImg");
+  if (placeholder) placeholder.remove();
 }
 
-function createLogElement(log) {
-  /*
-   let savedLogDetails = JSON.parse(localStorage.getItem("logDetails")) || [];
-*/
+const EMPTY_STATE_SVG = `
+<svg class="emptyStateImg" ...> ... </svg>
+`;
 
-  /*
-     localStorage.setItem("logDetails", JSON.stringify(savedLogDetails));
-     */
+// -------------------------------
+// Create Log Element
+// -------------------------------
+export function createLogElement(log) {
+  const el = document.createElement("details");
+  el.classList.add("taskContainer");
+  el.dataset.id = log.id;
 
-  const taskDetails = document.createElement("details");
-  taskDetails.classList.add("taskContainer");
-  taskDetails.dataset.id = log.id;
-
-  const taskSummary = document.createElement("summary");
-  taskSummary.title = "click to see details";
-  taskSummary.innerHTML = `<span class="personalTaskName">${log.name}</span> <button data-title="Delete Task" type="button" class="deleteBtn tooltip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+  el.innerHTML = `
+    <summary title="click to see details">
+     <span class="personalTaskName">${log.name}</span> <button data-title="Delete Task" type="button" class="deleteBtn tooltip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <polyline points="3 6 5 6 21 6" />
   <path d="M19 6l-1 14H6L5 6" />
@@ -185,46 +106,42 @@ function createLogElement(log) {
   <path d="M14 11v6" />
   <path d="M9 6V4h6v2" />
 </svg>
-</button>`;
+      </button>
+    </summary>
+    <span>${formatDateTime(log.created_at)}</span>
+    <p>${log.description}</p>
+  `;
 
-  const taskTime = document.createElement("span");
-  taskTime.textContent = formatDateTime(log.created_at);
-
-  const taskNote = document.createElement("p");
-  taskNote.textContent = log.description;
-
-  taskDetails.append(taskSummary, taskTime, taskNote);
-  return taskDetails;
+  return el;
 }
 
-function renderExistingLogs() {
-  if (personalCreatedLogs) personalCreatedLogs.innerHTML = "";
+// -------------------------------
+// Render Logs
+// -------------------------------
+export function renderExistingLogs() {
+  if (!personalCreatedLogs) return;
 
-  // add a class for reorder animation
-  if (personalCreatedLogs) personalCreatedLogs.classList.add("reordering");
+  personalCreatedLogs.innerHTML = "";
+  personalCreatedLogs.classList.add("reordering");
 
   savedLogDetails.forEach((log) => {
     const el = createLogElement(log);
-    if (!personalCreatedLogs) return;
-    personalCreatedLogs.append(el); // ⬅️ changed from prepend to append
+    personalCreatedLogs.append(el);
 
-    requestAnimationFrame(() => {
-      el.classList.add("show");
-    });
+    requestAnimationFrame(() => el.classList.add("show"));
   });
 
-  // remove animation class after a short delay
-  if (personalCreatedLogs) {
-    setTimeout(() => {
-      personalCreatedLogs.classList.remove("reordering");
-    }, 300);
-  }
+  setTimeout(() => {
+    personalCreatedLogs.classList.remove("reordering");
+  }, 300);
 }
 
-
-//For Delete Button
-function attachDeleteLogEvent() {
+// -------------------------------
+// Delete Log
+// -------------------------------
+function attachDeleteLogEvent(userId) {
   if (!personalCreatedLogs) return;
+
   personalCreatedLogs.addEventListener("click", async (e) => {
     const btn = e.target.closest(".deleteBtn");
     if (!btn) return;
@@ -234,13 +151,14 @@ function attachDeleteLogEvent() {
 
     if (!confirm("Delete this task log?")) return;
 
-    const logToDelete = btn.closest(".taskContainer");
-    const id = logToDelete.dataset.id;
+    const container = btn.closest(".taskContainer");
+    const id = container.dataset.id;
 
     const { error } = await supabase
       .from("personal_tasks")
       .delete()
-      .eq("id", id);
+      .eq("id", id)
+      .eq("user_id", userId);
 
     if (error) {
       console.error(error);
@@ -248,22 +166,18 @@ function attachDeleteLogEvent() {
       return;
     }
 
-    const index = savedLogDetails.findIndex(
-      (log) => String(log.id) === String(id),
+    // Remove from memory
+    savedLogDetails = savedLogDetails.filter(
+      (log) => String(log.id) !== String(id),
     );
-    if (index !== -1) savedLogDetails.splice(index, 1);
 
-    // Add animation class
-    logToDelete.classList.add("removing");
+    // Animate + remove
+    container.classList.add("removing");
 
-    // Remove after animation ends
     setTimeout(() => {
-      logToDelete.remove();
-
-      //update count
+      container.remove();
       updateTaskCount();
-      //check if task log conatiner is empty
       checkIfEmpty();
-    }, 550); // matches CSS transition time
+    }, 550);
   });
 }

@@ -4,6 +4,13 @@ import {
   loadedMembers,
 } from "../features/workspace-admin.js";
 import { supabase } from "../supabase.js";
+import {
+  createLogElement,
+  updateTaskCount,
+  checkIfEmpty,
+  savedLogDetails,
+  renderExistingLogs,
+} from "../features/personalTasks.js";
 
 export function attachCreateTaskEvent(workspaceId) {
   const createTaskBtn = document.getElementById("createTaskBtn");
@@ -205,25 +212,23 @@ export async function attachAddMemberEvents(workspaceId) {
 }
 
 export async function attachCreateLogEvent() {
-    const taskEl = document.getElementById("task");
-    const timeEl = document.getElementById("taskTime");
-    const noteEl = document.getElementById("note");
-
-    const logTaskBtn = document.getElementById("logTask");
+  const taskEl = document.getElementById("task");
+  const timeEl = document.getElementById("taskTime");
+  const noteEl = document.getElementById("note");
+  const logTaskBtn = document.getElementById("logTask");
 
   if (!logTaskBtn || !taskEl || !timeEl || !noteEl) return;
 
-      const {
-      data: { session },
-    } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   const user = session.user;
 
-  //When log task button is clicked to create new log
   logTaskBtn.addEventListener("click", async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     const taskValue = taskEl.value.trim();
     const timeValue = timeEl.value.trim();
     const noteValue = noteEl.value.trim();
@@ -233,31 +238,7 @@ export async function attachCreateLogEvent() {
       return;
     }
 
-    const logData = {
-      name: taskValue,
-      description: noteValue,
-      created_at: timeValue,
-      user_id: user.id,
-    };
-
-    // optimistic UI: update state + DOM immediately
-    savedLogDetails.unshift(logData);
-    const el = createLogElement(logData);
-    personalCreatedLogs.prepend(el);
-
-    requestAnimationFrame(() => {
-      el.classList.add("show");
-    });
-
-    updateTaskCount();
-    checkIfEmpty();
-
-    // clear inputs + close panel
-    taskEl.value = "";
-    timeEl.value = "";
-    noteEl.value = "";
-
-    // send to Supabase
+    // Insert into Supabase FIRST (strict UI)
     const { data, error } = await supabase
       .from("personal_tasks")
       .insert({
@@ -272,26 +253,23 @@ export async function attachCreateLogEvent() {
     if (error) {
       console.error(error);
       alert("Failed to create task.");
-
-      // rollback optimistic UI
-      const index = savedLogDetails.findIndex((log) => log.id === tempId);
-      if (index !== -1) savedLogDetails.splice(index, 1);
-
-      el.classList.add("removing");
-      setTimeout(() => {
-        el.remove();
-        updateTaskCount();
-        checkIfEmpty();
-      }, 300);
-
       return;
     }
 
-    // replace temp id with real id
-    const index = savedLogDetails.findIndex((log) => log.id === tempId);
-    if (index !== -1) {
-      savedLogDetails[index] = data;
-    }
-    el.dataset.id = data.id;
+    // Update in-memory state
+    savedLogDetails.unshift(data);
+
+    // Re-render UI
+    renderExistingLogs();
+    updateTaskCount();
+    checkIfEmpty();
+
+    // Clear inputs
+    taskEl.value = "";
+    timeEl.value = "";
+    noteEl.value = "";
+
+    // Close modal
+    closeModal();
   });
 }
