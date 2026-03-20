@@ -31,7 +31,7 @@ async function checkAdminAccess(workspaceId) {
     alert(
       "Access Denied: You do not have admin permissions for this workspace.",
     );
-    window.location.href = "/dashboard"; // Send them to their main list
+    window.location.href = "/index"; // Send them to their main list
   }
 }
 
