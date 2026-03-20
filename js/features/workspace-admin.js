@@ -217,6 +217,7 @@ export async function initAdminWorkspaceData() {
 
 
 function renderSection(section, workspace, container) {
+  if(!container) return;
   container.innerHTML = "";
   const allLogs = workspace.workspace_tasks.flatMap((task) => {
     return (task.logs || []).map((log) => ({
