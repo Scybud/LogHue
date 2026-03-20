@@ -5,6 +5,7 @@ import {openLogPersonalTaskModal} from "../utils/modals.js"
 
 let personalCreatedLogs;
 let loggedTasksCount;
+
 let isLoading = false
 
 let savedLogDetails = [];

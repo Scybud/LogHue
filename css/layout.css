@@ -68,7 +68,7 @@
     left: 0;
     width: 85%;
     max-width: 300px;
-    height: calc(100dvh - var(--header-height, 60px));
+    height: 95dvh ;
     transform: translateX(-100%);
     transition: transform 0.35s ease;
     border-right: 1px solid var(--border);

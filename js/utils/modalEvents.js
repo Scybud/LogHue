@@ -205,18 +205,25 @@ export async function attachAddMemberEvents(workspaceId) {
 }
 
 export async function attachCreateLogEvent() {
-    taskEl = document.getElementById("task");
-    timeEl = document.getElementById("taskTime");
-    noteEl = document.getElementById("note");
-    
-    logTaskBtn = document.getElementById("logTask");
+    const taskEl = document.getElementById("task");
+    const timeEl = document.getElementById("taskTime");
+    const noteEl = document.getElementById("note");
 
-  if (!logTaskBtn) return;
+    const logTaskBtn = document.getElementById("logTask");
 
-  const user = sessionState.user;
+  if (!logTaskBtn || !taskEl || !timeEl || !noteEl) return;
+
+      const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+  const user = session.user;
 
   //When log task button is clicked to create new log
-  logTaskBtn.addEventListener("click", async () => {
+  logTaskBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     const taskValue = taskEl.value.trim();
     const timeValue = timeEl.value.trim();
     const noteValue = noteEl.value.trim();
@@ -249,10 +256,6 @@ export async function attachCreateLogEvent() {
     taskEl.value = "";
     timeEl.value = "";
     noteEl.value = "";
-    document
-      .querySelector(".personalLogInputContainer")
-      .classList.toggle("expand");
-    document.getElementById("upperDashboardContainer").classList.toggle("hide");
 
     // send to Supabase
     const { data, error } = await supabase

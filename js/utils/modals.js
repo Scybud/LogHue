@@ -26,9 +26,12 @@ if (!workspaceId) return;
 }
 
 export function openLogPersonalTaskModal() {
-   const btn = document.getElementById("logTaskOpen");
+   const btn = document.getElementById("personalLogTaskOpen");
 
- if (!btn) return;
+ if (!btn) {
+  console.log("NONE FOUND")
+return;
+ };
 
  btn.addEventListener(
    "click",
@@ -43,11 +46,11 @@ export function openLogPersonalTaskModal() {
    { once: true },
  );
 }
+
 export function openAddMemeberModal(workspaceId) {
   const btn = document.getElementById("addMemberOpen");
   if (!btn) return;
 
-  // Remove { once: true } so the button works every time
   btn.onclick = async () => {
 
     await loadComponent(
