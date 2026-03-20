@@ -28,10 +28,8 @@ if (!workspaceId) return;
 export function openLogPersonalTaskModal() {
    const btn = document.getElementById("personalLogTaskOpen");
 
- if (!btn) {
-  console.log("NONE FOUND")
-return;
- };
+ if (!btn) return;
+ 
 
  btn.addEventListener(
    "click",

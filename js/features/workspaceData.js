@@ -24,11 +24,13 @@ function getWorkspaceDropdown(ws) {
       { label: "Delete", action: () => deleteWorkspace(ws.id) },
       { label: "Archive", action: () => archiveWorkspace(ws.id) },
       { label: "Edit", action: () => editWorkspace(ws, ws.id) },
+      {label: "Open Workspace", action: () => openWorkspace(ws.id, ws.role)}
     ]);
   }
   if(ws.role === "member") {
   return createDropdown([
     { label: "Leave Workspace", action: () => leaveWorkspace(ws.id) },
+    {label: "Open Workspace", action: () => openWorkspace(ws.id, ws.role)},
   ]);
   }
 
@@ -48,7 +50,7 @@ export function dropdownClick() {
     const wsId = card.dataset.id;
     const ws = savedWorkspaceData.find((w) => w.id == wsId);
 
-    if (!ws || ws.role !== "admin") return;
+    if (!ws) return;
 
     // Create dropdown on demand
     const dropdown = getWorkspaceDropdown(ws);
@@ -476,6 +478,15 @@ async function editWorkspace(ws, id) {
       window.location.reload();
     }, 5000)
   });
+}
+
+function openWorkspace(wsId, wsRole) {
+
+    if (wsRole === "admin") {
+      window.location.href = `workspace-dashboard-admin?ws=${wsId}`;
+    } else {
+      window.location.href = `workspace-dashboard-member?ws=${wsId}`;
+    }
 }
 
 //EXPORT PROMISE WHEN WORKSPACE IS READY
