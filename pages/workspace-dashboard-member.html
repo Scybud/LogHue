@@ -79,7 +79,7 @@
         </button>
       </div>
     </header>
-    
+
     <div id="modalContainer"></div>
     <div id="actionsMessage"></div>
 
@@ -91,10 +91,18 @@
       <!-- MAIN CONTENT -->
       <article class="mainContent" id="dashboardContent">
         
-        <!-- Dynamic content will load here -->
+          <section id="memberWorkspaceDashboardContent">
+          <!-- Dynamic content will load here -->
+        </section>
       </article>
     </main>
 
+
+        <script type="module">
+      import { initWorkspaceData } from "https://loghue.com/js/features/workspace-member.js";
+
+      initWorkspaceData();
+    </script>
     <script
       type="module"
       src="https://loghue.com/js/utils/noAuthSessionProtect.js"

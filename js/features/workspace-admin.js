@@ -249,6 +249,9 @@ function renderSection(section, workspace, container) {
     case "activities":
       loadActivities(allLogs || [], container);
       break;
+
+      case "discussions": 
+      loadDiscussions()
   }
 }
 
