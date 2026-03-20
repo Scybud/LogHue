@@ -412,7 +412,6 @@ button.danger {
 /*MODAL CONTAINER*/
 #modalContainer {
   overflow-y: hidden;
-
 }
 .modalContainer {
   position: fixed;

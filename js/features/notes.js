@@ -269,7 +269,6 @@ async function deleteNote() {
 })
 
   await loadNotes();
-
 }
 //For Delete Button
 async function attachDeletenoteEvent(noteToDelete, id) {
