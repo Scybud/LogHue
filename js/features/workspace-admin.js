@@ -1,7 +1,7 @@
 import { attachSidebarEvents } from "./../components/sidebar.js";
-import { openCreateTaskModal, openAddMemeberModal
- } from "./../utils/modals.js";
+import { openCreateTaskModal, openAddMemeberModal } from "./../utils/modals.js";
 import { supabase } from "../supabase.js";
+import { loadComponent, closeModal } from "../ui.js";
 
 export let currentWorkspace = null;
 export let loadedMembers = [];
@@ -16,7 +16,6 @@ document.addEventListener("click", async (e) => {
 
   renderSection(section, currentWorkspace, container);
 });
-
 
 //CHECK ADMIN ACCESS
 async function checkAdminAccess(workspaceId) {
@@ -36,7 +35,6 @@ async function checkAdminAccess(workspaceId) {
 }
 
 export async function initWorkspaceData() {
-  
   //Get workspace url
   const params = new URLSearchParams(window.location.search);
   const workspaceId = params.get("ws");
@@ -47,7 +45,7 @@ export async function initWorkspaceData() {
   }
 
   //SECURE ADMIN WORKSPACE BY CHECKING FOR ADMIN ROLE
-checkAdminAccess(workspaceId)
+  checkAdminAccess(workspaceId);
 
   //Load data
   const { data: workspace, error } = await supabase
@@ -108,8 +106,115 @@ checkAdminAccess(workspaceId)
 
   openCreateTaskModal(currentWorkspace.id);
   openAddMemeberModal(currentWorkspace.id);
-
 }
+
+ function assignMemberTask() {
+   const btns = document.querySelectorAll(".assignTaskBtn");
+
+   btns.forEach((btn) => {
+     btn.addEventListener("click", async () => {
+       // Load modal
+       await loadComponent(
+         "https://loghue.com/components/modals/create-task",
+         "modalContainer",
+       );
+
+       // Wait for DOM to render
+       await new Promise(requestAnimationFrame);
+
+       const assignedTo = document.getElementById("assignToDropdown");
+       const createTaskBtn = document.getElementById("createTaskBtn");
+
+  if (!assignedTo || !createTaskBtn) {
+    console.error("Modal not fully loaded");
+    return;
+  }
+
+       // Find the member object
+       const memberId = btn.id;
+       const member = loadedMembers.find(
+         (m) => String(m.profiles.id) === String(memberId),
+       );
+
+       // Populate dropdown with ONLY this member
+       assignedTo.innerHTML = "";
+       if (member) {
+         const option = document.createElement("option");
+         option.value = member.profiles.id;
+         option.textContent = member.profiles.full_name;
+         assignedTo.append(option);
+       }
+
+       // Remove old listeners to prevent duplicates
+       createTaskBtn.replaceWith(createTaskBtn.cloneNode(true));
+       const newCreateTaskBtn = document.getElementById("createTaskBtn");
+
+       newCreateTaskBtn.addEventListener("click", async () => {
+         const taskTitle = document.getElementById("taskTitle").value.trim();
+         const taskDescription = document
+           .getElementById("taskDescription")
+           .value.trim();
+         const assignedToValue = assignedTo.value;
+
+         if (!taskTitle || !taskDescription) {
+           alert("Input fields must not be empty");
+           return;
+         }
+
+         const {
+           data: { user },
+         } = await supabase.auth.getUser();
+
+         const taskData = {
+           workspace_id: currentWorkspace.id,
+           created_by: user.id,
+           title: taskTitle,
+           status: "todo",
+           assigned_to: assignedToValue,
+           description: taskDescription,
+         };
+
+         const { data, error } = await supabase
+           .from("workspace_tasks")
+           .insert(taskData)
+           .select();
+
+         if (error) {
+           console.error(error);
+           alert("Failed to create task.");
+           return;
+         }
+
+         // Render new task
+         const createdTask = data[0];
+         const container = document.querySelector(".grid");
+
+         if (container) {
+           const taskCard = document.createElement("div");
+           taskCard.classList.add("card", "taskCard");
+
+           const titleEl = document.createElement("h3");
+           titleEl.textContent = createdTask.title;
+
+           const meta = document.createElement("p");
+           const assignee = loadedMembers.find(
+             (m) => m.profiles.id === createdTask.assigned_to,
+           );
+           meta.textContent = assignee
+             ? `Assigned to: ${assignee.profiles.full_name}`
+             : "Unassigned";
+
+           taskCard.append(titleEl, meta);
+           container.prepend(taskCard);
+         }
+
+         closeModal();
+       });
+     });
+   });
+ }
+
+
 
 function renderSection(section, workspace, container) {
   container.innerHTML = "";
@@ -120,6 +225,7 @@ function renderSection(section, workspace, container) {
       task_id: task.id,
     }));
   });
+
 
   switch (section) {
     case "createdTasks":
@@ -170,8 +276,16 @@ export function loadCreatedTasks(tasks, container) {
     taskTitle.classList.add("taskTitle");
     taskTitle.textContent = tsk.title;
 
-    const taskMeta = document.createElement("p");
-    taskMeta.classList.add("taskMeta", "meta");
+    
+    const assignee = document.createElement("p")
+    assignee.classList.add("meta");
+    
+    const assignedOn = document.createElement("p")
+    assignedOn.classList.add("meta");
+    assignedOn.textContent = `Assigned on: ${formatDateTime(tsk.created_at)}`;
+    const taskMeta = document.createElement("div");
+    taskMeta.classList.add("taskMeta");
+    taskMeta.append(assignee, assignedOn);
 
     const assignToMemberBtn = document.createElement("button");
     assignToMemberBtn.classList.add(
@@ -183,10 +297,10 @@ export function loadCreatedTasks(tasks, container) {
     assignToMemberBtn.textContent = "Assign to Member";
 
     if (tsk.assigned_to === "") {
-      taskMeta.textContent = `Unassigned`;
+      assignee.textContent = `Unassigned`;
       taskCard.append(taskTitle, taskMeta, assignToMemberBtn);
     } else {
-      taskMeta.textContent = `Assigned to: ${tsk.profiles.full_name}`;
+      assignee.textContent = `Assigned to: ${tsk.profiles.full_name}`;
       taskCard.append(taskTitle, taskMeta);
     }
 
@@ -235,8 +349,13 @@ function loadMembers(members, container) {
     cardHeader.append(avatar, memberName);
 
     const assignTaskBtn = document.createElement("button");
-    assignTaskBtn.id = "assignTaskBtn";
-    assignTaskBtn.classList.add("btn", "btn-sm", "btn-primary");
+    assignTaskBtn.id = mbr.profiles.id;
+    assignTaskBtn.classList.add(
+      "btn",
+      "btn-sm",
+      "btn-primary",
+      "assignTaskBtn",
+    );
     assignTaskBtn.textContent = "Assign Task";
 
     const adminActions = document.createElement("div");
@@ -249,6 +368,10 @@ function loadMembers(members, container) {
 
   section.append(sectionTitle, divGrid);
   container.append(section);
+
+  //ATTACH TASK CREATION LOGIC FOR EACH MEMBER CARD
+        assignMemberTask();
+
 }
 
 export function formatDateTime(isoString) {
@@ -331,8 +454,11 @@ function loadActivities(allLogs, container) {
   container.append(section);
 }
 
-
-export async function createWorkspaceInvite({workspaceId, role, email = null }) {
+export async function createWorkspaceInvite({
+  workspaceId,
+  role,
+  email = null,
+}) {
   // 1. Get the user FIRST
   const {
     data: { user },
@@ -341,7 +467,7 @@ export async function createWorkspaceInvite({workspaceId, role, email = null }) 
   if (authError || !user)
     throw new Error("Authentication required to create invites");
 
-  const token = crypto.randomUUID()
+  const token = crypto.randomUUID();
 
   const { data, error } = await supabase
     .from("workspace_invites")

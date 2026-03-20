@@ -9,7 +9,7 @@ export function attachSidebarEvents() {
   if(!navButtons.length) return 
   
   navButtons.forEach((btn) => {
-    // Link glows slightly when active
+    // Link lights slightly when active
     if (btn.href === window.location.href) {
       btn.classList.add("active");
     }

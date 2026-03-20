@@ -22,7 +22,7 @@ if (!workspaceId) return;
 
 
       attachCreateTaskEvent(workspaceId);
-    }, {once: true});
+    });
 }
 
 export function openLogPersonalTaskModal() {
