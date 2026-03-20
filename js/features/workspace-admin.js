@@ -34,7 +34,7 @@ async function checkAdminAccess(workspaceId) {
   }
 }
 
-export async function initWorkspaceData() {
+export async function initAdminWorkspaceData() {
   //Get workspace url
   const params = new URLSearchParams(window.location.search);
   const workspaceId = params.get("ws");
