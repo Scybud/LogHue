@@ -15,7 +15,7 @@
 
   --accent: #ff6b35;
   --tag: var(--accent);
-
+--success: #006239;
   --card-bg: #ffffff;
   --border: #dcdcdc;
 
@@ -49,6 +49,7 @@
 
   --card-bg: #ffffff;
   --border: #dcdcdc;
+--success: #006239;
 
   --form-bg: #ffffff;
   --input-bg: #f2f2f2;

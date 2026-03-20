@@ -244,7 +244,7 @@ async function saveNote() {
   await loadNotes();
 }
 
-function deleteNote() {
+async function deleteNote() {
     const notelist = document.getElementById("notesList")
   if (!notelist) return;
   notelist.addEventListener("click", async (e) => {
@@ -267,6 +267,9 @@ function deleteNote() {
     },
   ]);
 })
+
+  await loadNotes();
+
 }
 //For Delete Button
 async function attachDeletenoteEvent(noteToDelete, id) {
