@@ -39,35 +39,57 @@
       <div class="tt-wave-loader"><span></span><span></span><span></span></div>
       <div class="label">Log<span>Hue</span></div>
     </div>
+    
+    <header class="pageHeader">
+      <div class="headerLeft">
+        <button class="menuBtn" id="toggleSidebar">
+          <span class="menuIcon">
+            <!-- Menu Icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M4 6H20M4 12H20M4 18H20"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </span>
+        </button>
 
+        <h1 class="pageTitle">History</h1>
+      </div>
+
+      <div class="headerRight">
+    
+        <button id="notification" class="actionBtn">
+<svg 
+  width="20" 
+  height="20" 
+  viewBox="0 0 24 24" 
+  fill="none" 
+  stroke="currentColor" 
+  stroke-width="1.8" 
+  stroke-linecap="round" 
+  stroke-linejoin="round"
+>
+  <path d="M12 22c1.1 0 2-.9 2-2H10c0 1.1.9 2 2 2z"/>
+  <path d="M18 16v-5a6 6 0 10-12 0v5l-1.5 2h15L18 16z"/>
+</svg>
+
+        </button>
+      </div>
+    </header>
+
+    <div id="modalContainer"></div>
+    <div id="actionsMessage"></div>
+    
     <main class="main">
       <!-- SIDEBAR -->
       <div class="sidebarContainer" id="generalSidebarContainer"></div>
 
       <!-- MAIN CONTENT -->
       <article class="mainContent" id="dashboardContent">
-        <header class="pageHeader">
-          <div class="headerLeft">
-            <button class="menuBtn" id="toggleSidebar">
-              <span class="menuIcon">
-                <!-- Menu Icon -->
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M4 6H20M4 12H20M4 18H20"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                  />
-                </svg>
-              </span>
-            </button>
 
-            <h1 class="pageTitle">History</h1>
-          </div>
-        </header>
-
-        <div id="modalContainer"></div>
-        <div id="actionsMessage"></div>
 
         <section id="historyContainer">
           <!-- Dynamic content will load here -->

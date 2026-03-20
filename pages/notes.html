@@ -63,8 +63,31 @@
 
           <h1 class="pageTitle">Notes</h1>
         </div>
+
+        <div class="headerRight">
+    
+        <button id="notification" class="actionBtn">
+<svg 
+  width="20" 
+  height="20" 
+  viewBox="0 0 24 24" 
+  fill="none" 
+  stroke="currentColor" 
+  stroke-width="1.8" 
+  stroke-linecap="round" 
+  stroke-linejoin="round"
+>
+  <path d="M12 22c1.1 0 2-.9 2-2H10c0 1.1.9 2 2 2z"/>
+  <path d="M18 16v-5a6 6 0 10-12 0v5l-1.5 2h15L18 16z"/>
+</svg>
+
+        </button>
+      </div>
       </header>
       
+      <div id="modalContainer"></div>
+      <div id="actionsMessage"></div>
+
     <main class="main">
       <!-- SIDEBAR -->
       <div class="sidebarContainer" id="generalSidebarContainer"></div>
@@ -72,9 +95,6 @@
       
       <!-- MAIN CONTENT -->
       <article class="mainContent" id="dashboardContent">
-        <div id="modalContainer"></div>
-        <div id="actionsMessage"></div>
-        
         
         
         <button id="createNote" class="btn btn-sm actionBtn" type="button">Create Note</button>
