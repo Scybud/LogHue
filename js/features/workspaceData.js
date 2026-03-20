@@ -19,13 +19,24 @@ export let savedWorkspaceData = [];
 import { createDropdown } from "../ui.js";
 
 function getWorkspaceDropdown(ws) {
-  if (ws.role !== "admin") return null;
-
+  if (ws.role === "admin"){
+    return createDropdown([
+      { label: "Delete", action: () => deleteWorkspace(ws.id) },
+      { label: "Archive", action: () => archiveWorkspace(ws.id) },
+      { label: "Edit", action: () => editWorkspace(ws, ws.id) },
+    ]);
+  }
+  if(ws.role === "member") {
   return createDropdown([
-    { label: "Delete", action: () => deleteWorkspace(ws.id) },
-    { label: "Edit", action: () => editWorkspace(ws, ws.id) },
-    { label: "Archive", action: () => archiveWorkspace(ws.id) },
+    { label: "Leave Workspace", action: () => leaveWorkspace(ws.id) },
   ]);
+  }
+
+  // fallback for unknown roles
+  return createDropdown([
+    { label: "View Workspace", action: () => viewWorkspace(ws.id) },
+  ]);
+
 }
 
 export function dropdownClick() {
