@@ -27,21 +27,14 @@
     </svg>
 
     <h2>Log Task</h2>
-    <label for="taskLogText">Task Completed</label>
-    <input
-      placeholder="e.g. Fixed API bug"
-      type="text"
-      class="inputField"
-      id="taskLogText"
-      required
-    />
-
-    <label for="taskLogTime">Date Completed</label>
-    <input type="datetime-local" id="taskLogTime" class="inputField" required />
+    <label for="taskLists">Task Completed</label>
+    <select name="taskLists" id="taskLists">
+     <!--CONTENT LOADED DYNAMICALLY-->>
+    </select>
 
     <label for="taskLogStatus">Status</label>
     <select name="taskLogStatus" id="taskLogStatus">
-      <option value="progress">Progress</option>
+      <option value="in_progress">In progress</option>
       <option value="completed">Completed</option>
     </select>
 
@@ -53,6 +46,6 @@
       required
     ></textarea>
 
-    <button type="submit" id="logTask" class="btn">Submit</button>
+    <button type="button" id="logTask" class="btn">Submit</button>
   </form>
 </div>

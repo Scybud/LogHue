@@ -76,7 +76,16 @@ export async function initMemberWorkspaceData() {
 
   if (container) {
     container.innerHTML = "";
-    loadCreatedTasks(workspace.workspace_tasks || [], container);
+
+    //LOAD ASSIGNED TASKS BY DEFAULT
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const myTasks = workspace.workspace_tasks.filter(
+      (t) => String(t.assigned_to) === String(user.id),
+    );
+    loadAssignedTasks(myTasks || [], container);
   }
 
   attachSidebarEvents();
@@ -112,12 +121,12 @@ async function renderSection(section, workspace, container) {
     (t) => String(t.assigned_to) === String(user.id)
   );
 
-  loadCreatedTasks(myTasks, container);
+  loadAssignedTasks(myTasks, container);
   break;
 
 
     case "allTasks":
-      loadCreatedTasks(workspace.workspace_tasks || [], container);
+      loadAllTasks(workspace.workspace_tasks || [], container);
       break;
 
     case "members":
@@ -134,10 +143,70 @@ async function renderSection(section, workspace, container) {
   }
 }
 
+
+
+// -----------------------------
+// MY TASKS LIST
+// -----------------------------
+export function loadAssignedTasks(tasks, container) {
+  if (!tasks || tasks.length === 0) {
+    container.innerHTML = `<p class="placeholderText">No tasks assigned yet.</p>`;
+    return;
+  }
+
+  const section = document.createElement("section");
+  section.classList.add("section");
+
+  const title = document.createElement("h2");
+  title.classList.add("sectionTitle");
+  title.textContent = "My Tasks";
+
+  const grid = document.createElement("div");
+  grid.classList.add("container");
+
+  tasks.forEach((tsk) => {
+    const card = document.createElement("div");
+    card.classList.add("card", "taskCard");
+
+    const taskTitle = document.createElement("h3");
+    taskTitle.textContent = tsk.title;
+
+    const details = document.createElement("details");
+    const summary = document.createElement("summary");
+    summary.textContent = "Description";
+
+    const desc = document.createElement("p");
+    desc.textContent = tsk.description;
+
+    details.append(summary, desc);
+
+    const meta = document.createElement("div");
+    meta.classList.add("taskMeta");
+
+    const assignee = document.createElement("p");
+    assignee.classList.add("meta");
+    assignee.textContent = tsk.assigned_to
+      ? `Assigned to: ${tsk.profiles.full_name}`
+      : "Unassigned";
+
+    const assignedOn = document.createElement("p");
+    assignedOn.classList.add("meta");
+    assignedOn.textContent = `Assigned on: ${formatDateTime(tsk.created_at)}`;
+
+    meta.append(assignee, assignedOn);
+
+    card.append(taskTitle, meta, details);
+    grid.append(card);
+  });
+
+  section.append(title, grid);
+  container.append(section);
+}
+
 // -----------------------------
 // TASK LIST (READ‑ONLY)
 // -----------------------------
-export function loadCreatedTasks(tasks, container) {
+export function loadAllTasks(tasks, container) {
   if (!tasks || tasks.length === 0) {
     container.innerHTML = `<p class="placeholderText">No tasks created yet.</p>`;
     return;
@@ -148,7 +217,7 @@ export function loadCreatedTasks(tasks, container) {
 
   const title = document.createElement("h2");
   title.classList.add("sectionTitle");
-  title.textContent = "Tasks";
+  title.textContent = "All Tasks";
 
   const grid = document.createElement("div");
   grid.classList.add("container");
