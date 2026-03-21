@@ -1,6 +1,6 @@
 // Toggles the main sidebar visibility
-const sidebar = document.querySelector(".sidebarContainer");
 export function sidebarToggle() {
+  const sidebar = document.querySelector(".sidebarContainer");
   if (!sidebar) return;
   sidebar.classList.toggle("show");
 }
@@ -17,7 +17,7 @@ export function attachSidebarToggle() {
     closeSidebar.addEventListener("click", sidebarToggle);
 
   }
-  const actionBtn = sidebar.querySelector(".actionBtn");
+  const actionBtn = document.querySelector(".actionBtn");
   if (actionBtn) {
     actionBtn.addEventListener("click", sidebarToggle);
   }
