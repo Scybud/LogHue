@@ -1,6 +1,7 @@
 import { attachSidebarEvents } from "./../components/sidebar.js";
 import { supabase } from "../supabase.js";
 import { closeModal } from "../ui.js";
+import { openLogTaskModal } from "../utils/modals.js";
 
 export let currentWorkspace = null;
 export let loadedMembers = [];
@@ -88,13 +89,20 @@ export async function initMemberWorkspaceData() {
     loadAssignedTasks(myTasks || [], container);
   }
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  
   attachSidebarEvents();
-
+  
   loadedMembers = Array.isArray(workspace.workspace_members)
-    ? workspace.workspace_members
-    : [workspace.workspace_members];
-
+  ? workspace.workspace_members
+  : [workspace.workspace_members];
+  
   workspace.workspace_tasks = workspace.workspace_tasks || [];
+  
+  openLogTaskModal(supabase, workspaceId, currentWorkspace, user.id);
 }
 
 // -----------------------------
@@ -372,3 +380,5 @@ export function formatDateTime(isoString) {
     minute: "2-digit",
   });
 }
+
+

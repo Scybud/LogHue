@@ -5,7 +5,10 @@ import {
   attachCreateTaskEvent,
   attachAddMemberEvents,
   attachCreateLogEvent,
+  insertTaskLogUpdate,
+  populateTaskList,
 } from "./modalEvents.js";
+import { supabase } from "../supabase.js";
 
 export function openCreateTaskModal(workspaceId) {
   const btn = document.getElementById("createTaskOpen");
@@ -62,19 +65,25 @@ export function openAddMemeberModal(workspaceId) {
   };
 }
 
-export function openLogTaskModal() {
+export function openLogTaskModal(supabase, workspaceId, workspace, userId) {
   const btn = document.getElementById("logTaskOpen");
-  if (btn) {
-    btn.addEventListener("click", async () => {
+  if (!btn) return;
 
-      await loadComponent(
-        "https://loghue.com/components/modals/log-entry",
-        "modalContainer",
-      );
+  btn.addEventListener("click", async () => {
+    await loadComponent(
+      "https://loghue.com/components/modals/log-entry",
+      "modalContainer",
+    );
 
-    });
-  }
+
+    // populate using workspace + user.id
+    populateTaskList(workspace, userId);
+
+    const submitBtn = document.getElementById("logTaskUpdate");
+    submitBtn.onclick = () => insertTaskLogUpdate(supabase, workspaceId);
+  });
 }
+
 
 export function openCreateWorkspaceModal() {
   const btn = document.getElementById("createWorkspaceOpen");

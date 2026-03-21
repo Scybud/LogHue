@@ -273,3 +273,63 @@ export async function attachCreateLogEvent() {
     closeModal();
   });
 }
+
+
+
+//POPULATE TASK LIST
+export function populateTaskList(workspace, userId) {
+  const taskLists = document.getElementById("taskLists");
+  if (!taskLists) return;
+
+  const myTasks = workspace.workspace_tasks.filter(
+    (t) => String(t.assigned_to) === String(userId),
+  );
+
+  taskLists.innerHTML = "";
+
+  myTasks.forEach((task) => {
+    const option = document.createElement("option");
+    option.value = task.id;
+    option.textContent = task.title;
+    taskLists.append(option);
+  });
+}
+
+
+
+//LOG TASK UPDATE
+export async function insertTaskLogUpdate(supabase, workspaceId) {
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    console.error("User not authenticated", userError);
+    return;
+  }
+
+  const taskId = document.getElementById("taskLists").value;
+  const status = document.getElementById("taskLogUpdateStatus").value;
+  const note = document.getElementById("taskLogUpdateNote").value;
+
+  const { data, error } = await supabase
+    .from("workspace_task_logs")
+    .insert([
+      {
+        workspace_id: workspaceId,
+        task_id: taskId,
+        created_by: user.id,
+        task_status: status,
+        log_note: note,
+      },
+    ]);
+
+  if (error) {
+    console.error("Insert error:", error);
+    return;
+  }
+
+  console.log("Log inserted:", data);
+}
+
