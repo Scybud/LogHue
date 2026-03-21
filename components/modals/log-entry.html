@@ -1,5 +1,5 @@
 <div class="modalContainer">
-  <form class="form" id="logTaskForm">
+  <form class="form" id="logTaskUpdateForm">
     <!--CLOSE BUTTON-->
     <svg
       class="closeModalBtn"
@@ -26,26 +26,26 @@
       <path d="M9 9l6 6M15 9l-6 6" />
     </svg>
 
-    <h2>Log Task</h2>
+    <h2>Log Task Update</h2>
     <label for="taskLists">Task Completed</label>
     <select name="taskLists" id="taskLists">
      <!--CONTENT LOADED DYNAMICALLY-->>
     </select>
 
-    <label for="taskLogStatus">Status</label>
-    <select name="taskLogStatus" id="taskLogStatus">
+    <label for="taskLogUpdateStatus">Status</label>
+    <select name="taskLogUpdateStatus" id="taskLogUpdateStatus">
       <option value="in_progress">In progress</option>
       <option value="completed">Completed</option>
     </select>
 
-    <label for="taskLogNote">Note</label>
+    <label for="taskLogUpdateNote">Note</label>
     <textarea
-      id="taskLogNote"
+      id="taskLogUpdateNote"
       placeholder="Add details about what you finished…"
       class="inputField textArea"
       required
     ></textarea>
 
-    <button type="button" id="logTask" class="btn">Submit</button>
+    <button type="button" id="logTaskUpdate" class="btn">Submit</button>
   </form>
 </div>
