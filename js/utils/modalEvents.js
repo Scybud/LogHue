@@ -311,7 +311,12 @@ export async function insertTaskLogUpdate(supabase, workspaceId) {
 
   const taskId = document.getElementById("taskLists").value;
   const status = document.getElementById("taskLogUpdateStatus").value;
-  const note = document.getElementById("taskLogUpdateNote").value;
+  let note = document.getElementById("taskLogUpdateNote").value;
+ 
+  if(!note) {
+alert("You must add a note about what you finished");
+   return;
+  } 
 
   const { data, error } = await supabase
     .from("workspace_task_logs")
@@ -330,6 +335,9 @@ export async function insertTaskLogUpdate(supabase, workspaceId) {
     return;
   }
 
+  note = "";
+
+  closeModal();
   console.log("Log inserted:", data);
 }
 

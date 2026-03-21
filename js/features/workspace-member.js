@@ -75,23 +75,19 @@ export async function initMemberWorkspaceData() {
     workspaceName.innerHTML = `${workspace.name} <span class="tag">Member</span>`;
   }
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (container) {
     container.innerHTML = "";
 
     //LOAD ASSIGNED TASKS BY DEFAULT
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
 
     const myTasks = workspace.workspace_tasks.filter(
       (t) => String(t.assigned_to) === String(user.id),
     );
     loadAssignedTasks(myTasks || [], container);
   }
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
   
   attachSidebarEvents();
@@ -101,8 +97,8 @@ export async function initMemberWorkspaceData() {
   : [workspace.workspace_members];
   
   workspace.workspace_tasks = workspace.workspace_tasks || [];
-  
-  openLogTaskModal(supabase, workspaceId, currentWorkspace, user.id);
+
+  openLogTaskModal(supabase, workspaceId, user.id);
 }
 
 // -----------------------------
@@ -121,17 +117,16 @@ async function renderSection(section, workspace, container) {
 
   switch (section) {
     case "myTasks":
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-  const myTasks = workspace.workspace_tasks.filter(
-    (t) => String(t.assigned_to) === String(user.id)
-  );
+      const myTasks = workspace.workspace_tasks.filter(
+        (t) => String(t.assigned_to) === String(user.id),
+      );
 
-  loadAssignedTasks(myTasks, container);
-  break;
-
+      loadAssignedTasks(myTasks, container);
+      break;
 
     case "allTasks":
       loadAllTasks(workspace.workspace_tasks || [], container);
@@ -142,7 +137,13 @@ async function renderSection(section, workspace, container) {
       break;
 
     case "activities":
-      loadActivities(allLogs || [], container);
+      const { data: logs } = await supabase
+        .from("workspace_task_logs")
+        .select("*")
+        .eq("workspace_id", workspace.id)
+        .order("created_at", { ascending: false });
+
+      loadActivities(logs || [], container);
       break;
 
     case "discussions":
@@ -319,8 +320,8 @@ function loadMembers(members, container) {
 // -----------------------------
 // ACTIVITIES (READ‑ONLY)
 // -----------------------------
-function loadActivities(allLogs, container) {
-  if (!allLogs || allLogs.length === 0) {
+function loadActivities(logs, container) {
+  if (!logs || logs.length === 0) {
     container.innerHTML = `<p class="placeholderText">No activity in this workspace yet.</p>`;
     return;
   }
@@ -335,27 +336,27 @@ function loadActivities(allLogs, container) {
   const grid = document.createElement("div");
   grid.classList.add("container");
 
-  allLogs.forEach((log) => {
+  logs.forEach((log) => {
     const details = document.createElement("details");
     details.classList.add("loggedActivityContainer");
 
     const summary = document.createElement("summary");
-    summary.innerHTML = `<span class="personalTaskName">${log.note}</span>`;
+    summary.innerHTML = `<span class="personalTaskName">${log.log_note}</span>`;
 
     const meta = document.createElement("div");
     meta.classList.add("metaRow");
 
     const taskName = document.createElement("span");
     taskName.classList.add("meta");
-    taskName.textContent = `Task: ${log.task_title}`;
+    taskName.textContent = `Task: ${log.task_id}`;
 
     const time = document.createElement("span");
     time.classList.add("meta");
-    time.textContent = formatDateTime(log.date);
+    time.textContent = new Date(log.created_at).toLocaleString();
 
     const progress = document.createElement("span");
     progress.classList.add("meta");
-    progress.textContent = log.progress;
+    progress.textContent = log.task_status;
 
     meta.append(taskName, time, progress);
     details.append(summary, meta);
@@ -366,6 +367,7 @@ function loadActivities(allLogs, container) {
   section.append(title, grid);
   container.append(section);
 }
+
 
 // -----------------------------
 // UTIL

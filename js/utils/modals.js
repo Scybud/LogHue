@@ -9,6 +9,7 @@ import {
   populateTaskList,
 } from "./modalEvents.js";
 import { supabase } from "../supabase.js";
+import { currentWorkspace } from "../features/workspace-member.js";
 
 export function openCreateTaskModal(workspaceId) {
   const btn = document.getElementById("createTaskOpen");
@@ -65,22 +66,32 @@ export function openAddMemeberModal(workspaceId) {
   };
 }
 
-export function openLogTaskModal(supabase, workspaceId, workspace, userId) {
+export function openLogTaskModal(supabase, workspaceId, userId) {
   const btn = document.getElementById("logTaskOpen");
   if (!btn) return;
 
   btn.addEventListener("click", async () => {
-    await loadComponent(
-      "https://loghue.com/components/modals/log-entry",
-      "modalContainer",
-    );
+  if (!currentWorkspace || !currentWorkspace.workspace_tasks) {
+    console.error("Workspace not loaded yet");
+    return;
+  }
 
-
-    // populate using workspace + user.id
-    populateTaskList(workspace, userId);
+  
+  
+  await loadComponent(
+    "https://loghue.com/components/modals/log-entry",
+    "modalContainer",
+  );
+  
+  // populate using workspace + user.id
+  populateTaskList(currentWorkspace, userId);
 
     const submitBtn = document.getElementById("logTaskUpdate");
-    submitBtn.onclick = () => insertTaskLogUpdate(supabase, workspaceId);
+    submitBtn.addEventListener("click", () => {
+insertTaskLogUpdate(supabase, workspaceId);
+
+    })
+
   });
 }
 
