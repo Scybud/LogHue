@@ -1,6 +1,6 @@
 // Toggles the main sidebar visibility
+const sidebar = document.querySelector(".sidebarContainer");
 export function sidebarToggle() {
-  const sidebar = document.querySelector(".sidebarContainer");
   if (!sidebar) return;
   sidebar.classList.toggle("show");
 }
