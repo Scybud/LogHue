@@ -40,7 +40,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     );
   }
 
-  if (path.includes("dashboard")) {
+  if (path.includes("index")) {
     await loadComponent(
       "https://loghue.com/components/sidebar-dashboard",
       "dashboardSidebarContainer",
