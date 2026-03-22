@@ -224,6 +224,13 @@ margin: 5px auto;
 display: block;
 height: fit-content;
 background: var(--accent);
+color: #000000;
+}
+.dropdown-list .btn:nth-child(5) {
+  background-color: var(--danger);
+}
+.dropdown-list .btn:nth-child(5):hover {
+  background-color: var(--danger);
 }
 .dropdown-list .btn:hover {
 opacity: 1;

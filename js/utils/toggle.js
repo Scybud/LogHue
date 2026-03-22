@@ -29,7 +29,11 @@ export function toggleNotification() {
   );
   const notificationsContainer = document.getElementById("notificationsContainer");
 
-  if(!notificationsContainer || !notificationToggleBtn) return;
+  if(!notificationsContainer || !notificationToggleBtn){
+
+    console.log("elements not found"); 
+    return;
+  } 
 
   notificationToggleBtn.addEventListener("click", () => {
 notificationsContainer.classList.toggle("show")
