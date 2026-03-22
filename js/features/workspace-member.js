@@ -105,6 +105,7 @@ export async function initMemberWorkspaceData() {
 // SECTION RENDERER
 // -----------------------------
 async function renderSection(section, workspace, container) {
+  if(!container) return;
   container.innerHTML = "";
 
   const allLogs = workspace.workspace_tasks.flatMap((task) =>
