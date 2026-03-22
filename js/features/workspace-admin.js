@@ -216,7 +216,7 @@ export async function initAdminWorkspaceData() {
 
 
 
-function renderSection(section, workspace, container) {
+async function renderSection(section, workspace, container) {
   if(!container) return;
   container.innerHTML = "";
   const allLogs = workspace.workspace_tasks.flatMap((task) => {
@@ -247,8 +247,21 @@ function renderSection(section, workspace, container) {
       loadMembers(members, container);
       break;
 
-    case "activities":
-      loadActivities(allLogs || [], container);
+   case "activities":
+     const { data: logs, error } = await supabase
+       .from("workspace_task_logs")
+       .select(
+         `
+    *,
+    profiles:created_by (full_name, avatar_url),
+    workspace_tasks:task_id (title)
+  `,
+       )
+       .eq("workspace_id", workspace.id)
+       .order("created_at", { ascending: false });
+
+
+      loadActivities(logs || [], container);
       break;
 
       case "discussions": 
@@ -441,28 +454,51 @@ function createLogElement(log) {
   return taskDetails;
 }
 
-function loadActivities(allLogs, container) {
-  if (!allLogs || allLogs.length === 0) {
+// -----------------------------
+// ACTIVITIES (READ‑ONLY)
+// -----------------------------
+function loadActivities(logs, container) {
+  if (!logs || logs.length === 0) {
     container.innerHTML = `<p class="placeholderText">No activity in this workspace yet.</p>`;
     return;
   }
+
   const section = document.createElement("section");
   section.classList.add("section");
 
-  const sectionTitle = document.createElement("h2");
-  sectionTitle.classList.add("sectionTitle");
-  sectionTitle.textContent = "Activities";
+  const title = document.createElement("h2");
+  title.classList.add("sectionTitle");
+  title.textContent = "Activities";
 
-  const divGrid = document.createElement("div");
-  divGrid.classList.add("container");
+  const list = document.createElement("div");
+  list.classList.add("activityList");
 
-  allLogs.forEach((act) => {
-    const taskDetails = createLogElement(act);
+  logs.forEach((log) => {
+    const item = document.createElement("div");
+    item.classList.add("activityItem");
 
-    divGrid.append(taskDetails);
+    item.innerHTML = `
+      <div class="activityHeader">
+        <img class="profileImg" src="${log.profiles?.avatar_url || "/assets/default-avatar.png"}" />
+        <span class="actorName">${log.profiles?.full_name || "Unknown User"}
+         gave an update on
+        "${log.workspace_tasks?.title || "Unknown Task"}"</span>
+      </div>
+
+      <div class="activityBody">
+        <p><strong>Note:</strong> ${log.log_note}</p>
+        <p><strong>Status:</strong> ${log.task_status}</p>
+      </div>
+
+      <div class="activityTime">
+        ${new Date(log.created_at).toLocaleString()}
+      </div>
+    `;
+
+    list.appendChild(item);
   });
 
-  section.append(sectionTitle, divGrid);
+  section.append(title, list);
   container.append(section);
 }
 
