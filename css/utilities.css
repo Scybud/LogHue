@@ -367,7 +367,7 @@ input.error {
   position: fixed;
   top: calc(var(--header-height) / 10);
   right: 0;
-  z-index: 9999;
+  z-index: 1;
   width: 100%;
   max-width: 400px;
   max-height: 400px;
