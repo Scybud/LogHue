@@ -693,3 +693,50 @@ flex-direction: column;
   
   margin-top: var(--space-md);
 }
+
+
+.activityList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.activityItem {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  padding: 12px 16px;
+  border-radius: 8px;
+}
+
+.activityHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.activityHeader .profileImg {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+.actorName {
+  font-weight: 600;
+}
+
+.taskName {
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+.activityBody {
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.activityTime {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+}

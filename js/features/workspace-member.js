@@ -138,11 +138,18 @@ async function renderSection(section, workspace, container) {
       break;
 
     case "activities":
-      const { data: logs } = await supabase
-        .from("workspace_task_logs")
-        .select("*")
-        .eq("workspace_id", workspace.id)
-        .order("created_at", { ascending: false });
+     const { data: logs, error } = await supabase
+       .from("workspace_task_logs")
+       .select(
+         `
+    *,
+    profiles:created_by (full_name, avatar_url),
+    workspace_tasks:task_id (title)
+  `,
+       )
+       .eq("workspace_id", workspace.id)
+       .order("created_at", { ascending: false });
+
 
       loadActivities(logs || [], container);
       break;
@@ -334,40 +341,38 @@ function loadActivities(logs, container) {
   title.classList.add("sectionTitle");
   title.textContent = "Activities";
 
-  const grid = document.createElement("div");
-  grid.classList.add("container");
+  const list = document.createElement("div");
+  list.classList.add("activityList");
 
   logs.forEach((log) => {
-    const details = document.createElement("details");
-    details.classList.add("loggedActivityContainer");
+    const item = document.createElement("div");
+    item.classList.add("activityItem");
 
-    const summary = document.createElement("summary");
-    summary.innerHTML = `<span class="personalTaskName">${log.log_note}</span>`;
+    item.innerHTML = `
+      <div class="activityHeader">
+        <img class="profileImg" src="${log.profiles?.avatar_url || "/assets/default-avatar.png"}" />
+        <span class="actorName">${log.profiles?.full_name || "Unknown User"}
+         gave an update on
+        "${log.workspace_tasks?.title || "Unknown Task"}"</span>
+      </div>
 
-    const meta = document.createElement("div");
-    meta.classList.add("metaRow");
+      <div class="activityBody">
+        <p><strong>Note:</strong> ${log.log_note}</p>
+        <p><strong>Status:</strong> ${log.task_status}</p>
+      </div>
 
-    const taskName = document.createElement("span");
-    taskName.classList.add("meta");
-    taskName.textContent = `Task: ${log.task_id}`;
+      <div class="activityTime">
+        ${new Date(log.created_at).toLocaleString()}
+      </div>
+    `;
 
-    const time = document.createElement("span");
-    time.classList.add("meta");
-    time.textContent = new Date(log.created_at).toLocaleString();
-
-    const progress = document.createElement("span");
-    progress.classList.add("meta");
-    progress.textContent = log.task_status;
-
-    meta.append(taskName, time, progress);
-    details.append(summary, meta);
-
-    grid.append(details);
+    list.appendChild(item);
   });
 
-  section.append(title, grid);
+  section.append(title, list);
   container.append(section);
 }
+
 
 
 // -----------------------------
