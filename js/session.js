@@ -56,6 +56,7 @@ export async function initSession() {
 
 function userInfoUi() {
   const profileImg = document.querySelector(".profileImg");
+  const profileAvatar = document.querySelector(".profileAvatar");
   const userName = document.getElementById("userName");
   const subscriptionType = document.getElementById("subscriptionType");
 
@@ -81,8 +82,13 @@ function userInfoUi() {
       "https://loghue.com/assets/images/default_profile.png";
   }
 
-  // PLAN
-  if (subscriptionType && sessionState.plan) {
-    subscriptionType.textContent = sessionState.plan.name;
+  if (profileAvatar) {
+    profileAvatar.src =
+      sessionState.profile.avatar_url ||
+      "https://loghue.com/assets/images/default_profile.png";
   }
+    if (subscriptionType && sessionState.plan) {
+      // PLAN
+      subscriptionType.textContent = sessionState.plan.name;
+    }
 }
