@@ -22,3 +22,17 @@ export function attachSidebarToggle() {
   }
   }
 
+export function toggleNotification() {
+
+  const notificationToggleBtn = document.getElementById(
+    "notificationToggleBtn",
+  );
+  const notificationsContainer = document.getElementById("notificationsContainer");
+
+  if(!notificationsContainer || !notificationToggleBtn) return;
+
+  notificationToggleBtn.addEventListener("click", () => {
+notificationsContainer.classList.toggle("show")
+  })
+
+}

@@ -144,7 +144,7 @@ header.pageHeader::-webkit-scrollbar-thumb:hover {
   display: none;
 }
 .show {
-  display: block;
+  display: block !important;
 }
 .closed {
   opacity: 0.6;
@@ -357,4 +357,34 @@ input.error {
 #confirmActionModal p {
   margin: 0;
   padding: 0;
+}
+
+/*NOTIFICATIONS*/
+      
+  
+#notificationsContainer {
+  border-radius: var(--radius);
+  position: fixed;
+  top: calc(var(--header-height) / 10);
+  right: 0;
+  z-index: 9999;
+  width: 100%;
+  max-width: 400px;
+  max-height: 400px;
+  overflow: auto;
+  padding: var(--space-md) 0;
+  pointer-events: auto;
+  background: var(--card-bg);
+  display: none;
+}
+#notificationsList{
+  padding-top: var(--space-md);
+list-style: none;
+display: flex;
+flex-direction: column;
+}
+#notificationsList .notificationsItem{
+  border-bottom: 1px solid var(--border);
+ padding: var(--space-lg) var(--space-md);
+ background-color: var(--mainContent-bg);
 }

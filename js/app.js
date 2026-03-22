@@ -21,6 +21,7 @@ import { initWorkspaces } from "./features/workspaceData.js";
 import { autoExpandTextarea } from "./utils/textarea.js";
 import { handleConcentEvents, loadAnalytics } from "../analytics.js";
 import { attachSignoutEvents } from "./auth/auth.js";
+import { toggleNotification } from "./utils/toggle.js";
 
 window.addEventListener("DOMContentLoaded", async () => {
   const path = window.location.pathname;
@@ -65,6 +66,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (prefs.analytics) loadAnalytics();
   }
 
+  toggleNotification();
+  
   handleConcentEvents();
   setTheme();
   removeLoader();
