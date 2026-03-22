@@ -40,12 +40,11 @@ window.addEventListener("DOMContentLoaded", async () => {
     );
   }
 
-  if (path.includes("https://app.loghue.com/index")) {
     await loadComponent(
       "https://loghue.com/components/sidebar-dashboard",
       "dashboardSidebarContainer",
     );
-  }
+  
 
   // General sidebar is safe everywhere
   await loadComponent(
