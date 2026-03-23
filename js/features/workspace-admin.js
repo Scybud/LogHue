@@ -169,7 +169,7 @@ export async function initAdminWorkspaceData() {
            workspace_id: currentWorkspace.id,
            created_by: user.id,
            title: taskTitle,
-           status: "todo",
+           status: "in progress",
            assigned_to: assignedToValue,
            description: taskDescription,
          };
