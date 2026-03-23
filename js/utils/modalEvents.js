@@ -52,7 +52,7 @@ export function attachCreateTaskEvent(workspaceId) {
       workspace_id: workspaceId,
       created_by: user.id,
       title: taskTitle,
-      status: "todo",
+      status: "in progress",
       assigned_to: assignedToValue || "", // Assign to empty if no one is selected
       description: taskDescription,
     };

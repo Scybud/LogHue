@@ -383,11 +383,10 @@ async function performWorkspaceDelete(id) {
     actionMsg("Workspace deleted!", "success");
 
        setTimeout(() => {
-         noteToDelete.remove();
          // Refresh UI
          window.location.reload();
    
-       }, 5000);
+       }, 2000);
 }
 
 
