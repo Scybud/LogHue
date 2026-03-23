@@ -161,7 +161,6 @@ async function renderSection(section, workspace, container) {
 }
 
 
-
 // -----------------------------
 // MY TASKS LIST
 // -----------------------------

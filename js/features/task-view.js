@@ -17,10 +17,9 @@ async function getUserRole(workspaceId) {
     .eq("user_id", userId)
     .single();
 
-  if (error) return null;  
+  if (error) return null;
   return { userId, role: data.role };
 }
-
 
 // INIT
 document.addEventListener("DOMContentLoaded", initTaskView);
@@ -34,10 +33,10 @@ async function initTaskView() {
       `<p class="placeholderText">Invalid task link.</p>`;
     return;
   }
-loadTask.remove
+  loadTask.remove;
   await loadTask(taskId);
 
-     userRole = await getUserRole(currentWorkspace.id);
+  userRole = await getUserRole(currentWorkspace.id);
 
   renderTaskHeader();
   renderLogs();
@@ -51,7 +50,8 @@ loadTask.remove
 async function loadTask(taskId) {
   const { data, error } = await supabase
     .from("workspace_tasks")
-    .select(`
+    .select(
+      `
       *,
       profiles:assigned_to (id, full_name, avatar_url),
       workspace:workspace_id (id, name),
@@ -68,7 +68,8 @@ async function loadTask(taskId) {
           profiles:created_by (full_name, avatar_url)
         )
       )
-    `)
+    `,
+    )
     .eq("id", taskId)
     .single();
 
@@ -89,17 +90,21 @@ function renderTaskHeader() {
   const container = document.querySelector(".taskHeader");
   if (!container) return;
 
-    const isAdmin = userRole.role === "admin" || userRole.role === "owner";
+  const isAdmin = userRole.role === "admin" || userRole.role === "owner";
 
   container.innerHTML = `
     <div class="taskHeaderTop">
       <h2>${currentTask.title}</h2>
       <div class="taskActions">
-      ${isAdmin ? `
+      ${
+        isAdmin
+          ? `
            <button id="markTaskDoneBtn" class="primaryBtn btn btn-sm">
           ${currentTask.status === "completed" ? "Reopen Task" : "Mark as completed"}
         </button>
-         ` : ""}
+         `
+          : ""
+      }
       </div>
     </div>
 
@@ -134,7 +139,7 @@ function renderLogs() {
   const feed = document.getElementById("logsFeed");
   feed.innerHTML = "";
 
-const isAdmin = userRole.role === "admin" || userRole.role === "owner";
+  const isAdmin = userRole.role === "admin" || userRole.role === "owner";
 
   if (!currentTask.logs || currentTask.logs.length === 0) {
     feed.innerHTML = `<p class="placeholderText">No logs yet.</p>`;
@@ -211,7 +216,7 @@ function renderCommentsHTML(comments) {
         <div class="timestamp">${formatDateTime(c.created_at)}</div>
       </div>
     </div>
-  `
+  `,
     )
     .join("");
 }
@@ -226,7 +231,10 @@ function attachLogSubmitHandler() {
   if (!btn || !input) return;
 
   // Only assigned member can write logs
-  if (userRole.userId !== currentTask.assigned_to) {
+  if (
+    userRole.userId !== currentTask.assigned_to ||
+    currentTask.status === "completed"
+  ) {
     btn.remove();
     input.remove();
 
@@ -252,7 +260,6 @@ function attachLogSubmitHandler() {
     renderLogs();
   });
 }
-
 
 /* ---------------------------------------------
    MARK TASK DONE (DB + UI + LOGS)
@@ -294,7 +301,9 @@ function openInlineCommentBox(logId) {
   // Close any existing comment boxes
   document.querySelectorAll(".inlineCommentBox").forEach((el) => el.remove());
 
-  const logCard = document.querySelector(`.addCommentBtn[data-log="${logId}"]`).closest(".logCard");
+  const logCard = document
+    .querySelector(`.addCommentBtn[data-log="${logId}"]`)
+    .closest(".logCard");
 
   const box = document.createElement("div");
   box.classList.add("inlineCommentBox");
@@ -306,19 +315,23 @@ function openInlineCommentBox(logId) {
     </div>
   `;
 
-  const commentError = document.createElement("p")
-  commentError.classList.add("error")
-commentError.textContent = "You cannot comment on tasks marked as completed.";
+  const commentError = document.createElement("p");
+  commentError.classList.add("error");
+  commentError.textContent = "You cannot comment on tasks marked as completed.";
 
-  if(currentTask.status === "completed") {
-     logCard.appendChild(commentError);
-return
+  if (currentTask.status === "completed") {
+    logCard.appendChild(commentError);
+    return;
   }
 
   logCard.appendChild(box);
 
-  box.querySelector(".cancelCommentBtn").addEventListener("click", () => box.remove());
-  box.querySelector(".submitInlineCommentBtn").addEventListener("click", submitInlineComment);
+  box
+    .querySelector(".cancelCommentBtn")
+    .addEventListener("click", () => box.remove());
+  box
+    .querySelector(".submitInlineCommentBtn")
+    .addEventListener("click", submitInlineComment);
 }
 
 async function submitInlineComment(e) {
@@ -346,4 +359,3 @@ async function submitInlineComment(e) {
   await loadTask(currentTask.id);
   renderLogs();
 }
-
