@@ -308,9 +308,9 @@ function openInlineCommentBox(logId) {
 
   const commentError = document.createElement("p")
   commentError.classList.add("error")
-commentError.textContent = "You cannot comment on tasks marked as done."
+commentError.textContent = "You cannot comment on tasks marked as completed.";
 
-  if(currentTask.status === "done") {
+  if(currentTask.status === "completed") {
      logCard.appendChild(commentError);
 return
   }
