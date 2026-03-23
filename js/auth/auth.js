@@ -80,7 +80,7 @@ if (signupForm) {
           window.location.href = decodeURIComponent(redirectTo);
         } else {
           // Default behavior
-          window.location.href = "../index.html";
+          window.location.href = "../";
         }
       }
     } finally {
@@ -139,7 +139,7 @@ export function loginFuntion() {
             window.location.href = decodeURIComponent(redirectTo);
           } else {
             // Default behavior
-            window.location.href = "../index.html";
+            window.location.href = "../";
           }
         }
         

@@ -109,6 +109,11 @@
         text-decoration: none;
         opacity: 0.7;
       }
+      button{
+           width: 100%;
+        display: block;
+        margin-top: 12px;
+      }
       .divider {
         display: flex;
         align-items: center;
@@ -161,15 +166,20 @@
       }
 
       .form {
+        margin-top: 50px;
         display: none;
       }
       .show {
+        gap: 10px;
         display: flex;
       }
       .backBtn.show {
         display: block;
       }
       .backBtn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         position: sticky;
         top: 30px;
         left: 20px;
@@ -180,16 +190,54 @@
         color: var(--link);
       }
       .backLink {
-        position: sticky;
+                position: sticky;
         top: 30px;
         left: 20px;
+        padding: 0 auto;
+        width: fit-content;
+        background: none;
+        color: var(--link);
         opacity: 0.9;
       }
     </style>
   </head>
   <body>
-    <button type="button" class="btn backBtn btn-sm">← Back</button>
-    <a href="https://loghue.com/index.html" class="backLink">← Home</a>
+    <button type="button" class="btn backBtn btn-sm"> <!-- Back Icon -->
+        <svg
+  width="20"
+  height="20"
+  viewBox="0 0 20 20"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M11.75 4.25L6 10L11.75 15.75"
+    stroke="currentColor"
+    stroke-width="1.6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>
+ <span>Back</span>
+</button>
+
+    <a href="https://loghue.com/index.html" class="backLink"> <!-- Back Icon -->
+        <svg
+  width="20"
+  height="20"
+  viewBox="0 0 20 20"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M11.75 4.25L6 10L11.75 15.75"
+    stroke="currentColor"
+    stroke-width="1.6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>
+<span>Home</span></a>
     <main class="main">
       <!-- AUTH GATEWAY -->
       <div class="authGateway">
@@ -284,8 +332,8 @@
           placeholder="Your account password"
           required
         />
-        <button class="btn" id="loginBtn" type="submit">Login</button>
-        <a href="/passwordReset">Forgot password?</a>
+        <button class="btn " id="loginBtn" type="submit">Login</button>
+        <a href="passwordReset">Forgot password?</a>
       </form>
 
       <!--SIGNUP FORM-->
