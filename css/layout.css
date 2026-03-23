@@ -60,9 +60,9 @@
   .main {
     grid-template-columns: 1fr;
     grid-template-areas: "mainContent";
-    min-height: 100dvh;
   }
-.mainContent {
+  .mainContent {
+  padding-bottom: 30px;
   min-height: 100dvh;
 }
   .sidebarContainer {

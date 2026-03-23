@@ -13,6 +13,7 @@ html,
 body {
   max-width: 100%;
   width: 100%;
+  max-height: 100dvh;
   font-family: "Inter", sans-serif, system-ui;
   background: var(--bg);
   color: var(--color);

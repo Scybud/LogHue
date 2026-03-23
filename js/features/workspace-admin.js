@@ -288,53 +288,62 @@ export function loadCreatedTasks(tasks, container) {
   tasks.forEach((tsk) => {
     const taskCard = document.createElement("div");
     taskCard.classList.add("card", "taskCard");
+    taskCard.dataset.id = tsk.id; // IMPORTANT
+
+    // Make card clickable
+    taskCard.addEventListener("click", () => {
+      window.location.href = `/pages/task-view.html?task=${tsk.id}`;
+    });
 
     const taskTitle = document.createElement("h3");
     taskTitle.classList.add("taskTitle");
     taskTitle.textContent = tsk.title;
 
-    const summary = document.createElement("summary")
-    summary.textContent = "Description"
-    
-    const descriptionText = document.createElement("p")
+    const details = document.createElement("details");
+    const summary = document.createElement("summary");
+    summary.textContent = "Description";
+
+    const descriptionText = document.createElement("p");
     descriptionText.textContent = tsk.description;
 
-    const details = document.createElement("details")
-details.append(summary, descriptionText);
+    details.append(summary, descriptionText);
 
-    const assignee = document.createElement("p")
+    const assignee = document.createElement("p");
     assignee.classList.add("meta");
-    
-    const assignedOn = document.createElement("p")
+    assignee.textContent = tsk.profiles
+      ? `Assigned to: ${tsk.profiles.full_name}`
+      : "Unassigned";
+
+    const assignedOn = document.createElement("p");
     assignedOn.classList.add("meta");
     assignedOn.textContent = `Assigned on: ${formatDateTime(tsk.created_at)}`;
+
     const taskMeta = document.createElement("div");
     taskMeta.classList.add("taskMeta");
     taskMeta.append(assignee, assignedOn);
 
-    const assignToMemberBtn = document.createElement("button");
-    assignToMemberBtn.classList.add(
-      "btn",
-      "btn-primary",
-      "btn-sm",
-      "assignToMemberBtn",
-    );
-    assignToMemberBtn.textContent = "Assign to Member";
+    const viewBtn = document.createElement("button");
+    viewBtn.classList.add("btn", "btn-sm", "btn-primary");
+    viewBtn.textContent = "View Task";
 
-    if (tsk.assigned_to === "") {
-      assignee.textContent = `Unassigned`;
-      taskCard.append(taskTitle, taskMeta, details, assignToMemberBtn);
-    } else {
-      assignee.textContent = `Assigned to: ${tsk.profiles.full_name}`;
-      taskCard.append(taskTitle, taskMeta, details);
-    }
+    viewBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      window.location.href = `https://app.loghue.com/task-view?task=${tsk.id}`;
+    });
 
+details.addEventListener("click", (e) => {
+  e.stopPropagation();
+});
+
+
+    taskCard.append(taskTitle, taskMeta, details, viewBtn);
     divGrid.append(taskCard);
   });
 
   section.append(sectionTitle, divGrid);
   container.append(section);
 }
+
 
 function loadMembers(members, container) {
   if (!members || members.length === 0) {
