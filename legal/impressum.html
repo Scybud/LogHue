@@ -1,46 +1,232 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Impressum | LogHue</title>
 
-       <!--CSS LINKS-->
-    <link rel="stylesheet" href="https://loghue.com/css/base.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/layout.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/component.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/dashboard.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/theme.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/pages.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/utilities.css" />
+  <!--CSS LINKS-->
+  <link rel="stylesheet" href="https://loghue.com/css/base.css" />
+  <link rel="stylesheet" href="https://loghue.com/css/theme.css" />
+
+  <style>
+    main {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+      line-height: 1.65;
+      color: var(--color);
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.4em;
+    }
+
+    h2 {
+      margin-top: 2rem;
+      font-size: 1.35rem;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .lang-toggle {
+      display: inline-flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .lang-toggle button {
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      background: var(--background);
+      color: var(--color);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .lang-toggle button.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .lang-section {
+      display: none;
+    }
+
+    .lang-section.active {
+      display: block;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
+
 <body>
 
-   <main class="mainContent">
+  <main class="mainContent">
 
-      <h1>Impressum</h1>
-      
-      <p>Information according to § 5 TMG</p>
-      
-  <p>
-    <strong>Name:</strong> Abdulroqib Oladipo<br />
-    <strong>Operating as:</strong> LogHue (Scybud)<br />
-    <strong>Address:</strong> Heinrich Plett Allee 64<br />
-    <strong>Email:</strong> scybudtech@gmail.com
-   </p>
-   
-  <h2>Responsible for Content</h2>
-  <p>
-     Abdulroqeeb Oladipo<br />
-     Heinrich Plett Allee 64
-   </p>
+    <h1>Impressum</h1>
 
-   <h2>Disclaimer</h2>
-   <p>
-    The contents of our pages were created with great care. However, we cannot guarantee the accuracy,
-    completeness or timeliness of the content.
-   </p>
-   
-</main>
+    <!-- LANGUAGE TOGGLE -->
+    <div class="lang-toggle">
+      <button id="btn-de" class="active">🇩🇪 Deutsch</button>
+      <button id="btn-en">🇬🇧 English</button>
+    </div>
+
+    <!-- GERMAN VERSION -->
+    <div id="lang-de" class="lang-section active">
+
+      <p>Angaben gemäß § 5 TMG und § 18 Abs. 2 MStV</p>
+
+      <h2>Verantwortlich für den Inhalt</h2>
+      <p>
+        <strong>Name:</strong> Abdulroqib Oladipo<br />
+        <strong>Unternehmensbezeichnung:</strong> Scybud – Betreiber von LogHue<br />
+        <strong>Adresse:</strong> Heinrich-Plett-Allee 64, 28259 Bremen, Deutschland<br />
+        <strong>E-Mail:</strong> <a href="mailto:scybudtech@gmail.com">scybudtech@gmail.com</a>
+      </p>
+
+      <h2>Art des Unternehmens</h2>
+      <p>
+        LogHue ist ein digitales Produkt von Scybud und wird als Online-Dienst zur Verwaltung von Workspaces,
+        Aufgaben, Notizen und kollaborativen Arbeitsabläufen betrieben.  
+        Es handelt sich um ein Einzelunternehmen mit Sitz in Deutschland.
+      </p>
+
+      <h2>Haftung für Inhalte</h2>
+      <p>
+        Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen
+        Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir jedoch nicht verpflichtet, übermittelte oder gespeicherte
+        fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit
+        hinweisen.
+      </p>
+      <p>
+        Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben
+        hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten
+        Rechtsverletzung möglich. Bei Bekanntwerden entsprechender Rechtsverletzungen werden wir diese Inhalte umgehend
+        entfernen.
+      </p>
+
+      <h2>Haftung für Links</h2>
+      <p>
+        Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben.  
+        Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen.  
+        Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber verantwortlich.
+      </p>
+
+      <h2>Urheberrecht</h2>
+      <p>
+        Die durch den Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen
+        Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen
+        des Urheberrechts bedürfen der schriftlichen Zustimmung des jeweiligen Autors.
+      </p>
+
+      <h2>Online‑Streitbeilegung</h2>
+      <p>
+        Die Europäische Kommission stellt eine Plattform zur Online‑Streitbeilegung (OS) bereit:  
+        <a href="https://ec.europa.eu/consumers/odr" target="_blank">https://ec.europa.eu/consumers/odr</a>
+      </p>
+
+      <h2>Kontakt</h2>
+      <p>
+        Für rechtliche Anfragen kontaktieren Sie uns bitte unter:<br />
+        <strong>E-Mail:</strong> <a href="mailto:scybudtech@gmail.com">scybudtech@gmail.com</a>
+      </p>
+
+    </div>
+
+    <!-- ENGLISH VERSION -->
+    <div id="lang-en" class="lang-section">
+
+      <p>Information according to § 5 TMG and § 18(2) MStV</p>
+
+      <h2>Responsible for Content</h2>
+      <p>
+        <strong>Name:</strong> Abdulroqib Oladipo<br />
+        <strong>Business Name:</strong> Scybud – Operator of LogHue<br />
+        <strong>Address:</strong> Heinrich-Plett-Allee 64, 28259 Bremen, Germany<br />
+        <strong>Email:</strong> <a href="mailto:scybudtech@gmail.com">scybudtech@gmail.com</a>
+      </p>
+
+      <h2>Nature of Business</h2>
+      <p>
+        LogHue is a digital product operated by Scybud and provided as an online service for managing workspaces,
+        tasks, notes, and collaborative workflows.  
+        It is operated as a sole proprietorship based in Germany.
+      </p>
+
+      <h2>Liability for Content</h2>
+      <p>
+        As a service provider, we are responsible for our own content on these pages in accordance with § 7(1) TMG.
+        Under §§ 8 to 10 TMG, we are not obligated to monitor transmitted or stored third‑party information or to
+        investigate circumstances indicating illegal activity.
+      </p>
+      <p>
+        Obligations to remove or block the use of information under general law remain unaffected. Liability in this
+        regard is only possible from the moment we become aware of a specific legal violation. Upon notification of such
+        violations, we will remove the content immediately.
+      </p>
+
+      <h2>Liability for Links</h2>
+      <p>
+        Our website contains links to external third‑party websites over whose content we have no control.  
+        Therefore, we cannot assume any liability for such external content.  
+        The respective provider or operator is always responsible for the content of linked pages.
+      </p>
+
+      <h2>Copyright</h2>
+      <p>
+        The content and works created by the site operator are subject to German copyright law.  
+        Reproduction, modification, distribution, or any form of use outside the limits of copyright law requires
+        written permission from the respective author.
+      </p>
+
+      <h2>Online Dispute Resolution</h2>
+      <p>
+        The European Commission provides a platform for Online Dispute Resolution (ODR):  
+        <a href="https://ec.europa.eu/consumers/odr" target="_blank">https://ec.europa.eu/consumers/odr</a>
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        For legal inquiries, please contact us at:<br />
+        <strong>Email:</strong> <a href="mailto:scybudtech@gmail.com">scybudtech@gmail.com</a>
+      </p>
+
+    </div>
+
+  </main>
+
+  <script>
+    const btnDE = document.getElementById("btn-de");
+    const btnEN = document.getElementById("btn-en");
+    const langDE = document.getElementById("lang-de");
+    const langEN = document.getElementById("lang-en");
+
+    btnDE.addEventListener("click", () => {
+      langDE.classList.add("active");
+      langEN.classList.remove("active");
+      btnDE.classList.add("active");
+      btnEN.classList.remove("active");
+    });
+
+    btnEN.addEventListener("click", () => {
+      langEN.classList.add("active");
+      langDE.classList.remove("active");
+      btnEN.classList.add("active");
+      btnDE.classList.remove("active");
+    });
+  </script>
+
 </body>
 </html>

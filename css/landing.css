@@ -369,6 +369,13 @@ p {
 .example-text {
   flex: 1.2;
 }
+.example-label {
+  font-weight: 800;
+  color: #ff6b35;
+}
+.example-label::after {
+  content: ":";
+}
 .example-card {
   flex: 1;
   display: flex;

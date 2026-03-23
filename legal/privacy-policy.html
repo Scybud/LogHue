@@ -2,85 +2,404 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Privacy Policy | LogHue</title>
 
-        <!--CSS LINKS-->
-    <link rel="stylesheet" href="https://loghue.com/css/base.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/layout.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/component.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/dashboard.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/theme.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/pages.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/utilities.css" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://loghue.com/css/base.css" />
+  <link rel="stylesheet" href="https://loghue.com/css/theme.css" />
+
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      color: var(--color);
+    }
+
+    header {
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.4rem;
+      font-weight: 600;
+    }
+
+    header p {
+      margin: 6px 0 0;
+    }
+
+    nav {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.95rem;
+    }
+
+    nav a {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      max-width: 900px;
+      width: 100%;
+      line-height: 1.65;
+    }
+
+    h2 {
+      margin-top: 2.4rem;
+      font-size: 1.4rem;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    h3 {
+      margin-top: 1.4rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    ul {
+      padding-left: 20px;
+      margin-top: 0.5rem;
+    }
+
+    a {
+      color: var(--link);
+    }
+
+    footer {
+      margin-top: 60px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 0.9rem;
+      color: var(--muted);
+      max-width: 900px;
+      width: 100%;
+    }
+  </style>
 </head>
+
 <body>
 
-   <main class="mainContent">
+  <header>
+    <h1>Privacy Policy</h1>
+    <p><strong>Last updated:</strong> March 2026</p>
+    <p>
+      This Privacy Policy explains how LogHue (“we”, “us”, “our”) processes personal data when you use our services.
+    </p>
 
-      <h1>Privacy Policy</h1>
-      <p><strong>Last updated:</strong> March 2026</p>
-      
-  <h2>1. General Information</h2>
-  <p>
-    We take your privacy seriously. This policy explains what data we collect and how we use it.
-   </p>
+    <nav>
+      <a href="#scope">Scope & Controller</a>
+      <a href="#data-we-collect">Data We Collect</a>
+      <a href="#purposes">Purposes of Processing</a>
+      <a href="#legal-basis">Legal Basis</a>
+      <a href="#recipients">Recipients & Third Parties</a>
+      <a href="#transfers">International Transfers</a>
+      <a href="#retention">Data Retention</a>
+      <a href="#security">Security</a>
+      <a href="#rights">Your Rights</a>
+      <a href="#cookies">Cookies</a>
+      <a href="#children">Children</a>
+      <a href="#changes">Changes to This Policy</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
 
-  <h2>2. Data We Collect</h2>
-  <ul>
-    <li>Account information (name, email)</li>
-    <li>Workspace and user-generated data (tasks, notes, etc.)</li>
-    <li>Usage data (if analytics is enabled)</li>
-    <li>Technical data (IP address, browser type)</li>
-  </ul>
-  
-  <h2>3. Purpose of Processing</h2>
-  <ul>
-    <li>To provide and maintain the service</li>
-    <li>To improve performance and user experience</li>
-    <li>To ensure security and prevent abuse</li>
-  </ul>
+  <main>
 
-  <h2>4. Legal Basis (GDPR)</h2>
-  <p>
-    Data processing is based on:
-    <br />- Your consent (Art. 6(1)(a) GDPR)
-    <br />- Contract performance (Art. 6(1)(b) GDPR)
-    <br />- Legitimate interests (Art. 6(1)(f) GDPR)
-  </p>
+    <h2 id="scope">1. Scope & Data Controller</h2>
+    <p>
+      This Privacy Policy applies to the LogHue web application, related websites, and any services we provide in
+      connection with LogHue (collectively, the “Service”).
+    </p>
+    <p>
+      For the purposes of the General Data Protection Regulation (“GDPR”), the data controller is:
+    </p>
+    <p>
+      <strong>Scybud (LogHue)</strong><br />
+      Email: <a href="mailto:scybudtech@gmail.com">scybudtech@gmail.com</a>
+    </p>
+    <p>
+      If you access LogHue as part of an organization (e.g. your employer or team), that organization may also act as a
+      separate data controller for the workspace data it manages. In such cases, their internal policies may apply in
+      addition to this Privacy Policy.
+    </p>
 
-  <h2>5. Third-Party Services</h2>
-  <p>
-    We may use third-party services such as:
-  </p>
-  <ul>
-    <li>Supabase (authentication and database)</li>
-    <li>Analytics providers (if enabled)</li>
-  </ul>
+    <h2 id="data-we-collect">2. Data We Collect</h2>
+    <p>
+      We collect different categories of data to operate the Service, maintain security, and improve functionality.
+    </p>
 
-  <h2>6. Data Storage</h2>
-  <p>
-    Your data is stored securely and only for as long as necessary.
-  </p>
+    <h3>2.1 Account & Identification Data</h3>
+    <ul>
+      <li>Name or display name</li>
+      <li>Email address</li>
+      <li>Authentication identifiers (e.g. user ID, hashed credentials, tokens)</li>
+    </ul>
+    <p>
+      This information is required to create and manage your account, authenticate you, and associate you with one or
+      more workspaces.
+    </p>
 
-  <h2>7. Your Rights</h2>
-  <p>You have the right to:</p>
-  <ul>
-    <li>Access your data</li>
-    <li>Request correction or deletion</li>
-    <li>Withdraw consent at any time</li>
-  </ul>
+    <h3>2.2 Workspace & User‑Generated Content</h3>
+    <ul>
+      <li>Workspace metadata (workspace name, settings, roles, membership)</li>
+      <li>Tasks, notes, logs, comments, attachments, and other content you or your team create</li>
+      <li>Activity records related to workspace operations (e.g. who created or updated an item)</li>
+    </ul>
+    <p>
+      This content is under the control of you and, where applicable, your workspace administrators. We process it only
+      to provide the Service and related features.
+    </p>
 
-  <h2>8. Cookies</h2>
-  <p>
-    We use cookies to enhance your experience. You can manage your preferences via our consent system.
-  </p>
+    <h3>2.3 Usage & Analytics Data</h3>
+    <ul>
+      <li>Feature usage (e.g. which views are accessed, interaction patterns)</li>
+      <li>Performance metrics and error logs</li>
+      <li>Aggregated statistics about how the Service is used</li>
+    </ul>
+    <p>
+      Analytics may be collected only where enabled and, where required, based on your consent. We use this data to
+      understand how the Service is used and to improve stability, performance, and user experience.
+    </p>
 
-  <h2>9. Contact</h2>
-  <p>
-    Email: scybudtech@gmail.com
-  </p>
-  
-</main>
+    <h3>2.4 Technical & Log Data</h3>
+    <ul>
+      <li>IP address and approximate location (derived from IP)</li>
+      <li>Browser type, operating system, and device information</li>
+      <li>Server logs (e.g. request timestamps, response codes, security events)</li>
+    </ul>
+    <p>
+      This data is necessary for security, fraud prevention, debugging, and ensuring the reliable operation of the
+      Service.
+    </p>
+
+    <h2 id="purposes">3. Purposes of Processing</h2>
+    <p>We process personal data for the following purposes:</p>
+
+    <h3>3.1 Providing the Service</h3>
+    <ul>
+      <li>Creating and managing user accounts and workspaces</li>
+      <li>Authenticating users and managing sessions</li>
+      <li>Storing and displaying workspace content (tasks, notes, logs, etc.)</li>
+      <li>Enabling collaboration features between workspace members</li>
+    </ul>
+
+    <h3>3.2 Operating, Maintaining & Improving the Service</h3>
+    <ul>
+      <li>Monitoring performance and availability</li>
+      <li>Fixing bugs and improving reliability</li>
+      <li>Developing new features and refining existing ones</li>
+      <li>Understanding usage patterns (where analytics is enabled)</li>
+    </ul>
+
+    <h3>3.3 Security & Abuse Prevention</h3>
+    <ul>
+      <li>Detecting and preventing unauthorized access or misuse</li>
+      <li>Protecting accounts and workspaces from malicious activity</li>
+      <li>Maintaining audit trails where necessary for security and compliance</li>
+    </ul>
+
+    <h3>3.4 Communication</h3>
+    <ul>
+      <li>Sending essential service‑related emails (e.g. account, security, or workspace notifications)</li>
+      <li>Responding to support requests and inquiries</li>
+      <li>Informing you about significant changes to the Service or this Privacy Policy</li>
+    </ul>
+
+    <h2 id="legal-basis">4. Legal Basis for Processing (GDPR)</h2>
+    <p>
+      Where the GDPR applies, we rely on the following legal bases for processing personal data:
+    </p>
+    <ul>
+      <li>
+        <strong>Performance of a contract (Art. 6(1)(b) GDPR):</strong> when processing is necessary to provide the
+        Service you have requested, including account creation, workspace access, and core functionality.
+      </li>
+      <li>
+        <strong>Legitimate interests (Art. 6(1)(f) GDPR):</strong> for security, service improvement, fraud prevention,
+        and internal analytics that do not override your fundamental rights and freedoms.
+      </li>
+      <li>
+        <strong>Consent (Art. 6(1)(a) GDPR):</strong> where required for optional features such as certain analytics or
+        cookies that are not strictly necessary. You can withdraw your consent at any time.
+      </li>
+      <li>
+        <strong>Legal obligations (Art. 6(1)(c) GDPR):</strong> where we are required to retain or disclose data to
+        comply with applicable laws.
+      </li>
+    </ul>
+
+    <h2 id="recipients">5. Recipients & Third‑Party Services</h2>
+    <p>
+      We do not sell your personal data. We may share data with the following categories of recipients, strictly for the
+      purposes described above:
+    </p>
+    <ul>
+      <li>
+        <strong>Infrastructure & hosting providers:</strong> to store and process data securely (e.g. databases, storage).
+      </li>
+      <li>
+        <strong>Authentication & identity services:</strong> to manage login, sessions, and account security.
+      </li>
+      <li>
+        <strong>Analytics providers:</strong> to understand usage and improve the Service, where enabled.
+      </li>
+      <li>
+        <strong>Professional advisors:</strong> such as legal or accounting professionals, where necessary.
+      </li>
+      <li>
+        <strong>Authorities:</strong> where required by law or to protect our rights, users, or the public.
+      </li>
+    </ul>
+    <p>
+      Currently, LogHue uses <strong>Supabase</strong> for authentication, database, and storage. Additional services may
+      be integrated over time; where relevant, they will be bound by data‑processing agreements and appropriate
+      safeguards.
+    </p>
+
+    <h2 id="transfers">6. International Data Transfers</h2>
+    <p>
+      Depending on the location of our infrastructure and service providers, your data may be processed in countries
+      outside your country of residence, including outside the European Economic Area (EEA).
+    </p>
+    <p>
+      Where data is transferred outside the EEA, we take appropriate measures to ensure an adequate level of protection,
+      such as:
+    </p>
+    <ul>
+      <li>Using providers in jurisdictions with an adequacy decision, or</li>
+      <li>Implementing Standard Contractual Clauses (SCCs) or equivalent safeguards.</li>
+    </ul>
+
+    <h2 id="retention">7. Data Retention</h2>
+    <p>
+      We retain personal data only for as long as necessary for the purposes described in this Privacy Policy, including:
+    </p>
+    <ul>
+      <li>Providing and maintaining the Service</li>
+      <li>Complying with legal obligations</li>
+      <li>Resolving disputes and enforcing agreements</li>
+    </ul>
+    <p>
+      Workspace content is generally retained for as long as the workspace exists or until it is deleted by authorized
+      users or administrators. After account or workspace deletion, data may remain in backups for a limited period
+      before being permanently removed or anonymized.
+    </p>
+
+    <h2 id="security">8. Security</h2>
+    <p>
+      We implement technical and organizational measures designed to protect personal data against accidental or
+      unlawful destruction, loss, alteration, unauthorized disclosure, or access.
+    </p>
+    <p>
+      These measures may include:
+    </p>
+    <ul>
+      <li>Encrypted connections (HTTPS/TLS)</li>
+      <li>Access controls and authentication mechanisms</li>
+      <li>Role‑based permissions within workspaces</li>
+      <li>Monitoring and logging of security‑relevant events</li>
+    </ul>
+    <p>
+      No system can be guaranteed to be 100% secure, but we continuously work to maintain and improve the security of
+      the Service.
+    </p>
+
+    <h2 id="rights">9. Your Rights</h2>
+    <p>
+      Under the GDPR and other applicable laws, you may have the following rights regarding your personal data:
+    </p>
+    <ul>
+      <li><strong>Right of access:</strong> to obtain confirmation whether we process your data and receive a copy.</li>
+      <li><strong>Right to rectification:</strong> to correct inaccurate or incomplete data.</li>
+      <li><strong>Right to erasure:</strong> to request deletion of your data, subject to legal obligations.</li>
+      <li><strong>Right to restriction:</strong> to request limited processing in certain circumstances.</li>
+      <li><strong>Right to data portability:</strong> to receive your data in a structured, commonly used format.</li>
+      <li><strong>Right to object:</strong> to processing based on legitimate interests, in certain cases.</li>
+      <li><strong>Right to withdraw consent:</strong> where processing is based on consent.</li>
+    </ul>
+    <p>
+      You also have the right to lodge a complaint with a supervisory authority, in particular in the EU member state of
+      your habitual residence, place of work, or place of the alleged infringement.
+    </p>
+    <p>
+      To exercise your rights, contact us using the details in the <a href="#contact">Contact</a> section. We may need
+      to verify your identity before responding to your request.
+    </p>
+
+    <h2 id="cookies">10. Cookies & Similar Technologies</h2>
+    <p>
+      LogHue uses cookies and similar technologies to provide and improve the Service. These may include:
+    </p>
+    <ul>
+      <li><strong>Strictly necessary cookies:</strong> required for login, session management, and core functionality.</li>
+      <li><strong>Preference cookies:</strong> to remember your settings and interface choices.</li>
+      <li><strong>Analytics cookies:</strong> to understand usage and improve the Service (only where enabled and, where
+        required, based on your consent).</li>
+    </ul>
+    <p>
+      You can manage your cookie preferences via our consent interface or through your browser settings. Disabling
+      certain cookies may affect the functionality of the Service.
+    </p>
+    <p>
+      For more details, you may also refer to our dedicated Cookie Policy (if available) linked from the site footer.
+    </p>
+
+    <h2 id="children">11. Children’s Privacy</h2>
+    <p>
+      The Service is not intended for children under the age of 16, and we do not knowingly collect personal data from
+      children under this age. If you believe that a child has provided us with personal data, please contact us so we
+      can take appropriate action.
+    </p>
+
+    <h2 id="changes">12. Changes to This Privacy Policy</h2>
+    <p>
+      We may update this Privacy Policy from time to time to reflect changes in the Service, legal requirements, or
+      other operational needs. When we make material changes, we will update the “Last updated” date at the top of this
+      page and, where appropriate, notify you within the Service.
+    </p>
+    <p>
+      We encourage you to review this Privacy Policy periodically to stay informed about how we process personal data.
+    </p>
+
+    <h2 id="contact">13. Contact</h2>
+    <p>
+      If you have questions about this Privacy Policy, our data‑processing practices, or wish to exercise your rights,
+      you can contact us at:
+    </p>
+    <p>
+      <strong>Scybud (LogHue)</strong><br />
+      Email: <a href="mailto:scybudtech@gmail.com">scybudtech@gmail.com</a>
+    </p>
+
+    <p>
+      You may also find additional legal information, such as our Terms of Service and (if available) Cookie Policy, via
+      the legal links in the site footer.
+    </p>
+
+  </main>
+
+  <footer>
+    © 2026 LogHue · A Scybud Product ·
+    <a href="/terms">Terms of Service</a> ·
+    <a href="/privacy-policy">Privacy Policy</a> ·
+    <a href="/impressum">Impressum</a>
+  </footer>
+
 </body>
 </html>
