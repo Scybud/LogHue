@@ -212,7 +212,20 @@ export function loadAssignedTasks(tasks, container) {
 
     meta.append(assignee, assignedOn);
 
-    card.append(taskTitle, meta, details);
+    const viewBtn = document.createElement("button");
+    viewBtn.classList.add("btn", "btn-sm", "btn-primary");
+    viewBtn.textContent = "View Task";
+
+    viewBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      window.location.href = `https://app.loghue.com/task-view?task=${tsk.id}`;
+    });
+
+    details.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+
+    card.append(taskTitle, meta, details, viewBtn);
     grid.append(card);
   });
 
