@@ -364,7 +364,7 @@ function attachOpenWorkspaceClickEvent() {
 
 //DELETE WORKSPACE
 async function deleteWorkspace(id) {
-  confirmAction("Are you sure you want to delete this? It cannot be reversed", [
+  confirmAction("Are you sure you want to delete this? All activites(Tasks, logs and discussions) related to this workspace will be deleted and members will be removed from the workspace permanently. It cannot be reversed", [
     { label: "Cancel", type: "cancel" },
     { label: "Delete", type: "confirm", onClick: () => performWorkspaceDelete(id) },
   ]);
