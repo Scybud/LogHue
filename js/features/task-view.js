@@ -97,7 +97,7 @@ function renderTaskHeader() {
       <div class="taskActions">
       ${isAdmin ? `
            <button id="markTaskDoneBtn" class="primaryBtn btn btn-sm">
-          ${currentTask.status === "done" ? "Reopen Task" : "Mark as Done"}
+          ${currentTask.status === "completed" ? "Reopen Task" : "Mark as completed"}
         </button>
          ` : ""}
       </div>
@@ -262,7 +262,8 @@ async function attachMarkDoneHandler(taskId) {
   if (!btn) return;
 
   btn.addEventListener("click", async () => {
-    const newStatus = currentTask.status === "done" ? "in progress" : "done";
+    const newStatus =
+      currentTask.status === "completed" ? "in progress" : "completed";
 
     const { error } = await supabase
       .from("workspace_tasks")
