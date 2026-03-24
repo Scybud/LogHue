@@ -708,14 +708,14 @@ flex-direction: column;
   border-radius: 8px;
 }
 
-.activityHeader {
+.activityHeader, .discussionHeader {
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 14px;
 }
 
-.activityHeader .profileImg {
+.activityHeader .profileImg, .discussionHeader .profileImg {
   width: 28px;
   height: 28px;
   border-radius: 50%;

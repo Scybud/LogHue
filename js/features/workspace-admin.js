@@ -2,6 +2,7 @@ import { attachSidebarEvents } from "./../components/sidebar.js";
 import { openCreateTaskModal, openAddMemeberModal } from "./../utils/modals.js";
 import { supabase } from "../supabase.js";
 import { loadComponent, closeModal } from "../ui.js";
+import { openStartDiscussionModal } from "../utils/modals.js";
 
 export let currentWorkspace = null;
 export let loadedMembers = [];
@@ -18,18 +19,21 @@ document.addEventListener("click", async (e) => {
 });
 
 //CHECK ADMIN ACCESS
-async function checkAdminAccess(workspaceId) {
-  const { data: membership, error } = await supabase
-    .from("workspace_members")
-    .select("role")
-    .eq("workspace_id", workspaceId)
-    .eq("user_id", (await supabase.auth.getUser()).data.user.id)
-    .single();
 
-  if (error || (membership.role !== "admin" && membership.role !== "owner")) {
-    alert(
-      "Access Denied: You do not have admin permissions for this workspace.",
-    );
+
+
+async function checkAdminAccess(workspaceId, user) {
+  const { data: membership, error } = await supabase
+  .from("workspace_members")
+  .select("role")
+  .eq("workspace_id", workspaceId)
+  .eq("user_id", user.id)
+    .single();
+    
+    if (error || (membership.role !== "admin" && membership.role !== "owner")) {
+      alert(
+        "Access Denied: You do not have admin permissions for this workspace.",
+      );
     window.location.href = "/index"; // Send them to their main list
   }
 }
@@ -38,6 +42,14 @@ export async function initAdminWorkspaceData() {
   //Get workspace url
   const params = new URLSearchParams(window.location.search);
   const workspaceId = params.get("ws");
+  
+  const { data, userError } = await supabase.auth.getUser();
+  
+  if (userError) {
+    console.error(userError);
+    return;
+  }
+  const user = data.user;
 
   if (!workspaceId) {
     window.location.href = "index";
@@ -45,7 +57,7 @@ export async function initAdminWorkspaceData() {
   }
 
   //SECURE ADMIN WORKSPACE BY CHECKING FOR ADMIN ROLE
-  checkAdminAccess(workspaceId);
+  checkAdminAccess(workspaceId, user);
 
   //Load data
   const { data: workspace, error } = await supabase
@@ -104,6 +116,7 @@ export async function initAdminWorkspaceData() {
 
   workspace.workspace_tasks = workspace.workspace_tasks || [];
 
+  openStartDiscussionModal(currentWorkspace, user);
   openCreateTaskModal(currentWorkspace.id);
   openAddMemeberModal(currentWorkspace.id);
 }
@@ -247,27 +260,119 @@ async function renderSection(section, workspace, container) {
       loadMembers(members, container);
       break;
 
-   case "activities":
-     const { data: logs, error } = await supabase
-       .from("workspace_task_logs")
-       .select(
-         `
+    case "activities":
+      const { data: logs, error } = await supabase
+        .from("workspace_task_logs")
+        .select(
+          `
     *,
     profiles:created_by (full_name, avatar_url),
     workspace_tasks:task_id (title)
   `,
-       )
-       .eq("workspace_id", workspace.id)
-       .order("created_at", { ascending: false });
-
+        )
+        .eq("workspace_id", workspace.id)
+        .order("created_at", { ascending: false });
 
       loadActivities(logs || [], container);
       break;
 
-      case "discussions": 
-      loadDiscussions()
+    case "discussions":
+      //Load data
+      const { data: discussions, dcnError } = await supabase
+        .from("discussions")
+        .select(`*, profiles:created_by (full_name, avatar_url)`)
+        .eq("workspace_id", workspace.id)
+
+      loadDiscussions(discussions || [], container);
+      break;
   }
 }
+
+export function loadDiscussions(discussions, container) {
+  if (!discussions || discussions.length === 0) {
+    container.innerHTML = `<p class="placeholderText">No discussions started yet.</p>`;
+    return;
+  }
+
+  const section = document.createElement("section");
+  section.classList.add("section");
+
+  const sectionTitle = document.createElement("h2");
+  sectionTitle.classList.add("sectionTitle");
+  sectionTitle.textContent = "Discussions";
+
+  const divGrid = document.createElement("div");
+  divGrid.classList.add("container");
+
+  discussions.forEach((dcn) => {
+    const discussionCard = document.createElement("div");
+    discussionCard.classList.add("card", "discussionCard");
+    discussionCard.dataset.id = dcn.id; // IMPORTANT
+
+    // Make card clickable
+    discussionCard.addEventListener("click", () => {
+      window.location.href = `discussion-view?dcn=${dcn.id}`;
+    });
+
+    const dcnHeader = document.createElement("div");
+    dcnHeader.classList.add("discussionHeader");
+
+    const img = document.createElement("img");
+    img.classList.add("profileImg");
+    img.src = discussions.profiles?.avatar_url || "/assets/images/default_profile.png";
+
+    const span = document.createElement("span")
+    span.classList.add("actorName");
+    span.textContent = dcn.profiles?.full_name || "Unknown User";
+
+dcnHeader.append(img, span);
+
+    const dcnTitle = document.createElement("h3");
+    dcnTitle.classList.add("taskTitle");
+    dcnTitle.textContent = dcn.title;
+
+    const details = document.createElement("details");
+    const summary = document.createElement("summary");
+    summary.textContent = "Content";
+
+    const descriptionText = document.createElement("p");
+    descriptionText.textContent = dcn.content;
+
+    details.append(summary, descriptionText);
+
+    const creator = document.createElement("p");
+    creator.classList.add("meta");
+    creator.textContent = dcn.profiles.full_name;
+
+    const createdOn = document.createElement("p");
+    createdOn.classList.add("meta");
+    createdOn.textContent = formatDateTime(dcn.created_at);
+
+    const dcnMeta = document.createElement("div");
+    dcnMeta.classList.add("dcnMeta");
+    dcnMeta.append(createdOn);
+
+    const viewBtn = document.createElement("button");
+    viewBtn.classList.add("btn", "btn-sm", "btn-primary");
+    viewBtn.textContent = "Open";
+
+    viewBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      window.location.href = `discussion-view?dcn=${dcn.id}`;
+    });
+
+    details.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+
+    discussionCard.append(dcnHeader, dcnMeta, dcnTitle, details, viewBtn);
+    divGrid.append(discussionCard);
+  });
+
+  section.append(sectionTitle, divGrid);
+  container.append(section);
+}
+
 
 export function loadCreatedTasks(tasks, container) {
   if (!tasks || tasks.length === 0) {
@@ -292,7 +397,7 @@ export function loadCreatedTasks(tasks, container) {
 
     // Make card clickable
     taskCard.addEventListener("click", () => {
-      window.location.href = `/pages/task-view.html?task=${tsk.id}`;
+      window.location.href = `task-view?task=${tsk.id}`;
     });
 
     const taskTitle = document.createElement("h3");

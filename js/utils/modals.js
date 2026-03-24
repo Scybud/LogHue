@@ -10,6 +10,7 @@ import {
 } from "./modalEvents.js";
 import { supabase } from "../supabase.js";
 import { currentWorkspace } from "../features/workspace-member.js";
+import { attachStartDiscussionEvent } from "../features/discussions.js";
 
 export function openCreateTaskModal(workspaceId) {
   const btn = document.getElementById("createTaskOpen");
@@ -112,16 +113,16 @@ export function openCreateWorkspaceModal() {
   }
 }
 
-export function openStartDiscussionModal() {
+export function openStartDiscussionModal(currentWorkspace, user) {
   const btn = document.getElementById("startDiscussionOpen");
   if (btn) {
     btn.addEventListener("click", async () => {
       await loadComponent(
-        "https://loghue.com/components/modals/start-dicussion",
+        "https://loghue.com/components/modals/start-discussion",
         "modalContainer",
       );
 
-      initWorkspaces();
+  attachStartDiscussionEvent(currentWorkspace, user)
     });
   }
 }
