@@ -5,80 +5,311 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Terms of Service | LogHue</title>
 
-      <!--CSS LINKS-->
-    <link rel="stylesheet" href="https://loghue.com/css/base.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/layout.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/component.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/dashboard.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/theme.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/pages.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/utilities.css" />
+  <link rel="stylesheet" href="https://loghue.com/css/base.css" />
+  <link rel="stylesheet" href="https://loghue.com/css/theme.css" />
+
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      color: var(--color);
+    }
+
+    header {
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.4rem;
+      font-weight: 600;
+    }
+
+    header p {
+      margin: 6px 0 0;
+    }
+
+    nav {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.95rem;
+    }
+
+    nav a {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      max-width: 900px;
+      width: 100%;
+      line-height: 1.65;
+    }
+
+    h2 {
+      margin-top: 2.4rem;
+      font-size: 1.4rem;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    h3 {
+      margin-top: 1.4rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    ul {
+      padding-left: 20px;
+      margin-top: 0.5rem;
+    }
+
+     .legal-footer {
+    width: 100%;
+    border-top: 1px solid var(--border);
+    margin-top: 60px;
+    padding: 32px 20px;
+    color: var(--muted);
+    display: flex;
+    justify-content: center;
+  }
+
+  .footer-inner {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .footer-brand {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color);
+  }
+
+  .footer-sub {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 400;
+    opacity: 0.7;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 0.95rem;
+  }
+
+  .footer-links a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .footer-links a:hover {
+    text-decoration: underline;
+  }
+
+  .footer-meta {
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
+  </style>
 </head>
+
 <body>
 
-   <main class="mainContent">
+  <header>
+    <h1>Terms of Service</h1>
+    <p><strong>Last updated:</strong> March 2026</p>
 
-      <h1>Terms of Service</h1>
-      <p><strong>Last updated:</strong> March 2026</p>
+    <nav>
+      <a href="#introduction">Introduction</a>
+      <a href="#definitions">Definitions</a>
+      <a href="#accounts">Accounts</a>
+      <a href="#workspaces">Workspaces & Data Ownership</a>
+      <a href="#acceptable-use">Acceptable Use</a>
+      <a href="#subscriptions">Subscriptions & Payments</a>
+      <a href="#refunds">Refunds</a>
+      <a href="#availability">Service Availability</a>
+      <a href="#termination">Termination</a>
+      <a href="#ip">Intellectual Property</a>
+      <a href="#liability">Liability</a>
+      <a href="#changes">Changes</a>
+      <a href="#governing-law">Governing Law</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
 
-  <h2>1. Introduction</h2>
-  <p>
-     By using LogHue, you agree to these Terms of Service.
-  </p>
+  <main>
 
-  <h2>2. Accounts</h2>
-  <p>
-    You are responsible for maintaining the confidentiality of your account and all activities under it.
-  </p>
+    <h2 id="introduction">1. Introduction</h2>
+    <p>
+      These Terms of Service (“Terms”) govern your access to and use of LogHue, a workspace and collaboration platform
+      operated by Scybud (“we”, “us”, “our”). By creating an account or using LogHue, you agree to be bound by these
+      Terms.
+    </p>
+    <p>
+      If you are using LogHue on behalf of an organization, you represent that you have the authority to bind that
+      organization to these Terms.
+    </p>
 
-  <h2>3. Acceptable Use</h2>
-  <ul>
-    <li>No illegal use</li>
-    <li>No system abuse or hacking attempts</li>
-    <li>No harmful or abusive content</li>
-  </ul>
+    <h2 id="definitions">2. Definitions</h2>
+    <ul>
+      <li><strong>“Service”</strong> refers to the LogHue platform, website, and related tools.</li>
+      <li><strong>“User”</strong> refers to any individual accessing or using the Service.</li>
+      <li><strong>“Workspace”</strong> refers to a shared environment where users collaborate.</li>
+      <li><strong>“Workspace Owner”</strong> refers to the user or organization that created the workspace.</li>
+      <li><strong>“Content”</strong> refers to tasks, notes, files, comments, and any data submitted to the Service.</li>
+    </ul>
 
-  <h2>4. Subscriptions & Payments</h2>
-  <p>
-    LogHue may offer paid subscription plans.
-  </p>
-  <ul>
-     <li>Subscriptions are billed on a recurring basis (monthly or yearly)</li>
-     <li>You agree to pay all applicable fees</li>
-     <li>You can cancel your subscription at any time</li>
-     <li>Access may continue until the end of the billing period</li>
-   </ul>
-   
-   <h2>5. Refunds</h2>
-   <p>
-      Payments are generally non-refundable unless required by law.
-   </p>
-   
-   <h2>6. Service Availability</h2>
-  <p>
-    We do not guarantee uninterrupted or error-free service.
-  </p>
+    <h2 id="accounts">3. Accounts</h2>
+    <p>
+      You must provide accurate information when creating an account and keep your login credentials secure. You are
+      responsible for all activity under your account. If you suspect unauthorized access, you must notify us
+      immediately.
+    </p>
 
-  <h2>7. Termination</h2>
-  <p>
-     We may suspend or terminate accounts that violate these Terms.
-   </p>
-   
-   <h2>8. Liability</h2>
-   <p>
-      LogHue is not liable for damages, data loss, or interruptions.
-   </p>
-   
-   <h2>9. Changes</h2>
-  <p>
-     We may update these Terms at any time.
-  </p>
+    <h2 id="workspaces">4. Workspaces & Data Ownership</h2>
+    <h3>4.1 Ownership of Workspace Content</h3>
+    <p>
+      Workspace Owners retain ownership of all content submitted to their workspace. We do not claim ownership of your
+      data.
+    </p>
 
-  <h2>10. Contact</h2>
-  <p>
-    Email: scybudtech@gmail.com
-  </p>
-  
-</main>
+    <h3>4.2 Workspace Administration</h3>
+    <p>
+      Workspace Owners and administrators may:
+    </p>
+    <ul>
+      <li>Manage user access</li>
+      <li>View and modify workspace content</li>
+      <li>Delete content or the entire workspace</li>
+    </ul>
+
+    <h3>4.3 Our Access to Content</h3>
+    <p>
+      We only access your content when necessary to:
+    </p>
+    <ul>
+      <li>Provide the Service</li>
+      <li>Resolve technical issues</li>
+      <li>Ensure security and prevent abuse</li>
+      <li>Comply with legal obligations</li>
+    </ul>
+
+    <h2 id="acceptable-use">5. Acceptable Use</h2>
+    <p>You agree not to use the Service to:</p>
+    <ul>
+      <li>Engage in illegal activities</li>
+      <li>Upload malware or harmful code</li>
+      <li>Attempt unauthorized access to systems or accounts</li>
+      <li>Harass, threaten, or abuse others</li>
+      <li>Interfere with the operation of the Service</li>
+    </ul>
+
+    <h2 id="subscriptions">6. Subscriptions & Payments</h2>
+    <p>
+      LogHue may offer paid subscription plans. By subscribing, you agree to pay all applicable fees and taxes.
+      Subscriptions renew automatically unless canceled.
+    </p>
+    <ul>
+      <li>Billing cycles may be monthly or yearly</li>
+      <li>Prices may change with notice</li>
+      <li>Failure to pay may result in suspension of access</li>
+    </ul>
+
+    <h2 id="refunds">7. Refunds</h2>
+    <p>
+      Payments are generally non‑refundable unless required by law. Refund requests may be considered in exceptional
+      circumstances at our discretion.
+    </p>
+
+    <h2 id="availability">8. Service Availability</h2>
+    <p>
+      We strive to maintain reliable uptime but do not guarantee uninterrupted or error‑free service. Maintenance,
+      updates, or technical issues may temporarily affect availability.
+    </p>
+
+    <h2 id="termination">9. Termination</h2>
+    <p>
+      We may suspend or terminate your account if you violate these Terms or if your use poses a security or operational
+      risk. You may stop using the Service at any time.
+    </p>
+
+    <h2 id="ip">10. Intellectual Property</h2>
+    <p>
+      The Service, including its design, branding, features, and code, is owned by Scybud and protected by copyright,
+      trademark, and other laws. You may not copy, modify, or distribute any part of the Service without permission.
+    </p>
+
+    <h2 id="liability">11. Limitation of Liability</h2>
+    <p>
+      To the fullest extent permitted by law, LogHue is not liable for:
+    </p>
+    <ul>
+      <li>Loss of data</li>
+      <li>Service interruptions</li>
+      <li>Indirect, incidental, or consequential damages</li>
+      <li>Actions taken by workspace administrators</li>
+    </ul>
+    <p>
+      Your use of the Service is at your own risk.
+    </p>
+
+    <h2 id="changes">12. Changes to These Terms</h2>
+    <p>
+      We may update these Terms to reflect changes in the Service or legal requirements. When we make material changes,
+      we will update the “Last updated” date and may notify you within the Service.
+    </p>
+
+    <h2 id="governing-law">13. Governing Law</h2>
+    <p>
+      These Terms are governed by the laws of Germany. If you are an EU resident, mandatory consumer protection laws of
+      your country may also apply.
+    </p>
+
+    <h2 id="contact">14. Contact</h2>
+    <p>
+      For questions about these Terms, contact us at:<br />
+      <strong>Email:</strong> <a href="mailto: scybudtech@gmail.com">scybudtech@gmail.com</a>
+    </p>
+
+  </main>
+
+<footer class="legal-footer">
+  <div class="footer-inner">
+
+    <div class="footer-brand">
+               <div class="logo">Log<span>Hue</span></div>
+      <span class="footer-sub">A Scybud Product</span>
+    </div>
+
+    <nav class="footer-links">
+      <a href="terms">Terms of Service</a>
+      <a href="privacy-policy">Privacy Policy</a>
+      <a href="impressum">Impressum</a>
+    </nav>
+
+    <div class="footer-meta">
+      © 2026 Scybud. All rights reserved.
+    </div>
+
+  </div>
+</footer>
+
 </body>
 </html>

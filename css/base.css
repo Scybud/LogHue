@@ -110,7 +110,14 @@ a {
 a:hover {
   text-decoration: underline;
 }
-
+.logo {
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: #fff;
+}
+.logo span {
+  color: var(--accent);
+}
 .emptyStateImg {
   width: 100%;
   max-width: 500px;

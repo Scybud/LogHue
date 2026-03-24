@@ -81,15 +81,57 @@
       color: var(--link);
     }
 
-    footer {
-      margin-top: 60px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border);
-      font-size: 0.9rem;
-      color: var(--muted);
-      max-width: 900px;
-      width: 100%;
-    }
+   .legal-footer {
+    width: 100%;
+    border-top: 1px solid var(--border);
+    margin-top: 60px;
+    padding: 32px 20px;
+    color: var(--muted);
+    display: flex;
+    justify-content: center;
+  }
+
+  .footer-inner {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .footer-brand {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color);
+  }
+
+  .footer-sub {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 400;
+    opacity: 0.7;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 0.95rem;
+  }
+
+  .footer-links a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .footer-links a:hover {
+    text-decoration: underline;
+  }
+
+  .footer-meta {
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
   </style>
 </head>
 
@@ -394,12 +436,26 @@
 
   </main>
 
-  <footer>
-    © 2026 LogHue · A Scybud Product ·
-    <a href="/terms">Terms of Service</a> ·
-    <a href="/privacy-policy">Privacy Policy</a> ·
-    <a href="/impressum">Impressum</a>
-  </footer>
+<footer class="legal-footer">
+  <div class="footer-inner">
+
+    <div class="footer-brand">
+               <div class="logo">Log<span>Hue</span></div>
+      <span class="footer-sub">A Scybud Product</span>
+    </div>
+
+    <nav class="footer-links">
+      <a href="terms">Terms of Service</a>
+      <a href="privacy-policy">Privacy Policy</a>
+      <a href="impressum">Impressum</a>
+    </nav>
+
+    <div class="footer-meta">
+      © 2026 Scybud. All rights reserved.
+    </div>
+
+  </div>
+</footer>
 
 </body>
 </html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Apps by Scybud</title>
+
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/theme.css" />
+
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      color: var(--color);
+    }
+
+    header {
+      width: 100%;
+      max-width: 900px;
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    header h1 {
+      font-size: 2.6rem;
+      font-weight: 700;
+      margin-bottom: 0.4em;
+    }
+
+    header p {
+      font-size: 1.15rem;
+      opacity: 0.85;
+      line-height: 1.6;
+    }
+
+    .apps-grid {
+      max-width: 900px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      margin-bottom: 80px;
+    }
+
+    .app-card {
+      border: 1px solid var(--border);
+      background: var(--background);
+      padding: 24px;
+      border-radius: 12px;
+    }
+
+    .app-card h2 {
+      margin-top: 0;
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
+
+    .tagline {
+      font-size: 1rem;
+      opacity: 0.7;
+      margin-top: -6px;
+      margin-bottom: 12px;
+    }
+
+    .app-card p {
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+
+    .app-card ul {
+      margin-top: 16px;
+      padding-left: 20px;
+      line-height: 1.6;
+    }
+
+    .app-link {
+      display: inline-block;
+      margin-top: 16px;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .app-link.disabled {
+      opacity: 0.5;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    /* Labs Section */
+    .labs-section {
+      max-width: 900px;
+      width: 100%;
+      margin-bottom: 80px;
+    }
+
+    .labs-section h2 {
+      font-size: 1.8rem;
+      margin-bottom: 0.6em;
+      font-weight: 600;
+    }
+
+    .labs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .lab-card {
+      border: 1px solid var(--border);
+      background: var(--background);
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .lab-card h3 {
+      margin-top: 0;
+      font-size: 1.2rem;
+    }
+
+    footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 0.9rem;
+      color: var(--muted);
+      max-width: 900px;
+      width: 100%;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Apps by Scybud</h1>
+    <p>
+      Scybud builds simple, focused tools that help people work, create, and share.  
+      Each product has its own identity, but they all follow the same philosophy:  
+      clean design, predictable behavior, and thoughtful engineering.
+    </p>
+  </header>
+
+  <!-- MAIN APPS -->
+  <section class="apps-grid">
+
+    <!-- LogHue -->
+    <div class="app-card">
+      <h2>LogHue</h2>
+      <p class="tagline">Workspaces built for teams.</p>
+      <p>
+        LogHue is a team‑first workspace platform that brings structure and clarity to shared work.  
+        Tasks, notes, activity, and members all live in clean, modular workspaces designed for  
+        collaboration without complexity.
+      </p>
+      <ul>
+        <li>Team‑ready workspaces</li>
+        <li>Task tracking & activity history</li>
+        <li>Notes with export support</li>
+        <li>Simple, predictable permissions</li>
+      </ul>
+<a href="https://loghue.com" target="_blank" rel="noopener noreferrer" class="app-link">
+  Visit LogHue →
+</a>
+    </div>
+
+    <!-- TryTasty -->
+    <div class="app-card">
+      <h2>TryTasty</h2>
+      <p class="tagline">Recipes made simple.</p>
+      <p>
+        TryTasty is a clean, beginner‑friendly recipe platform built for home cooks.  
+        Browse recipes, save favorites, and explore a growing community of food lovers.  
+        A dedicated community space is coming soon.
+      </p>
+      <ul>
+        <li>Beginner‑friendly recipes</li>
+        <li>Clean, distraction‑free layout</li>
+        <li>Save & organize favorites</li>
+        <li>Community features coming soon</li>
+      </ul>
+<a href="https://trytasty.de" target="_blank" rel="noopener noreferrer" class="app-link">
+  Visit TryTasty →
+</a>
+    </div>
+
+    <!-- RushSite -->
+    <div class="app-card">
+      <h2>RushSite</h2>
+      <p class="tagline">Build and export portfolio sites easily.</p>
+      <p>
+        RushSite lets you create and export clean portfolio websites with ease.  
+        Edit with autosave, export as HTML, and host anywhere, no backend required.
+      </p>
+      <ul>
+        <li>Live editing with autosave</li>
+        <li>Export as static HTML</li>
+        <li>No backend needed</li>
+        <li>Beginner‑friendly</li>
+      </ul>
+<a href="https://rushsite.de" target="_blank" rel="noopener noreferrer" class="app-link">
+  Visit RushSite →
+</a>
+    </div>
+
+    <!-- Playbud -->
+    <div class="app-card">
+      <h2>Playbud</h2>
+      <p class="tagline">Mini‑games for fun and breaks.</p>
+      <p>
+        Playbud is a small game portal featuring icebreaker and boredom‑killer games.  
+        More games are being added as development continues.
+      </p>
+      <ul>
+        <li>Quick, simple games</li>
+        <li>Fun for short breaks</li>
+        <li>Lightweight and fast</li>
+      </ul>
+<a href="https://scyflix.github.io/Playbud/" target="_blank" rel="noopener noreferrer" class="app-link">
+  Visit Playbud →
+</a>
+    </div>
+
+  </section>
+
+  <!-- LABS PROJECTS -->
+  <section class="labs-section">
+    <h2>Scybud Labs</h2>
+    <p style="opacity: 0.85; margin-bottom: 20px;">
+      Experimental projects, learning builds, and creative mini‑tools from Scybud Labs.  
+      These showcase ongoing exploration and growth.  
+    </p>
+
+    <div class="labs-grid">
+
+      <div class="lab-card">
+        <h3>ResBuild</h3>
+        <p>A simple resume builder created as a learning project. No longer maintained.</p>
+      </div>
+
+      <div class="lab-card">
+        <h3>Thia’s Vogue</h3>
+        <p>A fashion brand website built for a Nigerian clothing business.</p>
+      </div>
+
+      <div class="lab-card">
+        <h3>Abdulroqib Resume</h3>
+        <p>A personal resume website, the first coded project by Abdulroqib.</p>
+      </div>
+
+      <div class="lab-card">
+        <h3>Robot Car Project</h3>
+        <p>A basic Arduino‑powered robot car built to learn robotics fundamentals.</p>
+      </div>
+
+      <div class="lab-card">
+        <h3>Calculator</h3>
+        <p>A simple calculator built while practicing JavaScript.</p>
+      </div>
+
+      <div class="lab-card">
+        <h3>HTML Documentation</h3>
+        <p>A beginner‑friendly HTML guide originally created under the freeCodeCamp curriculum.</p>
+      </div>
+
+      <div class="lab-card">
+        <h3>Creative Mini‑Projects</h3>
+        <p>
+          Hover glow buttons, animated cursor trails, styled forms, mockups,  
+          loading animations, and more experimental UI builds.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    © 2026 <a href="https://scyflix.github.io/Scybud-Labs/" target="_blank" rel="noopener noreferrer">Scybud</a> | Where idea grows.
+  </footer>
+
+</body>
+</html>
