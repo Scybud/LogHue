@@ -112,6 +112,19 @@ export function openCreateWorkspaceModal() {
   }
 }
 
+export function openStartDiscussionModal() {
+  const btn = document.getElementById("startDiscussionOpen");
+  if (btn) {
+    btn.addEventListener("click", async () => {
+      await loadComponent(
+        "https://loghue.com/components/modals/start-dicussion",
+        "modalContainer",
+      );
+
+      initWorkspaces();
+    });
+  }
+}
 
 function attachLoginModalEvents() {
 
