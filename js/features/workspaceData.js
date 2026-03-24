@@ -58,7 +58,7 @@ export function dropdownClick() {
 
     document.querySelector("main").append(dropdown);
     dropdown.classList.add("show");
-    setTimeout(() => dropdown.classList.add("open"), 50);
+    setTimeout(() => dropdown.classList.add("open"), 20);
 
     dropdown.addEventListener("click", () => dropdown.remove(), { once: true });
   });
@@ -123,7 +123,7 @@ export async function initWorkspaces() {
 
   updateworkspaceCount();
   checkIfEmpty();
-  attachCreateWorkspaceEvent();
+  attachCreateWorkspaceEvent(upperDashboardContainer);
   attachOpenWorkspaceClickEvent();
 }
 
@@ -203,7 +203,7 @@ export function formatDateTime(timestamp) {
   });
 }
 
-async function attachCreateWorkspaceEvent() {
+async function attachCreateWorkspaceEvent(container) {
   if (!createWorkspaceBtn) return;
 
   if (createWorkspaceBtn.__listenerAttached) return;
@@ -240,6 +240,9 @@ async function attachCreateWorkspaceEvent() {
 
     const newWorkspace = data[0];
 
+    // Assign role manually for UI consistency
+    newWorkspace.role = "admin";
+
     //ADD WORKSPACE ADMIN AS MEMBER
     const { data: existing } = await supabase
       .from("workspace_members")
@@ -263,8 +266,10 @@ async function attachCreateWorkspaceEvent() {
     }
 
     savedWorkspaceData.unshift(newWorkspace);
+    const wsCard = createWorkspaceCardElement(newWorkspace);
 
     //RE-RENDER UI
+    container.prepend(wsCard);
     updateworkspaceCount();
     checkIfEmpty();
 
@@ -274,8 +279,7 @@ async function attachCreateWorkspaceEvent() {
 
     closeModal();
 
-   actionMsg("Workspace created successfully!", "success");
-
+    actionMsg("Workspace created successfully!", "success");
   });
 }
 
@@ -427,7 +431,7 @@ if (error) {
 setTimeout(() => {
 
   window.location.reload();
-}, 5000)
+}, 2000)
 }
 
 //EDIT WORKSPACE
@@ -475,7 +479,7 @@ async function editWorkspace(ws, id) {
     setTimeout(() => {
 
       window.location.reload();
-    }, 5000)
+    }, 2000)
   });
 }
 

@@ -100,7 +100,6 @@ await workspacesReady;
   
     recentWorkspaces.forEach((wsData) => {
       const wsCard = createWorkspaceCardElement(wsData);
-  
       div.append(wsCard);
     });
     upperDashboardContainer.prepend(div);

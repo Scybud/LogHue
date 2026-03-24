@@ -4,6 +4,8 @@ import {
   formatDateTime,
 } from "./workspaceData.js";
 import { supabase } from "../supabase.js";
+import { confirmAction, actionMsg } from "../utils/modals.js";
+
 
 function checkIfEmpty() {
   const closedWorkspaces = savedWorkspaceData.filter(
@@ -149,26 +151,48 @@ function restoreWorkspaceEvent() {
 
     if (!btn) return;
 
-    const ok = confirm("Restore workspace?");
-    if (!ok) return;
-
     const workspaceToRestore = btn.closest(".workspaceCard");
     const id = workspaceToRestore.dataset.id;
-
-    const { error } = await supabase
-      .from("workspaces")
-      .update({
-        status: "active",
-      })
-      .eq("id", id);
-
-    if (error) {
-      console.error(error);
-      alert(error.message);
-      return;
-    }
-
-    window.location.reload();
+    
+    restoreWorkspace(id)
   });
   checkIfEmpty();
 }
+
+
+//ARCHEIVE WORKSPACE
+async function restoreWorkspace(id) {
+  confirmAction("Restore this workspace? Restoring workspace will allow access to the workspace, both for the admin(s) and member(s).", [
+    { label: "Cancel", type: "cancel" },
+    {
+      label: "Restore",
+      type: "confirm",
+      onClick: () => performWorkspaceRestore(id),
+    },
+  ]);
+  
+}
+
+//PERFORM WORKSPACE ARCHEIVE IF CONFIRMED
+async function performWorkspaceRestore(id) {
+  const { error } = await supabase
+    .from("workspaces")
+    .update({
+      status: "active",
+    })
+    .eq("id", id);
+
+  if (error) {
+    console.error(error);
+    alert(error.message);
+    return;
+  }
+
+
+    actionMsg("Workspace restored! Open it in the 'All Worksoace' page", "success");
+
+// Refresh UI
+setTimeout(() => {
+
+  window.location.reload();
+}, 2000)}
