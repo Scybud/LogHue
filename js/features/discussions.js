@@ -1,4 +1,5 @@
 import { supabase } from "../supabase.js";
+import {closeModal} from "../ui.js"
 
 export async function attachStartDiscussionEvent(ws, user) {
    const startDiscussionBtn = document.getElementById("startDiscussion")
@@ -39,5 +40,6 @@ export async function attachStartDiscussionEvent(ws, user) {
       return;
     }
 
+    closeModal();
    });
 }
