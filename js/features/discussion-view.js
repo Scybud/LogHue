@@ -51,8 +51,9 @@ async function initDiscussionView() {
   attachMarkDoneHandler(discussionId);
 }
 
-export function loadSidebar() {
+ function loadSidebar() {
   const workspacePageSidebar = document.getElementById("workspacePageSidebar");
+  const isAdmin = userRole.role === "admin" || userRole.role === "owner";
 
   workspacePageSidebar.innerHTML = `<!--CLOSE BUTTON -->
   <button type="button" class="menuBtn" id="closeSidebar">
@@ -85,7 +86,7 @@ export function loadSidebar() {
  <nav class="sidebarNav">
  <!-- WORKSPACE -->
  ${
-   userRole === "admin"
+  isAdmin
      ? `<a href="workspace-dashboard-admin?ws=${currentWorkspace.id}" class="navBtn" data-section="index" id="dashboardLink">
       <span class="navIcon">
         <!-- Back  Icon -->

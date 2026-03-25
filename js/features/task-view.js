@@ -1,6 +1,5 @@
 import { supabase } from "../supabase.js";
 import { formatDateTime } from "./workspace-admin.js";
-import { loadSidebar } from "./discussion-view.js";
 
 let currentTask = null;
 let currentWorkspace = null;
@@ -44,6 +43,117 @@ async function initTaskView() {
   renderLogs();
   attachLogSubmitHandler();
   attachMarkDoneHandler(taskId);
+}
+
+function loadSidebar() {
+  const workspacePageSidebar = document.getElementById("workspacePageSidebar");
+  const isAdmin = userRole.role === "admin" || userRole.role === "owner";
+
+  workspacePageSidebar.innerHTML = `<!--CLOSE BUTTON -->
+  <button type="button" class="menuBtn" id="closeSidebar">
+
+    <svg 
+    xmlns="http://www.w3.org/2000/svg"
+    width="22"
+    height="22"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+  stroke-width="1.7"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect
+    x="3.5"
+    y="3.5"
+    width="17"
+    height="17"
+    rx="6"
+    ry="6"
+    fill="currentColor"
+    opacity="0.06"
+  />
+  <path d="M9 9l6 6M15 9l-6 6" />
+</svg>
+</button>
+
+ <nav class="sidebarNav">
+ <!-- WORKSPACE -->
+ ${
+   isAdmin
+     ? `<a href="workspace-dashboard-admin?ws=${currentWorkspace.id}" class="navBtn" data-section="index" id="dashboardLink">
+      <span class="navIcon">
+        <!-- Back  Icon -->
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M11.75 4.25L6 10L11.75 15.75"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </span>
+      <span class="navText">Workspace</span>
+    </a>`
+     : `<a href="workspace-dashboard-member?ws=${currentWorkspace.id}" class="navBtn" data-section="index" id="dashboardLink">
+      <span class="navIcon">
+        <!-- Back  Icon -->
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M11.75 4.25L6 10L11.75 15.75"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </span>
+      <span class="navText">Workspace</span>
+    </a>`
+ }
+
+    <!-- DASHBOARD -->
+    <a href="index" class="navBtn" data-section="index" id="dashboardLink">
+      <span class="navIcon">
+        <!-- Back / Dashboard Icon -->
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M11.75 4.25L6 10L11.75 15.75"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </span>
+      <span class="navText">Dashboard</span>
+    </a>
+</nav>
+`;
+
+
+document.getElementById("closeSidebar").addEventListener("click", () => {
+  workspacePageSidebar.classList.toggle("show")
+});
 }
 
 /* ---------------------------------------------
