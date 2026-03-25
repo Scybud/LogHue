@@ -533,8 +533,15 @@ button.danger {
   background: #f2f2f2;
 }
 
-
-
+.pageOpenLink {
+  display: block;
+  width: fit-content;
+    opacity: 1;
+}
+.pageOpenLink:hover {
+  opacity: 1;
+  text-decoration: none;
+}
 .modal-content {
   padding: 24px;
   display: flex;

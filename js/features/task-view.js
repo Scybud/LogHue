@@ -1,5 +1,6 @@
 import { supabase } from "../supabase.js";
 import { formatDateTime } from "./workspace-admin.js";
+import { loadSidebar } from "./discussion-view.js";
 
 let currentTask = null;
 let currentWorkspace = null;
@@ -38,6 +39,7 @@ async function initTaskView() {
 
   userRole = await getUserRole(currentWorkspace.id);
 
+  loadSidebar();
   renderTaskHeader();
   renderLogs();
   attachLogSubmitHandler();

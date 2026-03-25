@@ -262,18 +262,49 @@ async function renderSection(section, workspace, container) {
 
     case "activities":
       const { data: logs, error } = await supabase
-        .from("workspace_task_logs")
-        .select(
-          `
+  .from("workspace_task_logs")
+  .select(`
     *,
     profiles:created_by (full_name, avatar_url),
     workspace_tasks:task_id (title)
-  `,
-        )
-        .eq("workspace_id", workspace.id)
-        .order("created_at", { ascending: false });
+  `)
+  .eq("workspace_id", workspace.id)
+  .order("created_at", { ascending: false });
 
-      loadActivities(logs || [], container);
+const { data: actDcns, actDcnsError } = await supabase
+  .from("discussions")
+  .select(`
+    *,
+    profiles:created_by (full_name, avatar_url)
+  `)
+  .eq("workspace_id", workspace.id)
+  .order("created_at", { ascending: false });
+
+const normalizedLogs = (logs || []).map((log) => ({
+  id: log.id,
+  type: "task_log",
+  actor: log.profiles,
+  title: log.workspace_tasks?.title,
+  note: log.log_note,
+  status: log.task_status,
+  created_at: log.created_at,
+}));
+
+const normalizedDiscussions = (actDcns || []).map((d) => ({
+  id: d.id,
+  type: "discussion",
+  actor: d.profiles,
+  title: d.title,
+  note: d.content,
+  status: null,
+  created_at: d.created_at,
+}));
+
+const activities = [...normalizedLogs, ...normalizedDiscussions].sort(
+  (a, b) => new Date(b.created_at) - new Date(a.created_at)
+);
+
+loadActivities(activities, container);
       break;
 
     case "discussions":
@@ -571,8 +602,8 @@ function createLogElement(log) {
 // -----------------------------
 // ACTIVITIES (READ‑ONLY)
 // -----------------------------
-function loadActivities(logs, container) {
-  if (!logs || logs.length === 0) {
+function loadActivities(activities, container) {
+  if (!activities || activities.length === 0) {
     container.innerHTML = `<p class="placeholderText">No activity in this workspace yet.</p>`;
     return;
   }
@@ -587,34 +618,61 @@ function loadActivities(logs, container) {
   const list = document.createElement("div");
   list.classList.add("activityList");
 
-  logs.forEach((log) => {
-    const item = document.createElement("div");
-    item.classList.add("activityItem");
+  activities.forEach((item) => {
+    const actor = item.actor;
+    const avatar = actor?.avatar_url || "/assets/default-avatar.png";
+    const name = actor?.full_name || "Unknown User";
 
-    item.innerHTML = `
-      <div class="activityHeader">
-        <img class="profileImg" src="${log.profiles?.avatar_url || "/assets/default-avatar.png"}" />
-        <span class="actorName">${log.profiles?.full_name || "Unknown User"}
-         gave an update on
-        "${log.workspace_tasks?.title || "Unknown Task"}"</span>
-      </div>
+    const label =
+      item.type === "task_log"
+        ? `gave an update on "${item.title || "Unknown Task"}"`
+        : `started a discussion "${item.title || "Untitled"}"`;
 
-      <div class="activityBody">
-        <p><strong>Note:</strong> ${log.log_note}</p>
-        <p><strong>Status:</strong> ${log.task_status}</p>
-      </div>
+    const body =
+      item.type === "task_log"
+        ? `
+        <p><strong>Note:</strong> ${item.note}</p>
+        <p><strong>Status:</strong> ${item.status}</p>
+      `
+        : `
+        <p><strong>Message:</strong> ${item.note}</p>
+      `;
 
-      <div class="activityTime">
-        ${new Date(log.created_at).toLocaleString()}
-      </div>
-    `;
+    const openBtn =
+      item.type === "discussion"
+        ? `
+        <a class="btn pageOpenLink btn-sm btn-primary"
+           href="https://app.loghue.com/discussion-view?dcn=${item.id}">
+           Open
+        </a>
+      `
+        : "";
 
-    list.appendChild(item);
+    const div = document.createElement("div");
+    div.classList.add("activityItem");
+
+    div.innerHTML = `
+    <div class="activityHeader">
+      <img class="profileImg" src="${avatar}" />
+      <span class="actorName">${name} ${label}</span>
+    </div>
+
+    <div class="activityBody">${body}</div>
+
+    <div class="activityTime">
+      ${new Date(item.created_at).toLocaleString()}
+      ${openBtn}
+    </div>
+  `;
+
+    list.appendChild(div);
   });
+
 
   section.append(title, list);
   container.append(section);
 }
+
 
 export async function createWorkspaceInvite({
   workspaceId,

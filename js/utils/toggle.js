@@ -16,10 +16,22 @@ export function attachSidebarToggle() {
     closeSidebar.addEventListener("click", sidebarToggle);
 
   }
-  const actionBtn = sidebar.querySelector(".actionBtn");
-  if (actionBtn) {
-    actionBtn.addEventListener("click", sidebarToggle);
-  }
+
+  //ACTION BUTTONS
+  const actionBtns = sidebar.querySelectorAll(".actionBtn");
+  actionBtns.forEach((actionBtn) => {
+    if (actionBtn) {
+      actionBtn.addEventListener("click", sidebarToggle);
+    }
+  });
+
+  //NAV BUTTONS AND LINKS
+  const navBtns = document.querySelectorAll(".navBtn");
+  navBtns.forEach((navBtn) => {
+    if(navBtn) {
+      navBtn.addEventListener("click", sidebarToggle);
+    }
+  })
   }
 
 export function toggleNotification() {

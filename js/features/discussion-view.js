@@ -4,14 +4,17 @@ import { formatDateTime } from "./workspace-admin.js";
 let currentDiscussion = null;
 let currentWorkspace = null;
 let userRole = null;
+let currentUser = null;
 
 /* ---------------------------------------------
-   GET USER ROLE
+GET USER ROLE
 --------------------------------------------- */
 async function getUserRole(workspaceId) {
   const { data: userData } = await supabase.auth.getUser();
   if (!userData?.user) return null;
-
+  
+  currentUser = userData
+  
   const { data, error } = await supabase
     .from("workspace_members")
     .select("role")
@@ -31,22 +34,132 @@ document.addEventListener("DOMContentLoaded", initDiscussionView);
 async function initDiscussionView() {
   const params = new URLSearchParams(window.location.search);
   const discussionId = params.get("dcn");
-
+  
   if (!discussionId) {
     document.getElementById("discussionViewContent").innerHTML =
-      `<p class="placeholderText">Invalid discussion link.</p>`;
+    `<p class="placeholderText">Invalid discussion link.</p>`;
     return;
   }
 
   await loadDiscussion(discussionId);
   userRole = await getUserRole(currentWorkspace.id);
-
+  
+  loadSidebar();
   renderDiscussionHeader();
   renderComments();
   attachCommentSubmitHandler();
   attachMarkDoneHandler(discussionId);
 }
 
+export function loadSidebar() {
+  const workspacePageSidebar = document.getElementById("workspacePageSidebar");
+
+  workspacePageSidebar.innerHTML = `<!--CLOSE BUTTON -->
+  <button type="button" class="menuBtn" id="closeSidebar">
+
+    <svg 
+    xmlns="http://www.w3.org/2000/svg"
+    width="22"
+    height="22"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+  stroke-width="1.7"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect
+    x="3.5"
+    y="3.5"
+    width="17"
+    height="17"
+    rx="6"
+    ry="6"
+    fill="currentColor"
+    opacity="0.06"
+  />
+  <path d="M9 9l6 6M15 9l-6 6" />
+</svg>
+</button>
+
+ <nav class="sidebarNav">
+ <!-- WORKSPACE -->
+ ${
+   userRole === "admin"
+     ? `<a href="workspace-dashboard-admin?ws=${currentWorkspace.id}" class="navBtn" data-section="index" id="dashboardLink">
+      <span class="navIcon">
+        <!-- Back  Icon -->
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M11.75 4.25L6 10L11.75 15.75"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </span>
+      <span class="navText">Workspace</span>
+    </a>`
+     : `<a href="workspace-dashboard-member?ws=${currentWorkspace.id}" class="navBtn" data-section="index" id="dashboardLink">
+      <span class="navIcon">
+        <!-- Back  Icon -->
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M11.75 4.25L6 10L11.75 15.75"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </span>
+      <span class="navText">Workspace</span>
+    </a>`
+ }
+
+    <!-- DASHBOARD -->
+    <a href="index" class="navBtn" data-section="index" id="dashboardLink">
+      <span class="navIcon">
+        <!-- Back / Dashboard Icon -->
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M11.75 4.25L6 10L11.75 15.75"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </span>
+      <span class="navText">Dashboard</span>
+    </a>
+</nav>
+`;
+
+
+document.getElementById("closeSidebar").addEventListener("click", () => {
+  workspacePageSidebar.classList.toggle("show")
+});
+}
 /* ---------------------------------------------
    LOAD DISCUSSION + COMMENTS
 --------------------------------------------- */
@@ -79,7 +192,6 @@ async function loadDiscussion(discussionId) {
     alert("Failed to load discussion.");
     return;
   }
-
   currentDiscussion = data;
   currentWorkspace = data.workspace;
 }
@@ -107,7 +219,7 @@ function renderDiscussionHeader() {
       <h2>${currentDiscussion.title}</h2>
       <div class="discussionActions">
         ${
-          isAdmin
+          isAdmin || currentDiscussion.created_by === currentUser.user.id
             ? `<button id="markDiscussionClosedBtn" class="primaryBtn btn btn-sm">
                 ${currentDiscussion.status === "closed" ? "Reopen" : "Close"}
               </button>`
@@ -215,11 +327,11 @@ function attachCommentSubmitHandler() {
 
   const isClosed = currentDiscussion.status === "closed";
 
-  if ( isClosed) {
-    btn.remove();
+    if ( isClosed) {
+      btn.remove();
     input.remove();
     return;
-   }
+  }
    
    btn.addEventListener("click", async () => {
     const note = input.value.trim();
@@ -273,6 +385,8 @@ function attachInlineReplyHandlers() {
   });
 }
 
+const err = document.createElement("p");
+err.classList.add("error");
 function openInlineReplyBox(commentId) {
   document.querySelectorAll(".inlineCommentBox").forEach((el) => el.remove());
 
@@ -281,8 +395,6 @@ function openInlineReplyBox(commentId) {
     .closest(".commentCard");
 
   if (currentDiscussion.status === "closed") {
-    const err = document.createElement("p");
-    err.classList.add("error");
     err.textContent = "You cannot comment on closed discussions.";
     card.appendChild(err);
     return;

@@ -234,7 +234,7 @@ async function attachCreateWorkspaceEvent(container) {
 
     if (error) {
       console.error(error);
-      alert("Failed to create workspace.");
+          actionMsg("Failed to create workspace!", "error");
       return;
     }
 
@@ -261,6 +261,7 @@ async function attachCreateWorkspaceEvent(container) {
         });
 
       if (memberInsertError) {
+                  actionMsg("Workspace creation was successful but an error occured", "error");
         console.error(memberInsertError);
       }
     }
@@ -269,7 +270,9 @@ async function attachCreateWorkspaceEvent(container) {
     const wsCard = createWorkspaceCardElement(newWorkspace);
 
     //RE-RENDER UI
-    container.prepend(wsCard);
+    if(container) {
+      container.prepend(wsCard);
+    }
     updateworkspaceCount();
     checkIfEmpty();
 
