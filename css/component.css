@@ -718,6 +718,7 @@ flex-direction: column;
 .activityHeader .profileImg, .discussionHeader .profileImg {
   width: 28px;
   height: 28px;
+  border: 1px solid var(--border);
   border-radius: 50%;
 }
 
