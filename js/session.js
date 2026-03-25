@@ -78,13 +78,13 @@ function userInfoUi() {
   // AVATAR
   if (profileImg) {
     profileImg.src =
-      sessionState.profile.avatar_url ||
+      sessionState.profile?.avatar_url ||
       "https://loghue.com/assets/images/default_profile.png";
   }
 
   if (profileAvatar) {
     profileAvatar.src =
-      sessionState.profile.avatar_url ||
+      sessionState.profile?.avatar_url ||
       "https://loghue.com/assets/images/default_profile.png";
   }
     if (subscriptionType && sessionState.plan) {

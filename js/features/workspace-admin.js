@@ -319,7 +319,7 @@ export function loadDiscussions(discussions, container) {
 
     const img = document.createElement("img");
     img.classList.add("profileImg");
-    img.src = discussions.profiles?.avatar_url || "/assets/images/default_profile.png";
+    img.src = discussions.profiles?.avatar_url || "https://loghue.com/assets/images/default_profile.png";
 
     const span = document.createElement("span")
     span.classList.add("actorName");

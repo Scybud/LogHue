@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Discussion | LogHue</title>
+
+    <!--CSS LINKS (same as dashboard)-->
+    <link rel="stylesheet" href="https://loghue.com/css/base.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/layout.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/dashboard.css">
+    <link rel="stylesheet" href="https://loghue.com/css/component.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/theme.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/pages.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/utilities.css" />
+
+
+    <style>
+      /* ------------------------------
+   discussion HEADER
+------------------------------ */
+.discussionHeader {
+  padding: 1.5rem;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+
+.discussionHeaderTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.discussionHeaderTop h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.discussionActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.discussionDescription {
+  margin-top: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ------------------------------
+   META INFO
+------------------------------ */
+.discussionMeta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.metaLabel {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.2rem;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  background: #ff6b3520;
+  color: #ff6b35;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.avatarGroup {
+   display: flex;
+   align-items: center;
+}
+/* ------------------------------
+   LOGS FEED
+------------------------------ */
+.discussionLogsSection {
+  margin-top: 2rem;
+}
+
+.logsFeed {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* ------------------------------
+   LOG CARD
+------------------------------ */
+.logCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.logHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.logHeader .name {
+  font-weight: 600;
+}
+
+.logHeader .timestamp {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.logContent {
+  margin: 0.5rem 0 1rem 0;
+  line-height: 1.5;
+}
+
+/* ------------------------------
+   COMMENTS (ADMIN ONLY)
+------------------------------ */
+.commentsThread {
+  margin-left: 2.5rem;
+  border-left: 2px solid var(--border);
+  padding-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.comment {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.comment .commentBody {
+  background: var(--surface-2);
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.comment .commentBody .timestamp {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  margin-top: 0.2rem;
+}
+
+/* ------------------------------
+   ADD LOG INPUT
+------------------------------ */
+.addLogContainer {
+  position: sticky;
+  bottom: 0;
+  margin-top: 2rem;
+  padding: 1rem;
+  border-radius: 10px;
+  background: var(--mainContent-bg);
+  border: 1px solid var(--border);
+}
+
+#logInput {
+  width: 100%;
+  min-height: 50px;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  resize: vertical;
+  font-family: inherit;
+}
+
+#logInput:focus {
+  outline: 2px solid #ff6b3530;
+}
+
+#submitLogBtn {
+  margin-top: var(--space-sm);
+}
+.primaryBtn {
+   width: fit-content;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius);
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+.secondaryBtn {
+     color: #fff;
+     background: none;
+     border: 1px solid var(--border);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+.primaryBtn:hover {
+  background: var(--brand);
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+.iconBtn {
+  background: transparent;
+  border: none;
+  padding: 0.4rem;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.iconBtn:hover {
+  background: var(--surface-2);
+  color: var(--text-primary);
+}
+
+.iconBtn svg {
+  width: 18px;
+  height: 18px;
+}
+
+    </style>
+  </head>
+
+  <body>
+    <!--PRELOADER-->
+    <div class="preLoaderContainer">
+      <div class="tt-wave-loader"><span></span><span></span><span></span></div>
+      <div class="label">Log<span>Hue</span></div>
+    </div>
+
+    <!--HEADER-->
+    <header class="pageHeader">
+      <div class="headerLeft">
+        <button class="menuBtn" id="toggleSidebar">
+          <span class="menuIcon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M4 6H20M4 12H20M4 18H20"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </span>
+        </button>
+
+        <h1 class="pageTitle">Discussion</h1>
+      </div>
+
+      <div class="headerRight">
+        <button id="notificationToggleBtn" title="Notifications" class="actionBtn">
+            <svg 
+            width="20" 
+            height="20" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            stroke-width="1.8" 
+            stroke-linecap="round" 
+            stroke-linejoin="round"
+            >
+            <path d="M12 22c1.1 0 2-.9 2-2H10c0 1.1.9 2 2 2z"/>
+            <path d="M18 16v-5a6 6 0 10-12 0v5l-1.5 2h15L18 16z"/>
+          </svg>
+          
+        </button>
+
+        <img src="" alt="profile Image" class="profileAvatar">
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- SIDEBAR -->
+      <div class="sidebarContainer" id="generalSidebarContainer"></div>
+
+      <!-- MAIN CONTENT -->
+      <article class="mainContent" id="discussionViewContent">
+        <div id="modalContainer"></div>
+        <div id="actionsMessage"></div>
+
+        <!--NOTIFICATIONS-->
+        <div id="notificationsContainer">
+          <h2>Notifications</h2>
+          <ul id="notificationsList">
+            <p class="placeholderText">Nothing here yet.</p>
+          </ul>
+        </div>
+
+        <!-- discussion HEADER -->
+        <section class="discussionHeader card">
+          <div class="discussionHeaderTop">
+            <h2 id="discussionTitle">discussion Title Placeholder</h2>
+
+            <div class="discussionActions">
+              <button id="markdiscussionDoneBtn" class="primaryBtn btn btn-sm">Mark as Done</button>
+              <button id="editdiscussionBtn" class="secondaryBtn btn btn-sm">Edit</button>
+            </div>
+          </div>
+
+          <div class="discussionMeta">
+            <div class="metaItem">
+              <span class="metaLabel">Assigned To:</span>
+              <div id="assignedMembers" class="avatarGroup"></div>
+            </div>
+
+            <div class="metaItem">
+              <span class="metaLabel">Status:</span>
+              <span id="discussionStatus" class="statusBadge">in_progress</span>
+            </div>
+
+            <div class="metaItem">
+              <span class="metaLabel">Created:</span>
+              <span id="discussionCreatedDate">--</span>
+            </div>
+
+            <div class="metaItem">
+              <span class="metaLabel">Due Date:</span>
+              <span id="discussionDueDate">--</span>
+            </div>
+          </div>
+
+          <p id="discussionDescription" class="discussionDescription">
+            No description provided.
+          </p>
+        </section>
+
+        <!-- LOGS FEED -->
+        <section class="discussionLogsSection">
+          <h3>Logs</h3>
+          <p class="sectionDescription">Updates from assigned members</p>
+
+          <div id="logsFeed" class="logsFeed">
+            <!-- Logs will be injected here -->
+          </div>
+
+          <!-- ADD LOG INPUT -->
+          <div id="addLogContainer" class="addLogContainer card">
+            <textarea id="logInput" class="inputField" placeholder="Write an updatehttps://loghue.com."></textarea>
+            <button id="submitLogBtn" class="primaryBtn btn btn-sm">Submit Log</button>
+          </div>
+        </section>
+
+      </article>
+    </main>
+
+    <!-- JS -->
+
+    <script type="module" src="https://loghue.com/js/session.js"></script>
+    <script type="module" src="https://loghue.com/js/utils/noAuthSessionProtect.js"></script>
+    <script type="module" src="https://loghue.com/js/app.js"></script>
+    <script type="module" src="https://loghue.com/js/features/discussion-view.js"></script>
+  </body>
+</html>
