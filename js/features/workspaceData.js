@@ -496,4 +496,6 @@ function openWorkspace(wsId, wsRole) {
 }
 
 //EXPORT PROMISE WHEN WORKSPACE IS READY
-export const workspacesReady = initWorkspaces();
+export function getWorkspaceReady() {
+  return initWorkspaces();
+}

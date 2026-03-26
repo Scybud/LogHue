@@ -1,6 +1,6 @@
 import {
   savedWorkspaceData,
-  workspacesReady,
+  getWorkspaceReady,
   createWorkspaceCardElement,
   dropdownClick,
 } from "./features/workspaceData.js";
@@ -12,30 +12,39 @@ import {
 } from "./features/personalTasks.js";
 import { sessionReady, sessionState } from "./session.js";
 
-const createdWorkspaces = savedWorkspaceData.filter(
-  (ws) => ws.role === "admin" && ws.status === "active",
-);
-const openedWorkspaces = savedWorkspaceData.filter(
-  (ws) => ws.status === "active",
-);
-const closedWorkspaces = savedWorkspaceData.filter(
-  (ws) => ws.status === "closed",
-);
 
-const createdWorkspacesCount = document.getElementById(
-  "createdWorkspacesCount",
-);
- const recentLogs = document.getElementById("recentLogs");
-const closedWorkspacesCount = document.getElementById("closedWorkspacesCount");
-const activeWorkspaceCount = document.getElementById("activeWorkspaceCount");
-dataCount(activeWorkspaceCount, openedWorkspaces);
-dataCount(createdWorkspacesCount, createdWorkspaces);
-dataCount(closedWorkspacesCount, closedWorkspaces);
+const recentLogs = document.getElementById("recentLogs");
+const upperDashboardContainer =  document.getElementById("upperDashboardContainer")
 
+
+let createdWorkspaces;
+let closedWorkspaces;
 
 export async function renderDashboard() {
+  const workspacesReady = getWorkspaceReady();
+
   await workspacesReady;
     await sessionReady;
+
+
+    const openedWorkspaces = savedWorkspaceData.filter(
+      (ws) => ws.status === "active",
+    );
+
+    const createdWorkspacesCount = document.getElementById(
+      "createdWorkspacesCount",
+    );
+
+    const closedWorkspacesCount = document.getElementById(
+      "closedWorkspacesCount",
+    );
+    const activeWorkspaceCount = document.getElementById(
+      "activeWorkspaceCount",
+    );
+    dataCount(activeWorkspaceCount, openedWorkspaces);
+    dataCount(createdWorkspacesCount, createdWorkspaces);
+    dataCount(closedWorkspacesCount, closedWorkspaces);
+
 
     const user = sessionState.user;
 
@@ -46,7 +55,7 @@ export async function renderDashboard() {
   const div = document.createElement("div");
   div.classList.add("recentContainer");
 
-  const createdWorkspaces = savedWorkspaceData.filter(
+   createdWorkspaces = savedWorkspaceData.filter(
     (ws) => ws.role === "admin" && ws.status === "active",
   );
 
@@ -54,7 +63,7 @@ export async function renderDashboard() {
     (ws) => ws.status === "active",
   );
 
-  const closedWorkspaces = savedWorkspaceData.filter(
+   closedWorkspaces = savedWorkspaceData.filter(
     (ws) => ws.status === "closed",
   );
 

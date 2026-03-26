@@ -1,6 +1,6 @@
 import {
   savedWorkspaceData,
-  workspacesReady,
+  getWorkspaceReady,
   formatDateTime,
 } from "./workspaceData.js";
 import { supabase } from "../supabase.js";
@@ -58,6 +58,8 @@ function checkIfEmpty() {
 }
 
 export async function renderHistory() {
+    const workspacesReady = getWorkspaceReady();
+  
   await workspacesReady;
 
   const historyContainer = document.querySelector("#historyContainer");

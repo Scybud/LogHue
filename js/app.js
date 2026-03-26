@@ -60,8 +60,8 @@ window.addEventListener("DOMContentLoaded", async () => {
   const saved = localStorage.getItem("consent-preferences");
   if (saved) {
     const prefs = JSON.parse(saved);
-    const actionsMessage = document.getElementById("actionsMessage");
-    if (actionsMessage) actionsMessage.innerHTML = "";
+    const infoDisplay = document.getElementById("infoDisplay");
+    if (infoDisplay) infoDisplay.innerHTML = "";
 
     if (prefs.analytics) loadAnalytics();
   }

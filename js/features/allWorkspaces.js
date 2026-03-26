@@ -1,11 +1,13 @@
 import {
   savedWorkspaceData,
-  workspacesReady,
+  getWorkspaceReady,
   dropdownClick,
 } from "./workspaceData.js";
 import {createWorkspaceCardElement} from "./workspaceData.js"
 
 async function renderAllWorkspaces() {
+  const workspacesReady = getWorkspaceReady();
+
 await workspacesReady;
   const openedWorkspaces = savedWorkspaceData.filter(
     (ws) => ws.status === "active",

@@ -143,7 +143,7 @@ export function renderExistingLogs() {
 // -------------------------------
 
 export function attachDeleteLogEvent(container, userId) {
-  if (!container && recentLogs) return;
+  if (!container) return;
 
   container.addEventListener("click", async (e) => {
       const btn = e.target.closest(".deleteBtn");
