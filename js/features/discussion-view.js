@@ -4,7 +4,7 @@ import { formatDateTime } from "./workspace-admin.js";
 let currentDiscussion = null;
 let currentWorkspace = null;
 let userRole = null;
-let currentUser = null;
+export let currentUser = null;
 
 /* ---------------------------------------------
 GET USER ROLE
@@ -34,9 +34,11 @@ document.addEventListener("DOMContentLoaded", initDiscussionView);
 async function initDiscussionView() {
   const params = new URLSearchParams(window.location.search);
   const discussionId = params.get("dcn");
-  
-  if (!discussionId) {
-    document.getElementById("discussionViewContent").innerHTML =
+  const discussionViewContent = document.getElementById(
+    "discussionViewContent",
+  );
+  if (!discussionId && discussionViewContent) {
+    discussionViewContent.innerHTML =
     `<p class="placeholderText">Invalid discussion link.</p>`;
     return;
   }

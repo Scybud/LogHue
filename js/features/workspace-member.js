@@ -6,6 +6,7 @@ import { openLogTaskModal,   openStartDiscussionModal
 
 export let currentWorkspace = null;
 export let loadedMembers = [];
+let currentUser = null;
 
 // -----------------------------
 // NAVIGATION
@@ -110,13 +111,10 @@ async function renderSection(section, workspace, container) {
   if(!container) return;
   container.innerHTML = "";
 
-  const allLogs = workspace.workspace_tasks.flatMap((task) =>
-    (task.logs || []).map((log) => ({
-      ...log,
-      task_title: task.title,
-      task_id: task.id,
-    })),
-  );
+ const { data: userData } = await supabase.auth.getUser();
+ if (!userData?.user) return null;
+
+ currentUser = userData;
 
   switch (section) {
     case "myTasks":
@@ -187,7 +185,7 @@ async function renderSection(section, workspace, container) {
         (a, b) => new Date(b.created_at) - new Date(a.created_at),
       );
 
-      loadActivities(activities || [], container);
+      loadActivities(activities || [], container, currentUser);
       break;
 
     case "discussions":
@@ -466,7 +464,7 @@ function loadMembers(members, container) {
 // -----------------------------
 // ACTIVITIES (READ‑ONLY)
 // -----------------------------
-function loadActivities(activities, container) {
+export function loadActivities(activities, container, currentUser) {
   if (!activities || activities.length === 0) {
     container.innerHTML = `<p class="placeholderText">No activity in this workspace yet.</p>`;
     return;
@@ -486,6 +484,7 @@ function loadActivities(activities, container) {
     const actor = item.actor;
     const avatar = actor?.avatar_url || "https://loghue.com/assets/default-avatar.png";
     const name = actor?.full_name || "Unknown User";
+
 
     const label =
       item.type === "task_log"
@@ -518,7 +517,7 @@ function loadActivities(activities, container) {
     div.innerHTML = `
     <div class="activityHeader">
       <img class="profileImg" src="${avatar}" />
-      <span class="actorName">${name} ${label}</span>
+      <span class="actorName">${currentUser.id === actor.id} ? You ${label}: ${name} ${label}</span>
     </div>
 
     <div class="activityBody">${body}</div>

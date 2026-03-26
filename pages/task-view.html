@@ -16,6 +16,34 @@
 
 
     <style>
+      #taskViewContent {
+        display: grid;
+        grid-template-columns: 1fr minmax(100px, 300px);
+      }
+      .activitiesContainer {
+        max-height: 600px;
+        position: sticky;
+        top: 0;
+        overflow-y: auto;
+      }
+      .reloadBtn {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: none;
+        color: var(--color);
+      }
+      @media(max-width: 600px) {
+        .activitiesContainer {
+          display: none;
+        }
+        #taskViewContent {
+          grid-template-columns: 1fr;
+        }
+      }
+      .sidebarContainer a:hover {
+        text-decoration: none;
+      }
       /* ------------------------------
    TASK HEADER
 ------------------------------ */
@@ -293,9 +321,9 @@ button:active {
       <div class="sidebarContainer" id="workspacePageSidebar"></div>
 
       <!-- MAIN CONTENT -->
+      <div id="modalContainer"></div>
+      <div id="actionsMessage"></div>
       <article class="mainContent" id="taskViewContent">
-        <div id="modalContainer"></div>
-        <div id="actionsMessage"></div>
 
         <!--NOTIFICATIONS-->
         <div id="notificationsContainer">
@@ -305,8 +333,10 @@ button:active {
           </ul>
         </div>
 
-        <!-- TASK HEADER -->
-        <section class="taskHeader card">
+        <div class="mainContainer">
+
+          <!-- TASK HEADER -->
+          <section class="taskHeader card">
           <div class="taskHeaderTop">
             <h2 id="taskTitle">Task Title Placeholder</h2>
 
@@ -347,7 +377,7 @@ button:active {
         <section class="taskLogsSection">
           <h3>Logs</h3>
           <p class="sectionDescription">Updates from assigned members</p>
-
+          
           <div id="logsFeed" class="logsFeed">
             <!-- Logs will be injected here -->
           </div>
@@ -358,7 +388,31 @@ button:active {
             <button id="submitLogBtn" class="primaryBtn btn btn-sm">Submit Log</button>
           </div>
         </section>
+      </div>
 
+      <section class="activitiesContainer" id="workspaceActivities">
+        <div class="activitiesUpperSection">
+          <p class="placeholderText">Stay updated every time.</p>
+          <button class="reloadBtn btn btn-sm" title="reload page">
+            <svg 
+  width="20" 
+  height="20" 
+  viewBox="0 0 24 24" 
+  fill="none" 
+  stroke="currentColor" 
+  stroke-width="1.8" 
+  stroke-linecap="round" 
+  stroke-linejoin="round"
+>
+  <path d="M3 12a9 9 0 0 1 15-6.7" />
+  <polyline points="18 2 18 7 13 7" />
+  <path d="M21 12a9 9 0 0 1-15 6.7" />
+  <polyline points="6 22 6 17 11 17" />
+</svg>
+          </button>
+        </div>
+
+      </section>
       </article>
     </main>
 

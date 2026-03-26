@@ -602,7 +602,7 @@ function createLogElement(log) {
 // -----------------------------
 // ACTIVITIES (READ‑ONLY)
 // -----------------------------
-function loadActivities(activities, container) {
+export function loadActivities(activities, container) {
   if (!activities || activities.length === 0) {
     container.innerHTML = `<p class="placeholderText">No activity in this workspace yet.</p>`;
     return;

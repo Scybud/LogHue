@@ -1,5 +1,5 @@
 /* CHROME, EDGE, SAFARI */
-.mainContent::-webkit-scrollbar {
+*::-webkit-scrollbar {
   width: var(--space-sm);
   height: var(--space-sm);
 }
@@ -9,14 +9,14 @@
   border-radius: var(--radius);
 }
 
-.mainContent::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   background: #393838;
   border-radius: var(--radius);
   border: 2px solid var(--card-bg);
 }
 
 .mainContent::-webkit-scrollbar-thumb:hover {
-  background: #0393d6; /* slightly brighter primary */
+  background: #555; /* slightly brighter primary */
 }
 
 header.pageHeader {
