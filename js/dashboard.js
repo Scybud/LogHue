@@ -19,9 +19,25 @@ const upperDashboardContainer =  document.getElementById("upperDashboardContaine
 
 let createdWorkspaces;
 let closedWorkspaces;
+let isLoading = false;
+
+// -------------------------------
+// Loading State
+// -------------------------------
+function setLoading(state) {
+  isLoading = state;
+
+    upperDashboardContainer?.classList.toggle("isLoading", state);
+  recentLogs?.classList.toggle("isLoading", state);
+}
 
 export async function renderDashboard() {
+  setLoading(true);
+
+    await new Promise(requestAnimationFrame);
+    
   const workspacesReady = getWorkspaceReady();
+
 
   await workspacesReady;
     await sessionReady;
@@ -41,6 +57,13 @@ export async function renderDashboard() {
     const activeWorkspaceCount = document.getElementById(
       "activeWorkspaceCount",
     );
+    createdWorkspaces = savedWorkspaceData.filter(
+      (ws) => ws.role === "admin" && ws.status === "active",
+    );
+    closedWorkspaces = savedWorkspaceData.filter(
+     (ws) => ws.status === "closed",
+   );
+
     dataCount(activeWorkspaceCount, openedWorkspaces);
     dataCount(createdWorkspacesCount, createdWorkspaces);
     dataCount(closedWorkspacesCount, closedWorkspaces);
@@ -55,17 +78,11 @@ export async function renderDashboard() {
   const div = document.createElement("div");
   div.classList.add("recentContainer");
 
-   createdWorkspaces = savedWorkspaceData.filter(
-    (ws) => ws.role === "admin" && ws.status === "active",
-  );
 
   const activeWorkspaces = savedWorkspaceData.filter(
     (ws) => ws.status === "active",
   );
 
-   closedWorkspaces = savedWorkspaceData.filter(
-    (ws) => ws.status === "closed",
-  );
 
   if (activeWorkspaces.length === 0) {
     upperDashboardContainer.innerHTML = `
@@ -126,6 +143,8 @@ export async function renderDashboard() {
   dropdownClick();
   renderRecentLogs();
   attachDeleteLogEvent(recentLogs, user.id);
+
+  setLoading(false)
 }
 
 renderDashboard();
