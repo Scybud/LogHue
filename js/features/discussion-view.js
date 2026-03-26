@@ -1,5 +1,5 @@
 import { supabase } from "../supabase.js";
-import { formatDateTime } from "./workspace-admin.js";
+import { formatDateTime, loadActivities } from "./workspace-admin.js";
 
 let currentDiscussion = null;
 let currentWorkspace = null;
@@ -26,6 +26,65 @@ async function getUserRole(workspaceId) {
   return { userId: userData.user.id, role: data.role };
 }
 
+
+const workspaceActivities = document.getElementById("workspaceActivities");
+
+async function loadWorkspaceActivities() {
+  const { data: logs, error } = await supabase
+    .from("workspace_task_logs")
+    .select(
+      `
+    *,
+    profiles:created_by (full_name, avatar_url),
+    workspace_tasks:task_id (title)
+  `,
+    )
+    .eq("workspace_id", currentWorkspace.id)
+    .order("created_at", { ascending: false });
+
+  const { data: actDcns, actDcnsError } = await supabase
+    .from("discussions")
+    .select(
+      `
+    *,
+    profiles:created_by (full_name, avatar_url)
+  `,
+    )
+    .eq("workspace_id", currentWorkspace.id)
+    .order("created_at", { ascending: false });
+
+  const normalizedLogs = (logs || []).map((log) => ({
+    id: log.id,
+    type: "task_log",
+    actor: log.profiles,
+    title: log.workspace_tasks?.title,
+    note: log.log_note,
+    status: log.task_status,
+    created_at: log.created_at,
+  }));
+
+  const normalizedDiscussions = (actDcns || []).map((d) => ({
+    id: d.id,
+    type: "discussion",
+    actor: d.profiles,
+    title: d.title,
+    note: d.content,
+    status: null,
+    created_at: d.created_at,
+  }));
+
+  const activities = [...normalizedLogs, ...normalizedDiscussions].sort(
+    (a, b) => new Date(b.created_at) - new Date(a.created_at),
+  );
+
+  loadActivities(activities, workspaceActivities);
+}
+
+const reloadBtn = document.querySelector(".reloadBtn");
+reloadBtn.addEventListener("click", () => {
+  window.location.reload();
+});
+
 /* ---------------------------------------------
    INIT
 --------------------------------------------- */
@@ -49,6 +108,7 @@ async function initDiscussionView() {
   loadSidebar();
   renderDiscussionHeader();
   renderComments();
+  loadWorkspaceActivities();
   attachCommentSubmitHandler();
   attachMarkDoneHandler(discussionId);
 }

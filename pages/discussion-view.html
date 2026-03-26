@@ -6,16 +6,44 @@
     <title>Discussion | LogHue</title>
 
     <!--CSS LINKS (same as dashboard)-->
-    <link rel="stylesheet" href="https://loghue.com/css/base.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/layout.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/dashboard.css">
-    <link rel="stylesheet" href="https://loghue.com/css/component.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/theme.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/pages.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/utilities.css" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layout.css" />
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/component.css" />
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/pages.css" />
+    <link rel="stylesheet" href="../css/utilities.css" />
 
 
     <style>
+       #discussionViewContent {
+        display: grid;
+        grid-template-columns: 1fr minmax(250px, 300px);
+      }
+      .activitiesContainer {
+        max-height: 600px;
+        position: sticky;
+        top: 0;
+        overflow-y: auto;
+      }
+      .reloadBtn {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: none;
+        color: var(--color);
+      }
+      @media(max-width: 700px) {
+        .activitiesContainer {
+          display: none;
+        }
+        #discussionViewContent {
+          grid-template-columns: 1fr;
+        }
+      }
+      .sidebarContainer a:hover {
+        text-decoration: none;
+      }
       /* ------------------------------
    discussion HEADER
 ------------------------------ */
@@ -292,10 +320,10 @@ button:active {
       <!-- SIDEBAR -->
       <div class="sidebarContainer" id="workspacePageSidebar"></div>
 
+      <div id="modalContainer"></div>
+      <div id="actionsMessage"></div>
       <!-- MAIN CONTENT -->
       <article class="mainContent" id="discussionViewContent">
-        <div id="modalContainer"></div>
-        <div id="actionsMessage"></div>
 
         <!--NOTIFICATIONS-->
         <div id="notificationsContainer">
@@ -304,6 +332,8 @@ button:active {
             <p class="placeholderText">Nothing here yet.</p>
           </ul>
         </div>
+
+                <div class="mainContainer">
 
         <!-- discussion HEADER -->
         <section class="dcnHeader card">
@@ -354,19 +384,43 @@ button:active {
 
           <!-- ADD Commment INPUT -->
           <div id="addCommentContainer" class="addcommentContainer card">
-            <textarea id="commentInput" class="inputField" placeholder="Write a commenthttps://loghue.com."></textarea>
+            <textarea id="commentInput" class="inputField" placeholder="Write a comment..."></textarea>
             <button id="submitCommentBtn" class="primaryBtn btn btn-sm">Submit Comment</button>
           </div>
         </section>
+                </div>
 
+         <section class="activitiesContainer" id="workspaceActivities">
+        <div class="activitiesUpperSection">
+          <p class="placeholderText">Stay updated every time.</p>
+          <button class="reloadBtn btn btn-sm" title="reload page">
+            <svg 
+  width="20" 
+  height="20" 
+  viewBox="0 0 24 24" 
+  fill="none" 
+  stroke="currentColor" 
+  stroke-width="1.8" 
+  stroke-linecap="round" 
+  stroke-linejoin="round"
+>
+  <path d="M3 12a9 9 0 0 1 15-6.7" />
+  <polyline points="18 2 18 7 13 7" />
+  <path d="M21 12a9 9 0 0 1-15 6.7" />
+  <polyline points="6 22 6 17 11 17" />
+</svg>
+          </button>
+        </div>
+
+      </section>
       </article>
     </main>
 
     <!-- JS -->
 
-    <script type="module" src="https://loghue.com/js/session.js"></script>
-    <script type="module" src="https://loghue.com/js/utils/noAuthSessionProtect.js"></script>
-    <script type="module" src="https://loghue.com/js/app.js"></script>
-    <script type="module" src="https://loghue.com/js/features/discussion-view.js"></script>
+    <script type="module" src="../js/session.js"></script>
+    <script type="module" src="../js/utils/noAuthSessionProtect.js"></script>
+    <script type="module" src="../js/app.js"></script>
+    <script type="module" src="../js/features/discussion-view.js"></script>
   </body>
 </html>
