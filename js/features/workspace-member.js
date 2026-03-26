@@ -517,7 +517,7 @@ export function loadActivities(activities, container, currentUser) {
     div.innerHTML = `
     <div class="activityHeader">
       <img class="profileImg" src="${avatar}" />
-      <span class="actorName">${currentUser.id === actor.id} ? You ${label}: ${name} ${label}</span>
+      <span class="actorName">${name} ${label}</span>
     </div>
 
     <div class="activityBody">${body}</div>
