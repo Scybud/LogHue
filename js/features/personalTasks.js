@@ -152,16 +152,15 @@ export function attachDeleteLogEvent(container, userId) {
       e.preventDefault();
       e.stopPropagation();
 
-      if (!confirm("Delete this task log?")) return;
   confirmAction("Delete this task log?", [
     { label: "Cancel", type: "cancel" },
-    { label: "Delete", type: "confirm", onClick: () => performLogDelete(container, userId) },
+    { label: "Delete", type: "confirm", onClick: () => performLogDelete(btn, userId) },
   ]);
 
     });
 }
 
-async function performLogDelete(container, userId) {
+async function performLogDelete(btn, userId) {
     const logToDelete = btn.closest(".taskContainer");
       const id = logToDelete.dataset.id;
 
