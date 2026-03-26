@@ -11,6 +11,8 @@ import {
   savedLogDetails,
   renderExistingLogs,
 } from "../features/personalTasks.js";
+import { actionMsg } from "./modals.js";
+import { renderRecentLogs } from "../dashboard.js";
 
 export function attachCreateTaskEvent(workspaceId) {
   const createTaskBtn = document.getElementById("createTaskBtn");
@@ -39,7 +41,7 @@ export function attachCreateTaskEvent(workspaceId) {
     const assignedToValue = assignedTo.value;
 
     if (!taskTitle || !taskDescription) {
-      alert("Input fields must not be empty");
+          actionMsg(" Title and description required!", "error");
       return;
     }
 
@@ -65,7 +67,7 @@ export function attachCreateTaskEvent(workspaceId) {
 
     if (error) {
       console.error(error);
-      alert("Failed to create task.");
+         actionMsg("Failed to create task!", "error");
       return;
     }
 
@@ -137,7 +139,7 @@ export async function attachAddMemberEvents(workspaceId) {
     const email = document.getElementById("invite-email-input").value;
     const role = document.getElementById("invite-role-email").value;
 
-    if (!email) return alert("Please enter an email");
+    if (!email) return actionMsg("Please enter an email.", "error");
 
     const invite = await createWorkspaceInvite({
       workspaceId,
@@ -146,7 +148,8 @@ export async function attachAddMemberEvents(workspaceId) {
     });
 
     if (!invite?.token) {
-      console.error("Invite creation failed - no token returned");
+          actionMsg("Invite creation failed. No token returned.", "error");
+      console.error("Invite creation failed. No token returned");
       return;
     }
 
@@ -165,11 +168,12 @@ export async function attachAddMemberEvents(workspaceId) {
 
     if (error) {
       console.error(error);
-      alert("Failed to send invite");
+                actionMsg("Failed to send invite.", "error");
       return;
     }
 
-    alert("Invite sent!");
+              actionMsg("Invite sent!", "success");
+
   };
 
   // GENERATE QR INVITE
@@ -178,7 +182,7 @@ export async function attachAddMemberEvents(workspaceId) {
 
     const invite = await createWorkspaceInvite({ workspaceId, role });
     if (!invite || !invite.token) {
-      alert("Error: Invite token was not generated.");
+                actionMsg("Error: Invite token was not generated.", "error");
       return;
     }
 
@@ -203,10 +207,15 @@ export async function attachAddMemberEvents(workspaceId) {
 
     try {
       await navigator.clipboard.writeText(link);
-      alert("Invite link copied!");
+                actionMsg(
+                  "Invite link copied!",
+                  "success",
+                );
+
     } catch (err) {
       console.error("Copy failed", err);
-      alert("Failed to copy link");
+                actionMsg("Failed to copy link.", "error");
+
     }
   };
 }
@@ -234,8 +243,8 @@ export async function attachCreateLogEvent() {
     const noteValue = noteEl.value.trim();
 
     if (!taskValue || !timeValue || !noteValue) {
-      alert("Input field must not be empty");
-      return;
+ actionMsg("Input fields must not be empty.", "error");
+       return;
     }
 
     // Insert into Supabase FIRST (strict UI)
@@ -252,8 +261,8 @@ export async function attachCreateLogEvent() {
 
     if (error) {
       console.error(error);
-      alert("Failed to create task.");
-      return;
+ actionMsg("Failed to create log.", "error");
+       return;
     }
 
     // Update in-memory state
@@ -261,6 +270,7 @@ export async function attachCreateLogEvent() {
 
     // Re-render UI
     renderExistingLogs();
+    renderRecentLogs();
     updateTaskCount();
     checkIfEmpty();
 
@@ -271,6 +281,8 @@ export async function attachCreateLogEvent() {
 
     // Close modal
     closeModal();
+
+     actionMsg("Log created successfully.", "success");
   });
 }
 

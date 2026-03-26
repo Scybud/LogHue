@@ -2,6 +2,7 @@ import { dataCount } from "../utils.js";
 import { supabase } from "../supabase.js";
 import { sessionState, sessionReady } from "../session.js";
 import { openLogPersonalTaskModal } from "../utils/modals.js";
+import { confirmAction } from "../utils/modals.js";
 
 let personalCreatedLogs = null;
 let loggedTasksCount = null;
@@ -25,6 +26,7 @@ export async function initPersonalTasks() {
   const user = sessionState.user;
 
   personalCreatedLogs = document.getElementById("personalCreatedLogs");
+
   loggedTasksCount = document.getElementById("loggedTasksCount");
 
   setLoading(true);
@@ -48,7 +50,7 @@ export async function initPersonalTasks() {
   renderExistingLogs();
   updateTaskCount();
   checkIfEmpty();
-  attachDeleteLogEvent(user.id);
+  attachDeleteLogEvent(personalCreatedLogs, user.id);
   openLogPersonalTaskModal();
 }
 
@@ -139,45 +141,53 @@ export function renderExistingLogs() {
 // -------------------------------
 // Delete Log
 // -------------------------------
-function attachDeleteLogEvent(userId) {
-  if (!personalCreatedLogs) return;
 
-  personalCreatedLogs.addEventListener("click", async (e) => {
-    const btn = e.target.closest(".deleteBtn");
-    if (!btn) return;
+export function attachDeleteLogEvent(container, userId) {
+  if (!container && recentLogs) return;
 
-    e.preventDefault();
-    e.stopPropagation();
+  container.addEventListener("click", async (e) => {
+      const btn = e.target.closest(".deleteBtn");
+      if (!btn) return;
 
-    if (!confirm("Delete this task log?")) return;
+      e.preventDefault();
+      e.stopPropagation();
 
-    const container = btn.closest(".taskContainer");
-    const id = container.dataset.id;
+      if (!confirm("Delete this task log?")) return;
+  confirmAction("Delete this task log?", [
+    { label: "Cancel", type: "cancel" },
+    { label: "Delete", type: "confirm", onClick: () => performLogDelete(container, userId) },
+  ]);
 
-    const { error } = await supabase
-      .from("personal_tasks")
-      .delete()
-      .eq("id", id)
-      .eq("user_id", userId);
+    });
+}
 
-    if (error) {
-      console.error(error);
-      alert(error.message);
-      return;
-    }
+async function performLogDelete(container, userId) {
+    const logToDelete = btn.closest(".taskContainer");
+      const id = logToDelete.dataset.id;
 
-    // Remove from memory
-    savedLogDetails = savedLogDetails.filter(
-      (log) => String(log.id) !== String(id),
-    );
+      const { error } = await supabase
+        .from("personal_tasks")
+        .delete()
+        .eq("id", id)
+        .eq("user_id", userId);
 
-    // Animate + remove
-    container.classList.add("removing");
+      if (error) {
+        console.error(error);
+        alert(error.message);
+        return;
+      }
 
-    setTimeout(() => {
-      container.remove();
-      updateTaskCount();
-      checkIfEmpty();
-    }, 550);
-  });
+      // Remove from memory
+      savedLogDetails = savedLogDetails.filter(
+        (log) => String(log.id) !== String(id),
+      );
+
+      // Animate + remove
+      logToDelete.classList.add("removing");
+
+      setTimeout(() => {
+        logToDelete.remove();
+        updateTaskCount();
+        checkIfEmpty();
+      }, 550);
 }

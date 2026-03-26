@@ -5,7 +5,12 @@ import {
   dropdownClick,
 } from "./features/workspaceData.js";
 import { dataCount } from "./utils.js";
-
+import {
+  savedLogDetails,
+  createLogElement,
+  attachDeleteLogEvent,
+} from "./features/personalTasks.js";
+import { sessionReady, sessionState } from "./session.js";
 
 const createdWorkspaces = savedWorkspaceData.filter(
   (ws) => ws.role === "admin" && ws.status === "active",
@@ -20,36 +25,41 @@ const closedWorkspaces = savedWorkspaceData.filter(
 const createdWorkspacesCount = document.getElementById(
   "createdWorkspacesCount",
 );
+ const recentLogs = document.getElementById("recentLogs");
 const closedWorkspacesCount = document.getElementById("closedWorkspacesCount");
 const activeWorkspaceCount = document.getElementById("activeWorkspaceCount");
 dataCount(activeWorkspaceCount, openedWorkspaces);
 dataCount(createdWorkspacesCount, createdWorkspaces);
 dataCount(closedWorkspacesCount, closedWorkspaces);
 
+
 export async function renderDashboard() {
-await workspacesReady;
+  await workspacesReady;
+    await sessionReady;
 
-   if (!upperDashboardContainer) return;
-  
-    upperDashboardContainer.innerHTML = "";
+    const user = sessionState.user;
 
-    const div = document.createElement("div");
-    div.classList.add("recentContainer");
-  
-    const createdWorkspaces = savedWorkspaceData.filter(
-      (ws) => ws.role === "admin" && ws.status === "active",
-    );
-  
-     const activeWorkspaces = savedWorkspaceData.filter(
-      (ws) => ws.status === "active",
-    );
-  
-    const closedWorkspaces = savedWorkspaceData.filter(
-      (ws) => ws.status === "closed",
-    );
-  
-    if(activeWorkspaces.length === 0) {
-      upperDashboardContainer.innerHTML = `
+  if (!upperDashboardContainer) return;
+
+  upperDashboardContainer.innerHTML = "";
+
+  const div = document.createElement("div");
+  div.classList.add("recentContainer");
+
+  const createdWorkspaces = savedWorkspaceData.filter(
+    (ws) => ws.role === "admin" && ws.status === "active",
+  );
+
+  const activeWorkspaces = savedWorkspaceData.filter(
+    (ws) => ws.status === "active",
+  );
+
+  const closedWorkspaces = savedWorkspaceData.filter(
+    (ws) => ws.status === "closed",
+  );
+
+  if (activeWorkspaces.length === 0) {
+    upperDashboardContainer.innerHTML = `
      
  <svg
     class="emptyStateImg"
@@ -92,19 +102,41 @@ await workspacesReady;
     You don't have any active workspaces.
   </text>
 </svg>
-      `
-    }
-    const recentWorkspaces = activeWorkspaces
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-      .slice(0, 2);
-  
-    recentWorkspaces.forEach((wsData) => {
-      const wsCard = createWorkspaceCardElement(wsData);
-      div.append(wsCard);
-    });
-    upperDashboardContainer.prepend(div);
+      `;
+  }
+  const recentWorkspaces = activeWorkspaces
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .slice(0, 2);
 
-    dropdownClick();
+  recentWorkspaces.forEach((wsData) => {
+    const wsCard = createWorkspaceCardElement(wsData);
+    div.append(wsCard);
+  });
+  upperDashboardContainer.prepend(div);
+
+  dropdownClick();
+  renderRecentLogs();
+  attachDeleteLogEvent(recentLogs, user.id);
 }
 
 renderDashboard();
+
+export function renderRecentLogs() {
+  if (!recentLogs) return;
+
+  recentLogs.innerHTML = "";
+  recentLogs.classList.add("reordering");
+
+  const allRecents = savedLogDetails.slice(0, 5);
+
+  allRecents.forEach((log) => {
+    const el = createLogElement(log);
+    recentLogs.append(el);
+
+    requestAnimationFrame(() => el.classList.add("show"));
+  });
+
+  setTimeout(() => {
+    recentLogs.classList.remove("reordering");
+  }, 300);
+}
