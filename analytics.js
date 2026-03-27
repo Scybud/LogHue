@@ -22,13 +22,13 @@ export function loadAnalytics() {
 }
 
 export function handleConcentEvents() {
-   const actionsMessage = document.getElementById("actionsMessage");
+const consentBanner = document.getElementById("consent-banner");
 
-  // Banner buttons (now guaranteed to exist)
-  const acceptBtn = document.getElementById("accept-all");
-  const rejectBtn = document.getElementById("reject-all");
-  const customizeBtn = document.getElementById("customize");
-  const customizeTracking = document.querySelector(".customize-tracking");
+// Banner buttons (now guaranteed to exist)
+const acceptBtn = document.getElementById("accept-all");
+const rejectBtn = document.getElementById("reject-all");
+const customizeBtn = document.getElementById("customize");
+const customizeTracking = document.querySelector(".customize-tracking");
   
   //Customize for settings page
   if (customizeTracking) {
@@ -37,26 +37,26 @@ export function handleConcentEvents() {
         "https://loghue.com/components/modals/cookies-customize",
         "modalContainer",
       );
-  
+      
       const analyticsToggle = document.getElementById("toggle-analytics");
       const marketingToggle = document.getElementById("toggle-marketing");
       const closeBtn = document.getElementById("close-modal");
       const saveBtn = document.getElementById("save-preferences");
-  
+      
       closeBtn.addEventListener("click", () => closeConsentModal());
-  
+      
       saveBtn.addEventListener("click", () => {
         const prefs = {
           analytics: analyticsToggle.checked,
           marketing: marketingToggle.checked,
         };
-  
+        
         localStorage.setItem("consent-preferences", JSON.stringify(prefs));
-  
+        
         if (prefs.analytics) loadAnalytics();
-  
+        
         closeConsentModal();
-        actionsMessage.innerHTML = "";
+        if (consentBanner) consentBanner.remove();
       });
     });
   }
@@ -69,7 +69,7 @@ export function handleConcentEvents() {
     }));
 
     loadAnalytics();
-    actionsMessage.innerHTML = "";
+        if (consentBanner) consentBanner.remove();
   });
 
   // Reject All
@@ -80,7 +80,7 @@ export function handleConcentEvents() {
       marketing: false
     }));
 
-    actionsMessage.innerHTML = "";
+        if (consentBanner) consentBanner.remove();
   });
 
     // Customize
@@ -108,7 +108,7 @@ export function handleConcentEvents() {
         if (prefs.analytics) loadAnalytics();
 
         closeConsentModal();
-        actionsMessage.innerHTML = "";
+        if (consentBanner) consentBanner.remove();
       });
     });
 }

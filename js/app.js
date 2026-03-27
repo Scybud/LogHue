@@ -57,11 +57,12 @@ window.addEventListener("DOMContentLoaded", async () => {
   initSession();
 
   // Analytics
+  await loadComponent("https://loghue.com/components/modals/cookies-banner", "infoDisplay");
   const saved = localStorage.getItem("consent-preferences");
   if (saved) {
     const prefs = JSON.parse(saved);
-    const infoDisplay = document.getElementById("infoDisplay");
-    if (infoDisplay) infoDisplay.innerHTML = "";
+    const consentBanner = document.getElementById("consent-banner");
+    if (consentBanner) consentBanner.remove();
 
     if (prefs.analytics) loadAnalytics();
   }

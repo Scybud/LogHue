@@ -157,6 +157,50 @@ export function renderRecentLogs() {
 
   const allRecents = savedLogDetails.slice(0, 5);
 
+  if (allRecents.length === 0) {
+    recentLogs.innerHTML = `
+ <svg
+  class="emptyStateImg"
+  viewBox="0 0 220 160"
+  fill="none"
+  role="img"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+>
+
+  <!-- Background card -->
+  <rect x="20" y="32" width="180" height="90" rx="10" fill="var(--card-bg)" />
+
+  <!-- Log lines -->
+  <rect x="36" y="50" width="120" height="8" rx="4" fill="#E0E0E6" />
+  <rect x="36" y="66" width="140" height="8" rx="4" fill="#E8E8EE" />
+  <rect x="36" y="82" width="110" height="8" rx="4" fill="#E8E8EE" />
+  <rect x="36" y="98" width="90" height="8" rx="4" fill="#E8E8EE" />
+
+  <!-- Magnifying glass -->
+  <circle cx="160" cy="88" r="16" stroke="#D0D0D8" stroke-width="3" />
+  <line x1="170" y1="98" x2="178" y2="106" stroke="#D0D0D8" stroke-width="3" stroke-linecap="round" />
+
+  <!-- Decorative circles -->
+  <circle cx="32" cy="28" r="4" fill="#FFE4D8" />
+  <circle cx="188" cy="122" r="5" fill="#FFE4D8" />
+  <circle cx="40" cy="120" r="3" fill="#FFE4D8" />
+
+  <!-- Hint text -->
+  <text
+    x="110"
+    y="138"
+    text-anchor="middle"
+    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
+    font-size="9"
+    fill="#8A8A99"
+  >
+    No recent logs available yet.
+  </text>
+
+</svg>
+      `;
+
   allRecents.forEach((log) => {
     const el = createLogElement(log);
     recentLogs.append(el);
@@ -167,4 +211,5 @@ export function renderRecentLogs() {
   setTimeout(() => {
     recentLogs.classList.remove("reordering");
   }, 300);
+}
 }
