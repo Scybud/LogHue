@@ -13,6 +13,7 @@ import {
 } from "../features/personalTasks.js";
 import { actionMsg } from "./modals.js";
 import { renderRecentLogs } from "../dashboard.js";
+import { sessionState } from "../session.js";
 
 export function attachCreateTaskEvent(workspaceId) {
   const createTaskBtn = document.getElementById("createTaskBtn");
@@ -326,7 +327,7 @@ export async function insertTaskLogUpdate(supabase, workspaceId) {
   let note = document.getElementById("taskLogUpdateNote").value;
  
   if(!note) {
-alert("You must add a note about what you finished");
+alert("Please add a note about what you finished");
    return;
   } 
 

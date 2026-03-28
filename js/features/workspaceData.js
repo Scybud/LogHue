@@ -123,7 +123,7 @@ export async function initWorkspaces() {
 
   updateworkspaceCount();
   checkIfEmpty();
-  attachCreateWorkspaceEvent(upperDashboardContainer);
+  attachCreateWorkspaceEvent(upperDashboardContainer, createdWorkspaces);
   attachOpenWorkspaceClickEvent();
 }
 
@@ -203,7 +203,7 @@ export function formatDateTime(timestamp) {
   });
 }
 
-async function attachCreateWorkspaceEvent(container) {
+async function attachCreateWorkspaceEvent(container, workspaces) {
   if (!createWorkspaceBtn) return;
 
   if (createWorkspaceBtn.__listenerAttached) return;
@@ -212,12 +212,24 @@ async function attachCreateWorkspaceEvent(container) {
   //When log task button is clicked to create new log
   createWorkspaceBtn.addEventListener("click", async (e) => {
     e.preventDefault();
-
     const workspaceNameValue = workspaceNameEl.value.trim();
     const workspaceDescriptionValue = workspaceDescriptionEl.value.trim();
-
+    
     const user = sessionState.user;
     if (!user) return alert("You must be logged in.");
+    
+    if(!workspaceNameValue || !workspaceDescriptionValue) {
+      actionMsg(
+        "All field must not be empty",
+        "error",
+      );
+      return;
+    }
+
+        if(workspaces.length >= sessionState.plan.max_workspaces ) {
+                    actionMsg("You have exceeded the limit for workspace creation on your current plan. Subscribe to a new plan to create more workspaces!", "error");
+                    return;
+        }
 
     //DEFINE DATA CONTENT
     const workspaceData = {

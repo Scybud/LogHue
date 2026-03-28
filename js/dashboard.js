@@ -158,7 +158,7 @@ export function renderRecentLogs() {
   const allRecents = savedLogDetails.slice(0, 5);
 
   if (allRecents.length === 0) {
-    recentLogs.innerHTML = `
+   return recentLogs.innerHTML = `
  <svg
   class="emptyStateImg"
   viewBox="0 0 220 160"
@@ -201,6 +201,7 @@ export function renderRecentLogs() {
 </svg>
       `;
 
+    }
   allRecents.forEach((log) => {
     const el = createLogElement(log);
     recentLogs.append(el);
@@ -211,5 +212,4 @@ export function renderRecentLogs() {
   setTimeout(() => {
     recentLogs.classList.remove("reordering");
   }, 300);
-}
 }

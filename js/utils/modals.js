@@ -212,13 +212,24 @@ export async function actionMsg(message, typeClass) {
   );
 
   const msg = document.querySelector(".modalMessage");
-const actionsMessage = document.getElementById("actionsMessage");
+  const actionsMessage = document.getElementById("actionsMessage");
 
+  actionsMessage.classList.remove("success", "error", "warning", "info");
+
+  actionsMessage.classList.add(typeClass);
+
+ actionsMessage.classList.remove("slideIn");
+ void actionsMessage.offsetWidth; // <-- reflow trick
+ actionsMessage.classList.add("slideIn");
+ 
   msg.textContent = message;
-actionsMessage.classList.add("slideIn", typeClass)
 
-setTimeout(() => {
-actionsMessage.classList.remove("slideIn");
+  if (actionsMessage._timeout) {
+    clearTimeout(actionsMessage._timeout);
+  }
 
-}, 5000)
+  // Set new timeout
+  actionsMessage._timeout = setTimeout(() => {
+    actionsMessage.classList.remove("slideIn");
+  }, 5000);
 }
