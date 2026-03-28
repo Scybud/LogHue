@@ -175,7 +175,7 @@ function checkIfEmpty() {
   <!-- Hint text -->
   <text
     x="110"
-    y="160"
+    y="130"
     text-anchor="middle"
     font-family="system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
     font-size="9"

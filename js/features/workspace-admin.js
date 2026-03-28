@@ -3,6 +3,7 @@ import { openCreateTaskModal, openAddMemeberModal } from "./../utils/modals.js";
 import { supabase } from "../supabase.js";
 import { loadComponent, closeModal } from "../ui.js";
 import { openStartDiscussionModal } from "../utils/modals.js";
+import { sessionState } from "../session.js";
 
 export let currentWorkspace = null;
 export let loadedMembers = [];
@@ -603,11 +604,15 @@ function createLogElement(log) {
 // ACTIVITIES (READ‑ONLY)
 // -----------------------------
 export function loadActivities(activities, container) {
+  if(sessionState.plan.name === "free") {
+    container.innerHTML = `<p class="placeholderText">Workspace activities overview is not available on your current plan. <a href="https://loghue.com/pricing" target="_blank" rel="noopener">Upgrade</a> to see what is happening in your workspace at a glance.</p>`;
+    return;
+  }
+  console.log("here")
   if (!activities || activities.length === 0) {
     container.innerHTML = `<p class="placeholderText">No activity in this workspace yet.</p>`;
     return;
   }
-
   const section = document.createElement("section");
   section.classList.add("section");
 

@@ -135,6 +135,17 @@ export async function attachAddMemberEvents(workspaceId) {
     qrSection.style.display = "block";
   };
 
+  //GET WORKSPACE MEMBER COUNT
+   const { count, error } = await supabase
+    .from("workspace_members")
+    .select("*", { count: "exact", head: true })
+    .eq("workspace_id", workspaceId);
+
+  if (error) {
+    console.error(error);
+    return null;
+  }
+
   // SEND EMAIL INVITE
   document.getElementById("send-email-invite-btn").onclick = async () => {
     const email = document.getElementById("invite-email-input").value;
@@ -142,6 +153,13 @@ export async function attachAddMemberEvents(workspaceId) {
 
     if (!email) return actionMsg("Please enter an email.", "error");
 
+    if(count >= sessionState.plan.max_members) {
+      actionMsg(
+        "You have exceeded the limit for adding members to this workspace on your current plan. Upgrade to a new plan to add more members!",
+        "error",
+      );
+return
+    }
     const invite = await createWorkspaceInvite({
       workspaceId,
       role,
