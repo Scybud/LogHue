@@ -87,11 +87,26 @@
       .eq("accepted", false)
       .maybeSingle();
 
-    if (fetchError || !invite) {
-      status.textContent = "This invite is invalid or has already been used.";
+      if (fetchError) {
+  console.error(fetchError);
+  status.textContent = "Something went wrong while loading this invite.";
+  status.className = "error";
+  return;
+}
+
+if (!invite) {
+  status.textContent = "This invite is no longer valid. Please request a new one.";
+  status.className = "error";
+  return;
+}
+
+
+    //CHECK NUMBER OF ACCEPTED INVITE 
+    if(invite.accepted_count >= invite.max_invite_count) {
+      status.textContent = "This invite link has reached its maximum number of uses (5). Please request a new one.";
       status.className = "error";
-      return;
-    }
+return;
+    } 
 
     // 3. Add user to workspace
     const { error: memberError } = await supabase
@@ -104,16 +119,31 @@
 
     if (memberError) {
       console.error("Member Error:", memberError);
-      status.textContent = "You are already a member or there was a permission error.";
+      status.textContent = "You are already a member of this workspace or there was a permission error.";
       status.className = "error";
       return;
     }
 
+    //RECALCULATE INVITE COUNT
+    const currentCount = invite.accepted_count ?? 0;
+const newCount = currentCount + 1;
+
+
     // 4. Mark invite used
-    await supabase
-      .from("workspace_invites")
-      .update({ accepted: true })
-      .eq("id", invite.id);
+    const isFullyUsed = newCount >= invite.max_invite_count;
+
+const { data, error } = await supabase
+  .from("workspace_invites")
+  .update({
+    accepted_count: newCount,
+    accepted: isFullyUsed
+  })
+  .eq("id", invite.id);
+
+
+if(error) {
+  console.log("error")
+}
 
     status.textContent = "Success! Redirecting...";
     status.className = "success";
@@ -125,8 +155,8 @@
     window.location.href = `/workspace-dashboard-member?ws=${invite.workspace_id}`;
   }
 }, 1500);
-  }
 
+  }
   // --- EXECUTION ---
   const token = getUrlToken();
   acceptInvite(token);

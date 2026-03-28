@@ -125,10 +125,7 @@ header.pageHeader::-webkit-scrollbar-thumb:hover {
   font-weight: 900;
   background: var(--active);
 }
-.active svg {
-  fill: var(--color);
-  stroke: var(--bg);
-}
+
 #logoutBtn {
   background: none;
   border: none;
