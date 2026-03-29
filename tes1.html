@@ -5,35 +5,256 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Document</title>
    <link rel="stylesheet" href="css/base.css">
+
+   <style>
+:root {
+  --border: #e5e7eb;
+  --border-light: #f3f4f6;
+
+  --text: #fdfeff;
+  --text-muted: #6b7280;
+
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --neutral: #9ca3af;
+
+  --bg-hover: #201f1f;
+}
+
+/* Container */
+.tableContainer {
+  overflow: auto;
+  max-width: 100%;
+  margin: 20px 5px;
+}
+
+/* Table */
+.inviteTable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 14px;
+  color: var(--text);
+}
+
+/* Header */
+.inviteTable thead th {
+  text-align: left;
+  padding: 12px 0;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Rows */
+.inviteTable tbody tr {
+  transition: background 0.15s ease;
+}
+
+.inviteTable tbody tr:hover {
+  background: var(--bg-hover);
+}
+
+/* Cells */
+.inviteTable tbody td {
+  padding: 12px 6px 12px 0;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: middle;
+}
+
+/* URL Cell */
+.urlCell {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.urlCell:hover {
+  overflow-x: auto;
+}
+
+/* URL Wrapper */
+.urlWrapper {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.urlText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Copy Button */
+.copyBtn {
+   color: #484848;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.6;
+  display: flex;
+  align-items: center;
+}
+
+.copyBtn:hover {
+  opacity: 1;
+}
+
+/* Status Colors */
+.status {
+  font-weight: 600;
+}
+
+.status.active {
+  color: var(--success);
+}
+
+.status.used {
+  color: var(--warning);
+}
+
+.status.full {
+  color: var(--danger);
+}
+
+/* Actions */
+.actionBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--danger);
+  font-weight: 600;
+  opacity: 0.7;
+  padding: 5px;
+  border-radius: var(--radius);
+  border: 1px solid #484848;
+}
+
+.actionBtn:hover {
+  opacity: 1;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .inviteTable,
+  thead,
+  tbody,
+  tr,
+  th,
+  td {
+    display: block;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tr {
+    margin-bottom: 12px;
+    border: 1px solid var(--border-light);
+    padding: 12px;
+    border-radius: 6px;
+  }
+
+  td {
+    padding: 8px 0;
+    border-bottom: none;
+  }
+
+  td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+    color: var(--text-muted);
+  }
+}
+
+   </style>
 </head>
 <body>
-   <table>
-      <thead>
-         <tr>
-            <th>Invite Method</th>
-            <th>Invite Target</th>
-            <th>Created</th>
-            <th>Uses</th>
-            <th>Status</th>
-            <th>Actions</th>
-         </tr>
-      </thead>
+   <main class="tableContainer">
 
-      <tbody id="invite-body">
+  <table class="inviteTable">
+    <thead>
+      <tr>
+        <th>Invite Method</th>
+        <th>Invite Target</th>
+        <th>Created</th>
+        <th>Uses</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
 
-      </tbody>
-   </table>
+    <tbody id="invite-body">
+
+      <!-- Example Row -->
+      <tr>
+        <td class="method" data-label="Invite Method">Link/QR</td>
+
+        <td class="urlCell" data-label="Invite Target">
+          <div class="urlWrapper">
+            <span class="urlText"
+              title="https://app.loghue.com/invite?token=f6ssh6fzsfbf6fsbsz6fbs6fsz6svf6sszf">
+              https://app.loghue.com/invite?token=f6ssh6fzsfbf6fsbsz6fbs6fsz6svf6sszf
+            </span>
+
+            <button class="copyBtn" title="Copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <rect x="9" y="9" width="10" height="10" rx="2"
+                  stroke="currentColor" stroke-width="2"/>
+                <rect x="5" y="5" width="10" height="10" rx="2"
+                  stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </button>
+          </div>
+        </td>
+
+        <td class="created" data-label="Created">22 March 2026</td>
+        <td class="uses" data-label="Uses">3 / 5</td>
+
+        <td class="status active" data-label="Status">Active</td>
+
+        <td class="actions" data-label="Actions">
+          <button class="actionBtn">Revoke</button>
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+
+</main>
 
    <template id="invite-row-template">
   <tr>
     <td class="method"></td>
-    <td class="target"></td>
+    <td class="urlCell">
+      <div class="urlWrapper">
+        <span class="urlText"></span>
+        <button class="copyBtn" title="Copy">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <rect x="9" y="9" width="10" height="10" rx="2"
+              stroke="currentColor" stroke-width="2"/>
+            <rect x="5" y="5" width="10" height="10" rx="2"
+              stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </button>
+      </div>
+    </td>
     <td class="created"></td>
     <td class="uses"></td>
     <td class="status"></td>
     <td class="actions"></td>
   </tr>
 </template>
+
 
 </body>
 </html>
