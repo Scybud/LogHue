@@ -124,7 +124,7 @@ saveBtn.addEventListener("click", async () => {
   //EMPTY FIELD?
   if (newName === "" || newEmail === "") {
    
-    alert("All fields must be filled");
+    actionMsg("All fields must be filled", "error");
     return;
   }
 
@@ -135,8 +135,18 @@ saveBtn.addEventListener("click", async () => {
 
   //EMAIL CHANGED?
   if (newEmail != sessionState.originalEmail) {
-    updates.email = newEmail;
-  }
+    const {data, error} = await supabase.auth.updateUser({
+      email: newEmail,
+    });
+
+    if(error) {
+      actionMsg(error.message);
+      console.log({ error });
+      return ;
+    }
+
+actionMsg("Check your inbox to confirm the new email", "success");  
+}
 
   //AVATAR CHANGED?
   if (pendingAvatarProfile) {
@@ -174,7 +184,7 @@ saveBtn.addEventListener("click", async () => {
       return;
     }
 
-    alert("Changes saved!");
+    actionMsg("Changes saved!", "success");
        
 
   }
