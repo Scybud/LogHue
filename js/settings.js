@@ -1,5 +1,6 @@
 import { sessionState } from "./session.js";
 import { supabase } from "./supabase.js";
+import {actionMsg} from "./utils/modals.js"
 
 async function initUserSettingsData() {
   const {
@@ -193,14 +194,17 @@ actionMsg("Check your inbox to confirm the new email", "success");
   });
   
   
-  /*
+
 //ACCOUNT DELETION
 export async function deleteAccount() {
   const deleteAccountBtn = document.getElementById("deleteAccount");
   if (!deleteAccountBtn) return;
+console.log("delete")
 
   deleteAccountBtn.addEventListener("click", async () => {
-    // Prevent double clicks if (deleteAccountBtn.disabled) return; deleteAccountBtn.disabled = true; 
+    // Prevent double clicks 
+if (deleteAccountBtn.disabled) return;
+deleteAccountBtn.disabled = true;
 
     const confirmAction = confirm(
       "Are you sure you want to delete this account? This action cannot be undone.",
@@ -236,13 +240,16 @@ export async function deleteAccount() {
       const { data, error } = await supabase.functions.invoke(
         "self-delete-user",
         {
-          body: { user_id: userId },
+          body: JSON.stringify({ user_id: userId }),
           headers: {
             Authorization: `Bearer ${session.access_token}`,
+            apikey: supabase.supabaseKey,
             "Content-Type": "application/json",
           },
         },
       );
+
+
 
       // Handle invocation-level error
       if (error) {
@@ -284,6 +291,5 @@ export async function deleteAccount() {
     }
   });
 }
+deleteAccount();
 
-
-*/
