@@ -3,6 +3,7 @@ import { supabase } from "../supabase.js";
 import { closeModal } from "../ui.js";
 import { openLogTaskModal,   openStartDiscussionModal
  } from "../utils/modals.js";
+import { sessionState } from "../session.js";
 
 export let currentWorkspace = null;
 export let loadedMembers = [];
@@ -76,6 +77,7 @@ export async function initMemberWorkspaceData() {
   if (workspaceName) {
     workspaceName.innerHTML = `${workspace.name} <span class="tag">Member</span>`;
   }
+document.title = `${workspace.name} | LogHue` ;
 
   const {
     data: { user },
