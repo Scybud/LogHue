@@ -82,7 +82,7 @@ if (signupForm) {
           window.location.href = decodeURIComponent(redirectTo);
         } else {
           // Default behavior
-          window.location.href = "https://app.loghue.com";
+          window.location.href = "../";
         }
       }
     } finally {
