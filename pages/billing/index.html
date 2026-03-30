@@ -6,9 +6,27 @@
   <title>Billing – LogHue</title>
 
   <!-- Keep your existing CSS -->
-  <link rel="stylesheet" href="../../css/base.css">
-  <link rel="stylesheet" href="../../css/component.css">
+  <link rel="stylesheet" href="https://loghue.com/css/base.css">
+  <link rel="stylesheet" href="https://loghue.com/css/component.css">
 
+  <!--FAVICONS-->
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="https://loghue.com/assets/icons/favicons/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="https://loghue.com/assets/icons/favicons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="https://loghue.com/assets/icons/favicons/favicon-16x16.png"
+    />
   <style>
     .container {
       max-width: 720px;
@@ -92,6 +110,7 @@
     }
 
     .btn-outline {
+      margin: auto;
       background: transparent;
       border: 1px solid #ccc;
       color: #fff;
@@ -120,20 +139,21 @@
 
     <!-- Upgrade Section -->
     <div class="card upgrade-section">
-      <div class="section-title">Upgrade to Pro</div>
-      <p style="color:#777; margin-bottom:16px;">
+      <div class="section-title" id="section-title">Upgrade to <span id="nextPlan">Pro</span></div>
+      <p class="upgrade-section-subtitle" style="color:#777; margin-bottom:16px;">
         Unlock your full workspace potential with advanced features designed for creators, teams, and power users.
       </p>
 
-      <ul class="feature-list" id="pro-features"></ul>
+      <ul class="feature-list" id="higherFeatures"></ul>
 
-      <button class="btn btn-primary" id="upgrade-btn" style="margin-top:16px;">Upgrade to Pro</button>
+      <button class="btn btn-primary" id="upgradeToProBtn" style="margin-top:16px;">Upgrade to Pro</button>
+            <button class="btn btn-primary" id="upgradeToTeamBtn" style="margin-top:16px;">Upgrade to Team</button>
       <button class="btn btn-outline" id="manage-btn" style="margin-left:10px;">Manage Subscription</button>
     </div>
   </div>
 
-  <script type="module" src="../../js/billing/index.js">
+  <script type="module" src="https://loghue.com/js/billing/index.js">
 </script>
-<script type="module" src="../../js/session.js"></script>
+<script type="module" src="https://loghue.com/js/session.js"></script>
 </body>
 </html>

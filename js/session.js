@@ -92,3 +92,4 @@ function userInfoUi() {
       subscriptionType.textContent = sessionState.plan.name;
     }
 }
+initSession();
