@@ -89,7 +89,7 @@ export async function initAdminWorkspaceData() {
   const workspaceName = document.getElementById("workspaceName");
 
   if (workspace) {
-    document.title = workspace.name;
+    document.title = workspace.name + "" + "| LogHue";
   }
 
   if (workspace && workspaceName) {

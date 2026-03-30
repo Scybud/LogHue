@@ -6,27 +6,27 @@
     <title>Auth | LogHue</title>
 
     <!--CSS LINKS-->
-    <link rel="stylesheet" href="https://loghue.com/css/base.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/component.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/utilities.css" />
+    <link rel="stylesheet" href="../../css/base.css" />
+    <link rel="stylesheet" href="../../css/component.css" />
+    <link rel="stylesheet" href="../../css/utilities.css" />
 
     <!--FAVICONS-->
     <link
       rel="apple-touch-icon"
       sizes="180x180"
-      href="https://loghue.com/assets/icons/favicons/apple-touch-icon.png"
+      href="../../assets/icons/favicons/apple-touch-icon.png"
     />
     <link
       rel="icon"
       type="image/png"
       sizes="32x32"
-      href="https://loghue.com/assets/icons/favicons/favicon-32x32.png"
+      href="../../assets/icons/favicons/favicon-32x32.png"
     />
     <link
       rel="icon"
       type="image/png"
       sizes="16x16"
-      href="https://loghue.com/assets/icons/favicons/favicon-16x16.png"
+      href="../../assets/icons/favicons/favicon-16x16.png"
     />
 
     <style>
@@ -202,6 +202,12 @@
     </style>
   </head>
   <body>
+         <div id="modalContainer"></div>
+        <!--ACTION MESSAGES-->
+        <div id="actionsMessage"></div>
+        <!--INFO DISPLAY-->
+        <div id="infoDisplay"></div>
+        
     <button type="button" class="btn backBtn btn-sm"> <!-- Back Icon -->
         <svg
   width="20"
@@ -221,7 +227,7 @@
  <span>Back</span>
 </button>
 
-    <a href="https://loghue.com/index.html" class="backLink"> <!-- Back Icon -->
+    <a href="../../index.html" class="backLink"> <!-- Back Icon -->
         <svg
   width="20"
   height="20"
@@ -242,7 +248,7 @@
       <!-- AUTH GATEWAY -->
       <div class="authGateway">
         <img
-          src="https://loghue.com/assets/images/loghue-logo.png"
+          src="../../assets/images/loghue-logo.png"
           class="logo"
           alt="LogHue Logo"
         />
@@ -431,6 +437,6 @@
         });
       });
     </script>
-    <script type="module" src="https://loghue.com/js/auth/auth.js"></script>
+    <script type="module" src="../../js/auth/auth.js"></script>
   </body>
 </html>

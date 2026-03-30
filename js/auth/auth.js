@@ -1,5 +1,6 @@
 import { supabase } from "../supabase.js";
 import { buttonLoading } from "../ui.js";
+import { actionMsg } from "../utils/modals.js";
 
 
 //Signup funtion
@@ -10,25 +11,26 @@ async function signup(name, email, password) {
   });
 
   if (error) {
-    alert(error.message);
+    actionMsg(error.message, "error");
     return false;
   }
 
   if (data.user) {
-    const { error: profileError } = await supabase.from("profiles").insert([
+    const { error: profileError } = await supabase.from("profiles").upsert([
       {
         id: data.user.id,
         full_name: name,
+        email: email,
       },
     ]);
 
     if (profileError) {
-      alert(profileError.message);
+      actionMsg(profileError.message, "error");
       return false;
     }
   }
 
-  alert("Account created successfully!");
+  actionMsg("Account created successfully!", "success");
   return true;
 }
 
@@ -48,16 +50,16 @@ if (signupForm) {
       .value.trim();
 
     if (!name || !password || !email || !confirmPassword) {
-      alert("All fields must not be empty");
+      actionMsg("All fields must not be empty", "error");
       return;
     } else if (!email.includes("@")) {
-      alert("Please enter a valid email");
+      actionMsg("Please enter a valid email", "error");
       return;
     } else if (password != confirmPassword) {
-      alert("Passwords do not match");
+      actionMsg("Passwords do not match", "error");
       return;
     } else if (password.length < 6) {
-      alert("Password must be at least 6 characters");
+      actionMsg("Password must be at least 6 characters", "error");
       return;
     }
 
@@ -80,7 +82,7 @@ if (signupForm) {
           window.location.href = decodeURIComponent(redirectTo);
         } else {
           // Default behavior
-          window.location.href = "../";
+          window.location.href = "https://app.loghue.com";
         }
       }
     } finally {
@@ -98,7 +100,7 @@ async function login(email, password) {
   });
 
   if (error) {
-    alert(error.message);
+    actionMsg(error.message, "error");
     return false;
   }
 
@@ -118,7 +120,7 @@ export function loginFuntion() {
         .value.trim();
 
       if (!password || !email) {
-        alert("All fields must not be empty");
+        actionMsg("All fields must not be empty", "error");
         return;
       }
 
@@ -160,8 +162,12 @@ async function signout() {
     alert(error.message);
     return;
   }
-  alert("Logged out successfully!");
-  window.location.href = "/auth";
+  actionMsg("Logged out successfully!", "success");
+
+  setTimeout(() => {
+
+    window.location.href = "/auth";
+  }, 3000)
 }
 
 export function attachSignoutEvents() {
