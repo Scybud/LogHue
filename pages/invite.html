@@ -40,6 +40,9 @@
       font-weight: 600;
       margin-top: 10px;
     }
+.homeLink {
+  display: none;
+}
   </style>
 </head>
 
@@ -47,6 +50,7 @@
   <div class="card">
     <h2>Joining Workspace…</h2>
     <p id="status" class="loading">Please wait</p>
+    <a class="homeLink" href="http://app.loghue.com">Go Home</a>
   </div>
   
   <script type="module">
@@ -61,11 +65,13 @@
 
   async function acceptInvite(token) {
     const status = document.getElementById("status");
+const homeLink = document.querySelector(".homeLink")
 
     // Check if token exists before even trying Supabase
     if (!token) {
       status.textContent = "No invite token found in the URL.";
       status.className = "error";
+      homeLink.classList.add("show")
       return;
     }
 
@@ -91,12 +97,15 @@
   console.error(fetchError);
   status.textContent = "Something went wrong while loading this invite.";
   status.className = "error";
+        homeLink.classList.add("show")
   return;
 }
 
 if (!invite) {
   status.textContent = "This invite is no longer valid. Please request a new one.";
   status.className = "error";
+        homeLink.classList.add("show")
+
   return;
 }
 
@@ -105,6 +114,8 @@ if (!invite) {
     if(invite.accepted_count >= invite.max_invite_count) {
       status.textContent = "This invite link has reached its maximum number of uses (5). Please request a new one.";
       status.className = "error";
+            homeLink.classList.add("show")
+
 return;
     } 
 
@@ -121,6 +132,8 @@ return;
       console.error("Member Error:", memberError);
       status.textContent = "You are already a member of this workspace or there was a permission error.";
       status.className = "error";
+            homeLink.classList.add("show")
+
       return;
     }
 
@@ -147,6 +160,7 @@ if(error) {
 
     status.textContent = "Success! Redirecting...";
     status.className = "success";
+      homeLink.classList.remove("show")
 
  setTimeout(() => {
   if (invite.role === 'admin' || invite.role === 'owner') {

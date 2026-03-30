@@ -310,49 +310,53 @@ async function renderSection(section, workspace, container) {
 
     case "activities":
       const { data: logs, error } = await supabase
-  .from("workspace_task_logs")
-  .select(`
+        .from("workspace_task_logs")
+        .select(
+          `
     *,
     profiles:created_by (full_name, avatar_url),
     workspace_tasks:task_id (title)
-  `)
-  .eq("workspace_id", workspace.id)
-  .order("created_at", { ascending: false });
+  `,
+        )
+        .eq("workspace_id", workspace.id)
+        .order("created_at", { ascending: false });
 
-const { data: actDcns, actDcnsError } = await supabase
-  .from("discussions")
-  .select(`
+      const { data: actDcns, actDcnsError } = await supabase
+        .from("discussions")
+        .select(
+          `
     *,
     profiles:created_by (full_name, avatar_url)
-  `)
-  .eq("workspace_id", workspace.id)
-  .order("created_at", { ascending: false });
+  `,
+        )
+        .eq("workspace_id", workspace.id)
+        .order("created_at", { ascending: false });
 
-const normalizedLogs = (logs || []).map((log) => ({
-  id: log.id,
-  type: "task_log",
-  actor: log.profiles,
-  title: log.workspace_tasks?.title,
-  note: log.log_note,
-  status: log.task_status,
-  created_at: log.created_at,
-}));
+      const normalizedLogs = (logs || []).map((log) => ({
+        id: log.id,
+        type: "task_log",
+        actor: log.profiles,
+        title: log.workspace_tasks?.title,
+        note: log.log_note,
+        status: log.task_status,
+        created_at: log.created_at,
+      }));
 
-const normalizedDiscussions = (actDcns || []).map((d) => ({
-  id: d.id,
-  type: "discussion",
-  actor: d.profiles,
-  title: d.title,
-  note: d.content,
-  status: null,
-  created_at: d.created_at,
-}));
+      const normalizedDiscussions = (actDcns || []).map((d) => ({
+        id: d.id,
+        type: "discussion",
+        actor: d.profiles,
+        title: d.title,
+        note: d.content,
+        status: null,
+        created_at: d.created_at,
+      }));
 
-const activities = [...normalizedLogs, ...normalizedDiscussions].sort(
-  (a, b) => new Date(b.created_at) - new Date(a.created_at)
-);
+      const activities = [...normalizedLogs, ...normalizedDiscussions].sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at),
+      );
 
-loadActivities(activities, container);
+      loadActivities(activities, container);
       break;
 
     case "discussions":
@@ -360,11 +364,116 @@ loadActivities(activities, container);
       const { data: discussions, dcnError } = await supabase
         .from("discussions")
         .select(`*, profiles:created_by (full_name, avatar_url)`)
-        .eq("workspace_id", workspace.id)
+        .eq("workspace_id", workspace.id);
 
       loadDiscussions(discussions || [], container);
       break;
+
+    case "inviteHistory":
+      //Load data
+      const { data: inviteHistory, inviteHistoryError } = await supabase
+        .from("workspace_invites")
+        .select("*")
+        .eq("workspace_id", workspace.id);
+
+      loadInviteHistory(inviteHistory || [], container);
+      break;
   }
+}
+
+
+function loadInviteHistory(invites, container) {
+  const table = document.createElement("table")
+  
+  table.classList.add("inviteTable");
+table.innerHTML = `
+    <thead>
+      <tr>
+        <th>Invite Method</th>
+        <th>Invite Target</th>
+        <th>Created</th>
+        <th>Uses</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="invite-body"></tbody>
+`;
+
+const tbody = table.querySelector("#invite-body");
+
+const inviteTemplate = document.getElementById("invite-row-template");
+if(!inviteTemplate) return;
+
+invites.forEach((inv) => {
+  const row = inviteTemplate.content.cloneNode(true);
+
+  const method = inv.email ? "Email" : "Link";
+
+  const target = inv.email
+    ? inv.email
+    : `https://app.loghue.com/invite?token=${inv.token}`;
+
+  const created = inv.created_at;
+
+  const count = inv.accepted_count ?? 0;
+
+  let status = "Active";
+  let statusClass = "active";
+  if (count >= inv.max_invite_count) {
+    status = "Full";
+    statusClass = "full";
+  } else if (inv.accepted) {
+    status = "Used";
+    statusClass = "used";
+  }
+
+  // Actions
+  row.querySelector(".actions").innerHTML = `
+    <button class="revoke danger">Revoke</button>
+  `;
+
+  // Fill row
+  row.querySelector(".method").textContent = method;
+
+  const urlText = row.querySelector(".urlText");
+  urlText.textContent = target;
+  urlText.title = target;
+
+  row.querySelector(".created").textContent = formatDateTime(created);
+  row.querySelector(".uses").textContent = `${count} / ${inv.max_invite_count}`;
+
+  const statusCell = row.querySelector(".status");
+  statusCell.textContent = status;
+statusCell.classList.add(statusClass)
+
+  // Copy button
+  row.querySelector(".copyBtn").addEventListener("click", (e) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(target);
+    actionMsg("URL copied to clipboard!", "success")
+  });
+
+  // Actions
+  row.querySelector(".actions").innerHTML = `
+      <button class="revoke">Revoke</button>
+    `;
+
+  // Mobile labels
+  row.querySelector(".method").dataset.label = "Invite Method";
+  row.querySelector(".urlCell").dataset.label = "Invite Target";
+  row.querySelector(".created").dataset.label = "Created";
+  row.querySelector(".uses").dataset.label = "Uses";
+  row.querySelector(".status").dataset.label = "Status";
+  row.querySelector(".actions").dataset.label = "Actions";
+
+  // Append row
+  if(!tbody) console.log("body no t");
+  tbody.appendChild(row);
+});
+
+// Append table into the REAL container
+container.appendChild(table);
 }
 
 export function loadDiscussions(discussions, container) {

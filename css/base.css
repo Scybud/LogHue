@@ -38,7 +38,6 @@ body {
   --active: #393838;
   --primary: #eef271;
   --secondary: #006239;
-  --success: #01ef8c;
   --link: #0393d6;
   --tag: var(--accent);
   --accent: #ff6b35;
@@ -51,6 +50,17 @@ body {
 --filter: blur(10px);
 --danger:#e56458;
 
+  --border-light: #f3f4f633;
+
+  --text: #fdfeff;
+  --text-muted: #6b7280;
+
+  --success: #10b981;
+  --warning: #f59e0b;
+  --neutral: #9ca3af;
+
+  --bg-hover: #201f1f;
+  
   --brand-h: 17;
   --brand-s: 70%;
   --brand-l: 50%;

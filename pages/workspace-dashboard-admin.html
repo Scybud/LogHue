@@ -30,6 +30,14 @@
       sizes="16x16"
       href="https://loghue.com/assets/icons/favicons/favicon-16x16.png"
     />
+
+    <style>
+      #adminWorkspaceDashboardContent {
+         overflow: auto;
+  max-width: 100%;
+  margin: 20px 5px;
+      }
+    </style>
   </head>
   <body>
     <!--PRELOADER-->
@@ -103,6 +111,32 @@
           <!-- Dynamic content will load here -->
         </section>
       </article>
+
+
+      <!--TEMPLATE FOR WORKSPACE INVITES LIST -->
+      <template id="invite-row-template">
+  <tr>
+    <td class="method"></td>
+    <td class="urlCell">
+      <div class="urlWrapper">
+        <span class="urlText"></span>
+        <button class="copyBtn" title="Copy">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <rect x="9" y="9" width="10" height="10" rx="2"
+              stroke="currentColor" stroke-width="2"/>
+            <rect x="5" y="5" width="10" height="10" rx="2"
+              stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </button>
+      </div>
+    </td>
+    <td class="created"></td>
+    <td class="uses"></td>
+    <td class="status"></td>
+    <td class="actions"></td>
+  </tr>
+</template>
+
     </main>
     <script type="module">
       import { initAdminWorkspaceData } from "https://loghue.com/js/features/workspace-admin.js";
