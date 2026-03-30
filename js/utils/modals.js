@@ -192,7 +192,7 @@ export async function confirmAction(message, actions = []) {
       "btn",
       "btn-sm",
       a.type === "confirm" ? "primary" : "secondary",
-      a.label === "Delete" ? "danger" : "primary",
+      a.label === "Delete" || "Remove" ? "danger" : "primary",
     );
 
     btn.onclick = () => {

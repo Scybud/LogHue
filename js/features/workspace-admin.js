@@ -1,5 +1,5 @@
 import { attachSidebarEvents } from "./../components/sidebar.js";
-import { openCreateTaskModal, openAddMemeberModal } from "./../utils/modals.js";
+import { openCreateTaskModal, openAddMemeberModal, confirmAction, actionMsg } from "./../utils/modals.js";
 import { supabase } from "../supabase.js";
 import { loadComponent, closeModal } from "../ui.js";
 import { openStartDiscussionModal } from "../utils/modals.js";
@@ -32,8 +32,8 @@ async function checkAdminAccess(workspaceId, user) {
     .single();
     
     if (error || (membership.role !== "admin" && membership.role !== "owner")) {
-      alert(
-        "Access Denied: You do not have admin permissions for this workspace.",
+      actionMsg(
+        "Access Denied: You do not have admin permissions for this workspace.", "error"
       );
     window.location.href = "/index"; // Send them to their main list
   }
@@ -179,6 +179,8 @@ export async function initAdminWorkspaceData() {
            data: { user },
          } = await supabase.auth.getUser();
 
+           checkAdminAccess(currentWorkspace.id, user);
+
          const taskData = {
            workspace_id: currentWorkspace.id,
            created_by: user.id,
@@ -228,7 +230,52 @@ export async function initAdminWorkspaceData() {
    });
  }
 
+ async function removeMember() {
+  const btns = document.querySelectorAll(".removeMemberBtn");
 
+   const {
+           data: { user },
+         } = await supabase.auth.getUser();
+
+  btns.forEach((btn) => {
+if(!btn) return;
+       const id = btn.id;
+
+btn.addEventListener("click", () => {
+  confirmAction(
+    "Are you sure? Removing this member from your workspace cannot be undone. All actions related to the user might also be deleted.",
+    [
+      { label: "Cancel", type: "cancel" },
+      {
+        label: "Remove",
+        type: "confirm",
+        onClick: () => performMemberRemoval( id, currentWorkspace.id, user),
+      },
+    ],
+  );
+})
+  })
+ }
+async function performMemberRemoval(id, workspaceId, user) {
+
+             checkAdminAccess(currentWorkspace.id, user);
+
+const { error } = await supabase.from("workspace_members").delete().eq("user_id", id).eq("workspace_id", workspaceId);
+
+    if (error) {
+      console.error(error);
+      actionMsg("Failed to remove member from workspace", "error");
+      return;
+    }
+
+    actionMsg("Member removed!", "success");
+
+       setTimeout(() => {
+         // Refresh UI
+         window.location.reload();
+   
+       }, 2000);
+}
 
 async function renderSection(section, workspace, container) {
   if(!container) return;
@@ -520,6 +567,7 @@ function loadMembers(members, container) {
     cardHeader.append(tag, avatar, memberName);
 
     const assignTaskBtn = document.createElement("button");
+    assignTaskBtn.type = "button";
     assignTaskBtn.id = mbr.profiles.id;
     assignTaskBtn.classList.add(
       "btn",
@@ -529,9 +577,21 @@ function loadMembers(members, container) {
     );
     assignTaskBtn.textContent = "Assign Task";
 
+    const removeMemberBtn = document.createElement("button")
+    removeMemberBtn.type = "button"
+removeMemberBtn.id = mbr.profiles.id;
+ removeMemberBtn.classList.add(
+   "btn",
+   "btn-sm",
+   "btn-primary",
+   "danger",
+   "removeMemberBtn",
+ );
+    removeMemberBtn.textContent = "Remove member";
+
     const adminActions = document.createElement("div");
     adminActions.classList.add("adminActions");
-    adminActions.append(assignTaskBtn);
+    `${mbr.role === "admin" ? adminActions.append(assignTaskBtn) : adminActions.append(assignTaskBtn, removeMemberBtn)}`;
 
     memberCard.append(cardHeader, adminActions);
     divGrid.append(memberCard);
@@ -542,7 +602,8 @@ function loadMembers(members, container) {
 
   //ATTACH TASK CREATION LOGIC FOR EACH MEMBER CARD
         assignMemberTask();
-
+//ATTACH MEMBER REMOVAL LOGIC FOR EACH MEMBER CARD'
+removeMember();
 }
 
 export function formatDateTime(isoString) {
@@ -608,7 +669,7 @@ export function loadActivities(activities, container) {
     container.innerHTML = `<p class="placeholderText">Workspace activities overview is not available on your current plan. <a href="https://loghue.com/pricing" target="_blank" rel="noopener">Upgrade</a> to see what is happening in your workspace at a glance.</p>`;
     return;
   }
-  console.log("here")
+
   if (!activities || activities.length === 0) {
     container.innerHTML = `<p class="placeholderText">No activity in this workspace yet.</p>`;
     return;
