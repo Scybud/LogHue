@@ -33,7 +33,7 @@ body {
   --bg: #000;
   --color: #fff;
   --header-bg: rgba(128, 128, 128, 0.258);
-  --mainContent-bg: #1f1e1e;
+  --mainContent-bg: #1b1a1a;
   --navBtn-bg: #222;
   --active: #393838;
   --primary: #eef271;
@@ -53,7 +53,7 @@ body {
   --border-light: #f3f4f633;
 
   --text: #fdfeff;
-  --text-muted: #6b7280;
+  --text-muted: #b2b7c0;
 
   --success: #10b981;
   --warning: #f59e0b;

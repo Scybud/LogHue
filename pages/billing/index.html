@@ -118,10 +118,42 @@
     .upgrade-section {
       margin: 20px auto;
     }
+     .backLink {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: sticky;
+        top: 30px;
+        left: 20px;
+        padding: 0 auto;
+        width: fit-content;
+        background: none;
+        color: var(--link);
+      }
   </style>
 </head>
 
 <body>
+   <a href="/" type="button" class=" backLink"> <!-- Back Icon -->
+        <svg
+  width="20"
+  height="20"
+  viewBox="0 0 20 20"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M11.75 4.25L6 10L11.75 15.75"
+    stroke="currentColor"
+    stroke-width="1.6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>
+ <span>Back to Dashboard</span>
+</a>
+
+
   <div class="container">
     <h1>Your Billing</h1>
     <div class="subtext">Manage your plan, unlock more features, and get the most out of LogHue.</div>

@@ -46,11 +46,41 @@
 .manage-btn:hover {
   background: #e85f2f;
 }
-
+  .backLink {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: sticky;
+        top: 30px;
+        left: 20px;
+        padding: 0 auto;
+        width: fit-content;
+        background: none;
+        color: var(--link);
+      }
 
    </style>
 </head>
 <body>
+   <a href="index" type="button" class=" backLink"> <!-- Back Icon -->
+        <svg
+  width="20"
+  height="20"
+  viewBox="0 0 20 20"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M11.75 4.25L6 10L11.75 15.75"
+    stroke="currentColor"
+    stroke-width="1.6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>
+ <span>Back to billing</span>
+</a>
+
  <section class="manage-wrapper">
   <h1 class="manage-title">Manage Subscription</h1>
 

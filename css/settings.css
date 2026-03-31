@@ -58,6 +58,7 @@
   height: 80px;
   border-radius: 50%;
   object-fit: cover;
+  border: 1px solid var(--border);
 }
 
 .settingsTags {
@@ -86,6 +87,10 @@
 .settingsLongBtn {
   width: 100%;
   max-width: 300px;
+  color: #000000;
+}
+.settingsLongBtn:hover {
+  text-decoration: none;
 }
 .changePasswordBtn {
   color: #000000;
@@ -100,5 +105,5 @@
   cursor: pointer;
 }
 .descText {
-  opacity: 0.5;
+  opacity: 0.7;
 }
