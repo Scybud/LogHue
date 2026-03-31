@@ -1,57 +1,56 @@
-import { sessionState, sessionReady } from "../../js/session.js";
 import { supabase } from "../../js/supabase.js";
 import { actionMsg } from "../utils/modals.js";
 
-
+let loading = false;
 async function startUpgrade() {
+  if (loading) return;
+  loading = true;
+  //  Ensure user is logged in 
   const {
     data: { session },
   } = await supabase.auth.getSession();
 
   if (!session) {
-    return (window.location.href = "/login");
+    window.location.href = "/auth?redirect=/billing";
+    return;
   }
 
+  //  Extract plan ID from URL 
   const params = new URLSearchParams(window.location.search);
   const planId = params.get("plan");
 
   if (!planId) {
     actionMsg("Missing plan ID.", "error");
-
-    /*
-      setTimeout(() => {
-         window.location.href = "/billing";
-      }, 2000)
-      */
-
     return;
   }
 
-  // get current session (access token)
-  const accessToken = session?.access_token;
-
+  //  Extract access token safely 
+  const accessToken = session.access_token;
   if (!accessToken) {
-    // not authenticated
-    return (window.location.href = "/login?redirect=/billing");
+    window.location.href = "/auth?redirect=/billing";
+    return;
   }
 
-  
-   const { data, error } = await supabase.functions.invoke("create-checkout", {
-     body: { planId, userId: session.user.id },
+  //  Call Edge Function (I turned off JWT) 
+  const { data, error } = await supabase.functions.invoke("create-checkout", {
+    body: {
+      planId, // userId is NOT sent — server derives it securely
+    },
+  });
 
-   });
+  if (error) {
+    console.error(error);
+    actionMsg("Failed to start checkout.", "error");
+    return;
+  }
 
-if (error) {
-  console.error(error);
-  actionMsg("Failed to start checkout.", "error");
-  return;
+  //  Redirect to Stripe Checkout 
+  if (data?.url) {
+    window.location.href = data.url;
+  } else {
+    console.error("No URL returned:", data);
+    actionMsg("Checkout session failed.", "error");
+  }
 }
 
-   if (data?.url) {
-     window.location.href = data.url;
-   } else {
-     console.error("No URL returned:", data);
-     actionMsg("Checkout session failed.", "error");
-   }
-} 
 startUpgrade();
