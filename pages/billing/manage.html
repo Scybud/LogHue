@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Manage Billing | LogHue</title>
+   <link rel="stylesheet" href="https://loghue.com/css/base.css">
+   <style>
+      body {
+         padding: 0 var(--space-md);
+      }
+  .manage-wrapper {
+  max-width: 420px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.manage-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.manage-desc {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.manage-btn {
+  width: 100%;
+  padding: 0.85rem;
+  background: #ff6b35;
+  border: none;
+  font-weight: 600;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.manage-btn:hover {
+  background: #e85f2f;
+}
+
+
+   </style>
+</head>
+<body>
+ <section class="manage-wrapper">
+  <h1 class="manage-title">Manage Subscription</h1>
+
+  <p class="manage-desc">
+    Access your secure Stripe Billing Portal to update your payment method,
+    change your plan, or cancel your subscription.
+  </p>
+
+  <button id="manage-btn" class="manage-btn">
+    Open Billing Portal
+  </button>
+</section>
+
+
+<script type="module" src="../../js/billing/manage.js"></script>
+</body>
+</html>
