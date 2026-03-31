@@ -123,7 +123,7 @@
       if (!user) break;
 
       const { data: profile } = await supabase
-        .from("profile")
+        .from("profiles")
         .select("plan_id")
         .eq("id", user.id)
         .single();
