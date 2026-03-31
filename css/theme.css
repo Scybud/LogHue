@@ -22,6 +22,7 @@
   --form-bg: #ffffff;
   --input-bg: #f2f2f2;
   --input-color: #000000;
+  --text-muted: #545454;
 
   --chevron-color: #555555;
   
@@ -35,6 +36,7 @@
 :root[data-theme="light"] {
     --bg: #ffffff;
     --color: #000000;
+  --text-muted: #545454;
 
   --header-bg: rgba(240, 240, 240, 0.8);
   --mainContent-bg: #f7f7f7;
