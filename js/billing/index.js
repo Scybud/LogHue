@@ -88,11 +88,11 @@ async function loadBilling() {
 
 // Upgrade button → redirect to upgrade page
 upgradeToProBtn.onclick = () => {
-  window.location.href = `upgrade?plan=dee55ec9-ae01-40f3-b297-fe9faa8485d6`;
+  window.location.href = `/billing/upgrade?plan=dee55ec9-ae01-40f3-b297-fe9faa8485d6`;
 };
 
 upgradeToTeamBtn.onclick = () => {
-  window.location.href = `upgrade?plan=e06ed82b-037b-4fac-bbec-94d761f1cdd5`;
+  window.location.href = `/billing/upgrade?plan=e06ed82b-037b-4fac-bbec-94d761f1cdd5`;
 };
 
 // Manage subscription
