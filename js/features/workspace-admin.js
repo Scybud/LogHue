@@ -7,6 +7,7 @@ import { sessionState } from "../session.js";
 
 export let currentWorkspace = null;
 export let loadedMembers = [];
+let user = null;
 
 document.addEventListener("click", async (e) => {
   const btn = e.target.closest(".navBtn");
@@ -50,7 +51,7 @@ export async function initAdminWorkspaceData() {
     console.error(userError);
     return;
   }
-  const user = data.user;
+   user = data.user;
 
   if (!workspaceId) {
     window.location.href = "index";
@@ -174,10 +175,6 @@ export async function initAdminWorkspaceData() {
            alert("Input fields must not be empty");
            return;
          }
-
-         const {
-           data: { user },
-         } = await supabase.auth.getUser();
 
            checkAdminAccess(currentWorkspace.id, user);
 
@@ -407,6 +404,7 @@ if(!inviteTemplate) return;
 
 invites.forEach((inv) => {
   const row = inviteTemplate.content.cloneNode(true);
+    const tr = row.querySelector("tr");
 
   const method = inv.email ? "Email" : "Link";
 
@@ -428,10 +426,6 @@ invites.forEach((inv) => {
     statusClass = "used";
   }
 
-  // Actions
-  row.querySelector(".actions").innerHTML = `
-    <button class="revoke danger">Revoke</button>
-  `;
 
   // Fill row
   row.querySelector(".method").textContent = method;
@@ -456,21 +450,42 @@ statusCell.classList.add(statusClass)
 
   // Actions
   row.querySelector(".actions").innerHTML = `
-      <button class="revoke">Revoke</button>
+      <button class="revokeInviteBtn revoke" id="${inv.id}" type="button">Revoke</button>
     `;
+    // Mobile labels
+    row.querySelector(".method").dataset.label = "Invite Method";
+    row.querySelector(".urlCell").dataset.label = "Invite Target";
+    row.querySelector(".created").dataset.label = "Created";
+    row.querySelector(".uses").dataset.label = "Uses";
+    row.querySelector(".status").dataset.label = "Status";
+    row.querySelector(".actions").dataset.label = "Actions";
+    
+    // Append row
+    if(!tbody) console.log("body not found");
+    tbody.prepend(row);
+    
+        //Revoke invite
+    const revokeInviteBtn = tr.querySelector(".revokeInviteBtn");
+    if (!revokeInviteBtn) return console.log("no button");
+    
+    revokeInviteBtn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      
+     const id = e.currentTarget.id
+       const { error } = await supabase.from("workspace_invites").delete().eq("id", id).eq("created_by", user.id);
+    
+        if (error) {
+          console.error(error);
+          actionMsg("Failed to delete workspace.", "error");
+          return;
+        }
+    
+    tr.remove();
+        actionMsg("Invite revoked!", "success")
+    })
 
-  // Mobile labels
-  row.querySelector(".method").dataset.label = "Invite Method";
-  row.querySelector(".urlCell").dataset.label = "Invite Target";
-  row.querySelector(".created").dataset.label = "Created";
-  row.querySelector(".uses").dataset.label = "Uses";
-  row.querySelector(".status").dataset.label = "Status";
-  row.querySelector(".actions").dataset.label = "Actions";
-
-  // Append row
-  if(!tbody) console.log("body no t");
-  tbody.appendChild(row);
-});
+  });
 
 // Append table into the REAL container
 container.appendChild(table);

@@ -416,7 +416,7 @@ flex-direction: column;
   border-collapse: collapse;
   table-layout: fixed;
   font-size: 14px;
-  color: var(--text);
+  color: var(--color);
 }
 
 /* Header */
@@ -475,7 +475,7 @@ flex-direction: column;
 
 /* Copy Button */
 .copyBtn {
-   color: #d6d6d6;
+   color: var(--secondary);
   background: none;
   border: none;
   padding: 0;

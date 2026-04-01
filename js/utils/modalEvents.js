@@ -153,12 +153,15 @@ export async function attachAddMemberEvents(workspaceId) {
 
     if (!email) return actionMsg("Please enter an email.", "error");
 
-    if(count >= sessionState.plan.max_members) {
+    if (
+      count >= sessionState.plan.max_members &&
+      sessionState.plan.max_members !== null
+    ) {
       actionMsg(
         "You have exceeded the limit for adding members to this workspace on your current plan. Upgrade to a new plan to add more members!",
         "error",
       );
-return
+      return;
     }
     const invite = await createWorkspaceInvite({
       workspaceId,
@@ -199,6 +202,15 @@ return
   document.getElementById("generate-qr-btn").onclick = async () => {
     const role = document.getElementById("invite-role-qr").value;
 
+    if (
+      count >= sessionState.plan.max_members &&
+      sessionState.plan.max_members !== null) {
+      actionMsg(
+        "You have exceeded the limit for adding members to this workspace on your current plan. Upgrade to a new plan to add more members!",
+        "error",
+      );
+      return;
+    }
     const invite = await createWorkspaceInvite({ workspaceId, role });
     if (!invite || !invite.token) {
                 actionMsg("Error: Invite token was not generated.", "error");

@@ -395,7 +395,7 @@ async function performWorkspaceDelete(id) {
 
     if (error) {
       console.error(error);
-      alert("Failed to delete workspace");
+      actionMsg("Failed to delete workspace", "error");
       return;
     }
 
