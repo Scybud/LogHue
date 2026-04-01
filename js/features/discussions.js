@@ -1,5 +1,6 @@
 import { supabase } from "../supabase.js";
 import {closeModal} from "../ui.js"
+import { notifyWorkspace } from "../utils/notifications.js";
 
 export async function attachStartDiscussionEvent(ws, user) {
    const startDiscussionBtn = document.getElementById("startDiscussion")
@@ -39,6 +40,16 @@ export async function attachStartDiscussionEvent(ws, user) {
       alert("Failed to create discussion.");
       return;
     }
+
+        const createdDiscussion = data[0];
+
+    notifyWorkspace({
+      workspaceId: ws.id,
+      actorId: user.id,
+      type: "discussion_started",
+      entityId: createdDiscussion.id,
+      entityType: "discussion",
+    });
 
     closeModal();
    });

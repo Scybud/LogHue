@@ -126,7 +126,7 @@ const unreadCount = notifications.filter((n) => n.is_read === false).length;
       notif.task = task;
     }
 
-    if (notif.type === "discussion_created") {
+    if (notif.type === "discussion_started") {
       const { data: discussion } = await supabase
         .from("workspace_discussions")
         .select("title")
