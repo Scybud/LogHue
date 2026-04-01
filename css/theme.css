@@ -4,7 +4,10 @@
   :root {
     --bg: #ffffff;
     --color: #000000;
-
+  --notif-bg-unread: #e6f7ff;
+  --notif-bg-read: #fff;
+  --notif-text: #000;
+  --notif-border: #ddd;
   --header-bg: rgba(240, 240, 240, 0.8);
   --mainContent-bg: #f7f7f7;
 
@@ -37,13 +40,17 @@
     --bg: #ffffff;
     --color: #000000;
   --text-muted: #545454;
-
+  --notif-bg-unread: #e6f7ff;
+  --notif-bg-read: #fff;
+  --notif-text: #000;
+  --notif-border: #ddd;
   --header-bg: rgba(240, 240, 240, 0.8);
   --mainContent-bg: #f7f7f7;
 
   --navBtn-bg: #f0f0f0;
   --active: #b1aeae;
-
+  background-color: #e6f7ff; /* light blue for unread */
+  font-weight: 600;  
   --link: #0366d6;
 
   --accent: #ff6b35;
@@ -69,7 +76,10 @@
   --header-bg: rgba(128, 128, 128, 0.258);
   --mainContent-bg: #1f1e1e;
   --navBtn-bg: #222;
-
+  --notif-bg-unread: #1e3a5f;   /* dark blue for unread */
+  --notif-bg-read: #2c2c2c;     /* dark background for read */
+  --notif-text: #eee;
+  --notif-border: #444;
   --link: #0393d6;
   --tag: var(--accent);
   --accent: #ff6b35;

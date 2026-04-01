@@ -49,7 +49,10 @@ body {
 --chevron-color: #c5c5c5;
 --filter: blur(10px);
 --danger:#e56458;
-
+  --notif-bg-unread: #1e3a5f;   /* dark blue for unread */
+  --notif-bg-read: #2c2c2c;     /* dark background for read */
+  --notif-text: #eee;
+  --notif-border: #444;
   --border-light: #f3f4f633;
 
   --text: #fdfeff;

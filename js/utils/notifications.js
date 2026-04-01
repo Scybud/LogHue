@@ -107,7 +107,9 @@ const unreadCount = notifications.filter((n) => n.is_read === false).length;
 
   const notifBadge = document.getElementById("notifBadge")
 
-  notifBadge.textContent = unreadCount;
+  if(notifBadge) {
+     notifBadge.textContent = unreadCount;
+   }
 
   for (const notif of notifications) {
     const notifEl = document.createElement("li");
@@ -150,13 +152,21 @@ const unreadCount = notifications.filter((n) => n.is_read === false).length;
     notifEl.innerHTML = text;
     container.append(notifEl);
 
+    notifEl.addEventListener("click", async () => {
+      const { error } = await supabase
+        .from("notifications")
+        .update({ is_read: true })
+        .eq("id", notif.id);
 
-    notifEl.addEventListener("click", async() => {
-  const { error } = await supabase
-    .from("notifications")
-    .update({ is_read: true })
-    .eq("id", notif.id);
-
-  if (error) console.error("Failed to mark as read:", error);    })
+      if (error) console.error("Failed to mark as read:", error);
+      
+      // Update the local notifications array
+      notif.is_read = true;
+      notifEl.classList.remove("unread")
+      const unreadCount = notifications.filter((n) => n.is_read === false).length;
+      if (notifBadge) {
+         notifBadge.textContent = unreadCount;
+      }
+   });
   }
 }
