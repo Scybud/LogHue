@@ -22,6 +22,7 @@ import { autoExpandTextarea } from "./utils/textarea.js";
 import { handleConcentEvents, loadAnalytics } from "../analytics.js";
 import { attachSignoutEvents } from "./auth/auth.js";
 import { toggleNotification } from "./utils/toggle.js";
+import { renderGlobalNotifications, fetchNotificationsForUser } from "./utils/notifications.js";
 
 window.addEventListener("DOMContentLoaded", async () => {
   const path = window.location.pathname;
@@ -41,11 +42,10 @@ window.addEventListener("DOMContentLoaded", async () => {
     );
   }
 
-    await loadComponent(
-      "https://loghue.com/components/sidebar-dashboard",
-      "dashboardSidebarContainer",
-    );
-  
+  await loadComponent(
+    "https://loghue.com/components/sidebar-dashboard",
+    "dashboardSidebarContainer",
+  );
 
   // General sidebar is safe everywhere
   await loadComponent(
@@ -57,7 +57,10 @@ window.addEventListener("DOMContentLoaded", async () => {
   initSession();
 
   // Analytics
-  await loadComponent("https://loghue.com/components/modals/cookies-banner", "infoDisplay");
+  await loadComponent(
+    "https://loghue.com/components/modals/cookies-banner",
+    "infoDisplay",
+  );
   const saved = localStorage.getItem("consent-preferences");
   if (saved) {
     const prefs = JSON.parse(saved);
@@ -67,8 +70,17 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (prefs.analytics) loadAnalytics();
   }
 
+  //JOIN NOTIFICATIONS GLOBALLY
+  async function loadGlobalNotifications() {
+    const notifications = await fetchNotificationsForUser();
+    renderGlobalNotifications(notifications);
+  }
+
+  // Call on page load
+  loadGlobalNotifications();
+
   toggleNotification();
-  
+
   handleConcentEvents();
   setTheme();
   removeLoader();

@@ -14,6 +14,7 @@ import {
 import { actionMsg } from "./modals.js";
 import { renderRecentLogs } from "../dashboard.js";
 import { sessionState } from "../session.js";
+import {notifyUser} from "./notifications.js"
 
 export function attachCreateTaskEvent(workspaceId) {
   const createTaskBtn = document.getElementById("createTaskBtn");
@@ -56,7 +57,7 @@ export function attachCreateTaskEvent(workspaceId) {
       created_by: user.id,
       title: taskTitle,
       status: "in progress",
-      assigned_to: assignedToValue || "", // Assign to empty if no one is selected
+      assigned_to: assignedToValue || null, // Assign to empty if no one is selected
       description: taskDescription,
     };
 
@@ -69,14 +70,21 @@ export function attachCreateTaskEvent(workspaceId) {
     if (error) {
       console.error(error);
          actionMsg("Failed to create task!", "error");
+             createTaskBtn.disabled = false;
+
       return;
     }
 
     createTaskBtn.disabled = false;
 
-    // Assuming only one task is created, use the first item
+    // Only one task is created, use the first item
     const createdTask = data[0];
 
+if(createdTask.assigned_to != null) {
+  await notifyUser({
+    workspaceId, receiverUserId: createdTask.assigned_to, actorId: user.id, type: "task_assigned", entityId: createdTask.id, entityType: "task",
+  })
+}
     // Render the task in the UI
     const taskCard = document.createElement("div");
     taskCard.classList.add("card", "taskCard");
