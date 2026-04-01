@@ -382,6 +382,7 @@ input.error {
   pointer-events: auto;
   background: var(--card-bg);
   display: none;
+  box-shadow: 0 0 15px #b1b1b1;
 }
 #notificationsList{
   padding-top: var(--space-md);
@@ -390,9 +391,13 @@ display: flex;
 flex-direction: column;
 }
 #notificationsList .notificationsItem{
+  border-radius: calc(var(--radius) * 2);
   border-bottom: 1px solid var(--border);
- padding: var(--space-lg) var(--space-md);
+ padding: var(--space-md) var(--space-md);
  background-color: var(--mainContent-bg);
+}
+#notificationsList .notificationsItem:hover {
+  background: var(--active);
 }
 .profileAvatar {
   width: 40px;

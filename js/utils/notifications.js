@@ -64,19 +64,18 @@ export async function notifyUser({
 
 //FETCH NOTIFICATIONS FROM DB
 export async function fetchNotificationsForUser() {
-  // Get current authenticated user
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data, error: userError } = await supabase.auth.getUser();
+  if (userError || !data?.user) return [];
 
-  if (!user) return [];
+  const user = data.user;
 
-  // Fetch notifications where actor is NOT the user
-  const { data, error } = await supabase
+  const { data: notifications, error } = await supabase
     .from("notifications")
     .select(
       `
       *,
+      actor:profiles(full_name),
+      workspace:workspaces(name),
       workspace_members!inner(user_id)
     `,
     )
@@ -88,40 +87,60 @@ export async function fetchNotificationsForUser() {
     return [];
   }
 
-  return data || [];
+  return Array.isArray(notifications) ? notifications : [notifications];
 }
 
+
 //RENDER NOTIFICATIONS
-export function renderGlobalNotifications(notifications) {
+export async function renderGlobalNotifications(notifications) {
   const container = document.getElementById("notificationsList");
   if (!container) return;
 
   container.innerHTML = ""; // clear old
 
-  if (notifications.length === 0) {
+  if (!Array.isArray(notifications) || notifications.length === 0) {
     container.innerHTML = `<p class="placeholderText">Nothing here yet.</p>`;
     return;
   }
 
-  notifications.forEach((notif) => {
+  for (const notif of notifications) {
     const notifEl = document.createElement("li");
     notifEl.classList.add("notificationsItem", "notification-card");
 
-    // Customize text based on type
-    let text = "";
-    switch (notif.type) {
-      case "task_assigned":
-        text = `You were assigned to task "${notif.entity_id}"`;
-        break;
-      case "discussion_created":
-        text = `New discussion started in a workspace`;
-        break;
-      default:
-        text = `New notification: ${notif.type}`;
-    }
-
-    notifEl.textContent = text;
-    container.append(notifEl);
-  });
+    if (notif.type === "task_assigned") {
+  const { data: task } = await supabase
+    .from("workspace_tasks")
+    .select("title")
+    .eq("id", notif.entity_id)
+    .single();
+  notif.task = task;
 }
 
+if (notif.type === "discussion_created") {
+  const { data: discussion } = await supabase
+    .from("workspace_discussions")
+    .select("title")
+    .eq("id", notif.entity_id)
+    .single();
+  notif.discussion = discussion;
+}
+
+    // Customize text based on type
+    let text = "";
+switch (notif.type) {
+  case "task_assigned":
+    text = `<b>${notif.actor.full_name}</b> assigned you to task "${notif.task?.title || "Loading..."}" in workspace "${notif.workspace?.name}"`;
+    break;
+
+  case "discussion_created":
+    text = `${notif.actor.full_name} started a discussion "${notif.discussion?.title || 'Loading...'}" in workspace "${notif.workspace?.name}"`;
+    break;
+
+  default:
+    text = `New notification: ${notif.type}`;
+}
+    notifEl.innerHTML = text;
+    container.append(notifEl);
+  
+}
+}

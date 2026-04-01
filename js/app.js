@@ -73,6 +73,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   //JOIN NOTIFICATIONS GLOBALLY
   async function loadGlobalNotifications() {
     const notifications = await fetchNotificationsForUser();
+    
     renderGlobalNotifications(notifications);
   }
 
