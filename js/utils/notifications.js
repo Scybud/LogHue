@@ -1,3 +1,4 @@
+import { formatDateTime } from "../features/workspaceData.js";
 import { supabase } from "../supabase.js";
 import { actionMsg } from "./modals.js";
 
@@ -128,22 +129,30 @@ const unreadCount = notifications.filter((n) => n.is_read === false).length;
 
     if (notif.type === "discussion_started") {
       const { data: discussion } = await supabase
-        .from("workspace_discussions")
+        .from("discussions")
         .select("title")
         .eq("id", notif.entity_id)
         .single();
       notif.discussion = discussion;
     }
 
+    const time = formatDateTime(notif.created_at)
+
     // Customize text based on type
     let text = "";
     switch (notif.type) {
       case "task_assigned":
-        text = `<b>${notif.actor.full_name}</b> assigned you to task "${notif.task?.title || "Loading..."}" in workspace "${notif.workspace?.name}"`;
+        const taskTitle = notif.task?.title || (notif.task === null ? "a deleted task" : "a task");
+        text = `<b>${notif.actor.full_name}</b> assigned you to "${taskTitle|| "Loading..."}" in workspace "${notif.workspace?.name}" <span class="timestamp">${time}</span>`;
         break;
 
-      case "discussion_created":
-        text = `${notif.actor.full_name} started a discussion "${notif.discussion?.title || "Loading..."}" in workspace "${notif.workspace?.name}"`;
+      case "discussion_started":
+              const discussionTitle =
+                notif.discussion?.title ||
+                (notif.discussion === null
+                  ? "a deleted discussion"
+                  : "a discussion");
+        text = `<b>${notif.actor.full_name}</b> started a discussion "${discussionTitle || "Loading..."}" in workspace "${notif.workspace?.name}" <span class="timestamp">${time}</span>`;
         break;
 
       default:

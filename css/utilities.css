@@ -391,10 +391,10 @@ display: flex;
 flex-direction: column;
 }
 #notificationsList .notificationsItem{
-  border-radius: calc(var(--radius) * 2);
+  border-radius: var(--radius);
+  margin-bottom: var(--space-xs);
   border-bottom: 1px solid var(--notif-border);
- padding: var(--space-md) var(--space-md);
- background: var(--notif-bg-read);
+ padding: var(--space-md) var(--space-md) var(--space-lg);
  color: var(--notif-text);
 }
 #notificationsList .notificationsItem:hover {

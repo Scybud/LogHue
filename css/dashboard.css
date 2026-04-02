@@ -106,7 +106,16 @@ h3 {
   opacity: 0.8;
   margin-bottom: calc(var(--space-sm) + 2px);
 }
-
+.timestamp {
+    display: block;
+    margin: var(--space-sm) 0;
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin-bottom: calc(var(--space-sm) + 2px);
+  text-align: right;
+  position: absolute;
+  right: var(--space-sm);
+}
 .btn-sm {
   padding: var(--space-sm) calc(var(--space-sm) + 4px);
   font-size: 0.85rem;
