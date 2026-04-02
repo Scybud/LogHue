@@ -196,10 +196,11 @@ aside.mobile-sidebar .nav-login:hover {
 .cta-btn {
   background: var(--primary);
   color: #050505;
+  font-weight: 700;
 }
 .cta-btn:hover {
   text-decoration: none;
-  background: #016497;
+  background: var(--accent);
 }
 .secondary-btn {
   border: 1px solid rgba(255, 255, 255, 0.16);
@@ -240,6 +241,7 @@ aside.mobile-sidebar .nav-login:hover {
   box-shadow: var(--shadow);
   display: flex;
   border: 1px solid rgba(255, 255, 255, 0.05);
+  opacity: 0.9;
 }
 .mock-sidebar {
   width: 120px;
@@ -272,11 +274,143 @@ aside.mobile-sidebar .nav-login:hover {
   flex-direction: column;
   gap: var(--space-md);
 }
-.mock-topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-} 
+ .mock-topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 0 8px;
+        background: #232323;
+        border-radius: 12px;
+      }
+      .mock-title::before {
+        content: "Dashboard";
+        font-weight: 700;
+      }
+      .mock-user {
+        width: 20px;
+        height: 20px;
+        background: linear-gradient(120deg, var(--accent), var(--secondary));
+        border-radius: 50%;
+        corner-shape: round;
+      }
+      .mock-stats-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        height: 100px;
+        gap: 8px;
+        margin-bottom: 25px;
+      }
+      .mock-stat-card {
+        padding: 2px;
+        font-size: 0.9rem;
+        background-color: #1f1f1f;
+        overflow-x: hidden;
+        min-height: 67px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+      }
+      .mock-stat-card:nth-child(1)::before {
+       content: "Active Workspaces";
+       display: block;
+               font-weight: 600;
+     }
+     .mock-stat-card:nth-child(1):after {
+       content: "13";
+       margin: 0 0 0 8px;
+       display: block;
+       font-size: 1.5rem;
+       font-weight: 700;
+     }
+      .mock-stat-card:nth-child(2)::before {
+        content: "Created Workspaces";
+        display: block;
+                font-weight: 600;
+      }
+      .mock-stat-card:nth-child(2):after {
+        content: "24";
+        margin: 0 0 0 8px;
+        display: block;
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+       .mock-stat-card:nth-child(3)::before {
+        content: "Closed Workspaces";
+        display: block;
+                font-weight: 600;
+      }
+      .mock-stat-card:nth-child(3):after {
+        content: "11";
+        margin: 0 0 0 8px;
+        display: block;
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+       .mock-stat-card:nth-child(4)::before {
+        content: "Logged Tasks";
+        display: block;
+                font-weight: 600;
+      }
+      .mock-stat-card:nth-child(4):after {
+        content: "131";
+        margin: 0 0 0 8px;
+        display: block;
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+      .mock-section-title {
+        font-weight: 700;
+      }
+      .mock-section-title::before {
+content: "Recent Workspaces";
+      }
+      .mock-workspace-list {
+        display: flex;
+        flex-direction: column;
+gap: 6px;
+      }
+      .mock-workspace-card {
+        width: 100%;
+        background-color: #0b0b0b;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 0 0 0 10px;
+      }
+       .mock-workspace-name {
+font-size: 1.1rem;
+font-weight: 700;
+      }
+      .mock-workspace-card:nth-child(1) .mock-workspace-name::before {
+        content: "Design Team";
+      }
+      .mock-workspace-card:nth-child(1) .mock-workspace-meta:before {
+        content: "A shared workspace for managing design operations with precision. Track tasks, maintain components, review iterations, and keep cross‑team collaboration effortless.";
+        color: #8d8d8d;
+        font-size: 0.9rem;
+      }
+        .mock-workspace-card:nth-child(2) .mock-workspace-name::before {
+        content: "Marketing Team";
+      }
+      .mock-workspace-card:nth-child(2) .mock-workspace-meta:before {
+        content: "Where the marketing team shapes ideas, builds campaigns, and keeps momentum steady.";
+        color: #8d8d8d;
+        font-size: 0.9rem;
+      }
+      .mock-chip::before {
+content: "Open Workspace";
+background: var(--primary);
+color: #000;
+font-size: 0.8rem;
+font-weight: 600;
+border-radius: 3px;
+padding: 2px;
+      }
+      .mock-chip:hover {
+        transform: translateY(-1px);
+        transition: all 0.4s ease;
+        width: fit-content;
+      }
+
 /* ------------------------- */ /* SECTIONS: FEATURES, WHAT, HOW, WHO, EXAMPLE, JOINWAITLIST */ /* ------------------------- */
 .section {
   padding: var(--space-xl) var(--space-xl);
