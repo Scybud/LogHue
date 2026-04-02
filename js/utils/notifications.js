@@ -143,7 +143,7 @@ const unreadCount = notifications.filter((n) => n.is_read === false).length;
     switch (notif.type) {
       case "task_assigned":
         const taskTitle = notif.task?.title || (notif.task === null ? "a deleted task" : "a task");
-        text = `<b>${notif.actor.full_name}</b> assigned you to "${taskTitle|| "Loading..."}" in workspace "${notif.workspace?.name}" <span class="timestamp">${time}</span>`;
+        text = `<a href="task-view?task=${notif.entity_id}"><b>${notif.actor.full_name}</b> assigned you to "${taskTitle || "Loading..."}" in workspace "${notif.workspace?.name}" <span class="timestamp">${time}</span></a>`;
         break;
 
       case "discussion_started":
@@ -152,7 +152,7 @@ const unreadCount = notifications.filter((n) => n.is_read === false).length;
                 (notif.discussion === null
                   ? "a deleted discussion"
                   : "a discussion");
-        text = `<b>${notif.actor.full_name}</b> started a discussion "${discussionTitle || "Loading..."}" in workspace "${notif.workspace?.name}" <span class="timestamp">${time}</span>`;
+        text = `<a href="discussion-view?dcn=${notif.entity_id}"><b>${notif.actor.full_name}</b> started a discussion "${discussionTitle || "Loading..."}" in workspace "${notif.workspace?.name}" <span class="timestamp">${time}</span></a>`;
         break;
 
       default:

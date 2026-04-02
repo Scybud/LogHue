@@ -8,6 +8,15 @@ GLOBAL STATE
 let quill = null;
 let currentNoteId = null;
 let savednoteDetails = [];
+
+function setNotesLoading(state) {
+  const notesList = document.getElementById("notesList");
+  const editorContainer = document.getElementById("editorContainer");
+
+  notesList?.classList.toggle("isLoading", state);
+  editorContainer?.classList.toggle("isLoading", state);
+}
+
 /*
 --------------------------------
 INITIALIZE NOTES UI
@@ -15,6 +24,7 @@ INITIALIZE NOTES UI
 */
 function initNotes() {
   const editorContainer = document.getElementById("editorContainer");
+  setNotesLoading(true)
 
   // Safety check in case the container doesn't exist
   if (!editorContainer) return;
@@ -39,7 +49,7 @@ function initNotes() {
         ["code-block"],
       ],
     },
-    placeholder: "Write your note...",
+    placeholder: "Create your first note...",
     theme: "snow",
   });
 
@@ -70,6 +80,7 @@ function initNotes() {
   */
   const saveBtn = document.getElementById("saveNoteBtn");
   saveBtn.addEventListener("click", saveNote);
+  setNotesLoading(false)
 }
 
 initNotes();
@@ -110,6 +121,18 @@ async function loadNotes() {
   // Automatically open the most recent note
   if (notes.length > 0) {
     openNote(notes[0]);
+  } else {
+    // No notes left — reset editor
+    currentNoteId = null;
+
+    const titleInput = document.getElementById("noteTitle");
+    const editor = quill;
+
+    if (titleInput) titleInput.value = "";
+    if (editor) editor.root.innerHTML = "";
+
+    // Optional: show placeholder
+    editor.root.setAttribute("data-placeholder", "Create your first note...");
   }
 }
 
@@ -216,14 +239,33 @@ SAVE NOTE
 --------------------------------
 */
 async function saveNote() {
-
-  if (!currentNoteId) {
-    actionMsg("Create note or select a note first.", "error")
-    return;
-  }
-
   const title = document.getElementById("noteTitle").value;
   const content = quill.root.innerHTML;
+
+  if (!currentNoteId) {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      const { data, error } = await supabase
+        .from("personal_notes")
+        .insert({
+          user_id: user.id,
+          title: "Untitled",
+          content: content,
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      await loadNotes();
+      openNote(data);
+  }
+
 
   const { error } = await supabase
     .from("personal_notes")
@@ -292,10 +334,10 @@ async function attachDeletenoteEvent(noteToDelete, id) {
     // Add animation class
     noteToDelete.classList.add("removing");
 
+    await loadNotes()
     // Remove after animation ends
     setTimeout(() => {
       noteToDelete.remove();
-
     }, 550); // matches CSS transition time
       actionMsg("Note deleted successfully!", "success");
 
