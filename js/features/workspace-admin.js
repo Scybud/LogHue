@@ -789,7 +789,7 @@ function createLogElement(log) {
 // ACTIVITIES (READ‑ONLY)
 // -----------------------------
 export function loadActivities(activities, container) {
-  if(sessionState.plan.name === "free" || "Free") {
+  if (sessionState.plan.name === "free" || sessionState.plan.name === "Free") {
     container.innerHTML = `<p class="placeholderText">Workspace activities overview is not available on your current plan. <a href="https://loghue.com/pricing" target="_blank" rel="noopener">Upgrade</a> to see what is happening in your workspace at a glance.</p>`;
     return;
   }
