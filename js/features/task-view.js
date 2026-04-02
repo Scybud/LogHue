@@ -87,7 +87,7 @@ async function initTaskView() {
   
   if (!taskId) {
     document.getElementById("taskViewContent").innerHTML =
-    `<p class="placeholderText">Invalid task link.</p>`;
+    `<p class="placeholderText">Invalid task link. <a href="index">Go Home</a></p>`;
     return;
   }
   loadTask.remove;
