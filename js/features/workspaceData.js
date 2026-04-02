@@ -226,7 +226,7 @@ async function attachCreateWorkspaceEvent(container, workspaces) {
       return;
     }
 
-        if(workspaces.length >= sessionState.plan.max_workspaces ) {
+        if(workspaces.length >= sessionState.plan.max_workspaces && sessionState.plan.max_workspaces !== null) {
                     actionMsg("You have exceeded the limit for workspace creation on your current plan. Subscribe to a new plan to create more workspaces!", "error");
                     return;
         }
