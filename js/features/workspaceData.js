@@ -21,10 +21,10 @@ import { createDropdown } from "../ui.js";
 function getWorkspaceDropdown(ws) {
   if (ws.role === "admin"){
     return createDropdown([
-      { label: "Delete", action: () => deleteWorkspace(ws.id) },
-      { label: "Archive", action: () => archiveWorkspace(ws.id) },
-      { label: "Edit", action: () => editWorkspace(ws, ws.id) },
-      {label: "Open Workspace", action: () => openWorkspace(ws.id, ws.role)}
+      { label: "Delete ", action: () => deleteWorkspace(ws.id) },
+      { label: "Archive Workspace", action: () => archiveWorkspace(ws.id) },
+      { label: "Edit Workspace", action: () => editWorkspace(ws, ws.id) },
+      { label: "Open Workspace", action: () => openWorkspace(ws.id, ws.role) },
     ]);
   }
   if(ws.role === "member") {

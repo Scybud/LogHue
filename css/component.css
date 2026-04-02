@@ -408,7 +408,17 @@ button.danger {
 .card:hover {
   transform: translateY(-2px);
 }
-
+.dropdown-list button.dropdown-item, button.dropdown-item {
+  background: none;
+  color: var(--color);
+  text-align: left;
+}
+.dropdown-list button.dropdown-item:last-child {
+  color: #000;
+}
+.dropdown-list button.dropdown-item:last-child:hover {
+  background: rgb(255, 52, 52);
+}
 /*MODAL CONTAINER*/
 #modalContainer {
   overflow-y: hidden;
