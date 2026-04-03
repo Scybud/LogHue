@@ -40,10 +40,9 @@ export async function notifyUser({
   entityId,
   entityType,
 }) {
-  if (!receiverUserId) {
-    console.error("notifyUser called without receiverUserId");
-    return;
-  }
+  if (!receiverUserId) return;
+
+  // 1. Create in-app notification
   const { data: member } = await supabase
     .from("workspace_members")
     .select("id")
@@ -61,7 +60,19 @@ export async function notifyUser({
     entity_id: entityId,
     entity_type: entityType,
   });
+
+  // 2. Trigger push notification
+  await supabase.functions.invoke("trigger-push", {
+    body: {
+      receiver_user_id: receiverUserId,
+      workspace_id: workspaceId,
+      type,
+      entity_id: entityId,
+      entity_type: entityType,
+    },
+  });
 }
+
 
 //FETCH NOTIFICATIONS FROM DB
 export async function fetchNotificationsForUser() {

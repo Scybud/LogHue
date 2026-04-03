@@ -1,6 +1,7 @@
 import { sessionState } from "./session.js";
 import { supabase } from "./supabase.js";
 import {actionMsg} from "./utils/modals.js"
+import { registerPush, VAPID_PUBLIC_KEY } from "./push.js";
 
 async function initUserSettingsData() {
   const {
@@ -220,24 +221,19 @@ function saveNotifPreference(user) {
 }
 
 async function enablePushNotifications() {
-  const permission = await Notification.requestPermission();
-  if (permission !== "granted") return;
+  const subscription = await registerPush();
 
-  // Register service worker
-  const registration = await navigator.serviceWorker.register("https://app.loghue.com/sw.js");
+  if (subscription.error) {
+    actionMsg(subscription.error, "error");
+    return;
+  }
 
-  // Subscribe
-  const subscription = await registration.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: VAPID_PUBLIC_KEY
-  });
-
-  // Save subscription
+  // Save subscription in Supabase
   await supabase.from("push_subscriptions").insert({
     user_id: sessionState.user.id,
     endpoint: subscription.endpoint,
-    p256dh: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey("p256dh")))),
-    auth: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey("auth"))))
+    p256dh: subscription.keys.p256dh,
+    auth: subscription.keys.auth,
   });
 
   actionMsg("Push notifications enabled", "success");
@@ -259,6 +255,7 @@ async function disablePushNotifications() {
 
   actionMsg("Push notifications disabled", "success");
 }
+
 
 
 //ACCOUNT DELETION
