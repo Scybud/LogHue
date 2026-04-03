@@ -50,6 +50,12 @@ function loadData() {
   if (settingsAvatarEl && sessionState.profile.avatar_url) {
     settingsAvatarEl.src = sessionState.profile.avatar_url;
   }
+
+  //Notification preference
+    const checkbox = document.getElementById("enablePush");
+    checkbox.checked = sessionState.profile.push_enabled;
+
+    saveNotifPreference(sessionState.profile)
 }
 
 initUserSettingsData();
@@ -111,13 +117,13 @@ profilePhotoInput.addEventListener("change", () => {
 });
 
 //SAVE SETTINGS CHANGES
+const user = sessionState.user;
 const saveBtn = document.querySelector(".settingsSaveBtn");
 
 saveBtn.addEventListener("click", async () => {
   
 
   const updates = {};
-  const user = sessionState.user;
 
   const newName = document.getElementById("accName").value;
   const newEmail = document.getElementById("accEmail").value;
@@ -194,6 +200,66 @@ actionMsg("Check your inbox to confirm the new email", "success");
   });
   
   
+//Notifications
+function saveNotifPreference(user) {
+
+  const enablePush = document.getElementById("enablePush");
+  enablePush.addEventListener("change", async (e) => {
+  const enabled = e.target.checked;
+
+  //save preference
+  await supabase.from("profiles").update({push_enabled: enabled}).eq("id", user.id);
+  if (enabled) {
+    await enablePushNotifications();
+    actionMsg("Push notification enabled", "success")
+  } else {
+    await disablePushNotifications();
+        actionMsg("Push notification disabled", "success");
+  }
+})
+}
+
+async function enablePushNotifications() {
+  const permission = await Notification.requestPermission();
+  if (permission !== "granted") return;
+
+  // Register service worker
+  const registration = await navigator.serviceWorker.register("https://app.loghue.com/sw.js");
+
+  // Subscribe
+  const subscription = await registration.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: VAPID_PUBLIC_KEY
+  });
+
+  // Save subscription
+  await supabase.from("push_subscriptions").insert({
+    user_id: sessionState.user.id,
+    endpoint: subscription.endpoint,
+    p256dh: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey("p256dh")))),
+    auth: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey("auth"))))
+  });
+
+  actionMsg("Push notifications enabled", "success");
+}
+
+async function disablePushNotifications() {
+  const registration = await navigator.serviceWorker.getRegistration();
+  if (!registration) return;
+
+  const subscription = await registration.pushManager.getSubscription();
+  if (subscription) {
+    await subscription.unsubscribe();
+
+    await supabase
+      .from("push_subscriptions")
+      .delete()
+      .eq("user_id", sessionState.user.id);
+  }
+
+  actionMsg("Push notifications disabled", "success");
+}
+
 
 //ACCOUNT DELETION
 export async function deleteAccount() {
