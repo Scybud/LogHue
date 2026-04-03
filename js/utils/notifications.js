@@ -130,23 +130,42 @@ const unreadCount = notifications.filter((n) => n.is_read === false).length;
     if (!notif.is_read) notifEl.classList.add("unread"); // highlight unread
 
     if (notif.type === "task_assigned") {
-      const { data: task } = await supabase
+      let task = null;
+
+      try {
+        const { data } = await supabase
         .from("workspace_tasks")
         .select("title")
         .eq("id", notif.entity_id)
         .single();
+
+        task = data;
+      } catch (e) {
+        task = null;
+      }
+
       notif.task = task;
     }
 
     if (notif.type === "discussion_started") {
-      const { data: discussion } = await supabase
+      let discussion = null;
+
+      try {
+        const { data } = await supabase
         .from("discussions")
         .select("title")
         .eq("id", notif.entity_id)
         .single();
-      notif.discussion = discussion;
-    }
 
+        discussion = data;
+      } catch (e) {
+
+        discussion = null;
+      }
+
+        notif.discussion = discussion;
+    }
+      
     const time = formatDateTime(notif.created_at)
 
     // Customize text based on type
