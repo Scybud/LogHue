@@ -16,9 +16,6 @@
 
   --link: #0366d6;
 
-  --accent: #ff6b35;
-  --tag: var(--accent);
---success: #006239;
   --card-bg: #ffffff;
   --border: #dcdcdc;
 
@@ -53,9 +50,6 @@
   font-weight: 600;  
   --link: #0366d6;
 
-  --accent: #ff6b35;
-  --tag: var(--accent);
-
   --card-bg: #ffffff;
   --border: #dcdcdc;
 --success: #006239;
@@ -81,8 +75,6 @@
   --notif-text: #eee;
   --notif-border: #444;
   --link: #0393d6;
-  --tag: var(--accent);
-  --accent: #ff6b35;
   --card-bg: #111;
   --border: #333;
   --form-bg: #111;

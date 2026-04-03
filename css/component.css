@@ -41,8 +41,9 @@ select {
   max-height: 200px;
 }
 .inputField:focus {
-  border-color: var(--color);
+  border-color: var(--accent);
   background-color: var(--bg);
+  box-shadow: 0 0 3px var(--accent);
 }
 .inputField.error {
   border-color: red;
@@ -337,7 +338,7 @@ button.danger {
 
 /*BUTTONS*/
 .btn {
-  background: var(--accent);
+  background: var(--primary);
   padding: calc(var( --space-xs) * 3);
   border-radius: var(--radius);
   margin: 0 var(--space-xs);
@@ -366,7 +367,10 @@ button.danger {
   color: #000;
   background: var(--primary);
 }
-
+.btn.btn-primary:hover {
+  background: var(--primary-light);
+  opacity: 1;
+}
 .btn-secondary {
   background: var(--secondary);
   color: #fff;

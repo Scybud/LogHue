@@ -79,10 +79,33 @@
 .settingsToggleRow:last-child {
   border-bottom: none;
 }
-
+.btn {
+  background: var(--neutral);
+}
+.btn:hover {
+  opacity: 1;
+  color: #fff;
+  box-shadow: var(--shadow);
+  background-color: var(--bg-hover);
+}
+a.btn {
+  color: #000000;
+  text-decoration: none;
+}
 .settingsSaveBtn {
   display: block;
+  background: var(--primary);
   margin: calc(var(--space-md) + 4px) auto calc(var(--space-md) + 4px);
+}
+.btn-primary {
+  background: var(--primary);
+}
+.btn-primary:hover {
+  color: #000000;
+}
+.settingsSaveBtn:hover {
+  background: var(--primary-light);
+  color: #000000;
 }
 .settingsLongBtn {
   width: 100%;

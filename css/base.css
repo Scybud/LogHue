@@ -28,42 +28,56 @@ body {
 
 /*VARIABLES*/
 
-/*DARK THEME*/
+/*DEFAULT THEME*/
 :root {
   --bg: #000;
   --color: #fff;
-  --header-bg: rgba(128, 128, 128, 0.258);
-  --mainContent-bg: #1b1a1a;
-  --navBtn-bg: #222;
-  --active: #393838;
-  --primary: #eef271;
-  --secondary: #006239;
-  --link: #0393d6;
-  --tag: var(--accent);
-  --accent: #ff6b35;
-  --card-bg: #111;
-  --border: #333;
-  --form-bg: #111;
-  --input-bg: #1c1c1c;
-  --input-color: #ffffff;
---chevron-color: #c5c5c5;
---filter: blur(10px);
---danger:#e56458;
-  --notif-bg-unread: #1e3a5f;   /* dark blue for unread */
-  --notif-bg-read: #2c2c2c;     /* dark background for read */
-  --notif-text: #eee;
-  --notif-border: #444;
-  --border-light: #f3f4f633;
-
   --text: #fdfeff;
   --text-muted: #b2b7c0;
 
+  --card-bg: #111;
+  --mainContent-bg: #1b1a1a;
+  --navBtn-bg: #222;
+  --input-bg: #1c1c1c;
+  --border: #333;
+
+--primary: #1E88E5;
+--primary-light: #42A5F5;
+
+  --accent: #7c3aed;
+  --accent-hover: #6d28d9;
+
+  --gradient: linear-gradient(to right, #1e88e5, #42a5f5);
+
   --success: #10b981;
   --warning: #f59e0b;
+  --danger: #e56458;
+
+  --active: #393838;
+  --bg-hover: #201f1f;
+
+  --notif-bg-unread: #1e3a5f; /* dark blue for unread */
+  --notif-bg-read: #2c2c2c; /* dark background for read */
+  --notif-text: #eee;
+
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --radius: 8px;
+
+  --tag: #2a2a2a;
+--tag-text: #cfcfcf;
+
+  --header-bg: rgba(128, 128, 128, 0.258);
+  --secondary: #7c3aed;
+  --link: #0393d6;
+  --form-bg: #111;
+  --input-color: #ffffff;
+  --chevron-color: #c5c5c5;
+  --filter: blur(10px);
+  --notif-border: #444;
+  --border-light: #f3f4f633;
+
   --neutral: #9ca3af;
 
-  --bg-hover: #201f1f;
-  
   --brand-h: 17;
   --brand-s: 70%;
   --brand-l: 50%;
@@ -72,11 +86,6 @@ body {
   --brand-hover: hsl(var(--brand-h), var(--brand-s), 50%);
   --brand-soft: hsl(var(--brand-h), var(--brand-s), 90%);
 
-  
---shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-
---radius: 8px;
-
   --space-xs: 4px;
   --space-sm: 8px;
   --space-md: 16px;
@@ -84,10 +93,9 @@ body {
   --space-xl: 32px;
 }
 
-
 /*COMPACT INTERFACE DENSITY*/
 :root[data-density="compact"] {
-   --space-xs: 2px;
+  --space-xs: 2px;
   --space-sm: 4px;
   --space-md: 8px;
   --space-lg: 12px;
@@ -106,7 +114,8 @@ h2,
 h3,
 h4,
 h5,
-h6, .statsName{
+h6,
+.statsName {
   font-weight: 600;
   color: var(--color);
 }
@@ -121,6 +130,7 @@ a {
   text-decoration: none;
 }
 a:hover {
+    color: var(--accent);
   text-decoration: underline;
 }
 .logo {
@@ -128,8 +138,13 @@ a:hover {
   font-size: 1.6rem;
   color: #fff;
 }
+a .logo:hover {
+  text-decoration: none;
+}
 .logo span {
-  color: var(--accent);
+  background: var(--gradient);
+  background-clip: text;
+  color: transparent;
 }
 .emptyStateImg {
   width: 100%;
