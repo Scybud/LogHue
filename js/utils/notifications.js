@@ -131,17 +131,18 @@ const unreadCount = notifications.filter((n) => n.is_read === false).length;
 
     if (notif.type === "task_assigned") {
       let task = null;
-
+      
       try {
         const { data } = await supabase
         .from("workspace_tasks")
         .select("title")
         .eq("id", notif.entity_id)
-        .single();
-
+        .maybeSingle();
+        
         task = data;
       } catch (e) {
         task = null;
+        console.log(e)
       }
 
       notif.task = task;
@@ -155,7 +156,7 @@ const unreadCount = notifications.filter((n) => n.is_read === false).length;
         .from("discussions")
         .select("title")
         .eq("id", notif.entity_id)
-        .single();
+        .maybeSingle();
 
         discussion = data;
       } catch (e) {

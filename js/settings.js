@@ -153,12 +153,12 @@ saveBtn.addEventListener("click", async () => {
       return ;
     }
 
-actionMsg("Check your inbox to confirm the new email", "success");  
+actionMsg("Check your email inbox to confirm the new email", "success");  
 }
 
   //AVATAR CHANGED?
   if (pendingAvatarProfile) {
-    const filePath = `${user.id}-${Date.now()}.webp`;
+    const filePath = `${sessionState.user.id}-${Date.now()}.webp`;
 
     const { error: uploadError } = await supabase.storage
       .from("avatars")
@@ -183,18 +183,16 @@ actionMsg("Check your inbox to confirm the new email", "success");
     const { error } = await supabase
       .from("profiles")
       .update(updates)
-      .eq("id", user.id);
+      .eq("id", sessionState.user.id);
 
     if (error) {
          
-
       console.error(error);
       return;
     }
 
     actionMsg("Changes saved!", "success");
        
-
   }
 
   pendingAvatarProfile = null;
@@ -262,7 +260,6 @@ async function disablePushNotifications() {
 export async function deleteAccount() {
   const deleteAccountBtn = document.getElementById("deleteAccount");
   if (!deleteAccountBtn) return;
-console.log("delete")
 
   deleteAccountBtn.addEventListener("click", async () => {
     // Prevent double clicks 
