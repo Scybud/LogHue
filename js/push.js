@@ -11,7 +11,7 @@ function urlBase64ToUint8Array(base64) {
   return output;
 }
 
-async function registerPush() {
+export async function registerPush() {
   if (!("serviceWorker" in navigator)) {
     return { error: "Service workers not supported" };
   }
