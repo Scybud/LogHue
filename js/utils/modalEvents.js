@@ -379,29 +379,40 @@ export async function insertTaskLogUpdate(supabase, workspaceId) {
   const taskId = document.getElementById("taskLists").value;
   const status = document.getElementById("taskLogUpdateStatus").value;
   let note = document.getElementById("taskLogUpdateNote").value;
- 
-  if(!note) {
-alert("Please add a note about what you finished");
-   return;
-  } 
 
-  const { data, error } = await supabase
-    .from("workspace_task_logs")
-    .insert([
-      {
-        workspace_id: workspaceId,
-        task_id: taskId,
-        created_by: user.id,
-        task_status: status,
-        log_note: note,
-      },
-    ]);
+  if (!note) {
+    alert("Please add a note about what you finished");
+    return;
+  }
+
+  const { data, error } = await supabase.from("workspace_task_logs").insert([
+    {
+      workspace_id: workspaceId,
+      task_id: taskId,
+      created_by: user.id,
+      task_status: status,
+      log_note: note,
+    },
+  ]);
 
   if (error) {
     console.error("Insert error:", error);
     return;
   }
-
+  //push notif
+  const { pushNotifData, pushNotifError } = await supabase.functions.invoke(
+    "trigger-push",
+    {
+      body: {
+        workspace_id: workspaceId,
+        payload: {
+          title: "New log just logged",
+          body: "Someone logged an update on a task!",
+          url: "https://app.loghue.com/",
+        },
+      },
+    },
+  );
   note = "";
 
   closeModal();

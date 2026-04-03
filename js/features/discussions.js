@@ -41,7 +41,7 @@ export async function attachStartDiscussionEvent(ws, user) {
       return;
     }
 
-        const createdDiscussion = data[0];
+    const createdDiscussion = data[0];
 
     notifyWorkspace({
       workspaceId: ws.id,
@@ -51,6 +51,21 @@ export async function attachStartDiscussionEvent(ws, user) {
       entityType: "discussion",
     });
 
+    //push notif
+    const { pushNotifData, pushNotifError } = await supabase.functions.invoke(
+      "trigger-push",
+      {
+        body: {
+          workspace_id: ws.id,
+          payload: {
+            title: "Discussion just started",
+            body: "Someone started a discussion!",
+            url: "https://app.loghue.com/",
+          },
+        },
+      },
+    );
+
     closeModal();
-   });
+  });
 }
