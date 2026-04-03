@@ -831,10 +831,7 @@ export function loadActivities(activities, container) {
     const openBtn =
       item.type === "discussion"
         ? `
-        <a class="btn pageOpenLink btn-sm btn-primary"
-           href="https://app.loghue.com/discussion-view?dcn=${item.id}">
-           Open
-        </a>
+           onclick="window.location.href = 'https://app.loghue.com/discussion-view?dcn=${item.id}'"
       `
         : "";
 
@@ -851,8 +848,11 @@ export function loadActivities(activities, container) {
 
     <div class="activityTime">
       ${new Date(item.created_at).toLocaleString()}
-      ${openBtn}
-    </div>
+      </div>
+
+        <button class="btn pageOpenLink btn-sm btn-primary" ${openBtn}>
+           Open
+        </button>
   `;
 
     list.appendChild(div);
