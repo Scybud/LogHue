@@ -96,9 +96,7 @@ input[type="number"]::-webkit-inner-spin-button:hover {
   justify-content: flex-start;
   align-items: center;
 }
-.workspaceCard details:hover {
-  border: 1px solid var(--color);
-}
+
 .workspaceCard details summary::before {
   background-color: none;
   display: inline-block;
@@ -763,4 +761,41 @@ flex-direction: column;
   margin-top: 8px;
   font-size: 12px;
   color: var(--text-muted);
+}
+
+.warning {
+  background: var(--warning);
+  padding: var(--space-md);
+  border-radius: var(--radius);
+  margin: var(--space-sm);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #000;
+  font-weight: 600;
+  border: var(--border);
+  position: relative;
+}
+.warning .warningText {
+  margin: 0;
+  padding: 0;
+  font-size: 0.9rem;
+}
+.closeWarning {
+  background: none;
+  border: none;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: fit-content;
+  height: fit-content;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.closeWarning:hover {
+  opacity: 0.8;
 }

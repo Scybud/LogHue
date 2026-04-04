@@ -15,7 +15,7 @@ import { sessionReady, sessionState } from "./session.js";
 
 const recentLogs = document.getElementById("recentLogs");
 const upperDashboardContainer =  document.getElementById("upperDashboardContainer")
-
+const closeWarningBtn = document.getElementById("closeWarning");
 
 let createdWorkspaces;
 let closedWorkspaces;
@@ -26,24 +26,24 @@ let isLoading = false;
 // -------------------------------
 function setLoading(state) {
   isLoading = state;
-
+  
     upperDashboardContainer?.classList.toggle("isLoading", state);
-  recentLogs?.classList.toggle("isLoading", state);
+    recentLogs?.classList.toggle("isLoading", state);
 }
 
 export async function renderDashboard() {
   setLoading(true);
-
-    await new Promise(requestAnimationFrame);
+  
+  await new Promise(requestAnimationFrame);
     
   const workspacesReady = getWorkspaceReady();
 
 
   await workspacesReady;
-    await sessionReady;
+  await sessionReady;
 
 
-    const openedWorkspaces = savedWorkspaceData.filter(
+  const openedWorkspaces = savedWorkspaceData.filter(
       (ws) => ws.status === "active",
     );
 
@@ -63,8 +63,8 @@ export async function renderDashboard() {
     closedWorkspaces = savedWorkspaceData.filter(
      (ws) => ws.status === "closed",
    );
-
-    dataCount(activeWorkspaceCount, openedWorkspaces);
+   
+   dataCount(activeWorkspaceCount, openedWorkspaces);
     dataCount(createdWorkspacesCount, createdWorkspaces);
     dataCount(closedWorkspacesCount, closedWorkspaces);
 
@@ -87,7 +87,7 @@ export async function renderDashboard() {
   if (activeWorkspaces.length === 0) {
     upperDashboardContainer.innerHTML = `
      
- <svg
+    <svg
     class="emptyStateImg"
   viewBox="0 0 220 160"
   fill="none"
@@ -109,8 +109,8 @@ export async function renderDashboard() {
     height="40"
     rx="8"
     fill="none"y="106" width="60" height="10" rx="5" fill="#E0E0E6" />
-  <rect x="94" y="106" width="40" height="10" rx="5" fill="#E0E0E6" />
-
+    <rect x="94" y="106" width="40" height="10" rx="5" fill="#E0E0E6" />
+    
   <!-- Subtle background circles -->
   <circle cx="40" cy="26" r="4" fill="#FFE4D8" />
   <circle cx="190" cy="120" r="5" fill="#FFE4D8" />
@@ -149,6 +149,18 @@ export async function renderDashboard() {
 
 renderDashboard();
 
+warningLogic();
+function warningLogic() {
+  const warningState = localStorage.getItem("removeWarning");
+
+closeWarningBtn.addEventListener("click", () => {
+  localStorage.setItem("removeWarning", "removed");
+
+  document.querySelector(".warning").remove()
+});
+
+if(warningState)  document.querySelector(".warning").remove();
+}
 export function renderRecentLogs() {
   if (!recentLogs) return;
 
