@@ -152,6 +152,7 @@ renderDashboard();
 warningLogic();
 function warningLogic() {
   const warningState = localStorage.getItem("removeWarning");
+if (!closeWarningBtn) return;
 
 closeWarningBtn.addEventListener("click", () => {
   localStorage.setItem("removeWarning", "removed");
@@ -161,6 +162,8 @@ closeWarningBtn.addEventListener("click", () => {
 
 if(warningState)  document.querySelector(".warning").remove();
 }
+
+
 export function renderRecentLogs() {
   if (!recentLogs) return;
 
