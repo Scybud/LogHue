@@ -798,4 +798,5 @@ flex-direction: column;
 }
 .closeWarning:hover {
   opacity: 0.8;
+  cursor: pointer;
 }
