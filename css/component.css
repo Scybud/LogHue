@@ -453,6 +453,9 @@ button.danger {
   font-size: 2rem;
   font-weight: 600;
 }
+#statsContainer {
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
 @media (max-width: 600px) {
   #statsContainer {
     gap: 1px;
