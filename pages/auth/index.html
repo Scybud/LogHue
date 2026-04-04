@@ -45,6 +45,8 @@
 
       .authGateway .logo {
         width: 80px;
+        border-radius: var(--radius);
+        corner-shape: squircle;
         margin-bottom: 1rem;
       }
 
@@ -164,7 +166,11 @@
         width: 18px;
         height: 18px;
       }
-
+.emailLogin:hover {
+  background: none;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+}
       .form {
         margin-top: 50px;
         display: none;
@@ -253,7 +259,7 @@
           alt="LogHue Logo"
         />
 
-        <h1>Welcome to LogHue</h1>
+        <h1>Welcome to <span class="logo">Log<span>Hue</span></span></h1>
         <!-- GOOGLE -->
         <button class="oauthBtn google" id="googleAuth">
           <span class="icon">

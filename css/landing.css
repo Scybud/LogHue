@@ -255,6 +255,13 @@ aside.mobile-sidebar .nav-login:hover {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
+  transition: all 0.5s ease;
+}
+@media (max-width: 600px) {
+  .mock-sidebar {
+    width: 50px;
+    padding: var(--space-sm);
+  }
 }
 .mock-logo {
   width: 32px;
