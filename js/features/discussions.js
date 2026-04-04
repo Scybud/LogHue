@@ -1,5 +1,6 @@
 import { supabase } from "../supabase.js";
 import {closeModal} from "../ui.js"
+import { actionMsg } from "../utils/modals.js";
 import { notifyWorkspace } from "../utils/notifications.js";
 
 export async function attachStartDiscussionEvent(ws, user) {
@@ -65,7 +66,10 @@ export async function attachStartDiscussionEvent(ws, user) {
         },
       },
     );
-
+if(pushNotifError) {
+  console.error(pushNotifError);
+        actionMsg("Error sending push notification.", "error");
+}
     closeModal();
   });
 }

@@ -413,6 +413,10 @@ export async function insertTaskLogUpdate(supabase, workspaceId) {
       },
     },
   );
+  if (pushNotifError) {
+    console.error(pushNotifError);
+    actionMsg("Error sending push notification.", "error");
+  }
   note = "";
 
   closeModal();
