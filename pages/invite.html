@@ -81,7 +81,7 @@ const homeLink = document.querySelector(".homeLink")
     if (!user || authError) {
       // Save current URL so we can come back after login
       const redirectUrl = encodeURIComponent(window.location.href);
-      window.location.href = `https://app.loghue.com/auth/index?redirect=${redirectUrl}`;
+      window.location.href = `https://app.loghue.com/auth?redirect=${redirectUrl}`;
       return;
     }
 
