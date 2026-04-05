@@ -265,8 +265,9 @@ export async function requestAccountDeletion() {
     if (deleteAccountBtn.disabled) return;
     deleteAccountBtn.disabled = true;
 
+    // 1. Confirm FIRST — nothing happens unless user agrees
      confirmAction(
-       "We will send you an email with a confirmation link. Continue?",
+       "Are zou sure zou want to delete this account? We will send you an email with a confirmation link.",
        [
          { label: "Cancel", type: "cancel" },
          {
@@ -291,15 +292,7 @@ async function performAccountDeletionProcess() {
   // Prevent double clicks
   if (deleteAccountBtn.disabled) return;
 
-  // 1. Confirm FIRST — nothing happens unless user agrees
-  const confirmAction = confirm(
-    "Are you sure you want to delete this account? We will send you a confirmation link by email.",
-  );
 
-  if (!confirmAction) {
-    // User cancelled → do nothing
-    return;
-  }
 
   deleteAccountBtn.disabled = true;
 
