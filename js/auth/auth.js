@@ -185,22 +185,34 @@ export function attachSignoutEvents() {
 //OAuth funtion
 function setupOAuthButton(buttonId, provider) {
   const btn = document.getElementById(buttonId);
-
   if (!btn) return;
 
   btn.addEventListener("click", async () => {
+    // Read redirect param from current URL
+    const params = new URLSearchParams(window.location.search);
+    const redirectTo = params.get("redirect");
+
+    // Build callback URL with redirect param included
+    const callbackUrl = redirectTo
+      ? `https://app.loghue.com/auth/callback?redirect=${encodeURIComponent(
+          redirectTo,
+        )}`
+      : "https://app.loghue.com/auth/callback";
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: "https://app.loghue.com/auth/callback",
+        redirectTo: callbackUrl,
       },
     });
+
     if (error) {
       alert(`OAuth error: ${error.message}`);
       window.location.href = "https://app.loghue.com/auth";
     }
   });
 }
+
 
 //Implement OAuths
 
