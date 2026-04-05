@@ -1,6 +1,6 @@
 import { sessionState } from "./session.js";
 import { supabase } from "./supabase.js";
-import {actionMsg} from "./utils/modals.js"
+import {actionMsg, confirmAction} from "./utils/modals.js"
 import { registerPush, PUBLIC_VAPID_KEY } from "./push.js";
 
 async function initUserSettingsData() {
