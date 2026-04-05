@@ -207,8 +207,7 @@ function setupOAuthButton(buttonId, provider) {
     });
 
     if (error) {
-      alert(`OAuth error: ${error.message}`);
-      window.location.href = "https://app.loghue.com/auth";
+      actionMsg(`OAuth error: ${error.message}`);
     }
   });
 }
