@@ -303,12 +303,17 @@ async function performAccountDeletionProcess() {
     const email = session.user.email;
 
     // Call the public function
-    const { data, error } = await supabase.functions.invoke(
-      "request-account-deletion",
-      {
-        body: { email },
-      }
-    );
+   await fetch(
+     "https://qqactsebaxdottiiyrng.supabase.co/functions/v1/request-account-deletion",
+     {
+       method: "POST",
+       headers: {
+         "Content-Type": "application/json",
+       },
+       body: JSON.stringify({ email }),
+     },
+   );
+
 
     if (error) {
       console.error(error);
