@@ -267,7 +267,7 @@ export async function requestAccountDeletion() {
 
     // 1. Confirm FIRST — nothing happens unless user agrees
      confirmAction(
-       "Are zou sure zou want to delete this account? We will send you an email with a confirmation link.",
+       "Are you sure you want to delete this account? We will send you an email with a confirmation link.",
        [
          { label: "Cancel", type: "cancel" },
          {
