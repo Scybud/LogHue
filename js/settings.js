@@ -285,43 +285,75 @@ export async function requestAccountDeletion() {
 requestAccountDeletion();
 
 async function performAccountDeletionProcess() {
-
   const deleteAccountBtn = document.getElementById("deleteAccount");
   if (!deleteAccountBtn) return;
 
-   // Get current session (only to get email)
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+  // Prevent double clicks
+  if (deleteAccountBtn.disabled) return;
 
-    if (!session) {
-      actionMsg("You are not logged in.", "error");
+  // 1. Confirm FIRST — nothing happens unless user agrees
+  const confirmAction = confirm(
+    "Are you sure you want to delete this account? We will send you a confirmation link by email.",
+  );
+
+  if (!confirmAction) {
+    // User cancelled → do nothing
+    return;
+  }
+
+  deleteAccountBtn.disabled = true;
+
+  // 2. Get session (only to get email)
+  const {
+    data: { session },
+    error: sessionError,
+  } = await supabase.auth.getSession();
+
+  if (sessionError || !session) {
+    actionMsg("You are not logged in.", "error");
+    deleteAccountBtn.disabled = false;
+    return;
+  }
+
+  const email = session.user.email;
+
+  // 3. Call the public Edge Function using fetch()
+  try {
+    const res = await fetch(
+      "https://qqactsebaxdottiiyrng.supabase.co/functions/v1/request-account-deletion",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      },
+    );
+
+    // HTTP-level error
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      console.error("HTTP error:", errBody);
+      actionMsg(errBody.error || "Could not start deletion process.", "error");
       deleteAccountBtn.disabled = false;
       return;
     }
 
-    const email = session.user.email;
+    // Function-level response
+    const json = await res.json().catch(() => ({}));
 
-    // Call the public function
-   await fetch(
-     "https://qqactsebaxdottiiyrng.supabase.co/functions/v1/request-account-deletion",
-     {
-       method: "POST",
-       headers: {
-         "Content-Type": "application/json",
-       },
-       body: JSON.stringify({ email }),
-     },
-   );
-
-
-    if (error) {
-      console.error(error);
-      actionMsg("Could not start deletion process.", "error");
+    if (json.error) {
+      actionMsg(json.error, "error");
       deleteAccountBtn.disabled = false;
       return;
     }
 
+    // SUCCESS
     actionMsg("If this email exists, we sent a confirmation link.", "success");
+  } catch (err) {
+    console.error("Network error:", err);
+    actionMsg("Network error. Please try again.", "error");
+  } finally {
+    deleteAccountBtn.disabled = false;
+  }
 }
+
 
