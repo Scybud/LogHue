@@ -257,99 +257,63 @@ async function disablePushNotifications() {
 
 
 //ACCOUNT DELETION
-export async function deleteAccount() {
+export async function requestAccountDeletion() {
   const deleteAccountBtn = document.getElementById("deleteAccount");
   if (!deleteAccountBtn) return;
 
   deleteAccountBtn.addEventListener("click", async () => {
-    // Prevent double clicks 
-if (deleteAccountBtn.disabled) return;
-deleteAccountBtn.disabled = true;
+    if (deleteAccountBtn.disabled) return;
+    deleteAccountBtn.disabled = true;
 
-    const confirmAction = confirm(
-      "Are you sure you want to delete this account? This action cannot be undone.",
-    );
+     confirmAction(
+       "We will send you an email with a confirmation link. Continue?",
+       [
+         { label: "Cancel", type: "cancel" },
+         {
+           label: "Continue",
+           type: "confirm",
+           onClick: () =>
+             performAccountDeletionProcess(id, currentWorkspace.id, user),
+         },
+       ],
+     );
 
-    if (!confirmAction) {
-      
+    deleteAccountBtn.disabled = false;
+  });
+}
+
+requestAccountDeletion();
+
+async function performAccountDeletionProcess() {
+
+   // Get current session (only to get email)
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) {
+      actionMsg("You are not logged in.");
       deleteAccountBtn.disabled = false;
       return;
     }
 
-    try {
-      // Get current session
-      const {
-        data: { session },
-        error: sessionError,
-      } = await supabase.auth.getSession();
+    const email = session.user.email;
 
-      if (sessionError) {
-        console.error("Session error:", sessionError);
-        alert("Unable to get session.");
-        return;
+    // Call the public function
+    const { data, error } = await supabase.functions.invoke(
+      "request-account-deletion",
+      {
+        body: { email },
       }
+    );
 
-      if (!session) {
-        alert("You are not logged in.");
-        return;
-      }
-
-      const userId = session.user.id;
-
-      // Call Edge Function with auth header and proper body
-      const { data, error } = await supabase.functions.invoke(
-        "self-delete-user",
-        {
-          body: JSON.stringify({ user_id: userId }),
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-            apikey: supabase.supabaseKey,
-            "Content-Type": "application/json",
-          },
-        },
-      );
-
-
-
-      // Handle invocation-level error
-      if (error) {
-        console.error("Edge function invocation error:", error);
-        alert(error.message || "Failed to call delete function.");
-        return;
-      }
-
-      // Edge function returned data — inspect shape
-      // Expected success: { ok: true, rpc: {...}, storage: 'attempted', auth_deleted: true }
-      // Expected RPC error about active workspaces surfaced as { error: 'user owns X active workspace(s); aborting deletion' }
-      if (data?.error) {
-        // Show RPC-level or function-level error message
-        alert(data.error);
-        return;
-      }
-
-      if (data?.ok) {
-        // Successful full deletion
-        await supabase.auth.signOut();
-        alert("Account deleted successfully.");
-        window.location.href = "auth.html";
-        return;
-      }
-
-      // Partial success handling: show details if present
-      console.warn("Delete function returned unexpected response:", data);
-      const msg =
-        data?.rpc?.message ||
-        data?.auth_delete_error ||
-        "Account deletion did not complete. Check server logs.";
-      alert(msg);
-    } catch (err) {
-      console.error("Unexpected error:", err);
-      alert(err?.message || "Something went wrong.");
-    } finally {
-      
+    if (error) {
+      console.error(error);
+      actionMsg("Could not start deletion process.");
       deleteAccountBtn.disabled = false;
+      return;
     }
-  });
+
+    actionMsg("If this email exists, we sent a confirmation link.");
 }
-deleteAccount();
 

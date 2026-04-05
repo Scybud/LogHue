@@ -21,9 +21,6 @@ document.addEventListener("click", async (e) => {
 });
 
 //CHECK ADMIN ACCESS
-
-
-
 async function checkAdminAccess(workspaceId, user) {
   const { data: membership, error } = await supabase
   .from("workspace_members")
