@@ -273,7 +273,7 @@ export async function requestAccountDeletion() {
            label: "Continue",
            type: "confirm",
            onClick: () =>
-             performAccountDeletionProcess(id, currentWorkspace.id, user),
+             performAccountDeletionProcess(),
          },
        ],
      );
@@ -286,13 +286,16 @@ requestAccountDeletion();
 
 async function performAccountDeletionProcess() {
 
+  const deleteAccountBtn = document.getElementById("deleteAccount");
+  if (!deleteAccountBtn) return;
+
    // Get current session (only to get email)
     const {
       data: { session },
     } = await supabase.auth.getSession();
 
     if (!session) {
-      actionMsg("You are not logged in.");
+      actionMsg("You are not logged in.", "error");
       deleteAccountBtn.disabled = false;
       return;
     }
@@ -309,11 +312,11 @@ async function performAccountDeletionProcess() {
 
     if (error) {
       console.error(error);
-      actionMsg("Could not start deletion process.");
+      actionMsg("Could not start deletion process.", "error");
       deleteAccountBtn.disabled = false;
       return;
     }
 
-    actionMsg("If this email exists, we sent a confirmation link.");
+    actionMsg("If this email exists, we sent a confirmation link.", "success");
 }
 
