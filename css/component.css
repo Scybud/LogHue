@@ -397,6 +397,7 @@ button.danger {
   display: flex;
   align-items: center;
 }
+
 /*CARDS*/
 .card {
   background: var(--card-bg);
@@ -404,7 +405,6 @@ button.danger {
   margin: var(--space-sm) 0;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  border: 1px solid var(--border);
   transition: transform 0.2s ease;
 }
 .card:hover {

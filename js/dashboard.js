@@ -76,7 +76,7 @@ export async function renderDashboard() {
   upperDashboardContainer.innerHTML = "";
 
   const div = document.createElement("div");
-  div.classList.add("recentContainer");
+  div.classList.add("recentContainer", "double-grid");
 
 
   const activeWorkspaces = savedWorkspaceData.filter(

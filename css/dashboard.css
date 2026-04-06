@@ -120,6 +120,19 @@ h3 {
   gap: var(--space-md);
   margin-bottom: 40px;
 }
+.double-grid {
+  display: grid;
+  gap: var(--space-md);
+  grid-template-columns: 1fr 1fr;
+}
+.double-grid .card {
+  border: none;
+}
+@media (max-width: 1000px) {
+  .double-grid {
+    grid-template-columns: 1fr;
+  }
+}
 .grid .card {
   margin: 0;
   overflow-x: hidden;

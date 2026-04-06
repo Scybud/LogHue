@@ -15,7 +15,7 @@ await workspacesReady;
 
 
   const div = document.createElement("div");
-  div.classList.add("allWorkspaceContainer");
+  div.classList.add("allWorkspaceContainer", "double-grid");
   
   openedWorkspaces.forEach((wsData) => {
     const wsCard = createWorkspaceCardElement(wsData);
