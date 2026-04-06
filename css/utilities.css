@@ -75,7 +75,18 @@ header.pageHeader::-webkit-scrollbar-thumb:hover {
   height: 25px;
   stroke: currentColor;
 }
-
+.workspaceMemberMenuBtn {
+  position: absolute;
+  right: 0;
+  color: var(--primary);
+  background: none;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+.workspaceMemberMenuBtn:hover {
+  background: var(--bg-hover);
+}
 .menuBtn {
   padding: 0 var(--space-xs);
   font-size: 0.9rem;

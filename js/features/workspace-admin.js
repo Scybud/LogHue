@@ -4,6 +4,7 @@ import { supabase } from "../supabase.js";
 import { loadComponent, closeModal } from "../ui.js";
 import { openStartDiscussionModal } from "../utils/modals.js";
 import { sessionState } from "../session.js";
+import { createDropdown } from "../ui.js";
 
 export let currentWorkspace = null;
 export let loadedMembers = [];

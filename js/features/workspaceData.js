@@ -3,6 +3,7 @@ import { closeModal, loadComponent } from "../ui.js";
 import { supabase } from "../supabase.js";
 import { sessionState, sessionReady } from "../session.js";
 import { confirmAction, actionMsg } from "../utils/modals.js";
+import { createDropdown } from "../ui.js";
 
 if (window.__workspaceInit) {
   console.warn("workspaceData.js already initialized");
@@ -16,7 +17,6 @@ let createWorkspaceBtn;
 let upperDashboardContainer;
 export let savedWorkspaceData = [];
 
-import { createDropdown } from "../ui.js";
 
 function getWorkspaceDropdown(ws) {
   if (ws.role === "admin"){

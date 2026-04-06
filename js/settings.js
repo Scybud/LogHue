@@ -296,6 +296,7 @@ async function performAccountDeletionProcess() {
 
   deleteAccountBtn.disabled = true;
 
+
   // 2. Get session (only to get email)
   const {
     data: { session },
@@ -308,6 +309,19 @@ async function performAccountDeletionProcess() {
     return;
   }
 
+  
+    //GET CREATED WORKSPACES
+    const { data: createdWorkspaces, error: createdError } = await supabase
+      .from("workspaces")
+      .select("*")
+      .eq("created_by", session.user.id)
+      .order("created_at", { ascending: false });
+
+      if(createdWorkspaces.length >= 1) {
+actionMsg("Workspace ownership must be transfered before account deletion", "error");
+return;
+      }
+      
   const email = session.user.email;
 
   // 3. Call the public Edge Function using fetch()
