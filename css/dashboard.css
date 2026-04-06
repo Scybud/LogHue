@@ -228,7 +228,7 @@ section {
   background: var(--accent);
   color: #000000;
 }
-.dropdown-list .btn:nth-child(5) {
+.dropdown-list .btn:last-child {
   background-color: var(--danger);
 }
 .dropdown-list .btn:nth-child(5):hover {
@@ -236,7 +236,7 @@ section {
 }
 .dropdown-list .btn:hover {
   opacity: 1;
-  background: var(--brand);
+  background: var(--secondary);
 }
 .dropdown.open .dropdown-list {
   bottom: 0;
