@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <title>About | LogHue</title>
+
+   <link rel="stylesheet" href="./css/base.css" />
+   <link rel="stylesheet" href="./css/theme.css" />
+
+   <style>
+      body {
+         
+         color: var(--color);
+      }
+main {
+display: flex;
+         flex-direction: column;
+         align-items: center;
+         padding: 40px 20px;
+}
+        .backBtn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: sticky;
+        top: 30px;
+        left: 20px;
+        padding: 0 auto;
+        width: fit-content;
+        background: none;
+        color: var(--link);
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        background: var(--bg-hover);
+        transition: all 0.2s ease;
+      }
+      .backBtn:hover {
+         opacity: 0.8;
+                  transform: translate(-2px);
+
+      }
+      .backBtn:active {
+         transform: translate(-10px);
+      }
+      header {
+         width: 100%;
+         max-width: 900px;
+         text-align: center;
+         margin-bottom: 60px;
+      }
+
+      header h1 {
+         font-weight: 700;
+         margin-bottom: 0.4em;
+      }
+
+      header p {
+         font-size: 1.15rem;
+         opacity: 0.85;
+      }
+
+      section {
+         max-width: 900px;
+         width: 100%;
+         border-radius: var(--radius);
+         padding: var(--space-lg);
+                 background: var(--bg-hover);
+         margin-bottom: 60px;
+      }
+
+      h2 {
+         text-align: left;
+         font-weight: 600;
+      }
+
+      .about-block {
+         padding: 20px;
+         background: var(--background-secondary);
+         border-radius: 6px;
+      }
+
+      .footer {
+         background: #050505;
+         padding: var(--space-lg) var(--space-xl);
+         color: rgba(255, 255, 255, 0.6);
+         font-size: 0.85rem;
+      }
+
+      .footer-inner {
+         max-width: 1120px;
+         margin: 0 auto;
+         display: flex;
+         flex-wrap: wrap;
+         gap: var(--space-lg);
+         justify-content: space-between;
+      }
+
+      .logo {
+         font-weight: 700;
+         font-size: 1.6rem;
+         color: #fff;
+      }
+
+      .logo span {
+         background: var(--gradient);
+         background-clip: text;
+         color: transparent;
+      }
+
+      .footer-links {
+         display: flex;
+         gap: var(--space-xl);
+         flex-wrap: wrap;
+      }
+
+      .footer-links h4 {
+         margin-bottom: var(--space-xs);
+         font-size: 0.95rem;
+      }
+
+      .footer-links ul {
+         list-style: none;
+         padding: 0;
+         margin: 0;
+      }
+
+      .footer-links ul li {
+         margin-bottom: 4px;
+      }
+
+      .footer-links ul li a {
+         color: rgba(255, 255, 255, 0.6);
+         text-decoration: none;
+         transition: 0.2s;
+      }
+
+      .footer-links ul li a:hover {
+         color: var(--accent);
+      }
+
+      .footer-bottom {
+         width: 100%;
+         text-align: center;
+         margin-top: var(--space-lg);
+      }
+   </style>
+</head>
+
+<body>
+   <button type="button" class="btn backBtn btn-sm"> <!-- Back Icon -->
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+         <path d="M11.75 4.25L6 10L11.75 15.75" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+            stroke-linejoin="round" />
+      </svg>
+      <span>Back</span>
+   </button>
+
+   <main>
+
+      <header>
+         <h1>About LogHue</h1>
+      <p>
+         LogHue is a calm, modern workspace platform built for teams who want
+         clarity without the noise. Every part of LogHue is designed to feel
+         intentional, predictable, and ready for real work.
+      </p>
+   </header>
+
+   <section>
+      <h2>Why LogHue Exists</h2>
+      <div class="about-block">
+         <p>
+            Most task tools feel either bloated or unfinished. LogHue was created
+            to offer a clean middle ground — a workspace system that stays out of
+            your way while giving your team the structure it needs. No clutter, no
+            unnecessary complexity, just a calm environment where work feels
+            manageable.
+         </p>
+      </div>
+   </section>
+
+   <section>
+      <h2>Our Approach</h2>
+      <div class="about-block">
+         <p>
+            LogHue is built with a modular architecture, state‑aware UI, and
+            predictable workflows. Workspaces keep teams organized, tasks stay
+            structured, and updates sync instantly across devices. Everything is
+            designed to feel stable, consistent, and trustworthy from day one.
+         </p>
+      </div>
+   </section>
+
+   <section>
+      <h2>A Scybud Product</h2>
+      <div class="about-block">
+         <p>
+            LogHue is developed by Scybud — a builder‑driven studio focused on
+            creating honest, scalable, and accessible software. We believe in
+            clarity, minimalism, and tools that respect your time. No fake
+            features, no artificial upsells, just thoughtful products that help
+            people work better.
+         </p>
+      </div>
+   </section>
+
+   <section>
+      <h2>Who LogHue Is For</h2>
+      <div class="about-block">
+         <p>
+            LogHue is built for teams, agencies, founders, students, and
+            independent creators who want a workspace that feels calm and
+            predictable. Whether you're managing tasks, documenting knowledge, or
+            coordinating across projects, LogHue gives you a clean foundation to
+            build on.
+         </p>
+      </div>
+   </section>
+</main>
+   
+   <footer class="footer">
+      <div class="footer-inner">
+         <div class="footer-brand">
+            <div class="logo">Log<span>Hue</span></div>
+            <p>
+               Calm workspace management for modern teams. <br />
+               A Scybud Product
+            </p>
+         </div>
+
+         <div class="footer-links">
+            <a href="index">Home</a>
+
+            <div>
+               <h4>Product</h4>
+               <ul>
+                  <li><a href="/features">Features</a></li>
+                  <li><a href="/pricing">Pricing</a></li>
+               </ul>
+            </div>
+
+            <div>
+               <h4>Company</h4>
+               <ul>
+                  <li><a href="/about">About</a></li>
+                  <li><a href="mailto:scybudtech@gmail.com">Contact</a></li>
+               </ul>
+            </div>
+
+            <div>
+               <h4>Legal</h4>
+               <ul>
+                  <li><a href="legal/privacy-policy">Privacy Policy</a></li>
+                  <li><a href="legal/terms">Terms of Service</a></li>
+                  <li><a href="legal/impressum">Impressum</a></li>
+               </ul>
+            </div>
+
+            <div>
+               <h4>Scybud</h4>
+               <ul>
+                  <li><a href="/scybud-apps">Other apps</a></li>
+               </ul>
+            </div>
+         </div>
+
+         <div style="display: block;" class="backLinks">
+         
+            <!--FORGE:TO BACKLINK-->
+            <a href="https://forg.to/products/loghue" target="_blank" rel="noopener">
+               <img src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
+                  alt="LogHue - Upvote on Forg on forg." height="54" width="250" />
+            </a>
+         
+            <!--NEXTGEN TOOLS BACKLINK-->
+            <a href="https://www.nxgntools.com/tools/loghue?utm_source=loghue" target="_blank" rel="noopener"
+               style="display: inline-block; width: auto;">
+               <img src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON" alt="Featured on NextGen Tools" height="54"
+                  width="250" />
+            </a>
+         
+            <!--MARJETINGDB BACKLIN-->
+            <a href="https://marketingdb.live" target="_blank"><img src="https://marketingdb.live/badge.svg"
+                  alt="Listed on MarketingDB" width="250" height="54" /></a>
+         
+            <!--PRODUCT HINT BACKLINK-->
+            <a href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
+               target="_blank" rel="noopener noreferrer"><img
+                  alt="LogHue - See what is happening without chasing updates | Product Hunt" width="250" height="54"
+                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"></a>
+         
+         </div>
+         <div class="footer-bottom">
+            <p>&copy; 2026 LogHue. A Scybud Product. All rights reserved.</p>
+         </div>
+
+      </div>
+   </footer>
+
+   <script>
+      const backBtn = document.querySelector(".backBtn");
+
+      if(backBtn){
+         backBtn.addEventListener("click", () => {
+            window.history.back()
+         })
+      } 
+   </script>
+</body>
+
+</html>

@@ -28,13 +28,42 @@
 
     <style>
       body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 40px 20px;
+     
         color: var(--color);
       }
 
+      main {
+   display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 20px;
+      }
+
+      .backBtn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: sticky;
+        top: 30px;
+        left: 20px;
+        padding: 0 auto;
+        width: fit-content;
+        background: none;
+        color: var(--link);
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        background: var(--bg-hover);
+        transition: all 0.2s ease;
+      }
+      .backBtn:hover {
+         opacity: 0.8;
+                  transform: translate(-2px);
+
+      }
+      .backBtn:active {
+         transform: translate(-10px);
+      }
       header {
         width: 100%;
         max-width: 900px;
@@ -252,9 +281,19 @@ a.cta {
   </head>
 
   <body>
-    <header>
-      <h1>Simple, Transparent Pricing</h1>
-      <p>
+      <button type="button" class="btn backBtn btn-sm"> <!-- Back Icon -->
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M11.75 4.25L6 10L11.75 15.75" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+        <span>Back</span>
+      </button>
+
+      <main>
+
+        <header>
+          <h1>Simple, Transparent Pricing</h1>
+          <p>
         LogHue is built for teams, with a free tier that helps individuals and
         small groups get started.
       </p>
@@ -378,7 +417,7 @@ a.cta {
       <h2 style="font-size: 1.8rem; margin-bottom: 0.6em; font-weight: 600">
         Why Upgrade to Team?
       </h2>
-
+      
       <p style="opacity: 0.85; margin-bottom: 20px">
         Pro is built for teams that outgrow the limits of the Free and Team
         plans. If your workspace is becoming central to your team’s workflow,
@@ -480,11 +519,12 @@ a.cta {
         and collaboration. And Team unlocks full flexibility for teams that rely
         on LogHue every day.
       </p>
-
+      
       <p style="opacity: 0.85; line-height: 1.65; margin-top: 16px">
         We believe great tools should scale with you, not get in your way.
       </p>
     </section>
+  </main>
 
     <!-- FOOTER -->
     <footer class="footer">
@@ -529,25 +569,46 @@ a.cta {
         </div>
         </div>
 
-        <div class="backLinks">
-
+        <div style="display: block;" class="backLinks">
+        
           <!--FORGE:TO BACKLINK-->
           <a href="https://forg.to/products/loghue" target="_blank" rel="noopener">
-            <img src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded" alt="LogHue - Upvote on Forg on forg." height="48" />
+            <img src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded" alt="LogHue - Upvote on Forg on forg."
+              height="54" width="250" />
           </a>
-          
+        
           <!--NEXTGEN TOOLS BACKLINK-->
-          <a href="https://www.nxgntools.com/tools/loghue?utm_source=loghue" target="_blank" rel="noopener" style="display: inline-block; width: auto;">
-            <img src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON" alt="Featured on NextGen Tools" style="height: 48px; width: auto;" />
+          <a href="https://www.nxgntools.com/tools/loghue?utm_source=loghue" target="_blank" rel="noopener"
+            style="display: inline-block; width: auto;">
+            <img src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON" alt="Featured on NextGen Tools" height="54"
+              width="250" />
           </a>
-
-               <!--MARJETINGDB BACKLIN-->
-        <a href="https://marketingdb.live" target="_blank"><img src="https://marketingdb.live/badge.svg" alt="Listed on MarketingDB" width="190" height="44"/></a>
+        
+          <!--MARJETINGDB BACKLIN-->
+          <a href="https://marketingdb.live" target="_blank"><img src="https://marketingdb.live/badge.svg"
+              alt="Listed on MarketingDB" width="250" height="54" /></a>
+        
+          <!--PRODUCT HINT BACKLINK-->
+          <a href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
+            target="_blank" rel="noopener noreferrer"><img
+              alt="LogHue - See what is happening without chasing updates | Product Hunt" width="250" height="54"
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"></a>
+        
         </div>
           
         <div class="footer-bottom">
           <p>&copy; 2026 LogHue. A Scybud Product. All rights reserved.</p>
         </div>
     </footer>
+
+      <script>
+        const backBtn = document.querySelector(".backBtn");
+
+        if (backBtn) {
+          backBtn.addEventListener("click", () => {
+            window.history.back()
+          })
+        } 
+      </script>
   </body>
 </html>
