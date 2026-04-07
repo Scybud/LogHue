@@ -275,39 +275,27 @@ export async function attachAddMemberEvents(workspaceId) {
   };
 
   //SHARE INVITE LINK
- document
-   .getElementById("share-invite-link-btn")
-   .addEventListener("click", async () => {
-     const link = document.getElementById("invite-link-input").value;
+  document.getElementById("share-invite-link-btn").addEventListener("click", async () => {
+        const link = document.getElementById("invite-link-input").value;
+   const data = {
+      title: "Special invite to join my workspace",
+      text: "Click this invite link to join my workspace on LogHue:",
+      url: link
+    };
 
-     // Fetch the logo and convert it into a File object
-     const response = await fetch(
-       "https://loghue.com/assets/images/loghue-logo.png",
-     );
-     const blob = await response.blob();
-     const logoFile = new File([blob], "loghue-logo.png", { type: blob.type });
-
-     const data = {
-       title: "Special invite to join my workspace",
-       text: "Click this invite link to join my workspace on LogHue:",
-       url: link,
-       files: [logoFile],
-     };
-
-     if (navigator.canShare && navigator.canShare({ files: [logoFile] })) {
-       try {
-         await navigator.share(data);
-         actionMsg("Shared successfully", "success");
-       } catch (err) {
-         console.error("Share failed:", err);
-         actionMsg("Failed to share", "error");
-       }
-     } else {
-       actionMsg("Sharing with image not supported. Link copied instead.");
-       navigator.clipboard.writeText(link);
-     }
-   });
-
+    if (navigator.share) {
+      try {
+        await navigator.share(data);
+        actionMsg("Shared successfully", "success");
+      } catch (err) {
+        console.error("Share failed:", err);
+        actionMsg("Failed to share", "error")
+      }
+    } else {
+      // fallback
+      actionMsg("Sharing is not supported on this browser.");
+    }
+  })
 }
 
 export async function attachCreateLogEvent() {
