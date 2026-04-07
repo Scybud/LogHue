@@ -399,6 +399,13 @@ button.danger {
 }
 
 /*DROPDOWN STYLES*/
+.historyNavContainer {
+  width: 100%;
+}
+.navBtnDropdown {
+  width: 100%;
+  padding: var(--space-md);
+}
 .navBtnDropdown::before {
   content: "▲";
   transition: all 0.4s ease;

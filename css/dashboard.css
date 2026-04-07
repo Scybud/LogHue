@@ -23,7 +23,7 @@
 
 .navBtn,
 button.navBtn,
-.actionBtn {
+.actionBtn, .navBtnEx {
   background: none;
   border: none;
   padding: var(--space-sm);
