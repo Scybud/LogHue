@@ -26,6 +26,7 @@ button.navBtn,
 .actionBtn, .navBtnEx {
   background: none;
   border: none;
+  width: 100%;
   padding: var(--space-sm);
   font-size: 1rem;
   font-weight: 600;
@@ -36,6 +37,9 @@ button.navBtn,
   display: flex;
   align-items: center;
   gap: calc(var(--space-xs) + 1px);
+}
+.navBtnEx:hover {
+  background: var(--navBtn-bg);
 }
 .actionBtn {
   background: var(--navBtn-bg);

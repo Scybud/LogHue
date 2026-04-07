@@ -415,12 +415,13 @@ button.danger {
 }
 .historyNavs {
 height: 0;
+width: 100%;
 overflow: hidden;
 padding-left: var(--space-md);
 transition: all 0.4s ease;
 }
 .historyNavs.dropNav {
-  height: 115px;
+  height: 145px;
 }
 
 /*CARDS*/

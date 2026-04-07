@@ -5,6 +5,7 @@ import { loadComponent, closeModal } from "../ui.js";
 import { openStartDiscussionModal } from "../utils/modals.js";
 import { sessionState } from "../session.js";
 import { createDropdown } from "../ui.js";
+import {navDropdowns} from "../components/sidebar.js"
 
 export let currentWorkspace = null;
 export let loadedMembers = [];
@@ -107,6 +108,7 @@ export async function initAdminWorkspaceData() {
   }
 
   attachSidebarEvents();
+navDropdowns();
 
   const members = Array.isArray(workspace.workspace_members)
     ? workspace.workspace_members

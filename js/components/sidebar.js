@@ -18,16 +18,18 @@ export function attachSidebarEvents() {
     });
   });
 
-  navDropdowns();
 }
 
-function navDropdowns() {
+export function navDropdowns() {
    const navBtnDropdown = document.getElementById("navBtnDropdown");
    const historyNavs = document.querySelector(".historyNavs");
 
+   if(navBtnDropdown && historyNavs) {
+
      navBtnDropdown.addEventListener("click", () => {
        navBtnDropdown.classList.toggle("dropped");
-
+       
        historyNavs.classList.toggle("dropNav");
-     });
+      });
+    }
 }
