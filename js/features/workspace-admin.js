@@ -101,8 +101,11 @@ export async function initAdminWorkspaceData() {
   }
 
   if (workspace && adminWorkspaceDashboardContent) {
-    loadCreatedTasks(
-      workspace.workspace_tasks || [],
+    const allTasks = workspace.workspace_tasks;
+    //OPEN TASKS
+    const tasks = allTasks.filter((ts) => ts.status === "in progress");
+    loadTasks("Created Tasks",
+      tasks || [],
       adminWorkspaceDashboardContent,
     );
   }
@@ -277,22 +280,23 @@ const { error } = await supabase.from("workspace_members").delete().eq("user_id"
 async function renderSection(section, workspace, container) {
   if(!container) return;
   container.innerHTML = "";
-  const allLogs = workspace.workspace_tasks.flatMap((task) => {
-    return (task.logs || []).map((log) => ({
-      ...log,
-      task_title: task.title,
-      task_id: task.id,
-    }));
-  });
 
+  //GET TASKS DATA GLOBALLY
+  const allTasks = Array.isArray(workspace.workspace_tasks)
+    ? workspace.workspace_tasks
+    : [workspace.workspace_tasks];
+    
+    //Load data
+    const { data: allDiscussions, dcnError } = await supabase
+      .from("discussions")
+      .select(`*, profiles:created_by (full_name, avatar_url)`)
+      .eq("workspace_id", workspace.id);
 
   switch (section) {
     case "createdTasks":
-      const tasks = Array.isArray(workspace.workspace_tasks)
-        ? workspace.workspace_tasks
-        : [workspace.workspace_tasks];
-
-      loadCreatedTasks(tasks || [], container);
+      //OPEN TASKS
+      const tasks = allTasks.filter((ts) => ts.status === "in progress");
+      loadTasks("Created Tasks", tasks || [], container);
       break;
 
     case "members":
@@ -357,13 +361,10 @@ async function renderSection(section, workspace, container) {
       break;
 
     case "discussions":
-      //Load data
-      const { data: discussions, dcnError } = await supabase
-        .from("discussions")
-        .select(`*, profiles:created_by (full_name, avatar_url)`)
-        .eq("workspace_id", workspace.id);
-
-      loadDiscussions(discussions || [], container);
+      const discussions = allDiscussions.filter(
+        (dcns) => dcns.status === "open",
+      );
+      loadDiscussions("Discussions", discussions || [], container);
       break;
 
     case "inviteHistory":
@@ -374,6 +375,20 @@ async function renderSection(section, workspace, container) {
         .eq("workspace_id", workspace.id);
 
       loadInviteHistory(inviteHistory || [], container);
+      break;
+
+    case "taskHistory":
+      //Load data
+      const taskHistory = allTasks.filter((ts) => ts.status === "completed");
+
+      loadTasks("Tasks History", taskHistory || [], container);
+      break;
+
+    case "discussionHistory":
+      //Load data
+      const discussionHistory = allDiscussions.filter((dcns) => dcns.status === "closed");
+
+      loadDiscussions("Discussions History", discussionHistory || [], container);
       break;
   }
 }
@@ -491,7 +506,7 @@ statusCell.classList.add(statusClass)
 container.appendChild(table);
 }
 
-export function loadDiscussions(discussions, container) {
+export function loadDiscussions(title, discussions, container) {
   if (!discussions || discussions.length === 0) {
     container.innerHTML = `<p class="placeholderText">No discussions started yet.</p>`;
     return;
@@ -502,7 +517,7 @@ export function loadDiscussions(discussions, container) {
 
   const sectionTitle = document.createElement("h2");
   sectionTitle.classList.add("sectionTitle");
-  sectionTitle.textContent = "Discussions";
+  sectionTitle.textContent = title;
 
   const divGrid = document.createElement("div");
   divGrid.classList.add("container");
@@ -556,7 +571,7 @@ dcnHeader.append(img, span);
     dcnMeta.append(createdOn);
 
     const viewBtn = document.createElement("button");
-    viewBtn.classList.add("btn", "btn-sm", "btn-primary");
+    viewBtn.classList.add("btn", "btn-primary");
     viewBtn.textContent = "Open";
 
     viewBtn.addEventListener("click", (e) => {
@@ -577,9 +592,9 @@ dcnHeader.append(img, span);
 }
 
 
-export function loadCreatedTasks(tasks, container) {
+export function loadTasks(title, tasks, container) {
   if (!tasks || tasks.length === 0) {
-    container.innerHTML = `<p class="placeholderText">No tasks created yet.</p>`;
+    container.innerHTML = `<p class="placeholderText">No tasks yet.</p>`;
     return;
   }
 
@@ -588,7 +603,7 @@ export function loadCreatedTasks(tasks, container) {
 
   const sectionTitle = document.createElement("h2");
   sectionTitle.classList.add("sectionTitle");
-  sectionTitle.textContent = "Created Tasks";
+  sectionTitle.textContent = title;
 
   const divGrid = document.createElement("div");
   divGrid.classList.add("container");
@@ -631,7 +646,7 @@ export function loadCreatedTasks(tasks, container) {
     taskMeta.append(assignee, assignedOn);
 
     const viewBtn = document.createElement("button");
-    viewBtn.classList.add("btn", "btn-sm", "btn-primary");
+    viewBtn.classList.add("btn", "btn-primary");
     viewBtn.textContent = "View Task";
 
     viewBtn.addEventListener("click", (e) => {
@@ -850,7 +865,7 @@ export function loadActivities(activities, container) {
       ${new Date(item.created_at).toLocaleString()}
       </div>
 
-        <button class="btn pageOpenLink btn-sm btn-primary" ${openBtn}>
+        <button class="btn pageOpenLink btn-secondary" ${openBtn}>
            Open
         </button>
   `;
