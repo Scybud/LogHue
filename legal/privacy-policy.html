@@ -36,10 +36,36 @@
       color: var(--color);
     }
 
+     .backBtn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 30px;
+        left: 20px;
+        padding: 0 auto;
+        width: fit-content;
+        background: none;
+        color: var(--link);
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        background: var(--bg-hover);
+        transition: all 0.2s ease;
+      }
+      .backBtn:hover {
+         opacity: 0.8;
+                  transform: translate(-2px);
+
+      }
+      .backBtn:active {
+         transform: translate(-10px);
+      }
     header {
       width: 100%;
       max-width: 900px;
       margin-bottom: 40px;
+      margin-top: 40px;
       border-bottom: 1px solid var(--border);
       padding-bottom: 20px;
     }
@@ -138,11 +164,12 @@
   }
 
   .footer-links a {
-    color: var(--accent);
+        color: rgba(255, 255, 255, 0.6);
     text-decoration: none;
   }
 
   .footer-links a:hover {
+    color: var(--secondary);
     text-decoration: underline;
   }
 
@@ -154,6 +181,13 @@
 </head>
 
 <body>
+<button type="button" class="btn backBtn btn-sm"> <!-- Back Icon -->
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M11.75 4.25L6 10L11.75 15.75" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+      stroke-linejoin="round" />
+  </svg>
+  <span>Back</span>
+</button>
 
   <header>
     <h1>Privacy Policy</h1>
@@ -476,5 +510,14 @@
   </div>
 </footer>
 
+      <script>
+        const backBtn = document.querySelector(".backBtn");
+
+        if (backBtn) {
+          backBtn.addEventListener("click", () => {
+            window.history.back()
+          })
+        } 
+      </script>
 </body>
 </html>
