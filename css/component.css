@@ -398,6 +398,24 @@ button.danger {
   align-items: center;
 }
 
+/*DROPDOWN STYLES*/
+.navBtnDropdown::before {
+  content: "▲";
+  transition: all 0.4s ease;
+}
+.dropped::before {
+  rotate: -180deg;
+}
+.historyNavs {
+height: 0;
+overflow: hidden;
+padding-left: var(--space-md);
+transition: all 0.4s ease;
+}
+.historyNavs.dropNav {
+  height: 115px;
+}
+
 /*CARDS*/
 .card {
   background: var(--card-bg);
