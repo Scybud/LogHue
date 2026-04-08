@@ -185,3 +185,12 @@ text.textContent = "Menu"
 
   return container;
 }
+
+
+export function setLoading(state, container) {
+  let isLoading = false;
+  isLoading = state;
+  
+    container?.classList.toggle("isLoading", state);
+    container?.classList.toggle("isLoading", state);
+}

@@ -5,6 +5,7 @@ import {
 } from "./workspaceData.js";
 import { supabase } from "../supabase.js";
 import { confirmAction, actionMsg } from "../utils/modals.js";
+import { setLoading } from "../ui.js";
 
 
 function checkIfEmpty() {
@@ -57,12 +58,15 @@ function checkIfEmpty() {
   }
 }
 
-export async function renderHistory() {
+export async function renderArchive() {
+  const historyContainer = document.querySelector("#historyContainer");
+
+  setLoading(true, historyContainer)
+
     const workspacesReady = getWorkspaceReady();
   
   await workspacesReady;
 
-  const historyContainer = document.querySelector("#historyContainer");
   historyContainer.innerHTML = ""; // clear existing content
 
   const closedWorkspaces = savedWorkspaceData.filter(
@@ -140,10 +144,11 @@ export async function renderHistory() {
     historyContainer.appendChild(card);
   });
 
+  setLoading(false, historyContainer)
   restoreWorkspaceEvent();
 }
 
-renderHistory();
+renderArchive();
 checkIfEmpty();
 
 //RESTORE WORKSPACE
@@ -162,7 +167,7 @@ function restoreWorkspaceEvent() {
 }
 
 
-//ARCHEIVE WORKSPACE
+//RESTORE WORKSPACE
 async function restoreWorkspace(id) {
   confirmAction("Restore this workspace? Restoring workspace will allow access to the workspace, both for the admin(s) and member(s).", [
     { label: "Cancel", type: "cancel" },

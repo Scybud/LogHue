@@ -1,22 +1,14 @@
 import { dataCount } from "../utils.js";
 import { supabase } from "../supabase.js";
 import { sessionState, sessionReady } from "../session.js";
-import { openLogPersonalTaskModal } from "../utils/modals.js";
+import { actionMsg, openLogPersonalTaskModal } from "../utils/modals.js";
 import { confirmAction } from "../utils/modals.js";
+import {setLoading} from "../ui.js"
 
 let personalCreatedLogs = null;
 let loggedTasksCount = null;
 
 export let savedLogDetails = [];
-let isLoading = false;
-
-// -------------------------------
-// Loading State
-// -------------------------------
-function setLoading(state) {
-  isLoading = state;
-  personalCreatedLogs?.classList.toggle("isLoading", state);
-}
 
 // -------------------------------
 // Initialization
@@ -29,7 +21,7 @@ export async function initPersonalTasks() {
 
   loggedTasksCount = document.getElementById("loggedTasksCount");
 
-  setLoading(true);
+  setLoading(true, personalCreatedLogs);
 
   const { data, error } = await supabase
     .from("personal_tasks")
@@ -37,12 +29,12 @@ export async function initPersonalTasks() {
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
-  setLoading(false);
+  setLoading(false, personalCreatedLogs);
 
   if (error) {
     console.error(error);
-    alert(error.message);
-    return;
+actionMsg("Failed to load logs", "error");    
+return;
   }
 
   savedLogDetails = data || [];
