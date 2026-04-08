@@ -354,7 +354,7 @@ return;
     }
 
     // SUCCESS
-    actionMsg("If this email exists, we sent a confirmation link.", "success");
+    actionMsg(`If this email exists, we sent a confirmation link to ${email}.`, "success");
   } catch (err) {
     console.error("Network error:", err);
     actionMsg("Network error. Please try again.", "error");
