@@ -4,24 +4,24 @@
 const themeToggle = document.getElementById("themeToggle");
 
 themeToggle.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
+  document.body.classList.toggle("light");
 
   // Update button icon
-  themeToggle.textContent = document.body.classList.contains("dark")
+  themeToggle.textContent = document.body.classList.contains("light")
     ? "☀️"
     : "🌙";
 
   // Optional: save preference to localStorage
   localStorage.setItem(
     "theme",
-    document.body.classList.contains("dark") ? "dark" : "light",
+    document.body.classList.contains("light") ? "light" : "dark",
   );
 });
 
 // Load saved theme on page load
-if (localStorage.getItem("theme") === "dark") {
-  document.body.classList.add("dark");
-  themeToggle.textContent = "☀️";
+if (localStorage.getItem("theme") === "light") {
+  document.body.classList.add("light");
+  themeToggle.textContent = "🌙";
 }
 
 // ---------------------

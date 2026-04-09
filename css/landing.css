@@ -22,6 +22,29 @@
   --space-xl: 32px;
   --font-base: "Inter", sans-serif, system-ui;
 }
+body.light {
+  --bg: #ebebeb;
+  --color: #000000;
+  --header-bg: rgba(216, 216, 216, 0.85);
+  --main-bg: #e9e3e3;
+  --nav-btn-bg: #ffffff;
+  --primary: #027ab2;
+  --secondary: #4caf50;
+  --accent: #ff6b35;
+  --card-bg: #bebebe;
+  --border: #ffffff;
+  --form-bg: #c3c3c3;
+  --input-bg: #989696;
+  --input-color: #020202;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --radius: 12px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --font-base: "Inter", sans-serif, system-ui;
+}
 *,
 *::before,
 *::after {
@@ -68,13 +91,13 @@ body {
 }
 .nav a {
   text-decoration: none;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--color);
   font-size: 0.95rem;
   transition: 0.2s;
 }
 .nav a:hover {
   color: var(--primary);
-  color: #050505;
+  color: var(--bg);
   text-decoration: none;
 }
 .nav-login,
@@ -90,7 +113,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 aside.mobile-sidebar .nav-login:hover {
-  color: #050505;
+  color: var(--color);
 }
 .theme-toggle {
   background: transparent;
@@ -177,6 +200,7 @@ aside.mobile-sidebar .nav-login:hover {
   font-size: 2.6rem;
   margin-bottom: var(--space-md);
   line-height: 1.2;
+  color: rgba(255, 255, 255, 0.85);
 }
 .hero-text {
   font-size: 1rem;
