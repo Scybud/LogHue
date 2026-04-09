@@ -846,29 +846,50 @@ export function loadActivities(activities, container) {
     const openBtn =
       item.type === "discussion"
         ? `
-           onclick="window.location.href = 'https://app.loghue.com/discussion-view?dcn=${item.id}'"
+           window.location.href = 'https://app.loghue.com/discussion-view?dcn=${item.id}'
       `
         : "";
 
     const div = document.createElement("div");
     div.classList.add("activityItem");
 
-    div.innerHTML = `
-    <div class="activityHeader">
-      <img class="profileImg" src="${avatar}" />
-      <span class="actorName">${name} ${label}</span>
-    </div>
+    //ACTIVITY HEADER
+    const activityHeader = document.createElement("div")
+    activityHeader.classList.add("activityHeader")
 
-    <div class="activityBody">${body}</div>
+    const profileImg = document.createElement("img");
+    profileImg.classList.add("profileImg");
+    profileImg.src = avatar;
 
-    <div class="activityTime">
-      ${new Date(item.created_at).toLocaleString()}
-      </div>
+    const actorName = document.createElement("span");
+    actorName.classList.add("actorName");
+    actorName.textContent = `${name} ${label}`;
 
-        <button class="btn pageOpenLink btn-secondary" ${openBtn}>
-           Open
-        </button>
-  `;
+    activityHeader.append(profileImg, actorName);
+    
+//ACTIVITY BODY
+const activityBody = document.createElement("div")
+activityBody.classList.add("activityBody")
+activityBody.innerHTML = `${body}`
+
+//ACTIVITY TIME
+const activityTime = document.createElement("div")
+activityTime.classList.add("activityTime");
+activityTime.textContent = formatDateTime(item.created_at);
+
+//BUTTON
+const btn = document.createElement("button")
+btn.type = "button"
+btn.classList.add("btn", "pageOpenLink", "btn-secondary")
+btn.textContent = "Open"
+if (item.type === "discussion") {
+  btn.onclick = () => {
+    window.location.href = `https://app.loghue.com/discussion-view?dcn=${item.id}`
+  }
+}
+
+
+div.append(activityHeader, activityBody, activityTime, btn);
 
     list.appendChild(div);
   });
