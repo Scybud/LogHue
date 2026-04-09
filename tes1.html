@@ -1,103 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Document</title>
-   <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/dashboard.css">
+  <style>
+    body {
+      background: #111;
+      color: white;
+      font-family: sans-serif;
+    }
 
-   <style>
-:root {
-  --border: #e5e7eb;
-  --border-light: #f3f4f6;
+    /* Outer container (viewport) */
+    .scroller {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      box-sizing: border-box;
+      border: 2px solid #444;
+    }
 
-  --text: #fdfeff;
-  --text-muted: #6b7280;
+    /* Inner content wrapper */
+    .scroller-content {
+      display: inline-block;
+      padding-left: 100%;
+      /* Push first copy fully into view */
+      animation: scroll 10s linear infinite;
+    }
 
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
-  --neutral: #9ca3af;
+    /* Each content block */
+    .scroller-content span {
+      display: inline-block;
+      padding: 0 2rem;
+    }
 
-  --bg-hover: #201f1f;
-}
+    /* Keyframes for continuous movement */
+    @keyframes scroll {
+      0% {
+        transform: translateX(0);
+      }
 
-.navBtnDropdown::before {
-  content: "▲";
-  transition: all 0.4s ease;
-}
-.dropped::before {
-  rotate: -180deg;
-}
-.historyNavs {
-height: 0;
-overflow: hidden;
-padding-left: var(--space-md);
-transition: all 0.4s ease;
-}
-.historyNavs.dropNav {
-  height: 115px;
-}
-   </style>
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+  </style>
 </head>
+
 <body>
-   <main class="tableContainer">
 
-<div class="historyNavContainer">
-  <button class="navBtn navBtnDropdown" id="navBtnDropdown">
-Historys
-  </button>
-
-          <div class="historyNavs">
-
-            <!-- INVITE HISTORY BUTTON -->
-            <button class="navBtn" data-section="inviteHistory">
-              <span class="navIcon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2" />
-                  <path d="M12 8v4l2 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
-              <span class="navText">Invite History</span>
-            </button>
-            
-            <!-- TASK HISTORY BUTTON -->
-            <button class="navBtn" data-section="taskHistory">
-              <span class="navIcon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2" />
-                  <path d="M12 8v4l2 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
-              <span class="navText">Task History</span>
-            </button>
-            
-            <!-- DISCUSSION HISTORY BUTTON -->
-            <button class="navBtn" data-section="discussionHistory">
-              <span class="navIcon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2" />
-                  <path d="M12 8v4l2 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
-              <span class="navText">Discussion History</span>
-            </button>
-          </div>
-</div>
-</main>
-<script>
-  const navBtnDropdown = document.getElementById("navBtnDropdown")
-const historyNavs = document.querySelector(".historyNavs")
-
-  if(navBtnDropdown && historyNavs) {
-    navBtnDropdown.addEventListener("click", () => {
-      navBtnDropdown.classList.toggle("dropped")
-
-      historyNavs.classList.toggle("dropNav")
-    })
-  }
-</script>
+  <div class="scroller">
+    <div class="scroller-content">
+      <!-- Duplicate content for seamless loop -->
+      <span>🚀 This is a seamless infinite scroll</span>
+      <span>🚀 This is a seamless infinite scroll</span>
+    </div>
+  </div>
 
 </body>
+
 </html>
