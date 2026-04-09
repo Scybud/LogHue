@@ -58,7 +58,12 @@
 /* MOBILE SIDEBAR */
 @media (max-width: 800px) {
     .main {
-    grid-template-columns: minmax(70px, 70px) 1fr;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .mainContent {
+    width: 100%;
   }
   Button.menuBtn {
     display: none;
@@ -67,19 +72,21 @@
   padding-bottom: 30px;
 }
   .sidebarContainer {
-    left: 0;
-    top: 0;
-    width: 85%;
-    max-width: 70px;
+    width: 70px;
     height: 100% ;
-    transition: transform 0.35s ease;
+    transition: width 0.35s ease;
     border-right: 1px solid var(--border);
+  }
+  .sidebarContainer:hover {
+    width: 400px;
+  }
+  .sidebarContainer:hover .navText, .sidebarContainer:hover div.navSectionLabel {
+    display: block;
   }
   .sidebarContainer .navText, .sidebarContainer div.navSectionLabel {
     display: none;
   }
   .sidebarContainer span.navIcon {
-    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;

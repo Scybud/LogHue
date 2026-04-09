@@ -606,7 +606,7 @@ export function loadTasks(title, tasks, container) {
   sectionTitle.textContent = title;
 
   const divGrid = document.createElement("div");
-  divGrid.classList.add("container");
+  divGrid.classList.add("container", "double-grid");
 
   tasks.forEach((tsk) => {
     const taskCard = document.createElement("div");
