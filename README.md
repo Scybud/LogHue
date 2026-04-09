@@ -105,8 +105,8 @@ Core features are being refined, and backend systems like real-time updates and 
 
 ## 📷 Preview
 
-![Dashboard](image-url)
-![Workspace Dashobard](image-url)
+![Dashboard](/assets/images/dashboard-preview.png)
+![Workspace Dashobard](/assets/images/workspace-admin-dashboard.png)
 
 ---
 
