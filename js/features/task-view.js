@@ -27,74 +27,74 @@ document.addEventListener("DOMContentLoaded", initTaskView);
 const workspaceActivities = document.getElementById("workspaceActivities");
 
 async function loadWorkspaceActivities() {
-     const { data: logs, error } = await supabase
-       .from("workspace_task_logs")
-       .select(
-         `
+  const { data: logs, error } = await supabase
+    .from("workspace_task_logs")
+    .select(
+      `
     *,
     profiles:created_by (full_name, avatar_url),
     workspace_tasks:task_id (title)
   `,
-       )
-       .eq("workspace_id", currentWorkspace.id)
-       .order("created_at", { ascending: false });
+    )
+    .eq("workspace_id", currentWorkspace.id)
+    .order("created_at", { ascending: false });
 
-     const { data: actDcns, actDcnsError } = await supabase
-       .from("discussions")
-       .select(
-         `
+  const { data: actDcns, actDcnsError } = await supabase
+    .from("discussions")
+    .select(
+      `
     *,
     profiles:created_by (full_name, avatar_url)
   `,
-       )
-       .eq("workspace_id", currentWorkspace.id)
-       .order("created_at", { ascending: false });
+    )
+    .eq("workspace_id", currentWorkspace.id)
+    .order("created_at", { ascending: false });
 
-     const normalizedLogs = (logs || []).map((log) => ({
-       id: log.id,
-       type: "task_log",
-       actor: log.profiles,
-       title: log.workspace_tasks?.title,
-       note: log.log_note,
-       status: log.task_status,
-       created_at: log.created_at,
-     }));
+  const normalizedLogs = (logs || []).map((log) => ({
+    id: log.id,
+    type: "task_log",
+    actor: log.profiles,
+    title: log.workspace_tasks?.title,
+    note: log.log_note,
+    status: log.task_status,
+    created_at: log.created_at,
+  }));
 
-     const normalizedDiscussions = (actDcns || []).map((d) => ({
-       id: d.id,
-       type: "discussion",
-       actor: d.profiles,
-       title: d.title,
-       note: d.content,
-       status: null,
-       created_at: d.created_at,
-     }));
+  const normalizedDiscussions = (actDcns || []).map((d) => ({
+    id: d.id,
+    type: "discussion",
+    actor: d.profiles,
+    title: d.title,
+    note: d.content,
+    status: null,
+    created_at: d.created_at,
+  }));
 
-     const activities = [...normalizedLogs, ...normalizedDiscussions].sort(
-       (a, b) => new Date(b.created_at) - new Date(a.created_at),
-     );
+  const activities = [...normalizedLogs, ...normalizedDiscussions].sort(
+    (a, b) => new Date(b.created_at) - new Date(a.created_at),
+  );
 
-     loadActivities(activities, workspaceActivities)
-    }
-    
-    const reloadBtn = document.querySelector(".reloadBtn");
-    reloadBtn.addEventListener("click", () => {
-    window.location.reload();
-    })
+  loadActivities(activities, workspaceActivities);
+}
+
+const reloadBtn = document.querySelector(".reloadBtn");
+reloadBtn.addEventListener("click", () => {
+  window.location.reload();
+});
 async function initTaskView() {
   const params = new URLSearchParams(window.location.search);
   const taskId = params.get("task");
-  
+
   if (!taskId) {
     document.getElementById("taskViewContent").innerHTML =
-    `<p class="placeholderText">Invalid task link. <a href="index">Go Home</a></p>`;
+      `<p class="placeholderText">Invalid task link. <a href="index">Go Home</a></p>`;
     return;
   }
   loadTask.remove;
   await loadTask(taskId);
-  
+
   userRole = await getUserRole(currentWorkspace.id);
-  
+
   loadSidebar();
   renderTaskHeader();
   renderLogs();
@@ -208,10 +208,9 @@ function loadSidebar() {
 </nav>
 `;
 
-
-document.getElementById("closeSidebar").addEventListener("click", () => {
-  workspacePageSidebar.classList.toggle("show")
-});
+  document.getElementById("closeSidebar").addEventListener("click", () => {
+    workspacePageSidebar.classList.toggle("show");
+  });
 }
 
 /* ---------------------------------------------
@@ -320,52 +319,64 @@ function renderLogs() {
     const logCard = document.createElement("div");
     logCard.classList.add("logCard");
 
-    logCard.innerHTML = `
-      <div class="logHeader">
-        <img src="${log.profiles?.avatar_url || "/assets/default-avatar.png"}" class="profileImg" />
-        <div>
-          <span class="name">${log.profiles?.full_name || "Unknown User"}</span>
-          <div class="timestamp">${formatDateTime(log.created_at)}</div>
-        </div>
-      </div>
+    const header = document.createElement("div");
+    header.classList.add("logHeader");
 
-      <div class="logContent">${log.log_note}</div>
+    const avatar = document.createElement("img");
+    avatar.src = log.profiles?.avatar_url || "/assets/default-avatar.png";
+    avatar.className = "profileImg";
 
-      <div class="logMeta">
-        <span class="statusBadge">${log.task_status}</span>
-      </div>
+    const headerInfo = document.createElement("div");
+    const name = document.createElement("span");
+    name.classList.add("name");
+    name.textContent = log.profiles?.full_name || "Unknown User";
 
-      <div class="commentsThread">
-        ${renderCommentsHTML(log.comments)}
-      </div>
+    const timestamp = document.createElement("div");
+    timestamp.className = "timestamp";
+    timestamp.textContent = formatDateTime(log.created_at);
 
-      ${
-        isAdmin
-          ? `
-        <button class="iconBtn addCommentBtn" data-log="${log.id}">
+    headerInfo.append(name, timestamp);
+    header.append(avatar, headerInfo);
+
+    const content = document.createElement("div");
+    content.classList.add("logContent");
+    content.textContent = log.log_note;
+
+    const meta = document.createElement("div");
+    meta.classList.add("logMeta");
+    const status = document.createElement("span");
+    status.classList.add("statusBadge");
+    status.textContent = log.task_status;
+    meta.appendChild(status);
+
+    const thread = document.createElement("div");
+    thread.classList.add("commentsThread");
+    appendLogComments(log.comments, thread);
+
+    logCard.append(header, content, meta, thread);
+
+    if (isAdmin) {
+      const replyButton = document.createElement("button");
+      replyButton.className = "iconBtn addCommentBtn";
+      replyButton.dataset.log = log.id;
+      replyButton.innerHTML = `
         <svg
-  width="18"
-  height="18"
-  viewBox="0 0 24 24"
-  fill="none"
-  stroke="currentColor"
-  stroke-width="2"
-  stroke-linecap="round"
-  stroke-linejoin="round"
-  aria-hidden="true"
->
-  <path
-    d="M4 5h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"
-  />
-</svg>
- Comment
-      </button>
-      `
-          : ""
-      }
-
-      
-    `;
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M4 5h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z" />
+        </svg>
+        Comment
+      `;
+      logCard.appendChild(replyButton);
+    }
 
     feed.appendChild(logCard);
   });
@@ -373,22 +384,31 @@ function renderLogs() {
   attachCommentHandlers();
 }
 
-function renderCommentsHTML(comments) {
-  if (!comments || comments.length === 0) return "";
+function appendLogComments(comments, container) {
+  if (!comments || comments.length === 0) return;
 
-  return comments
-    .map(
-      (c) => `
-    <div class="comment">
-      <img src="${c.profiles?.avatar_url || "/assets/default-avatar.png"}" class="profileImg" />
-      <div class="commentBody">
-        <div>${c.comment}</div>
-        <div class="timestamp">${formatDateTime(c.created_at)}</div>
-      </div>
-    </div>
-  `,
-    )
-    .join("");
+  comments.forEach((c) => {
+    const commentEl = document.createElement("div");
+    commentEl.classList.add("comment");
+
+    const avatar = document.createElement("img");
+    avatar.src = c.profiles?.avatar_url || "/assets/default-avatar.png";
+    avatar.className = "profileImg";
+
+    const body = document.createElement("div");
+    body.classList.add("commentBody");
+
+    const text = document.createElement("div");
+    text.textContent = c.comment;
+
+    const time = document.createElement("div");
+    time.className = "timestamp";
+    time.textContent = formatDateTime(c.created_at);
+
+    body.append(text, time);
+    commentEl.append(avatar, body);
+    container.appendChild(commentEl);
+  });
 }
 
 /* ---------------------------------------------
@@ -477,7 +497,7 @@ function openInlineCommentBox(logId) {
     .querySelector(`.addCommentBtn[data-log="${logId}"]`)
     .closest(".logCard");
 
-    const box = document.createElement("div");
+  const box = document.createElement("div");
   box.classList.add("inlineCommentBox");
   box.innerHTML = `
     <textarea class="inputField commentInput" placeholder="Write a comment..."></textarea>
@@ -486,10 +506,10 @@ function openInlineCommentBox(logId) {
     <button class="primaryBtn submitInlineCommentBtn" data-log="${logId}">Submit</button>
     </div>
     `;
-    
-    
-    if (currentTask.status === "completed") {
-    commentError.textContent = "You cannot comment on tasks marked as completed.";
+
+  if (currentTask.status === "completed") {
+    commentError.textContent =
+      "You cannot comment on tasks marked as completed.";
     logCard.appendChild(commentError);
     return;
   }

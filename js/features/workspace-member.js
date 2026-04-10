@@ -1,8 +1,7 @@
 import { attachSidebarEvents } from "./../components/sidebar.js";
 import { supabase } from "../supabase.js";
 import { closeModal } from "../ui.js";
-import { openLogTaskModal,   openStartDiscussionModal
- } from "../utils/modals.js";
+import { openLogTaskModal, openStartDiscussionModal } from "../utils/modals.js";
 import { sessionState } from "../session.js";
 
 export let currentWorkspace = null;
@@ -75,9 +74,14 @@ export async function initMemberWorkspaceData() {
   const workspaceName = document.getElementById("workspaceName");
 
   if (workspaceName) {
-    workspaceName.innerHTML = `${workspace.name} <span class="tag">Member</span>`;
+    workspaceName.textContent = workspace.name;
+    const memberTag = document.createElement("span");
+    memberTag.className = "tag";
+    memberTag.textContent = "Member";
+    workspaceName.appendChild(document.createTextNode(" "));
+    workspaceName.appendChild(memberTag);
   }
-document.title = `${workspace.name} | LogHue` ;
+  document.title = `${workspace.name} | LogHue`;
 
   const {
     data: { user },
@@ -93,16 +97,15 @@ document.title = `${workspace.name} | LogHue` ;
     loadAssignedTasks(myTasks || [], container);
   }
 
-  
   attachSidebarEvents();
-  
+
   loadedMembers = Array.isArray(workspace.workspace_members)
-  ? workspace.workspace_members
-  : [workspace.workspace_members];
-  
+    ? workspace.workspace_members
+    : [workspace.workspace_members];
+
   workspace.workspace_tasks = workspace.workspace_tasks || [];
 
-    openStartDiscussionModal(currentWorkspace, user);
+  openStartDiscussionModal(currentWorkspace, user);
   openLogTaskModal(supabase, workspaceId, user.id);
 }
 
@@ -110,13 +113,13 @@ document.title = `${workspace.name} | LogHue` ;
 // SECTION RENDERER
 // -----------------------------
 async function renderSection(section, workspace, container) {
-  if(!container) return;
+  if (!container) return;
   container.innerHTML = "";
 
- const { data: userData } = await supabase.auth.getUser();
- if (!userData?.user) return null;
+  const { data: userData } = await supabase.auth.getUser();
+  if (!userData?.user) return null;
 
- currentUser = userData;
+  currentUser = userData;
 
   switch (section) {
     case "myTasks":
@@ -191,13 +194,13 @@ async function renderSection(section, workspace, container) {
       break;
 
     case "discussions":
-         //Load data
-            const { data: discussions, dcnError } = await supabase
-              .from("discussions")
-              .select(`*, profiles:created_by (full_name, avatar_url)`)
-              .eq("workspace_id", workspace.id)
-      
-            loadDiscussions(discussions || [], container);
+      //Load data
+      const { data: discussions, dcnError } = await supabase
+        .from("discussions")
+        .select(`*, profiles:created_by (full_name, avatar_url)`)
+        .eq("workspace_id", workspace.id);
+
+      loadDiscussions(discussions || [], container);
       break;
   }
 }
@@ -233,13 +236,15 @@ export function loadDiscussions(discussions, container) {
 
     const img = document.createElement("img");
     img.classList.add("profileImg");
-    img.src = discussions.profiles?.avatar_url || "https://loghue.com/assets/images/default_profile.png";
+    img.src =
+      discussions.profiles?.avatar_url ||
+      "https://loghue.com/assets/images/default_profile.png";
 
-    const span = document.createElement("span")
+    const span = document.createElement("span");
     span.classList.add("actorName");
     span.textContent = dcn.profiles?.full_name || "Unknown User";
 
-dcnHeader.append(img, span);
+    dcnHeader.append(img, span);
 
     const dcnTitle = document.createElement("h3");
     dcnTitle.classList.add("taskTitle");
@@ -327,9 +332,7 @@ export function loadAssignedTasks(tasks, container) {
 
     const assignee = document.createElement("p");
     assignee.classList.add("meta");
-    assignee.textContent = tsk.assigned_to
-      ? `Assigned to: Me`
-      : "Unassigned";
+    assignee.textContent = tsk.assigned_to ? `Assigned to: Me` : "Unassigned";
 
     const assignedOn = document.createElement("p");
     assignedOn.classList.add("meta");
@@ -489,9 +492,9 @@ export function loadActivities(activities, container) {
 
   activities.forEach((item) => {
     const actor = item.actor;
-    const avatar = actor?.avatar_url || "https://loghue.com/assets/default-avatar.png";
+    const avatar =
+      actor?.avatar_url || "https://loghue.com/assets/default-avatar.png";
     const name = actor?.full_name || "Unknown User";
-
 
     const label =
       item.type === "task_log"
@@ -542,7 +545,6 @@ export function loadActivities(activities, container) {
   container.append(section);
 }
 
-
 // -----------------------------
 // UTIL
 // -----------------------------
@@ -556,5 +558,3 @@ export function formatDateTime(isoString) {
     minute: "2-digit",
   });
 }
-
-

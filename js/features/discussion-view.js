@@ -12,9 +12,9 @@ GET USER ROLE
 async function getUserRole(workspaceId) {
   const { data: userData } = await supabase.auth.getUser();
   if (!userData?.user) return null;
-  
-  currentUser = userData
-  
+
+  currentUser = userData;
+
   const { data, error } = await supabase
     .from("workspace_members")
     .select("role")
@@ -25,7 +25,6 @@ async function getUserRole(workspaceId) {
   if (error) return null;
   return { userId: userData.user.id, role: data.role };
 }
-
 
 const workspaceActivities = document.getElementById("workspaceActivities");
 
@@ -97,14 +96,13 @@ async function initDiscussionView() {
     "discussionViewContent",
   );
   if (!discussionId && discussionViewContent) {
-    discussionViewContent.innerHTML =
-    `<p class="placeholderText">Invalid discussion link.</p>`;
+    discussionViewContent.innerHTML = `<p class="placeholderText">Invalid discussion link.</p>`;
     return;
   }
 
   await loadDiscussion(discussionId);
   userRole = await getUserRole(currentWorkspace.id);
-  
+
   loadSidebar();
   renderDiscussionHeader();
   renderComments();
@@ -113,7 +111,7 @@ async function initDiscussionView() {
   attachMarkDoneHandler(discussionId);
 }
 
- function loadSidebar() {
+function loadSidebar() {
   const workspacePageSidebar = document.getElementById("workspacePageSidebar");
   const isAdmin = userRole.role === "admin" || userRole.role === "owner";
 
@@ -148,7 +146,7 @@ async function initDiscussionView() {
  <nav class="sidebarNav">
  <!-- WORKSPACE -->
  ${
-  isAdmin
+   isAdmin
      ? `<a href="workspace-dashboard-admin?ws=${currentWorkspace.id}" class="navBtn" data-section="index" id="dashboardLink">
       <span class="navIcon">
         <!-- Back  Icon -->
@@ -218,10 +216,9 @@ async function initDiscussionView() {
 </nav>
 `;
 
-
-document.getElementById("closeSidebar").addEventListener("click", () => {
-  workspacePageSidebar.classList.toggle("show")
-});
+  document.getElementById("closeSidebar").addEventListener("click", () => {
+    workspacePageSidebar.classList.toggle("show");
+  });
 }
 /* ---------------------------------------------
    LOAD DISCUSSION + COMMENTS
@@ -229,7 +226,8 @@ document.getElementById("closeSidebar").addEventListener("click", () => {
 async function loadDiscussion(discussionId) {
   const { data, error } = await supabase
     .from("discussions")
-    .select(`
+    .select(
+      `
       *,
       profiles:created_by (id, full_name, avatar_url),
       workspace:workspace_id (id, name),
@@ -246,7 +244,8 @@ async function loadDiscussion(discussionId) {
           profiles:created_by (full_name, avatar_url)
         )
       )
-    `)
+    `,
+    )
     .eq("id", discussionId)
     .single();
 
@@ -331,52 +330,78 @@ function renderComments() {
     const card = document.createElement("div");
     card.classList.add("commentCard");
 
-    card.innerHTML = `
-      <div class="commentHeader">
-        <img src="${comment.profiles?.avatar_url || "/assets/default-avatar.png"}" class="profileImg" />
-        <div>
-          <span class="name">${comment.profiles?.full_name || "Unknown User"}</span>
-          <div class="timestamp">${formatDateTime(comment.created_at)}</div>
-        </div>
-      </div>
+    const header = document.createElement("div");
+    header.classList.add("commentHeader");
 
-      <div class="commentContent">${comment.comment}</div>
+    const avatar = document.createElement("img");
+    avatar.src = comment.profiles?.avatar_url || "/assets/default-avatar.png";
+    avatar.className = "profileImg";
 
-      <div class="commentMeta">
-        <span class="statusBadge">${comment.discussion_status}</span>
-      </div>
+    const headerInfo = document.createElement("div");
+    const name = document.createElement("span");
+    name.classList.add("name");
+    name.textContent = comment.profiles?.full_name || "Unknown User";
 
-      <div class="commentsThread">
-        ${renderRepliesHTML(comment.replies)}
-      </div>
+    const timestamp = document.createElement("div");
+    timestamp.className = "timestamp";
+    timestamp.textContent = formatDateTime(comment.created_at);
 
-      <button class="iconBtn addCommentBtn" data-comment="${comment.id}">
-        Reply
-      </button>
-    `;
+    headerInfo.appendChild(name);
+    headerInfo.appendChild(timestamp);
+    header.append(avatar, headerInfo);
 
+    const content = document.createElement("div");
+    content.classList.add("commentContent");
+    content.textContent = comment.comment;
+
+    const meta = document.createElement("div");
+    meta.classList.add("commentMeta");
+    const status = document.createElement("span");
+    status.classList.add("statusBadge");
+    status.textContent = comment.discussion_status;
+    meta.appendChild(status);
+
+    const thread = document.createElement("div");
+    thread.classList.add("commentsThread");
+    renderReplies(comment.replies, thread);
+
+    const replyButton = document.createElement("button");
+    replyButton.className = "iconBtn addCommentBtn";
+    replyButton.dataset.comment = comment.id;
+    replyButton.textContent = "Reply";
+
+    card.append(header, content, meta, thread, replyButton);
     feed.appendChild(card);
   });
 
   attachInlineReplyHandlers();
 }
 
-function renderRepliesHTML(replies) {
-  if (!replies?.length) return "";
+function renderReplies(replies, container) {
+  if (!replies?.length) return;
 
-  return replies
-    .map(
-      (r) => `
-      <div class="comment reply">
-        <img src="${r.profiles?.avatar_url || "/assets/default-avatar.png"}" class="profileImg" />
-        <div class="commentBody">
-          <div>${r.comment}</div>
-          <div class="timestamp">${formatDateTime(r.created_at)}</div>
-        </div>
-      </div>
-    `
-    )
-    .join("");
+  replies.forEach((reply) => {
+    const replyElement = document.createElement("div");
+    replyElement.classList.add("comment", "reply");
+
+    const avatar = document.createElement("img");
+    avatar.src = reply.profiles?.avatar_url || "/assets/default-avatar.png";
+    avatar.className = "profileImg";
+
+    const body = document.createElement("div");
+    body.classList.add("commentBody");
+
+    const text = document.createElement("div");
+    text.textContent = reply.comment;
+
+    const timestamp = document.createElement("div");
+    timestamp.className = "timestamp";
+    timestamp.textContent = formatDateTime(reply.created_at);
+
+    body.append(text, timestamp);
+    replyElement.append(avatar, body);
+    container.appendChild(replyElement);
+  });
 }
 
 /* ---------------------------------------------
@@ -385,18 +410,18 @@ function renderRepliesHTML(replies) {
 function attachCommentSubmitHandler() {
   const btn = document.getElementById("submitCommentBtn");
   const input = document.getElementById("commentInput");
-  
+
   if (!btn || !input) return;
 
   const isClosed = currentDiscussion.status === "closed";
 
-    if ( isClosed) {
-      btn.remove();
+  if (isClosed) {
+    btn.remove();
     input.remove();
     return;
   }
-   
-   btn.addEventListener("click", async () => {
+
+  btn.addEventListener("click", async () => {
     const note = input.value.trim();
     if (!note) return;
 
@@ -444,7 +469,9 @@ function attachMarkDoneHandler(discussionId) {
 --------------------------------------------- */
 function attachInlineReplyHandlers() {
   document.querySelectorAll(".addCommentBtn").forEach((btn) => {
-    btn.addEventListener("click", () => openInlineReplyBox(btn.dataset.comment));
+    btn.addEventListener("click", () =>
+      openInlineReplyBox(btn.dataset.comment),
+    );
   });
 }
 
@@ -475,8 +502,12 @@ function openInlineReplyBox(commentId) {
 
   card.appendChild(box);
 
-  box.querySelector(".cancelCommentBtn").addEventListener("click", () => box.remove());
-  box.querySelector(".submitInlineCommentBtn").addEventListener("click", submitInlineReply);
+  box
+    .querySelector(".cancelCommentBtn")
+    .addEventListener("click", () => box.remove());
+  box
+    .querySelector(".submitInlineCommentBtn")
+    .addEventListener("click", submitInlineReply);
 }
 
 async function submitInlineReply(e) {
@@ -488,13 +519,11 @@ async function submitInlineReply(e) {
 
   const { data: userData } = await supabase.auth.getUser();
 
-  const { error } = await supabase
-    .from("discussion_comment_comments")
-    .insert({
-      comment_id: commentId,
-      created_by: userData.user.id,
-      comment: text,
-    });
+  const { error } = await supabase.from("discussion_comment_comments").insert({
+    comment_id: commentId,
+    created_by: userData.user.id,
+    comment: text,
+  });
 
   if (error) {
     alert("Failed to add reply.");

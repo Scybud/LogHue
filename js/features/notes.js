@@ -1,5 +1,6 @@
 import { supabase } from "../supabase.js";
 import { confirmAction, actionMsg } from "../utils/modals.js";
+import { sanitizeHTML } from "../utils.js";
 /*
 --------------------------------
 GLOBAL STATE
@@ -24,7 +25,7 @@ INITIALIZE NOTES UI
 */
 function initNotes() {
   const editorContainer = document.getElementById("editorContainer");
-  setNotesLoading(true)
+  setNotesLoading(true);
 
   // Safety check in case the container doesn't exist
   if (!editorContainer) return;
@@ -38,7 +39,7 @@ function initNotes() {
   /*
   Create Quill AFTER editor exists in DOM
   */
-   quill = new Quill("#editor", {
+  quill = new Quill("#editor", {
     modules: {
       toolbar: [
         [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -72,7 +73,6 @@ function initNotes() {
     }
   });
 
-
   loadNotes();
   deleteNote();
   /*
@@ -80,11 +80,10 @@ function initNotes() {
   */
   const saveBtn = document.getElementById("saveNoteBtn");
   saveBtn.addEventListener("click", saveNote);
-  setNotesLoading(false)
+  setNotesLoading(false);
 }
 
 initNotes();
-
 
 /*
 --------------------------------
@@ -92,7 +91,6 @@ LOAD USER NOTES
 --------------------------------
 */
 async function loadNotes() {
-
   const {
     data: { user },
     error: authError,
@@ -136,7 +134,6 @@ async function loadNotes() {
   }
 }
 
-
 /*
 --------------------------------
 RENDER NOTES LIST
@@ -151,13 +148,13 @@ function renderNotesList(notes) {
   notes.forEach((note) => {
     const item = document.createElement("div");
     item.classList.add("noteItem");
-  item.dataset.id = note.id;
+    item.dataset.id = note.id;
 
     const noteTitle = note.title || "Untitled";
 
-    const deleteBtn = document.createElement("button")
-    deleteBtn.type = "button"
-    deleteBtn.classList.add("deleteBtn", "btn", "btn-sm")
+    const deleteBtn = document.createElement("button");
+    deleteBtn.type = "button";
+    deleteBtn.classList.add("deleteBtn", "btn", "btn-sm");
     deleteBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none"
      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <polyline points="3 6 5 6 21 6" />
@@ -172,14 +169,12 @@ function renderNotesList(notes) {
       noteTitle.length > 25 ? noteTitle.slice(0, 25) + "..." : noteTitle;
 
     item.textContent = shortenedTitle;
-item.append(deleteBtn)
+    item.append(deleteBtn);
     item.onclick = () => openNote(note);
 
     notesList.appendChild(item);
   });
 }
-
-
 
 /*
 --------------------------------
@@ -187,14 +182,12 @@ OPEN NOTE IN EDITOR
 --------------------------------
 */
 function openNote(note) {
-
   currentNoteId = note.id;
 
   document.getElementById("noteTitle").value = note.title || "Untitled";
 
-  quill.root.innerHTML = note.content || "";
+  quill.root.innerHTML = sanitizeHTML(note.content || "");
 }
-
 
 /*
 --------------------------------
@@ -202,7 +195,6 @@ CREATE NOTE
 --------------------------------
 */
 async function createNote() {
-
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -225,13 +217,12 @@ async function createNote() {
   await loadNotes();
   openNote(data);
 
-        actionMsg("Note created. Start typing!", "success");
-
+  actionMsg("Note created. Start typing!", "success");
 }
 
 document.getElementById("createNote").addEventListener("click", () => {
-   createNote();
-})
+  createNote();
+});
 
 /*
 --------------------------------
@@ -243,29 +234,28 @@ async function saveNote() {
   const content = quill.root.innerHTML;
 
   if (!currentNoteId) {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-      const { data, error } = await supabase
-        .from("personal_notes")
-        .insert({
-          user_id: user.id,
-          title: "Untitled",
-          content: content,
-        })
-        .select()
-        .single();
+    const { data, error } = await supabase
+      .from("personal_notes")
+      .insert({
+        user_id: user.id,
+        title: "Untitled",
+        content: content,
+      })
+      .select()
+      .single();
 
-      if (error) {
-        console.error(error);
-        return;
-      }
+    if (error) {
+      console.error(error);
+      return;
+    }
 
-      await loadNotes();
-      openNote(data);
+    await loadNotes();
+    openNote(data);
   }
-
 
   const { error } = await supabase
     .from("personal_notes")
@@ -287,58 +277,52 @@ async function saveNote() {
 }
 
 async function deleteNote() {
-    const notelist = document.getElementById("notesList")
+  const notelist = document.getElementById("notesList");
   if (!notelist) return;
   notelist.addEventListener("click", async (e) => {
-       const btn = e.target.closest(".deleteBtn");
-       if (!btn) return;
+    const btn = e.target.closest(".deleteBtn");
+    if (!btn) return;
 
-           e.preventDefault();
-           e.stopPropagation();
+    e.preventDefault();
+    e.stopPropagation();
 
-           
     const noteToDelete = btn.closest(".noteItem");
     const id = noteToDelete.dataset.id;
 
-  confirmAction("Delete this note?", [
-    { label: "Cancel", type: "cancel" },
-    {
-      label: "Delete",
-      type: "confirm",
-      onClick: () => attachDeletenoteEvent(noteToDelete, id),
-    },
-  ]);
-})
+    confirmAction("Delete this note?", [
+      { label: "Cancel", type: "cancel" },
+      {
+        label: "Delete",
+        type: "confirm",
+        onClick: () => attachDeletenoteEvent(noteToDelete, id),
+      },
+    ]);
+  });
 
   await loadNotes();
 }
 //For Delete Button
 async function attachDeletenoteEvent(noteToDelete, id) {
+  const { error } = await supabase.from("personal_notes").delete().eq("id", id);
 
-    const { error } = await supabase
-      .from("personal_notes")
-      .delete()
-      .eq("id", id);
+  if (error) {
+    console.error(error);
+    alert(error.message);
+    return;
+  }
 
-    if (error) {
-      console.error(error);
-      alert(error.message);
-      return;
-    }
+  const index = savednoteDetails.findIndex(
+    (note) => String(note.id) === String(id),
+  );
+  if (index !== -1) savednoteDetails.splice(index, 1);
 
-    const index = savednoteDetails.findIndex(
-      (note) => String(note.id) === String(id),
-    );
-    if (index !== -1) savednoteDetails.splice(index, 1);
+  // Add animation class
+  noteToDelete.classList.add("removing");
 
-    // Add animation class
-    noteToDelete.classList.add("removing");
-
-    await loadNotes()
-    // Remove after animation ends
-    setTimeout(() => {
-      noteToDelete.remove();
-    }, 550); // matches CSS transition time
-      actionMsg("Note deleted successfully!", "success");
-
+  await loadNotes();
+  // Remove after animation ends
+  setTimeout(() => {
+    noteToDelete.remove();
+  }, 550); // matches CSS transition time
+  actionMsg("Note deleted successfully!", "success");
 }

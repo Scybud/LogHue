@@ -35,7 +35,7 @@ async function checkAdminAccess(workspaceId, user) {
       actionMsg(
         "Access Denied: You do not have admin permissions for this workspace.", "error"
       );
-    window.location.href = "/index"; // Send them to their main list
+    window.location.href = "/all-workspaces"; // Send them to their main list
   }
 }
 
@@ -58,7 +58,7 @@ export async function initAdminWorkspaceData() {
   }
 
   //SECURE ADMIN WORKSPACE BY CHECKING FOR ADMIN ROLE
-  checkAdminAccess(workspaceId, user);
+  await checkAdminAccess(workspaceId, user);
 
   //Load data
   const { data: workspace, error } = await supabase
@@ -93,7 +93,12 @@ export async function initAdminWorkspaceData() {
   }
 
   if (workspace && workspaceName) {
-    workspaceName.innerHTML = `${workspace.name} <span class="tag">Admin</span>`;
+    const tag = document.createElement("span");
+    tag.classList.add("tag");
+    tag.textContent = "Admin"
+    
+    workspaceName.textContent = workspace.name;
+    workspaceName.append(tag)
   }
 
   if (adminWorkspaceDashboardContent) {
@@ -395,120 +400,138 @@ async function renderSection(section, workspace, container) {
 
 
 function loadInviteHistory(invites, container) {
-  const table = document.createElement("table")
-  
+  const table = document.createElement("table");
   table.classList.add("inviteTable");
-table.innerHTML = `
-    <thead>
-      <tr>
-        <th>Invite Method</th>
-        <th>Invite Target</th>
-        <th>Created</th>
-        <th>Uses</th>
-        <th>Status</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="invite-body"></tbody>
-`;
 
-const tbody = table.querySelector("#invite-body");
+  const thead = document.createElement("thead");
+  const trHead = document.createElement("tr");
 
-const inviteTemplate = document.getElementById("invite-row-template");
-if(!inviteTemplate) return;
+  const headers = [
+    "Invite Method",
+    "Invite Target",
+    "Created",
+    "Uses",
+    "Status",
+    "Actions",
+  ];
 
-invites.forEach((inv) => {
-  const row = inviteTemplate.content.cloneNode(true);
-    const tr = row.querySelector("tr");
-
-  const method = inv.email ? "Email" : "Link";
-
-  const target = inv.email
-    ? inv.email
-    : `https://app.loghue.com/invite?token=${inv.token}`;
-
-  const created = inv.created_at;
-
-  const count = inv.accepted_count ?? 0;
-
-  let status = "Active";
-  let statusClass = "active";
-  if (count >= inv.max_invite_count) {
-    status = "Full";
-    statusClass = "full";
-  } else if (inv.accepted) {
-    status = "Used";
-    statusClass = "used";
-  }
-
-
-  // Fill row
-  row.querySelector(".method").textContent = method;
-
-  const urlText = row.querySelector(".urlText");
-  urlText.textContent = target;
-  urlText.title = target;
-
-  row.querySelector(".created").textContent = formatDateTime(created);
-  row.querySelector(".uses").textContent = `${count} / ${inv.max_invite_count}`;
-
-  const statusCell = row.querySelector(".status");
-  statusCell.textContent = status;
-statusCell.classList.add(statusClass)
-
-  // Copy button
-  row.querySelector(".copyBtn").addEventListener("click", (e) => {
-    e.stopPropagation();
-    navigator.clipboard.writeText(target);
-    actionMsg("URL copied to clipboard!", "success")
+  headers.forEach((h) => {
+    const th = document.createElement("th");
+    th.textContent = h;
+    trHead.append(th);
   });
 
-  // Actions
-  row.querySelector(".actions").innerHTML = `
-      <button class="revokeInviteBtn revoke" id="${inv.id}" type="button">Revoke</button>
-    `;
-    // Mobile labels
+  thead.append(trHead);
+
+  const tbody = document.createElement("tbody");
+  tbody.id = "invite-body";
+
+  table.append(thead, tbody);
+
+  const inviteTemplate = document.getElementById("invite-row-template");
+  if (!inviteTemplate) return;
+
+  invites.forEach((inv) => {
+    const row = inviteTemplate.content.cloneNode(true);
+    const tr = row.querySelector("tr");
+
+    const method = inv.email ? "Email" : "Link";
+
+    const target = inv.email
+      ? inv.email
+      : `https://app.loghue.com/invite?token=${inv.token}`;
+
+    const created = inv.created_at;
+    const count = inv.accepted_count ?? 0;
+
+    let status = "Active";
+    let statusClass = "active";
+
+    if (count >= inv.max_invite_count) {
+      status = "Full";
+      statusClass = "full";
+    } else if (inv.accepted) {
+      status = "Used";
+      statusClass = "used";
+    }
+
+    // SAFE FIELDS
+    row.querySelector(".method").textContent = method;
+
+    const urlText = row.querySelector(".urlText");
+    urlText.textContent = target;
+    urlText.title = target;
+
+    row.querySelector(".created").textContent = formatDateTime(created);
+    row.querySelector(".uses").textContent =
+      `${count} / ${inv.max_invite_count}`;
+
+    const statusCell = row.querySelector(".status");
+    statusCell.textContent = status;
+    statusCell.classList.add(statusClass);
+
+    // Copy button
+    row.querySelector(".copyBtn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      navigator.clipboard.writeText(target);
+      actionMsg("URL copied to clipboard!", "success");
+    });
+
+    // ACTIONS (NO innerHTML)
+    const actionsCell = row.querySelector(".actions");
+
+    const revokeBtn = document.createElement("button");
+    revokeBtn.classList.add("revokeInviteBtn", "revoke");
+    revokeBtn.type = "button";
+    revokeBtn.id = inv.id;
+    revokeBtn.textContent = "Revoke";
+
+    actionsCell.append(revokeBtn);
+
+    // labels
     row.querySelector(".method").dataset.label = "Invite Method";
     row.querySelector(".urlCell").dataset.label = "Invite Target";
     row.querySelector(".created").dataset.label = "Created";
     row.querySelector(".uses").dataset.label = "Uses";
     row.querySelector(".status").dataset.label = "Status";
     row.querySelector(".actions").dataset.label = "Actions";
-    
-    // Append row
-    if(!tbody) console.log("body not found");
+
     tbody.prepend(row);
-    
-        //Revoke invite
-    const revokeInviteBtn = tr.querySelector(".revokeInviteBtn");
-    if (!revokeInviteBtn) return console.log("no button");
-    
-    revokeInviteBtn.addEventListener("click", async (e) => {
+
+    // revoke handler
+    revokeBtn.addEventListener("click", async (e) => {
       e.stopPropagation();
       e.preventDefault();
-      
-     const id = e.currentTarget.id
-       const { error } = await supabase.from("workspace_invites").delete().eq("id", id).eq("created_by", user.id);
-    
-        if (error) {
-          console.error(error);
-          actionMsg("Failed to delete workspace.", "error");
-          return;
-        }
-    
-    tr.remove();
-        actionMsg("Invite revoked!", "success")
-    })
 
+      const id = e.currentTarget.id;
+
+      const { error } = await supabase
+        .from("workspace_invites")
+        .delete()
+        .eq("id", id)
+        .eq("created_by", user.id);
+
+      if (error) {
+        console.error(error);
+        actionMsg("Failed to delete workspace.", "error");
+        return;
+      }
+
+      tr.remove();
+      actionMsg("Invite revoked!", "success");
+    });
   });
 
-// Append table into the REAL container
-container.appendChild(table);
+  container.append(table);
 }
 
 export function loadDiscussions(title, discussions, container) {
   if (!discussions || discussions.length === 0) {
-    container.innerHTML = `<p class="placeholderText">No discussions started yet.</p>`;
+    const placeholderText = document.createElement("p")
+    placeholderText.classList.add("placeholderText");
+    placeholderText.textContent = "No discussions started yet.";
+
+    container.append(placeholderText);
     return;
   }
 
@@ -594,7 +617,11 @@ dcnHeader.append(img, span);
 
 export function loadTasks(title, tasks, container) {
   if (!tasks || tasks.length === 0) {
-    container.innerHTML = `<p class="placeholderText">No tasks yet.</p>`;
+    const placeholderText = document.createElement("p")
+    placeholderText.classList.add("placeholderText");
+    placeholderText.textContent = "No tasks yet.";
+
+    container.append(placeholderText);
     return;
   }
 
@@ -730,7 +757,11 @@ removeMemberBtn.id = mbr.profiles.id;
 
     const adminActions = document.createElement("div");
     adminActions.classList.add("adminActions");
-    `${mbr.role === "admin" ? adminActions.append(assignTaskBtn) : adminActions.append(assignTaskBtn, removeMemberBtn)}`;
+if (mbr.role === "admin") {
+  adminActions.append(assignTaskBtn);
+} else {
+  adminActions.append(assignTaskBtn, removeMemberBtn);
+}
 
     memberCard.append(cardHeader, adminActions);
     divGrid.append(memberCard);
@@ -756,62 +787,35 @@ export function formatDateTime(isoString) {
   });
 }
 
-function createLogElement(log) {
-  const taskDetails = document.createElement("details");
-  taskDetails.classList.add("loggedActivityContainer");
-  taskDetails.dataset.id = log.id;
-
-  const taskSummary = document.createElement("summary");
-  taskSummary.title = "click to see details";
-  taskSummary.innerHTML = `<span class="personalTaskName">${log.note}</span> 
- <div class="actionConatiner">
- <button data-title="Comment" type="button" class="commentBtn tooltip">
-<svg width="18" height="18" viewBox="0 0 24 24" fill="none"
- stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M4 5h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/>
-</svg>
-</button>
- <button data-title="Mark as reviewed" type="button" class="markAsReviwedBtn tooltip">
-<svg width="18" height="18" viewBox="0 0 24 24" fill="none"
- stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <polyline points="20 6 9 17 4 12" />
-</svg>
- </button>
- </div>
- `;
-
-  const taskTime = document.createElement("span");
-  taskTime.classList.add("meta", "taskTime");
-  taskTime.textContent = formatDateTime(log.date);
-
-  const taskName = document.createElement("span");
-  taskName.classList.add("meta", "taskName");
-  taskName.textContent = `Task: ${log.task_title}`;
-
-  const taskProgress = document.createElement("span");
-  taskProgress.classList.add("meta", "taskProgress");
-  taskProgress.textContent = log.progress;
-
-  const meta = document.createElement("div");
-  meta.classList.add("metaRow");
-  meta.append(taskName, taskTime, taskProgress);
-
-  taskDetails.append(taskSummary, meta);
-  return taskDetails;
-}
-
 // -----------------------------
 // ACTIVITIES (READ‑ONLY)
 // -----------------------------
 export function loadActivities(activities, container) {
   if (sessionState.plan.name === "free" || sessionState.plan.name === "Free") {
-    container.innerHTML = `<p class="placeholderText">Workspace activities overview is not available on your current plan. <a href="https://loghue.com/pricing" target="_blank" rel="noopener">Upgrade</a> to see what is happening in your workspace at a glance.</p>`;
+    const p = document.createElement("p");
+    p.classList.add("placeholderText");
+    p.textContent =
+      "Workspace activities overview is not available on your current plan.";
+
+    const a = document.createElement("a");
+    a.href = "https://loghue.com/pricing";
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = "Upgrade";
+
+    p.append(" ", a);
+
+    container.append(p);
     return;
   }
 
   if (!activities || activities.length === 0) {
-    container.innerHTML = `<p class="placeholderText">No activity in this workspace yet.</p>`;
-    return;
+   const p = document.createElement("p");
+   p.classList.add("placeholderText");
+   p.textContent = "No activity in this workspace yet.";
+
+   container.append(p);
+   return;
   }
   const section = document.createElement("section");
   section.classList.add("section");
@@ -833,22 +837,6 @@ export function loadActivities(activities, container) {
         ? `gave an update on "${item.title || "Unknown Task"}"`
         : `started a discussion "${item.title || "Untitled"}"`;
 
-    const body =
-      item.type === "task_log"
-        ? `
-        <p><strong>Note:</strong> ${item.note}</p>
-        <p><strong>Status:</strong> ${item.status}</p>
-      `
-        : `
-        <p><strong>Message:</strong> ${item.note}</p>
-      `;
-
-    const openBtn =
-      item.type === "discussion"
-        ? `
-           window.location.href = 'https://app.loghue.com/discussion-view?dcn=${item.id}'
-      `
-        : "";
 
     const div = document.createElement("div");
     div.classList.add("activityItem");
@@ -868,9 +856,30 @@ export function loadActivities(activities, container) {
     activityHeader.append(profileImg, actorName);
     
 //ACTIVITY BODY
-const activityBody = document.createElement("div")
-activityBody.classList.add("activityBody")
-activityBody.innerHTML = `${body}`
+const activityBody = document.createElement("div");
+activityBody.classList.add("activityBody");
+
+if (item.type === "task_log") {
+  const note = document.createElement("p");
+  const noteStrong = document.createElement("strong");
+  noteStrong.textContent = "Note: ";
+  note.append(noteStrong, document.createTextNode(item.note || ""));
+
+  const status = document.createElement("p");
+  const statusStrong = document.createElement("strong");
+  statusStrong.textContent = "Status: ";
+  status.append(statusStrong, document.createTextNode(item.status || ""));
+
+  activityBody.append(note, status);
+
+} else {
+  const message = document.createElement("p");
+  const msgStrong = document.createElement("strong");
+  msgStrong.textContent = "Message: ";
+  message.append(msgStrong, document.createTextNode(item.note || ""));
+
+  activityBody.append(message);
+}
 
 //ACTIVITY TIME
 const activityTime = document.createElement("div")

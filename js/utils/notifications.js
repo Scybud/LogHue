@@ -73,7 +73,6 @@ export async function notifyUser({
   });
 }
 
-
 //FETCH NOTIFICATIONS FROM DB
 export async function fetchNotificationsForUser() {
   const { data, error: userError } = await supabase.auth.getUser();
@@ -102,7 +101,6 @@ export async function fetchNotificationsForUser() {
   return Array.isArray(notifications) ? notifications : [notifications];
 }
 
-
 //RENDER NOTIFICATIONS
 export async function renderGlobalNotifications(notifications) {
   const container = document.getElementById("notificationsList");
@@ -115,13 +113,13 @@ export async function renderGlobalNotifications(notifications) {
     return;
   }
 
-const unreadCount = notifications.filter((n) => n.is_read === false).length;
+  const unreadCount = notifications.filter((n) => n.is_read === false).length;
 
-  const notifBadge = document.getElementById("notifBadge")
+  const notifBadge = document.getElementById("notifBadge");
 
-  if(notifBadge) {
-     notifBadge.textContent = unreadCount;
-   }
+  if (notifBadge) {
+    notifBadge.textContent = unreadCount;
+  }
 
   for (const notif of notifications) {
     const notifEl = document.createElement("li");
@@ -131,18 +129,18 @@ const unreadCount = notifications.filter((n) => n.is_read === false).length;
 
     if (notif.type === "task_assigned") {
       let task = null;
-      
+
       try {
         const { data } = await supabase
-        .from("workspace_tasks")
-        .select("title")
-        .eq("id", notif.entity_id)
-        .maybeSingle();
-        
+          .from("workspace_tasks")
+          .select("title")
+          .eq("id", notif.entity_id)
+          .maybeSingle();
+
         task = data;
       } catch (e) {
         task = null;
-        console.log(e)
+        console.log(e);
       }
 
       notif.task = task;
@@ -153,43 +151,52 @@ const unreadCount = notifications.filter((n) => n.is_read === false).length;
 
       try {
         const { data } = await supabase
-        .from("discussions")
-        .select("title")
-        .eq("id", notif.entity_id)
-        .maybeSingle();
+          .from("discussions")
+          .select("title")
+          .eq("id", notif.entity_id)
+          .maybeSingle();
 
         discussion = data;
       } catch (e) {
-
         discussion = null;
       }
 
-        notif.discussion = discussion;
+      notif.discussion = discussion;
     }
-      
-    const time = formatDateTime(notif.created_at)
 
-    // Customize text based on type
-    let text = "";
-    switch (notif.type) {
-      case "task_assigned":
-        const taskTitle = notif.task?.title || (notif.task === null ? "a deleted task" : "a task");
-        text = `<a href="task-view?task=${notif.entity_id}"><b>${notif.actor.full_name}</b> assigned you to "${taskTitle || "Loading..."}" in workspace "${notif.workspace?.name}" <span class="timestamp">${time}</span></a>`;
-        break;
+    const time = formatDateTime(notif.created_at);
 
-      case "discussion_started":
-              const discussionTitle =
-                notif.discussion?.title ||
-                (notif.discussion === null
-                  ? "a deleted discussion"
-                  : "a discussion");
-        text = `<a href="discussion-view?dcn=${notif.entity_id}"><b>${notif.actor.full_name}</b> started a discussion "${discussionTitle || "Loading..."}" in workspace "${notif.workspace?.name}" <span class="timestamp">${time}</span></a>`;
-        break;
+    const link = document.createElement("a");
+    link.className = "notificationLink";
+    link.href =
+      notif.type === "task_assigned"
+        ? `task-view?task=${encodeURIComponent(notif.entity_id)}`
+        : `discussion-view?dcn=${encodeURIComponent(notif.entity_id)}`;
 
-      default:
-        text = `New notification: ${notif.type}`;
+    const actorName = document.createElement("b");
+    actorName.textContent = notif.actor.full_name || "Someone";
+    link.appendChild(actorName);
+
+    const bodyText = document.createTextNode(
+      notif.type === "task_assigned"
+        ? ` assigned you to "${notif.task?.title || (notif.task === null ? "a deleted task" : "a task")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}" `
+        : notif.type === "discussion_started"
+          ? ` started a discussion "${notif.discussion?.title || (notif.discussion === null ? "a deleted discussion" : "a discussion")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}" `
+          : ` ${notif.type}`,
+    );
+    link.appendChild(bodyText);
+
+    const timeSpan = document.createElement("span");
+    timeSpan.className = "timestamp";
+    timeSpan.textContent = time;
+    link.appendChild(timeSpan);
+
+    if (notif.type === "task_assigned" || notif.type === "discussion_started") {
+      notifEl.appendChild(link);
+    } else {
+      notifEl.textContent = `New notification: ${notif.type}`;
     }
-    notifEl.innerHTML = text;
+
     container.append(notifEl);
 
     notifEl.addEventListener("click", async () => {
@@ -199,14 +206,16 @@ const unreadCount = notifications.filter((n) => n.is_read === false).length;
         .eq("id", notif.id);
 
       if (error) console.error("Failed to mark as read:", error);
-      
+
       // Update the local notifications array
       notif.is_read = true;
-      notifEl.classList.remove("unread")
-      const unreadCount = notifications.filter((n) => n.is_read === false).length;
+      notifEl.classList.remove("unread");
+      const unreadCount = notifications.filter(
+        (n) => n.is_read === false,
+      ).length;
       if (notifBadge) {
-         notifBadge.textContent = unreadCount;
+        notifBadge.textContent = unreadCount;
       }
-   });
+    });
   }
 }

@@ -129,25 +129,61 @@ export function createLogElement(log) {
   el.classList.add("taskContainer");
   el.dataset.id = log.id;
 
-  el.innerHTML = `
-    <summary title="click to see details">
-     <span class="personalTaskName">${log.name}</span> <button data-title="Delete Task" type="button" class="deleteBtn tooltip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <polyline points="3 6 5 6 21 6" />
-  <path d="M19 6l-1 14H6L5 6" />
-  <path d="M10 11v6" />
-  <path d="M14 11v6" />
-  <path d="M9 6V4h6v2" />
-</svg>
-      </button>
-    </summary>
-    <span>${formatDateTime(log.created_at)}</span>
-    <p>${log.description}</p>
-  `;
+  const summary = document.createElement("summary");
+  summary.setAttribute("title", "click to see details");
+
+  const nameSpan = document.createElement("span");
+  nameSpan.classList.add("personalTaskName");
+  nameSpan.textContent = log.name;
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.setAttribute("data-title", "Delete Task");
+  deleteBtn.setAttribute("type", "button");
+  deleteBtn.classList.add("deleteBtn", "tooltip");
+
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("width", "18");
+  svg.setAttribute("height", "18");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("stroke", "currentColor");
+  svg.setAttribute("stroke-width", "2");
+  svg.setAttribute("stroke-linecap", "round");
+  svg.setAttribute("stroke-linejoin", "round");
+
+  const polyline = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "polyline",
+  );
+  polyline.setAttribute("points", "3 6 5 6 21 6");
+
+  const path1 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path1.setAttribute("d", "M19 6l-1 14H6L5 6");
+
+  const path2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path2.setAttribute("d", "M10 11v6");
+
+  const path3 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path3.setAttribute("d", "M14 11v6");
+
+  const path4 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path4.setAttribute("d", "M9 6V4h6v2");
+
+  svg.append(polyline, path1, path2, path3, path4);
+  deleteBtn.appendChild(svg);
+
+  summary.append(nameSpan, deleteBtn);
+
+  const dateSpan = document.createElement("span");
+  dateSpan.textContent = formatDateTime(log.created_at);
+
+  const desc = document.createElement("p");
+  desc.textContent = log.description;
+
+  el.append(summary, dateSpan, desc);
 
   return el;
 }
-
 // -------------------------------
 // Render Logs
 // -------------------------------
@@ -217,7 +253,8 @@ async function performLogDelete(btn, userId) {
 
       setTimeout(() => {
         logToDelete.remove();
-        updateTaskCount();
-        checkIfEmpty();
       }, 550);
+      actionMsg("Log deleted successfully!", "success")
+      updateTaskCount();
+      checkIfEmpty();
 }

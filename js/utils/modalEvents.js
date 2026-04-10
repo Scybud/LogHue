@@ -176,6 +176,7 @@ export async function attachAddMemberEvents(workspaceId) {
     const role = document.getElementById("invite-role-email").value;
 
     if (!email) return actionMsg("Please enter an email.", "error");
+    if (!email.includes("@")) return actionMsg("Please enter a valid email.", "error");
 
     if (
       count >= sessionState.plan.max_members &&
