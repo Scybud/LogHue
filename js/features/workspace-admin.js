@@ -10,16 +10,33 @@ import {navDropdowns} from "../components/sidebar.js"
 export let currentWorkspace = null;
 export let loadedMembers = [];
 let user = null;
+let isLoading = false;
+
+// Loading State
+function setLoading(state, container) {
+  isLoading = state;
+  
+    container?.classList.toggle("isLoading", state);
+}
 
 document.addEventListener("click", async (e) => {
   const btn = e.target.closest(".navBtn");
   if (!btn) return;
 
   const container = document.getElementById("adminWorkspaceDashboardContent");
-
   const section = btn.dataset.section;
+  
+setLoading(true, container);
 
-  renderSection(section, currentWorkspace, container);
+try {
+  await new Promise(requestAnimationFrame);
+  await renderSection(section, currentWorkspace, container);
+} catch (err) {
+  console.error(err);
+} finally {
+    setLoading(false, container);
+}
+
 });
 
 //CHECK ADMIN ACCESS
@@ -60,6 +77,11 @@ export async function initAdminWorkspaceData() {
   //SECURE ADMIN WORKSPACE BY CHECKING FOR ADMIN ROLE
   await checkAdminAccess(workspaceId, user);
 
+  const adminWorkspaceDashboardContent = document.getElementById(
+    "adminWorkspaceDashboardContent",
+  );
+   setLoading(true, adminWorkspaceDashboardContent);
+
   //Load data
   const { data: workspace, error } = await supabase
     .from("workspaces")
@@ -74,12 +96,11 @@ export async function initAdminWorkspaceData() {
   if (error) {
     console.error(error);
     alert(error.message);
+     setLoading(false, adminWorkspaceDashboardContent);
+
     return;
   }
 
-  const adminWorkspaceDashboardContent = document.getElementById(
-    "adminWorkspaceDashboardContent",
-  );
 
   if (!workspace || workspaceId.length < 10) {
     window.location.href = "index";
@@ -114,6 +135,7 @@ export async function initAdminWorkspaceData() {
       adminWorkspaceDashboardContent,
     );
   }
+ setLoading(false, adminWorkspaceDashboardContent);
 
   attachSidebarEvents();
 navDropdowns();
@@ -400,6 +422,7 @@ async function renderSection(section, workspace, container) {
 
 
 function loadInviteHistory(invites, container) {
+
   const table = document.createElement("table");
   table.classList.add("inviteTable");
 
@@ -522,10 +545,12 @@ function loadInviteHistory(invites, container) {
     });
   });
 
+
   container.append(table);
 }
 
 export function loadDiscussions(title, discussions, container) {
+
   if (!discussions || discussions.length === 0) {
     const placeholderText = document.createElement("p")
     placeholderText.classList.add("placeholderText");
@@ -560,7 +585,7 @@ export function loadDiscussions(title, discussions, container) {
 
     const img = document.createElement("img");
     img.classList.add("profileImg");
-    img.src = discussions.profiles?.avatar_url || "https://loghue.com/assets/images/default_profile.png";
+    img.src = dcn.profiles?.avatar_url || "https://loghue.com/assets/images/default_profile.png";
 
     const span = document.createElement("span")
     span.classList.add("actorName");
@@ -610,6 +635,7 @@ dcnHeader.append(img, span);
     divGrid.append(discussionCard);
   });
 
+  
   section.append(sectionTitle, divGrid);
   container.append(section);
 }

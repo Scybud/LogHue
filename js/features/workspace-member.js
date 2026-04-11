@@ -7,18 +7,34 @@ import { sessionState } from "../session.js";
 export let currentWorkspace = null;
 export let loadedMembers = [];
 let currentUser = null;
+let isLoading = false;
 
+function setLoading(state, container) {
+  isLoading = state;
+  
+    container?.classList.toggle("isLoading", state);
+}
 // -----------------------------
 // NAVIGATION
 // -----------------------------
+// Loading State
+
 document.addEventListener("click", async (e) => {
   const btn = e.target.closest(".navBtn");
   if (!btn) return;
 
-  const container = document.getElementById("memberWorkspaceDashboardContent");
-  const section = btn.dataset.section;
+const container = document.getElementById("memberWorkspaceDashboardContent");  const section = btn.dataset.section;
+setLoading(true, container);
 
-  renderSection(section, currentWorkspace, container);
+try {
+  await new Promise(requestAnimationFrame);
+  await renderSection(section, currentWorkspace, container);
+} catch (err) {
+  console.error(err);
+} finally {
+    setLoading(false, container);
+}
+
 });
 
 // -----------------------------
@@ -237,7 +253,7 @@ export function loadDiscussions(discussions, container) {
     const img = document.createElement("img");
     img.classList.add("profileImg");
     img.src =
-      discussions.profiles?.avatar_url ||
+      dcn.profiles?.avatar_url ||
       "https://loghue.com/assets/images/default_profile.png";
 
     const span = document.createElement("span");
@@ -261,7 +277,7 @@ export function loadDiscussions(discussions, container) {
 
     const creator = document.createElement("p");
     creator.classList.add("meta");
-    creator.textContent = dcn.profiles.full_name;
+    creator.textContent = dcn.profiles?.full_name || "Unknown User";
 
     const createdOn = document.createElement("p");
     createdOn.classList.add("meta");

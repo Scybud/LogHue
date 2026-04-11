@@ -637,29 +637,31 @@ transform: scale(0.9);
 }
 
 /* Base container must be relative */
-#upperDashboardContainer,
-#recentLogs {
+section.isLoading {
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Overlay */
-#upperDashboardContainer.isLoading::after,
+section.isLoading::after,
 #recentLogs.isLoading::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(10px) brightness(90%);
   z-index: 10;
 }
 
 /* Spinner */
-#upperDashboardContainer.isLoading::before,
+section.isLoading::before,
 #recentLogs.isLoading::before {
   content: "";
   position: absolute;
-  top: 0;
+  top: 50%;
   left: 50%;
+  transform: translate(-50%, -50%);
   width: 22px;
   height: 22px;
   transform: translate(-50%, -50%);
