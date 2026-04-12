@@ -663,6 +663,7 @@ transition: all 0.4s ease;
 #editorContainer {
   color: var(--color);
   padding: 0;
+  margin-bottom: 30px;
 }
 .ql-editor.ql-blank::before {
   color: #888;              /* muted placeholder color */
@@ -670,12 +671,17 @@ transition: all 0.4s ease;
   font-weight: 400;
   font-size: 0.95rem;
 }
-#saveNoteBtn {
+.actionBtnsContainer {
   position: fixed;
+  display: flex;
+  gap: var(--space-sm);
   right: 10px;
-  bottom: 5px;
-  min-width: 100px;
-  max-width: fit-content;
+  bottom: 20px;
+  width: 100%;
+max-width: 300px;
+}
+.notesActionBtn {
+  width: 100%;
 }
 #notesList {
 position: sticky;
@@ -725,7 +731,7 @@ max-height: 600px;
 }
 
 @media (max-width: 800px) {
-  .notesConatiner {
+  .notesContainer {
 display: flex;
 flex-direction: column;
   }
@@ -733,7 +739,7 @@ flex-direction: column;
   height: calc(var(--space-lg));
   transition: all 0.4s ease;
 }
-#notesListCntainer:hover #notesList {
+#notesListContainer:hover #notesList {
   height: 300px;
   overflow: auto;
 }

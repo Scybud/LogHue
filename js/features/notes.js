@@ -33,7 +33,12 @@ function initNotes() {
   editorContainer.innerHTML = `
     <input id="noteTitle" placeholder="Note title" class="noteTitle inputField" />
     <div id="editor"></div>
-    <button id="saveNoteBtn" class="btn-sm btn">Save</button>
+
+    <div class="actionBtnsContainer">
+    <button id="saveNoteBtn" class="btn-sm btn notesActionBtn">Save</button>
+    <button id="exportNoteBtn" class="btn-sm btn btn-secondary notesActionBtn">Export</button>
+    </div>
+
   `;
 
   /*
@@ -80,6 +85,10 @@ function initNotes() {
   */
   const saveBtn = document.getElementById("saveNoteBtn");
   saveBtn.addEventListener("click", saveNote);
+  document
+    .getElementById("exportNoteBtn")
+    .addEventListener("click", exportCurrentNote);
+
   setNotesLoading(false);
 }
 
@@ -301,6 +310,46 @@ async function deleteNote() {
 
   await loadNotes();
 }
+
+//FILE EXPORT HELPER
+function exportFile(filename, content, type = "text/plain") {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+function exportCurrentNote() {
+  if (!currentNoteId) {
+    actionMsg("Save the note before exporting.", "error");
+    return;
+  }
+
+  const title = document.getElementById("noteTitle").value || "Untitled";
+  const htmlContent = quill.root.innerHTML;
+
+  // Choose your default export format:
+  const filename = `${title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.html`;
+
+  const fullHTML = `
+    <html>
+      <head>
+        <meta charset="UTF-8" />
+        <title>${title}</title>
+      </head>
+      <body>${htmlContent}</body>
+    </html>
+  `;
+
+  exportFile(filename, fullHTML, "text/html");
+  actionMsg("Note exported!", "success");
+}
+
 //For Delete Button
 async function attachDeletenoteEvent(noteToDelete, id) {
   const { error } = await supabase.from("personal_notes").delete().eq("id", id);
