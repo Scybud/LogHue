@@ -1,5 +1,6 @@
 .pageTitle {
   text-align: center;
+font-size: clamp(1.5rem, 5vw, 2rem);
 }
 #modalContainer h2 {
   text-align: center;
