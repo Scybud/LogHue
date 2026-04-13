@@ -672,16 +672,29 @@ transition: all 0.4s ease;
   font-size: 0.95rem;
 }
 .actionBtnsContainer {
-  position: fixed;
+  position: absolute;
   display: flex;
   gap: var(--space-sm);
-  right: 10px;
-  bottom: 20px;
+  right: 0;
+  bottom: 0;
+  padding: var(--space-sm);
   width: 100%;
-max-width: 300px;
+max-width: 800px;
+border-radius: var(--radius);
+backdrop-filter: var(--filter);
 }
 .notesActionBtn {
   width: 100%;
+}
+.notesActionBtn:hover {
+  opacity: 1;
+}
+#saveNoteBtn:hover {
+  background: var(--primary-light);
+}
+ #exportNotesBtn {
+  color: #fff;
+  background: var(--card-bg);
 }
 #notesList {
 position: sticky;

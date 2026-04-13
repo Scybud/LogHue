@@ -36,9 +36,16 @@ function initNotes() {
 
     <div class="actionBtnsContainer">
     <button id="saveNoteBtn" class="btn-sm btn notesActionBtn">Save</button>
-    <button id="exportNoteBtn" class="btn-sm btn btn-secondary notesActionBtn">Export</button>
-    </div>
 
+    <select id="exportNotesBtn" class="btn-sm btn btn-secondary notesActionBtn">
+        <option value="">Export As</option>
+    <option value="pdf">PDF</option>
+        <option value="txt">TXT</option>
+    <option value="docx">DOCX</option>
+    <option value="md">Markdown</option>
+    <option value="html">HTML</option>
+    </select>
+    </div>
   `;
 
   /*
@@ -85,9 +92,15 @@ function initNotes() {
   */
   const saveBtn = document.getElementById("saveNoteBtn");
   saveBtn.addEventListener("click", saveNote);
-  document
-    .getElementById("exportNoteBtn")
-    .addEventListener("click", exportCurrentNote);
+
+  const exportSelect = document.getElementById("exportNotesBtn");
+  exportSelect.addEventListener("change", (e) => {
+    const type = e.target.value;
+    if (!type) return;
+
+    exportCurrentNote(type);
+    e.target.value = ""; // reset dropdown
+  });
 
   setNotesLoading(false);
 }
@@ -324,30 +337,150 @@ function exportFile(filename, content, type = "text/plain") {
   URL.revokeObjectURL(url);
 }
 
-function exportCurrentNote() {
+function exportCurrentNote(type) {
   if (!currentNoteId) {
     actionMsg("Save the note before exporting.", "error");
     return;
   }
 
   const title = document.getElementById("noteTitle").value || "Untitled";
+  const safeTitle = title.replace(/[^a-z0-9]/gi, "_").toLowerCase();
   const htmlContent = quill.root.innerHTML;
+  const plainText = quill.getText();
 
-  // Choose your default export format:
-  const filename = `${title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.html`;
+  let didExport = false;
 
-  const fullHTML = `
-    <html>
-      <head>
-        <meta charset="UTF-8" />
-        <title>${title}</title>
-      </head>
-      <body>${htmlContent}</body>
-    </html>
-  `;
+  switch (type) {
+    case "html":
+      exportFile(`${safeTitle}.html`, htmlContent, "text/html");
+      didExport = true;
+      break;
 
-  exportFile(filename, fullHTML, "text/html");
-  actionMsg("Note exported!", "success");
+    case "txt":
+      exportFile(`${safeTitle}.txt`, plainText, "text/plain");
+      didExport = true;
+      break;
+
+    case "md":
+      const markdown = htmlContent
+        .replace(/<[^>]+>/g, "")
+        .replace(/&nbsp;/g, " ");
+      exportFile(`${safeTitle}.md`, markdown, "text/markdown");
+      didExport = true;
+      break;
+
+      case "docx":
+  const { Document, Packer, Paragraph } = window.docx;
+
+  const doc = new Document({
+    sections: [
+      {
+        properties: {},
+        children: [
+          new Paragraph({
+            text: plainText,
+          }),
+        ],
+      },
+    ],
+  });
+
+  Packer.toBlob(doc).then((blob) => {
+    saveAs(blob, `${safeTitle}.docx`);
+  });
+
+  break;
+
+
+    case "pdf":
+      const { jsPDF } = window.jspdf;
+      const pdfDoc = new jsPDF({ unit: "mm", format: "a4" });
+
+      const marginLeft = 20;
+      const marginTop = 20;
+      const pageWidth = 170;
+      let y = marginTop;
+
+      const delta = quill.getContents();
+
+
+      // Title
+      pdfDoc.setFont("Times", "Bold");
+      pdfDoc.setFontSize(18);
+      pdfDoc.text(safeTitle, marginLeft, y);
+      y += 12;
+
+      let currentLine = "";
+
+      function addLine(text, options = {}) {
+        const {
+          bold = false,
+          italic = false,
+          size = 12,
+          spacing = 7,
+        } = options;
+
+        pdfDoc.setFont("Times", bold ? "Bold" : italic ? "Italic" : "Normal");
+        pdfDoc.setFontSize(size);
+
+        const lines = pdfDoc.splitTextToSize(text, pageWidth);
+
+        lines.forEach((line) => {
+          if (y > 280) {
+            pdfDoc.addPage();
+            y = marginTop;
+          }
+
+          pdfDoc.text(line, marginLeft, y);
+          y += spacing;
+        });
+      }
+
+      delta.ops.forEach((op) => {
+        if (!op.insert) return;
+
+        let text = op.insert;
+        const attr = op.attributes || {};
+
+        if (text === "\n") {
+          y += 4;
+          return;
+        }
+
+        // LISTS
+        if (attr.list) {
+          const bullet = attr.list === "bullet" ? "• " : "1. ";
+          text = bullet + text;
+        }
+
+        // HEADINGS
+        if (attr.header) {
+          addLine(text, {
+            bold: true,
+            size: 16,
+            spacing: 10,
+          });
+          return;
+        }
+
+        addLine(text, {
+          bold: attr.bold,
+          italic: attr.italic,
+        });
+      });
+
+      pdfDoc.save(`${safeTitle}.pdf`);
+      didExport = true;
+      break;
+
+    default:
+      actionMsg("Invalid export type.", "error");
+      return;
+  }
+
+  if (didExport) {
+    actionMsg("Note exported!", "success");
+  }
 }
 
 //For Delete Button
