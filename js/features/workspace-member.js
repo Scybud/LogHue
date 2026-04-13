@@ -1,8 +1,9 @@
 import { attachSidebarEvents } from "./../components/sidebar.js";
 import { supabase } from "../supabase.js";
 import { closeModal } from "../ui.js";
-import { openLogTaskModal, openStartDiscussionModal } from "../utils/modals.js";
+import { actionMsg, openLogTaskModal, openStartDiscussionModal } from "../utils/modals.js";
 import { sessionState } from "../session.js";
+import { navDropdowns } from "../components/sidebar.js";
 
 export let currentWorkspace = null;
 export let loadedMembers = [];
@@ -106,14 +107,15 @@ export async function initMemberWorkspaceData() {
     container.innerHTML = "";
 
     //LOAD ASSIGNED TASKS BY DEFAULT
-
-    const myTasks = workspace.workspace_tasks.filter(
-      (t) => String(t.assigned_to) === String(user.id),
-    );
-    loadAssignedTasks(myTasks || [], container);
+      const allMyTasks = workspace.workspace_tasks.filter(
+        (t) => String(t.assigned_to) === String(user.id),
+      );
+      const myTasks = allMyTasks.filter((mt) => mt.status === "in progress");
+    loadAssignedTasks("My Tasks", myTasks || [], container);
   }
 
   attachSidebarEvents();
+navDropdowns();
 
   loadedMembers = Array.isArray(workspace.workspace_members)
     ? workspace.workspace_members
@@ -131,23 +133,20 @@ export async function initMemberWorkspaceData() {
 async function renderSection(section, workspace, container) {
   if (!container) return;
   container.innerHTML = "";
-
+  
   const { data: userData } = await supabase.auth.getUser();
   if (!userData?.user) return null;
 
-  currentUser = userData;
+currentUser = userData.user;
+
+      const allMyTasks = workspace.workspace_tasks.filter(
+        (t) => String(t.assigned_to) === String(currentUser.id),
+      );
+      const myTasks = allMyTasks.filter((mt) => mt.status === "in progress");
 
   switch (section) {
     case "myTasks":
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      const myTasks = workspace.workspace_tasks.filter(
-        (t) => String(t.assigned_to) === String(user.id),
-      );
-
-      loadAssignedTasks(myTasks, container);
+      loadAssignedTasks("My Tasks", myTasks, container);
       break;
 
     case "allTasks":
@@ -210,29 +209,53 @@ async function renderSection(section, workspace, container) {
       break;
 
     case "discussions":
-      //Load data
+      //GET ALL DISCUSSIONS
       const { data: discussions, dcnError } = await supabase
         .from("discussions")
         .select(`*, profiles:created_by (full_name, avatar_url)`)
         .eq("workspace_id", workspace.id);
+      if (dcnError) return actionMsg("Error loading discussions.", "error");
 
-      loadDiscussions(discussions || [], container);
+      const openDiscussions = discussions.filter((od) => od.status === "open")
+      loadDiscussions("Discussions", openDiscussions || [], container, "No discussion started yet.");
       break;
-  }
-}
 
-export function loadDiscussions(discussions, container) {
+    case "taskHistory":
+      //Load data
+      const taskHistory = allMyTasks.filter((ts) => ts.status === "completed");
+
+      loadAssignedTasks("Tasks History", taskHistory || [], container);
+      break;
+
+    case "discussionHistory": {
+  const { data: discussions, dcnError } = await supabase
+    .from("discussions")
+    .select(`*, profiles:created_by (full_name, avatar_url)`)
+    .eq("workspace_id", workspace.id);
+
+  if (dcnError) return actionMsg("Error loading discussions.", "error");
+
+  const discussionHistory = discussions.filter(
+    (dcns) => dcns.status === "closed"
+  );
+
+  loadDiscussions("Discussions History", discussionHistory || [], container, "No discussion histories yet.");
+  break;
+}
+}
+}
+export function loadDiscussions(sectionTitle, discussions, container, emptyStateText) {
   if (!discussions || discussions.length === 0) {
-    container.innerHTML = `<p class="placeholderText">No discussions started yet.</p>`;
+    container.innerHTML = `<p class="placeholderText">${emptyStateText}</p>`;
     return;
   }
 
   const section = document.createElement("section");
   section.classList.add("section");
 
-  const sectionTitle = document.createElement("h2");
-  sectionTitle.classList.add("sectionTitle");
-  sectionTitle.textContent = "Discussions";
+  const title = document.createElement("h2");
+  title.classList.add("sectionTitle");
+  title.textContent = sectionTitle;
 
   const divGrid = document.createElement("div");
   divGrid.classList.add("container");
@@ -304,14 +327,14 @@ export function loadDiscussions(discussions, container) {
     divGrid.append(discussionCard);
   });
 
-  section.append(sectionTitle, divGrid);
+  section.append(title, divGrid);
   container.append(section);
 }
 
 // -----------------------------
 // MY TASKS LIST
 // -----------------------------
-export function loadAssignedTasks(tasks, container) {
+export function loadAssignedTasks(sectionTitle, tasks, container) {
   if (!tasks || tasks.length === 0) {
     container.innerHTML = `<p class="placeholderText">No tasks assigned yet.</p>`;
     return;
@@ -322,7 +345,7 @@ export function loadAssignedTasks(tasks, container) {
 
   const title = document.createElement("h2");
   title.classList.add("sectionTitle");
-  title.textContent = "My Tasks";
+  title.textContent = sectionTitle;
 
   const grid = document.createElement("div");
   grid.classList.add("container");

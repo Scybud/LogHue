@@ -313,7 +313,7 @@ async function renderSection(section, workspace, container) {
     ? workspace.workspace_tasks
     : [workspace.workspace_tasks];
     
-    //Load data
+    //GET ALL DISCUSSIONS GLOBALLY
     const { data: allDiscussions, dcnError } = await supabase
       .from("discussions")
       .select(`*, profiles:created_by (full_name, avatar_url)`)

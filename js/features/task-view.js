@@ -464,7 +464,7 @@ async function attachMarkDoneHandler(taskId) {
 
     const { error } = await supabase
       .from("workspace_tasks")
-      .update({ status: newStatus })
+      .update({ status: newStatus, completed_at: new Date().toISOString()})
       .eq("id", taskId);
 
     if (error) {

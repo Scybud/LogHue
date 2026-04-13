@@ -452,7 +452,7 @@ function attachMarkDoneHandler(discussionId) {
 
     const { error } = await supabase
       .from("discussions")
-      .update({ status: newStatus })
+      .update({ status: newStatus, closed_at: new Date().toISOString() })
       .eq("id", discussionId);
 
     if (error) {
