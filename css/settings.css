@@ -191,3 +191,19 @@ border: 1px solid var(--border);
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* --- FOOTER --- */
+footer {
+  text-align: center;
+  background: var(--card-bg);
+  padding: 6px 0;
+  position: sticky;
+  bottom: -60px;
+  width: 100%;
+  border-top: 1px solid var(--border);
+}
+
+footer p {
+  color: var(--chevron-color);
+  margin: 0;
+}

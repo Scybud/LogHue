@@ -1,298 +1,316 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pricing | LogHue</title>
 
-    <link rel="stylesheet" href="./css/base.css" />
-    <link rel="stylesheet" href="./css/theme.css" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pricing | LogHue</title>
 
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="./assets/icons/favicons/apple-touch-icon.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="./assets/icons/favicons/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="./assets/icons/favicons/favicon-16x16.png"
-    />
+  <link rel="stylesheet" href="./css/base.css" />
+  <link rel="stylesheet" href="./css/theme.css" />
 
-    <style>
-      body {
-        color: var(--color);
-      }
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/favicons/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/favicons/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicons/favicon-16x16.png" />
 
-      main {
-   display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 40px 20px;
-      }
+  <style>
+    body {
+      color: var(--color);
+    }
 
-      .backBtn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: sticky;
-        top: 30px;
-        left: 20px;
-        padding: 0 auto;
-        width: fit-content;
-        background: none;
-        color: var(--link);
-        border: none;
-        font-weight: 600;
-        cursor: pointer;
-        background: var(--bg-hover);
-        transition: all 0.2s ease;
-      }
-      .backBtn:hover {
-         opacity: 0.8;
-                  transform: translate(-2px);
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
 
-      }
-      .backBtn:active {
-         transform: translate(-10px);
-      }
-      header {
-        width: 100%;
-        max-width: 900px;
-        text-align: center;
-        margin-bottom: 60px;
-      }
+    .backBtn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: sticky;
+      top: 30px;
+      left: 20px;
+      padding: 0 auto;
+      width: fit-content;
+      background: none;
+      color: var(--link);
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--bg-hover);
+      transition: all 0.2s ease;
+    }
 
-      header h1 {
-        font-size: 2.6rem;
-        font-weight: 700;
-        margin-bottom: 0.4em;
-      }
+    .backBtn:hover {
+      opacity: 0.8;
+      transform: translate(-2px);
 
-      header p {
-        font-size: 1.15rem;
-        opacity: 0.85;
-      }
-      .logo {
-        font-weight: 700;
-        font-size: 1.6rem;
-        color: #fff;
-      }
-      .logo span {
- background: var(--gradient);
-  background-clip: text;
-  color: transparent;
-      }
-      .pricing-grid {
-        max-width: 900px;
-        width: 100%;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 24px;
-        margin-top: 40px;
-      }
+    }
 
-      .plan {
-        border: 1px solid var(--border);
-        padding: 24px;
-        border-radius: 12px;
-        background: var(--background);
-      }
+    .backBtn:active {
+      transform: translate(-10px);
+    }
 
-      .plan h2 {
-        margin-top: 0;
-        font-size: 1.6rem;
-        font-weight: 600;
-      }
+    header {
+      width: 100%;
+      max-width: 900px;
+      text-align: center;
+      margin-bottom: 60px;
+    }
 
-      .price {
-        font-size: 2rem;
-        font-weight: 700;
-        margin: 12px 0;
-      }
+    header h1 {
+      font-size: 2.6rem;
+      font-weight: 700;
+      margin-bottom: 0.4em;
+    }
 
-      .price span {
-        font-size: 1rem;
-        opacity: 0.7;
-      }
+    header p {
+      font-size: 1.15rem;
+      opacity: 0.85;
+    }
 
-      ul {
-        padding-left: 20px;
-        margin-top: 1rem;
-        line-height: 1.6;
-      }
+    .logo {
+      font-weight: 700;
+      font-size: 1.6rem;
+      color: #fff;
+    }
 
-      .cta {
-        margin-top: 20px;
-        display: inline-block;
-        padding: 10px 18px;
-        border-radius: 6px;
-        background: var(--primary);
-        color: #000000;
-        text-decoration: none;
-        font-weight: 800;
-      }
-a.cta {
-  color: #000000;
-  text-decoration: none;
-}
-      /* Comparison Table Styling */
-      .comparison-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 32px;
-        font-size: 0.95rem;
-      }
+    .logo span {
+      background: var(--gradient);
+      background-clip: text;
+      color: transparent;
+    }
 
-      .comparison-table thead tr {
-        background: var(--background-secondary);
-        border-bottom: 1px solid var(--border);
-      }
+    .pricing-grid {
+      max-width: 900px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
 
-      .comparison-table th {
-        text-align: left;
-        padding: 14px 12px;
-        font-weight: 600;
-        color: var(--color);
-      }
+    .plan {
+      border: 1px solid var(--border);
+      padding: 24px;
+      border-radius: 12px;
+      background: var(--background);
+    }
 
-      .comparison-table th:not(:first-child) {
-        text-align: center;
-      }
+    .plan h2 {
+      margin-top: 0;
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
 
+    .price {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 12px 0;
+    }
+
+    .price span {
+      font-size: 1rem;
+      opacity: 0.7;
+    }
+
+    ul {
+      padding-left: 20px;
+      margin-top: 1rem;
+      line-height: 1.6;
+    }
+
+    .cta {
+      margin-top: 20px;
+      display: inline-block;
+      padding: 10px 18px;
+      border-radius: 6px;
+      background: var(--primary);
+      color: #000000;
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    a.cta {
+      color: #000000;
+      text-decoration: none;
+    }
+
+    /* Comparison Table Styling */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 32px;
+      font-size: 0.95rem;
+    }
+
+    .comparison-table thead tr {
+      background: var(--background-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .comparison-table th {
+      text-align: left;
+      padding: 14px 12px;
+      font-weight: 600;
+      color: var(--color);
+    }
+
+    .comparison-table th:not(:first-child) {
+      text-align: center;
+    }
+
+    .comparison-table td {
+      padding: 14px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--color);
+    }
+
+    .comparison-table td:not(:first-child) {
+      text-align: center;
+    }
+
+    /* Hover highlight */
+    .comparison-table tbody tr:hover {
+      background: var(--background-secondary);
+    }
+
+    /* Subtle zebra striping */
+    .comparison-table tbody tr:nth-child(even) {
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 600px) {
+
+      .comparison-table th,
       .comparison-table td {
-        padding: 14px 12px;
-        border-bottom: 1px solid var(--border);
-        color: var(--color);
-      }
-
-      .comparison-table td:not(:first-child) {
-        text-align: center;
-      }
-
-      /* Hover highlight */
-      .comparison-table tbody tr:hover {
-        background: var(--background-secondary);
-      }
-
-      /* Subtle zebra striping */
-      .comparison-table tbody tr:nth-child(even) {
-        background: rgba(0, 0, 0, 0.02);
-      }
-
-      /* Mobile responsiveness */
-      @media (max-width: 600px) {
-        .comparison-table th,
-        .comparison-table td {
-          padding: 10px 6px;
-          font-size: 0.85rem;
-        }
-      }
-
-      /* ------------------------- */ /* FOOTER */ /* ------------------------- */
-      .footer {
-        background: #050505;
-        padding: var(--space-lg) var(--space-xl);
-        color: rgba(255, 255, 255, 0.6);
+        padding: 10px 6px;
         font-size: 0.85rem;
-        width: 100%;
       }
+    }
+
+    /* ------------------------- */
+    /* FOOTER */
+    /* ------------------------- */
+    .footer {
+      background: #050505;
+      padding: var(--space-lg) var(--space-xl);
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.85rem;
+      width: 100%;
+    }
+
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-lg);
+      justify-content: space-between;
+    }
+
+    .footer-brand {
+      flex: 1;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: var(--space-xl);
+      flex-wrap: wrap;
+    }
+
+    .footer-links h4 {
+      margin-bottom: var(--space-xs);
+      font-size: 0.95rem;
+    }
+
+    .text-sm {
+      margin: 0;
+      padding: 0;
+    }
+
+    .footer-links ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-links ul li {
+      margin-bottom: 4px;
+    }
+
+    .footer-links ul li a {
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      transition: 0.2s;
+    }
+
+    .footer-links ul li a:hover {
+      color: var(--accent);
+    }
+
+    .footer-bottom {
+      width: 100%;
+      text-align: center;
+      margin-top: var(--space-lg);
+    }
+
+    /* ------------------------- */
+    /* RESPONSIVE */
+    /* ------------------------- */
+    @media (max-width: 1024px) {
+
+      .hero-inner,
+      .example-inner {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .desktop-nav {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      .hero,
+      .section {
+        padding: var(--space-lg);
+      }
+
+      .feature-grid,
+      .what-grid,
+      .how-steps,
+      .who-grid {
+        grid-template-columns: 1fr;
+      }
+
       .footer-inner {
-        max-width: 1120px;
-        margin: 0 auto;
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--space-lg);
-        justify-content: space-between;
+        flex-direction: column;
       }
-      .footer-brand {
-        flex: 1;
-      }
-      .footer-links {
-        display: flex;
-        gap: var(--space-xl);
-        flex-wrap: wrap;
-      }
-      .footer-links h4 {
-        margin-bottom: var(--space-xs);
-        font-size: 0.95rem;
-      }
-      .text-sm {
-        margin: 0;
-        padding: 0;
-      }
-      .footer-links ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-      .footer-links ul li {
-        margin-bottom: 4px;
-      }
-      .footer-links ul li a {
-        color: rgba(255, 255, 255, 0.6);
-        text-decoration: none;
-        transition: 0.2s;
-      }
-      .footer-links ul li a:hover {
-        color: var(--accent);
-      }
-      .footer-bottom {
-        width: 100%;
-        text-align: center;
-        margin-top: var(--space-lg);
-      } /* ------------------------- */ /* RESPONSIVE */ /* ------------------------- */
-      @media (max-width: 1024px) {
-        .hero-inner,
-        .example-inner {
-          flex-direction: column;
-        }
-      }
-      @media (max-width: 768px) {
-        .desktop-nav {
-          display: none;
-        }
-        .mobile-menu-btn {
-          display: block;
-        }
-        .hero,
-        .section {
-          padding: var(--space-lg);
-        }
-        .feature-grid,
-        .what-grid,
-        .how-steps,
-        .who-grid {
-          grid-template-columns: 1fr;
-        }
-        .footer-inner {
-          flex-direction: column;
-        }
-      }
-    </style>
-  </head>
+    }
+  </style>
+</head>
 
-  <body>
-      <button type="button" class="btn backBtn btn-sm"> <!-- Back Icon -->
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M11.75 4.25L6 10L11.75 15.75" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
-            stroke-linejoin="round" />
-        </svg>
-        <span>Back</span>
-      </button>
+<body>
+  <button type="button" class="btn backBtn btn-sm"> <!-- Back Icon -->
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M11.75 4.25L6 10L11.75 15.75" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+        stroke-linejoin="round" />
+    </svg>
+    <span>Back</span>
+  </button>
 
-      <main>
+  <main>
 
-        <header>
-          <h1>Simple, Transparent Pricing</h1>
-          <p>
+    <header>
+      <h1>Simple, Transparent Pricing</h1>
+      <p>
         LogHue is built for teams, with a free tier that helps individuals and
         small groups get started.
       </p>
@@ -327,7 +345,8 @@ a.cta {
           <li>Workspace activity history</li>
         </ul>
 
-        <a class="cta" href="https://app.loghue.com/billing/upgrade?plan=dee55ec9-ae01-40f3-b297-fe9faa8485d6">Upgrade to Pro</a>
+        <a class="cta" href="https://app.loghue.com/billing/upgrade?plan=dee55ec9-ae01-40f3-b297-fe9faa8485d6">Upgrade
+          to Pro</a>
       </div>
 
       <!-- PRO PLAN -->
@@ -343,7 +362,8 @@ a.cta {
           <li>Priority support</li>
         </ul>
 
-        <a class="cta" href="https://app.loghue.com/billing/upgrade?plan=e06ed82b-037b-4fac-bbec-94d761f1cdd5">Choose Team</a>
+        <a class="cta" href="https://app.loghue.com/billing/upgrade?plan=e06ed82b-037b-4fac-bbec-94d761f1cdd5">Choose
+          Team</a>
       </div>
     </div>
 
@@ -416,28 +436,24 @@ a.cta {
       <h2 style="font-size: 1.8rem; margin-bottom: 0.6em; font-weight: 600">
         Why Upgrade to Team?
       </h2>
-      
+
       <p style="opacity: 0.85; margin-bottom: 20px">
         Pro is built for teams that outgrow the limits of the Free and Team
         plans. If your workspace is becoming central to your team’s workflow,
         Pro gives you the flexibility, scale, and control you need.
       </p>
 
-      <div
-        style="
+      <div style="
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
           gap: 24px;
           margin-top: 20px;
-        "
-      >
-        <div
-          style="
+        ">
+        <div style="
             border: 1px solid var(--border);
             padding: 20px;
             border-radius: 10px;
-          "
-        >
+          ">
           <h3 style="margin-top: 0">Unlimited Workspaces</h3>
           <p>
             Create as many workspaces as your team needs, no limits, no
@@ -445,13 +461,11 @@ a.cta {
           </p>
         </div>
 
-        <div
-          style="
+        <div style="
             border: 1px solid var(--border);
             padding: 20px;
             border-radius: 10px;
-          "
-        >
+          ">
           <h3 style="margin-top: 0">Unlimited Members</h3>
           <p>
             Invite your entire team, department, or organization without
@@ -459,13 +473,11 @@ a.cta {
           </p>
         </div>
 
-        <div
-          style="
+        <div style="
             border: 1px solid var(--border);
             padding: 20px;
             border-radius: 10px;
-          "
-        >
+          ">
           <h3 style="margin-top: 0">Full Activity History</h3>
           <p>
             See every change, update, and action, perfect for accountability and
@@ -473,26 +485,22 @@ a.cta {
           </p>
         </div>
 
-        <div
-          style="
+        <div style="
             border: 1px solid var(--border);
             padding: 20px;
             border-radius: 10px;
-          "
-        >
+          ">
           <h3 style="margin-top: 0">Advanced Admin Tools</h3>
           <p>
             Manage workspaces, members, and permissions with complete control.
           </p>
         </div>
 
-        <div
-          style="
+        <div style="
             border: 1px solid var(--border);
             padding: 20px;
             border-radius: 10px;
-          "
-        >
+          ">
           <h3 style="margin-top: 0">Priority Support</h3>
           <p>
             Get faster responses and dedicated help when your team needs it.
@@ -518,106 +526,109 @@ a.cta {
         and collaboration. And Team unlocks full flexibility for teams that rely
         on LogHue every day.
       </p>
-      
+
       <p style="opacity: 0.85; line-height: 1.65; margin-top: 16px">
         We believe great tools should scale with you, not get in your way.
       </p>
     </section>
   </main>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-      <div class="footer-inner">
-        <div class="footer-brand">
-          <div class="logo">Log<span>Hue</span></div>
-          <p>
-            Calm workspace management for modern teams. <br />
-            A Scybud Product
-          </p>
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo">Log<span>Hue</span></div>
+        <p>
+          Calm workspace management for modern teams. <br />
+          A Scybud Product
+        </p>
+      </div>
+      <div class="footer-links">
+        <a href="index">Home</a>
+        <div>
+          <h4>Product</h4>
+          <ul>
+            <li><a href="/features">Features</a></li>
+            <li><a href="/pricing">Pricing</a></li>
+          </ul>
         </div>
-        <div class="footer-links">
-          <a href="index">Home</a>
-          <div>
-            <h4>Product</h4>
-            <ul>
-              <li><a href="/features">Features</a></li>
-              <li><a href="/pricing">Pricing</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Company</h4>
-            <ul>
-              <li><a href="/about">About</a></li>
-              <li><a href="mailto:scybudtech@gmail.com">Contact</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Legal</h4>
-            <ul>
-              <li><a href="legal/privacy-policy">Privacy Policy</a></li>
-              <li><a href="legal/terms">Terms of Service</a></li>
-              <li><a href="legal/impressum">Impressum</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Scybud</h4>
-            <ul>
-              <li><a href="/scybud-apps">Other apps</a></li>
-            </ul>
-          </div>
-        </div>
-        </div>
+        <div>
+          <h4>Company</h4>
+          <ul>
+            <li><a href="/about">About</a></li>
+            <li><a href="mailto:scybudtech@gmail.com">Contact</a></li>
+            <li><a href="/support">Support</a></li>
 
-        <div style="display: block;" class="backLinks">
-        
-          <!--FORGE:TO BACKLINK-->
-          <a href="https://forg.to/products/loghue" target="_blank" rel="noopener">
-            <img src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded" alt="LogHue - Upvote on Forg on forg."
-              height="54" width="250" />
-          </a>
-        
-          <!--NEXTGEN TOOLS BACKLINK-->
-          <a href="https://www.nxgntools.com/tools/loghue?utm_source=loghue" target="_blank" rel="noopener"
-            style="display: inline-block; width: auto;">
-            <img src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON" alt="Featured on NextGen Tools" height="54"
-              width="250" />
-          </a>
-        
-          <!--MARJETINGDB BACKLIN-->
-          <a href="https://marketingdb.live" target="_blank"><img src="https://marketingdb.live/badge.svg"
-              alt="Listed on MarketingDB" width="250" height="54" /></a>
-        
-          <!--PRODUCT HINT BACKLINK-->
-          <a href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
-            target="_blank" rel="noopener noreferrer"><img
-              alt="LogHue - See what is happening without chasing updates | Product Hunt" width="250" height="54"
-              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"></a>
-        
-                  <!--LAUNCHIGNITER BACKLINK-->
-                  <a href="https://launchigniter.com/product/loghue?ref=badge-loghue" target="_blank">
-                    <img src="https://launchigniter.com/api/badge/loghue?theme=dark" alt="Featured on LaunchIgniter" width="250"
-                      height="54" />
-                  </a>
-
-                      <!--PRODUCT HOT BACKLINK-->
-                      <a href="https://producthot.com" target="_blank" rel="noopener noreferrer">
-                        <img src="https://producthot.com/badages-awards.svg" alt="Featured on Product Hot" height="54" width="250" />
-                      </a>
+          </ul>
         </div>
-          
-        <div class="footer-bottom">
-          <p>&copy; 2026 LogHue. A Scybud Product. All rights reserved.</p>
+        <div>
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="legal/privacy-policy">Privacy Policy</a></li>
+            <li><a href="legal/terms">Terms of Service</a></li>
+            <li><a href="legal/impressum">Impressum</a></li>
+          </ul>
         </div>
-    </footer>
+        <div>
+          <h4>Scybud</h4>
+          <ul>
+            <li><a href="/scybud-apps">Other apps</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
-      <script>
-        const backBtn = document.querySelector(".backBtn");
+    <div style="display: block;" class="backLinks">
 
-        if (backBtn) {
-          backBtn.addEventListener("click", () => {
-            window.history.back()
-          })
-        } 
-      </script>
-  </body>
+      <!--FORGE:TO BACKLINK-->
+      <a href="https://forg.to/products/loghue" target="_blank" rel="noopener">
+        <img src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
+          alt="LogHue - Upvote on Forg on forg." height="54" width="250" />
+      </a>
+
+      <!--NEXTGEN TOOLS BACKLINK-->
+      <a href="https://www.nxgntools.com/tools/loghue?utm_source=loghue" target="_blank" rel="noopener"
+        style="display: inline-block; width: auto;">
+        <img src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON" alt="Featured on NextGen Tools"
+          height="54" width="250" />
+      </a>
+
+      <!--MARJETINGDB BACKLIN-->
+      <a href="https://marketingdb.live" target="_blank"><img src="https://marketingdb.live/badge.svg"
+          alt="Listed on MarketingDB" width="250" height="54" /></a>
+
+      <!--PRODUCT HINT BACKLINK-->
+      <a href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
+        target="_blank" rel="noopener noreferrer"><img
+          alt="LogHue - See what is happening without chasing updates | Product Hunt" width="250" height="54"
+          src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"></a>
+
+      <!--LAUNCHIGNITER BACKLINK-->
+      <a href="https://launchigniter.com/product/loghue?ref=badge-loghue" target="_blank">
+        <img src="https://launchigniter.com/api/badge/loghue?theme=dark" alt="Featured on LaunchIgniter" width="250"
+          height="54" />
+      </a>
+
+      <!--PRODUCT HOT BACKLINK-->
+      <a href="https://producthot.com" target="_blank" rel="noopener noreferrer">
+        <img src="https://producthot.com/badages-awards.svg" alt="Featured on Product Hot" height="54" width="250" />
+      </a>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 LogHue. A Scybud Product. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const backBtn = document.querySelector(".backBtn");
+
+    if (backBtn) {
+      backBtn.addEventListener("click", () => {
+        window.history.back()
+      })
+    } 
+  </script>
+</body>
+
 </html>

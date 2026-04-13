@@ -11,40 +11,45 @@
 
    <style>
       body {
-         
+
          color: var(--color);
       }
-main {
-display: flex;
+
+      main {
+         display: flex;
          flex-direction: column;
          align-items: center;
          padding: 40px 20px;
-}
-        .backBtn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: sticky;
-        top: 30px;
-        left: 20px;
-        padding: 0 auto;
-        width: fit-content;
-        background: none;
-        color: var(--link);
-        border: none;
-        font-weight: 600;
-        cursor: pointer;
-        background: var(--bg-hover);
-        transition: all 0.2s ease;
       }
+
+      .backBtn {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         position: sticky;
+         top: 30px;
+         left: 20px;
+         padding: 0 auto;
+         width: fit-content;
+         background: none;
+         color: var(--link);
+         border: none;
+         font-weight: 600;
+         cursor: pointer;
+         background: var(--bg-hover);
+         transition: all 0.2s ease;
+      }
+
       .backBtn:hover {
          opacity: 0.8;
-                  transform: translate(-2px);
+         transform: translate(-2px);
 
       }
+
       .backBtn:active {
          transform: translate(-10px);
       }
+
       header {
          width: 100%;
          max-width: 900px;
@@ -67,7 +72,7 @@ display: flex;
          width: 100%;
          border-radius: var(--radius);
          padding: var(--space-lg);
-                 background: var(--bg-hover);
+         background: var(--bg-hover);
          margin-bottom: 60px;
       }
 
@@ -162,65 +167,65 @@ display: flex;
 
       <header>
          <h1>About LogHue</h1>
-      <p>
-         LogHue is a calm, modern workspace platform built for teams who want
-         clarity without the noise. Every part of LogHue is designed to feel
-         intentional, predictable, and ready for real work.
-      </p>
-   </header>
-
-   <section>
-      <h2>Why LogHue Exists</h2>
-      <div class="about-block">
          <p>
-            Most task tools feel either bloated or unfinished. LogHue was created
-            to offer a clean middle ground. A workspace system that stays out of
-            your way while giving your team the structure it needs. No clutter, no
-            unnecessary complexity, just a calm environment where work feels
-            manageable.
+            LogHue is a calm, modern workspace platform built for teams who want
+            clarity without the noise. Every part of LogHue is designed to feel
+            intentional, predictable, and ready for real work.
          </p>
-      </div>
-   </section>
+      </header>
 
-   <section>
-      <h2>Our Approach</h2>
-      <div class="about-block">
-         <p>
-            LogHue is built with a modular architecture, state‑aware UI, and
-            predictable workflows. Workspaces keep teams organized, tasks stay
-            structured, and updates sync instantly across devices. Everything is
-            designed to feel stable, consistent, and trustworthy from day one.
-         </p>
-      </div>
-   </section>
+      <section>
+         <h2>Why LogHue Exists</h2>
+         <div class="about-block">
+            <p>
+               Most task tools feel either bloated or unfinished. LogHue was created
+               to offer a clean middle ground. A workspace system that stays out of
+               your way while giving your team the structure it needs. No clutter, no
+               unnecessary complexity, just a calm environment where work feels
+               manageable.
+            </p>
+         </div>
+      </section>
 
-   <section>
-      <h2>A Scybud Product</h2>
-      <div class="about-block">
-         <p>
-            LogHue is developed by Scybud. A builder‑driven studio focused on
-            creating honest, scalable, and accessible software. We believe in
-            clarity, minimalism, and tools that respect your time. No fake
-            features, no artificial upsells, just thoughtful products that help
-            people work better.
-         </p>
-      </div>
-   </section>
+      <section>
+         <h2>Our Approach</h2>
+         <div class="about-block">
+            <p>
+               LogHue is built with a modular architecture, state‑aware UI, and
+               predictable workflows. Workspaces keep teams organized, tasks stay
+               structured, and updates sync instantly across devices. Everything is
+               designed to feel stable, consistent, and trustworthy from day one.
+            </p>
+         </div>
+      </section>
 
-   <section>
-      <h2>Who LogHue Is For</h2>
-      <div class="about-block">
-         <p>
-            LogHue is built for teams, agencies, founders, students, and
-            independent creators who want a workspace that feels calm and
-            predictable. Whether you're managing tasks, documenting knowledge, or
-            coordinating across projects, LogHue gives you a clean foundation to
-            build on.
-         </p>
-      </div>
-   </section>
-</main>
-   
+      <section>
+         <h2>A Scybud Product</h2>
+         <div class="about-block">
+            <p>
+               LogHue is developed by Scybud. A builder‑driven studio focused on
+               creating honest, scalable, and accessible software. We believe in
+               clarity, minimalism, and tools that respect your time. No fake
+               features, no artificial upsells, just thoughtful products that help
+               people work better.
+            </p>
+         </div>
+      </section>
+
+      <section>
+         <h2>Who LogHue Is For</h2>
+         <div class="about-block">
+            <p>
+               LogHue is built for teams, agencies, founders, students, and
+               independent creators who want a workspace that feels calm and
+               predictable. Whether you're managing tasks, documenting knowledge, or
+               coordinating across projects, LogHue gives you a clean foundation to
+               build on.
+            </p>
+         </div>
+      </section>
+   </main>
+
    <footer class="footer">
       <div class="footer-inner">
          <div class="footer-brand">
@@ -247,6 +252,8 @@ display: flex;
                <ul>
                   <li><a href="/about">About</a></li>
                   <li><a href="mailto:scybudtech@gmail.com">Contact</a></li>
+                  <li><a href="/support">Support</a></li>
+
                </ul>
             </div>
 
@@ -268,35 +275,35 @@ display: flex;
          </div>
 
          <div style="display: block;" class="backLinks">
-         
+
             <!--FORGE:TO BACKLINK-->
             <a href="https://forg.to/products/loghue" target="_blank" rel="noopener">
                <img src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
                   alt="LogHue - Upvote on Forg on forg." height="54" width="250" />
             </a>
-         
+
             <!--NEXTGEN TOOLS BACKLINK-->
             <a href="https://www.nxgntools.com/tools/loghue?utm_source=loghue" target="_blank" rel="noopener"
                style="display: inline-block; width: auto;">
-               <img src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON" alt="Featured on NextGen Tools" height="54"
-                  width="250" />
+               <img src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON" alt="Featured on NextGen Tools"
+                  height="54" width="250" />
             </a>
-         
+
             <!--MARJETINGDB BACKLIN-->
             <a href="https://marketingdb.live" target="_blank"><img src="https://marketingdb.live/badge.svg"
                   alt="Listed on MarketingDB" width="250" height="54" /></a>
-         
+
             <!--PRODUCT HINT BACKLINK-->
             <a href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
                target="_blank" rel="noopener noreferrer"><img
                   alt="LogHue - See what is happening without chasing updates | Product Hunt" width="250" height="54"
                   src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"></a>
-         
-                     <!--LAUNCHIGNITER BACKLINK-->
-                     <a href="https://launchigniter.com/product/loghue?ref=badge-loghue" target="_blank">
-                        <img src="https://launchigniter.com/api/badge/loghue?theme=dark" alt="Featured on LaunchIgniter" width="250"
-                           height="54" />
-                     </a>
+
+            <!--LAUNCHIGNITER BACKLINK-->
+            <a href="https://launchigniter.com/product/loghue?ref=badge-loghue" target="_blank">
+               <img src="https://launchigniter.com/api/badge/loghue?theme=dark" alt="Featured on LaunchIgniter"
+                  width="250" height="54" />
+            </a>
          </div>
          <div class="footer-bottom">
             <p>&copy; 2026 LogHue. A Scybud Product. All rights reserved.</p>
@@ -308,7 +315,7 @@ display: flex;
    <script>
       const backBtn = document.querySelector(".backBtn");
 
-      if(backBtn){
+      if (backBtn) {
          backBtn.addEventListener("click", () => {
             window.history.back()
          })
