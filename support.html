@@ -546,9 +546,9 @@
       const backBtn = document.querySelector(".backBtn");
 
       if (backBtn) {
-         landingPage = window.location.href = "https://loghue.com";
          backBtn.addEventListener("click", () => {
-            window.history.back() || landingPage
+            landingPage = window.location.href = "https://loghue.com";
+            window.history.back() || landingPage;
          })
       } 
    </script>
