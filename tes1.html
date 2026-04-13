@@ -1,60 +1,53 @@
 <!DOCTYPE html>
 <html>
-
+<link rel="stylesheet" href="css/base.css">
 <head>
   <style>
-    body {
-      background: #111;
-      color: white;
-      font-family: sans-serif;
-    }
+:root {
+  --primary: #1565C0; 
+  --primary-light: #1976D2;
+  
+  --secondary: #334155;
+  --secondary-light: #475569;  /* lighter slate */
 
-    /* Outer container (viewport) */
-    .scroller {
-      width: 100%;
-      overflow: hidden;
-      white-space: nowrap;
-      box-sizing: border-box;
-      border: 2px solid #444;
-    }
+--accent: #f59e0b;
+--accent-hover: #d97706;
+}
+  .p {
+    color: #fff;
+    background: var(--primary);
+  }
+  .p:hover {
+    background: var(--primary-light);
+  }
+  .s {
+    color: #fff;
+    background: var(--secondary);
+  }
+  .s:hover {
+    background: var(--secondary-light);
+  }
+  .a {
+        color: #111;
 
-    /* Inner content wrapper */
-    .scroller-content {
-      display: inline-block;
-      padding-left: 100%;
-      /* Push first copy fully into view */
-      animation: scroll 10s linear infinite;
-    }
-
-    /* Each content block */
-    .scroller-content span {
-      display: inline-block;
-      padding: 0 2rem;
-    }
-
-    /* Keyframes for continuous movement */
-    @keyframes scroll {
-      0% {
-        transform: translateX(0);
-      }
-
-      100% {
-        transform: translateX(-50%);
-      }
-    }
+    background: var(--accent);
+  }
+.a:hover {
+  background: var(--accent-hover);
+}
+  button {
+    padding: 8px;
+    font-weight: 600;
+    border-radius: var(--radius);
+  }
   </style>
 </head>
 
 <body>
 
-  <div class="scroller">
-    <div class="scroller-content">
-      <!-- Duplicate content for seamless loop -->
-      <span>🚀 This is a seamless infinite scroll</span>
-      <span>🚀 This is a seamless infinite scroll</span>
-    </div>
-  </div>
-
+<button class="p">Primary</button>
+<button class="s">Secondary</button>
+<button class="a">Accent</button>
 </body>
 
 </html>

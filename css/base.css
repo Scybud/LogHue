@@ -41,11 +41,14 @@ body {
   --input-bg: #1c1c1c;
   --border: #333;
 
---primary: #1E88E5;
---primary-light: #42A5F5;
+--primary: #1565C0; 
+  --primary-light: #1976D2;
+  
+  --secondary: #334155;
+  --secondary-light: #475569; 
 
-  --accent: #7c3aed;
-  --accent-hover: #6d28d9;
+--accent: #f59e0b;
+--accent-hover: #d97706;
 
   --gradient: linear-gradient(to right, #1e88e5, #42a5f5);
 
@@ -67,7 +70,6 @@ body {
 --tag-text: #cfcfcf;
 
   --header-bg: rgba(128, 128, 128, 0.258);
-  --secondary: #7c3aed;
   --link: #0393d6;
   --form-bg: #111;
   --input-color: #ffffff;
