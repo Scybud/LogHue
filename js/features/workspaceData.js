@@ -607,7 +607,7 @@ async function editWorkspace(ws, id) {
 
 function openWorkspace(wsId, wsRole) {
 
-    if (wsRole === "admin") {
+    if (wsRole === "admin" || wsRole === "owner") {
       window.location.href = `workspace-dashboard-admin?ws=${wsId}`;
     } else {
       window.location.href = `workspace-dashboard-member?ws=${wsId}`;

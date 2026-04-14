@@ -81,10 +81,12 @@
     width: 400px;
   }
   .sidebarContainer:hover .navText, .sidebarContainer:hover div.navSectionLabel {
-    display: block;
+    opacity: 1;
   }
   .sidebarContainer .navText, .sidebarContainer div.navSectionLabel {
-    display: none;
+    opacity: 0;
+    text-wrap: nowrap;
+    transition: opacity 0.4s ease;
   }
   .sidebarContainer span.navIcon {
     display: flex;
