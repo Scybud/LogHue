@@ -533,7 +533,7 @@ async function loadApiKeys(tbody, workspaceId) {
       <td>${formatDateTime(key.created_at)}</td>
       <td>${key.last_used_at ? formatDateTime(key.last_used_at) : "—"}</td>
       <td>${key.permissions.join(", ")}</td>
-      <td><button class="revokeBtn" data-id="${key.id}">Revoke</button></td>
+      <td><button class="revokeBtn revoke revokeInviteBtn" data-id="${key.id}">Revoke</button></td>
     `;
 
     tr.querySelector(".revokeBtn").onclick = async () => {

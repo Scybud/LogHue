@@ -15,6 +15,8 @@ import { actionMsg } from "./modals.js";
 import { renderRecentLogs } from "../dashboard.js";
 import { sessionState } from "../session.js";
 import {notifyUser} from "./notifications.js"
+import bcrypt from "https://esm.sh/bcryptjs@2.4.3";
+
 
 export function attachCreateTaskEvent(workspaceId) {
   const createTaskBtn = document.getElementById("createTaskBtn");
