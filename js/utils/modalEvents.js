@@ -144,7 +144,7 @@ const { pushNotifData, pushNotifError } = await supabase.functions.invoke(
   });
 }
 
-//TRANSFER WORKSPACE OWNERSHIP EVENTS
+// TRANSFER WORKSPACE OWNERSHIP EVENTS
 export function attachTransferOwnershipEvents(workspace) {
   const modal = document.querySelector(".transfer-ownership-modal");
   if (!modal) return;
@@ -166,24 +166,19 @@ export function attachTransferOwnershipEvents(workspace) {
     const newOwnerId = select.value;
 
     if (!newOwnerId) {
-      actionMsg("Bitte wählen Sie einen neuen Besitzer aus.", "error");
+      actionMsg("Please select a new user.", "error");
       return;
     }
 
-    // 1. Remove owner role from current owner
-    const { error: removeError } = await supabase
-      .from("workspace_members")
-      .update({ role: "admin" })
-      .eq("workspace_id", workspace.id)
-      .eq("role", "owner");
-
-    if (removeError) {
-      console.error(removeError);
-      actionMsg("Ownership transfer failed.", "error");
+    // Find current owner in workspace_members
+    const currentOwner = workspace.workspace_members.find((m) => m.role === "owner");
+    if (!currentOwner) {
+      actionMsg("No current owner found for this workspace.", "error");
       return;
     }
+    const currentOwnerId = currentOwner.user_id || currentOwner.profiles?.id;
 
-    // 2. Assign owner role to the selected user
+    // 1. Assign owner role to the selected user
     const { error: assignError } = await supabase
       .from("workspace_members")
       .update({ role: "owner" })
@@ -196,15 +191,24 @@ export function attachTransferOwnershipEvents(workspace) {
       return;
     }
 
-    actionMsg("Ownership transfer successful!", "success");
+    // 2. Demote previous owner to admin (target by user_id, not role)
+    const { error: removeError } = await supabase
+      .from("workspace_members")
+      .update({ role: "admin" })
+      .eq("workspace_id", workspace.id)
+      .eq("user_id", currentOwnerId);
 
-    // Close modal + refresh
-    setTimeout(() => {
-      document.getElementById("modalContainer").innerHTML = "";
-      window.location.reload();
-    }, 1200);
+    if (removeError) {
+      console.error(removeError);
+      actionMsg("Ownership transfer failed.", "error");
+      return;
+    }
+
+    actionMsg("Ownership transfer successful!", "success");
+closeModal();
   };
 }
+
 
 //CREATE API EVENTS
 export function attachCreateApiKeyEvents(workspaceId) {

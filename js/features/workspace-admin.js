@@ -114,12 +114,7 @@ export async function initAdminWorkspaceData() {
   }
 
   if (workspace && workspaceName) {
-    const tag = document.createElement("span");
-    tag.classList.add("tag");
-    tag.textContent = "Admin"
-    
     workspaceName.textContent = workspace.name;
-    workspaceName.append(tag)
   }
 
   if (adminWorkspaceDashboardContent) {
@@ -419,12 +414,12 @@ async function renderSection(section, workspace, container) {
       break;
 
       case "settings":
-        loadSettings(container, workspace);
+        loadSettings(container, workspace, user.id);
         break;
   }
 }
 
-async function loadSettings(container, workspace) {
+async function loadSettings(container, workspace, currentUserId) {
   container.innerHTML = "";
 
   const section = document.createElement("section");
@@ -457,28 +452,12 @@ async function loadSettings(container, workspace) {
     <p><strong>Owner:</strong> ${owner?.profiles.full_name || "Unknown"}</p>
   `;
 
-  // Copy button
   infoCard.querySelector(".copyBtn").addEventListener("click", (e) => {
     e.stopPropagation();
     const target = document.querySelector(".workspaceId").value;
     navigator.clipboard.writeText(target);
     actionMsg("Copied to clipboard!", "success");
   });
-
-  // -------------------------
-  // OWNERSHIP TRANSFER CARD
-  // -------------------------
-  const transferCard = document.createElement("div");
-  transferCard.classList.add("card");
-
-  transferCard.innerHTML = `
-    <h3>Transfer Ownership</h3>
-    <button class="btn danger" id="transferBtn">Transfer Ownership</button>
-  `;
-
-  transferCard.querySelector("#transferBtn").onclick = async () => {
-    await openTransferOwnershipModal(workspace);
-  };
 
   // -------------------------
   // API KEYS CARD
@@ -512,9 +491,35 @@ async function loadSettings(container, workspace) {
 
   loadApiKeys(apiCard.querySelector("#apiKeysTable"), workspace.id);
 
-  section.append(title, infoCard, transferCard, apiCard);
+  // -------------------------
+  // ONLY OWNER: OWNERSHIP TRANSFER CARD
+  // -------------------------
+  const me = workspace.workspace_members.find(
+    (m) => m.user_id === currentUserId || m.profiles?.id === currentUserId,
+  );
+
+  const transferCard = document.createElement("div");
+  transferCard.classList.add("card");
+  transferCard.innerHTML = `
+    <h3>Transfer Ownership</h3>
+    <p class="placeholder">Transfering ownership to another member means you will no longer be the owner of this workspace and will <b>NOT</b> be able to perform sensitive actions on this workspace.</p>
+    <p class="mutedText">This action cannot be undone by you again.</p>
+    <button class="btn danger" id="transferBtn">Transfer Ownership</button>
+  `;
+
+  if (me?.role === "owner") {
+    transferCard.querySelector("#transferBtn").onclick = async () => {
+      await openTransferOwnershipModal(workspace);
+    };
+    section.append(title, infoCard, apiCard, transferCard);
+  } else {
+    // no transfer card for non‑owners
+    section.append(title, infoCard, apiCard);
+  }
+
   container.append(section);
 }
+
 async function loadApiKeys(tbody, workspaceId) {
   const { data: keys, error } = await supabase
     .from("api_keys")
@@ -939,7 +944,7 @@ removeMemberBtn.id = mbr.profiles.id;
 
     const adminActions = document.createElement("div");
     adminActions.classList.add("adminActions");
-if (mbr.role === "admin") {
+if (mbr.role === "admin" || mbr.role === "owner") {
   adminActions.append(assignTaskBtn);
 } else {
   adminActions.append(assignTaskBtn, removeMemberBtn);
