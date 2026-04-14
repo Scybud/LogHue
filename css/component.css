@@ -345,6 +345,10 @@ button.danger {
   opacity: 0.6;
   margin-top: calc(var(--space-md) + 4px);
 }
+.tunedText {
+    opacity: 0.6;
+
+}
 .mutedText {
   color: #5a7f89;
 }
