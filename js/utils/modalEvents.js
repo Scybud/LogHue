@@ -144,6 +144,68 @@ const { pushNotifData, pushNotifError } = await supabase.functions.invoke(
   });
 }
 
+//TRANSFER WORKSPACE OWNERSHIP EVENTS
+export function attachTransferOwnershipEvents(workspace) {
+  const modal = document.querySelector(".transfer-ownership-modal");
+  if (!modal) return;
+
+  const select = modal.querySelector("#transfer-owner-select");
+  const confirmBtn = modal.querySelector("#confirm-transfer-btn");
+
+  // Populate dropdown with all NON‑owners
+  workspace.workspace_members.forEach((m) => {
+    if (m.role !== "owner") {
+      const opt = document.createElement("option");
+      opt.value = m.user_id || m.profiles.id;
+      opt.textContent = m.profiles.full_name;
+      select.append(opt);
+    }
+  });
+
+  confirmBtn.onclick = async () => {
+    const newOwnerId = select.value;
+
+    if (!newOwnerId) {
+      actionMsg("Bitte wählen Sie einen neuen Besitzer aus.", "error");
+      return;
+    }
+
+    // 1. Remove owner role from current owner
+    const { error: removeError } = await supabase
+      .from("workspace_members")
+      .update({ role: "admin" })
+      .eq("workspace_id", workspace.id)
+      .eq("role", "owner");
+
+    if (removeError) {
+      console.error(removeError);
+      actionMsg("Ownership transfer failed.", "error");
+      return;
+    }
+
+    // 2. Assign owner role to the selected user
+    const { error: assignError } = await supabase
+      .from("workspace_members")
+      .update({ role: "owner" })
+      .eq("workspace_id", workspace.id)
+      .eq("user_id", newOwnerId);
+
+    if (assignError) {
+      console.error(assignError);
+      actionMsg("Ownership transfer failed.", "error");
+      return;
+    }
+
+    actionMsg("Ownership transfer successful!", "success");
+
+    // Close modal + refresh
+    setTimeout(() => {
+      document.getElementById("modalContainer").innerHTML = "";
+      window.location.reload();
+    }, 1200);
+  };
+}
+
 //CREATE API EVENTS
 export function attachCreateApiKeyEvents(workspaceId) {
   const modal = document.querySelector(".api-key-modal");
@@ -196,11 +258,11 @@ export function attachCreateApiKeyEvents(workspaceId) {
       </svg>
 
       <h2>Your API Key</h2>
-      <p class="placeholderText">Copy this key now. You will not see it again.</p>
+      <p class="mutedText">Copy this key now. You will not see it again.</p>
 
       <input class="inputField" id="raw-api-key" value="${rawKey}" readonly />
 
-      <button class="btn" id="copy-api-key-btn">Copy</button>
+      <button type="button" class="btn" id="copy-api-key-btn">Copy</button>
     `;
 
     // Copy button

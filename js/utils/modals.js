@@ -8,6 +8,7 @@ import {
   insertTaskLogUpdate,
   populateTaskList,
   attachCreateApiKeyEvents,
+  attachTransferOwnershipEvents,
 } from "./modalEvents.js";
 import { supabase } from "../supabase.js";
 import { currentWorkspace } from "../features/workspace-member.js";
