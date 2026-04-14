@@ -438,13 +438,14 @@ async function loadSettings(container, workspace) {
   // WORKSPACE INFO CARD
   // -------------------------
   const infoCard = document.createElement("div");
-  infoCard.classList.add("card");
+  infoCard.classList.add("card", "workspaceInfoCard");
 
   const owner = workspace.workspace_members.find((m) => m.role === "owner");
 
   infoCard.innerHTML = `
     <h3>Workspace Info</h3>
     <p><strong>Name:</strong> ${workspace.name}</p>
+    <p><strong>Description:</strong> ${workspace.description}</p>
     <div><strong>Workspace ID:</strong> <div class=workspaceIdContainer><input class="inputField workspaceId" readonly value="${workspace.id}"> <button class="copyBtn" title="Copy">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
             <rect x="9" y="9" width="10" height="10" rx="2"
@@ -461,7 +462,7 @@ async function loadSettings(container, workspace) {
     e.stopPropagation();
     const target = document.querySelector(".workspaceId").value;
     navigator.clipboard.writeText(target);
-    actionMsg("URL copied to clipboard!", "success");
+    actionMsg("Copied to clipboard!", "success");
   });
 
   // -------------------------
