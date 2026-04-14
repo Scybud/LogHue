@@ -417,7 +417,145 @@ async function renderSection(section, workspace, container) {
 
       loadDiscussions("Discussions History", discussionHistory || [], container);
       break;
+
+      case "settings":
+        loadSettings(container, workspace);
+        break;
   }
+}
+
+async function loadSettings(container, workspace) {
+  container.innerHTML = "";
+
+  const section = document.createElement("section");
+  section.classList.add("section");
+
+  const title = document.createElement("h2");
+  title.classList.add("sectionTitle");
+  title.textContent = "Workspace Settings";
+
+  // -------------------------
+  // WORKSPACE INFO CARD
+  // -------------------------
+  const infoCard = document.createElement("div");
+  infoCard.classList.add("card");
+
+  const owner = workspace.workspace_members.find((m) => m.role === "owner");
+
+  infoCard.innerHTML = `
+    <h3>Workspace Info</h3>
+    <p><strong>Name:</strong> ${workspace.name}</p>
+    <p><strong>Workspace ID:</strong> ${workspace.id}</p>
+    <p><strong>Owner:</strong> ${owner?.profiles.full_name || "Unknown"}</p>
+  `;
+
+  // -------------------------
+  // OWNERSHIP TRANSFER CARD
+  // -------------------------
+  const transferCard = document.createElement("div");
+  transferCard.classList.add("card");
+
+  transferCard.innerHTML = `
+    <h3>Transfer Ownership</h3>
+    <select id="transferSelect"></select>
+    <button class="primaryBtn" id="transferBtn">Transfer Ownership</button>
+  `;
+
+  const select = transferCard.querySelector("#transferSelect");
+
+  workspace.workspace_members.forEach((m) => {
+    if (m.role !== "owner") {
+      const opt = document.createElement("option");
+      opt.value = m.profiles.id;
+      opt.textContent = m.profiles.full_name;
+      select.append(opt);
+    }
+  });
+
+  transferCard.querySelector("#transferBtn").onclick = async () => {
+    const newOwner = select.value;
+
+    const { error } = await supabase
+      .from("workspace_members")
+      .update({ role: "owner" })
+      .eq("user_id", newOwner)
+      .eq("workspace_id", workspace.id);
+
+    if (error) {
+      actionMsg("Failed to transfer ownership", "error");
+      return;
+    }
+
+    actionMsg("Ownership transferred!", "success");
+    setTimeout(() => window.location.reload(), 1500);
+  };
+
+  // -------------------------
+  // API KEYS CARD
+  // -------------------------
+  const apiCard = document.createElement("div");
+  apiCard.classList.add("card");
+
+  apiCard.innerHTML = `
+    <h3>API Keys</h3>
+    <button class="primaryBtn" id="createApiKeyBtn">Create API Key</button>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Prefix</th>
+          <th>Created</th>
+          <th>Last Used</th>
+          <th>Permissions</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="apiKeysTable"></tbody>
+    </table>
+  `;
+
+  loadApiKeys(apiCard.querySelector("#apiKeysTable"), workspace.id);
+
+  apiCard.querySelector("#createApiKeyBtn").onclick = () =>
+    openApiKeyModal(workspace.id);
+
+  section.append(title, infoCard, transferCard, apiCard);
+  container.append(section);
+}
+async function loadApiKeys(tbody, workspaceId) {
+  const { data: keys, error } = await supabase
+    .from("api_keys")
+    .select("*")
+    .eq("workspace_id", workspaceId)
+    .order("created_at", { ascending: false });
+
+  if (error) return;
+
+  tbody.innerHTML = "";
+
+  keys.forEach((key) => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${key.name}</td>
+      <td>${key.prefix}</td>
+      <td>${formatDateTime(key.created_at)}</td>
+      <td>${key.last_used_at ? formatDateTime(key.last_used_at) : "—"}</td>
+      <td>${key.permissions.join(", ")}</td>
+      <td><button class="revokeBtn" data-id="${key.id}">Revoke</button></td>
+    `;
+
+    tr.querySelector(".revokeBtn").onclick = async () => {
+      await supabase
+        .from("api_keys")
+        .update({ revoked: true })
+        .eq("id", key.id);
+      loadApiKeys(tbody, workspaceId);
+    };
+
+    tbody.append(tr);
+  });
 }
 
 
