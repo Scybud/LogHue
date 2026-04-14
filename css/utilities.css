@@ -581,7 +581,7 @@ tbody td {
 }
 
 /* Actions */
-.actions .revoke {
+ .revoke {
   color: var(--danger);
   background: none;
   border: none;
