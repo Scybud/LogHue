@@ -1,52 +1,22 @@
 <div class="modalContainer">
   <form class="form" id="createTaskForm">
     <!--CLOSE BUTTON-->
-    <svg
-      class="closeModalBtn"
-      xmlns="http://www.w3.org/2000/svg"
-      width="22"
-      height="22"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1.7"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      <rect
-        x="3.5"
-        y="3.5"
-        width="17"
-        height="17"
-        rx="6"
-        ry="6"
-        fill="currentColor"
-        opacity="0.06"
-      />
+    <svg class="closeModalBtn" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3.5" y="3.5" width="17" height="17" rx="6" ry="6" fill="currentColor" opacity="0.06" />
       <path d="M9 9l6 6M15 9l-6 6" />
     </svg>
-
+    
     <h2>Create Task</h2>
     <label for="taskTitle">Task Title </label>
-    <input
-      type="text"
-      class="inputField"
-      id="taskTitle"
-      placeholder="e.g. Write a project brief"
-      required
-    />
+    <input type="text" class="inputField" id="taskTitle" placeholder="e.g. Write a project brief" required />
     <label for="taskDescription">Task Description </label>
-    <textarea
-      name="taskDescription"
-      id="taskDescription"
-      class="inputField textArea"
-      placeholder="e.g. Write a project brief for..."
-      required
-    ></textarea>
+    <textarea name="taskDescription" id="taskDescription" class="inputField textArea"
+      placeholder="e.g. Write a project brief for..." required></textarea>
     <label for="assignToDropdown">Assign To</label>
     <select name="assignTo" id="assignToDropdown">
-<!--CONTENT LOADED DINAMICALLY-->>    
-</select>
+      <!--CONTENT LOADED DINAMICALLY-->>
+    </select>
     <button type="button" class="btn" id="createTaskBtn">Create Task</button>
   </form>
 </div>

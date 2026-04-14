@@ -11,7 +11,7 @@
   position: relative;
 
   gap: var(--space-md);
-  margin: auto ;
+  margin: auto;
   padding: calc(var(--space-md) + 4px) calc(var(--space-sm) + 2px);
   width: 95%;
   max-width: 500px;
@@ -22,7 +22,7 @@ label {
   font-size: 0.9rem;
 }
 legend {
-  color: var(--chevron-color)
+  color: var(--chevron-color);
 }
 fieldset {
   display: flex;
@@ -136,7 +136,7 @@ input[type="number"]::-webkit-inner-spin-button:hover {
   align-items: center;
 }
 
- details summary::before {
+details summary::before {
   background-color: none;
   display: inline-block;
   content: "";
@@ -149,7 +149,7 @@ input[type="number"]::-webkit-inner-spin-button:hover {
   transition: transform 0.2s ease;
   background: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='4,3 10,8 4,13' fill='%23F59E0B' stroke='%23F59E0B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
- details[open] summary::before {
+details[open] summary::before {
   transform: rotate(90deg);
 }
 
@@ -197,7 +197,6 @@ details {
 details:hover {
   border: 1px var(--accent) solid;
 }
-
 
 details span:nth-child(2) {
   background-color: var(--bg);
@@ -318,7 +317,7 @@ button.danger {
 }
 
 #personalCreatedLogs {
-  margin: calc(var( --space-sm) + 2px) 0 calc(var( --space-md) + 4px);
+  margin: calc(var(--space-sm) + 2px) 0 calc(var(--space-md) + 4px);
 }
 /* When a log is added */
 .taskContainer {
@@ -344,11 +343,10 @@ button.danger {
 .commonPlaceholderText {
   text-align: center;
   opacity: 0.6;
-  margin-top: calc(var( --space-md) + 4px);
+  margin-top: calc(var(--space-md) + 4px);
 }
 .mutedText {
-  color: #5A7F89;
-    text-align: center;
+  color: #5a7f89;
 }
 /*SINGLE INPUT FIELD*/
 .singleInput {
@@ -367,7 +365,7 @@ button.danger {
 /*BUTTONS*/
 .btn {
   background: var(--primary);
-  padding: calc(var( --space-xs) * 3);
+  padding: calc(var(--space-xs) * 3);
   border-radius: var(--radius);
   margin: 0 var(--space-xs);
   font-size: 1rem;
@@ -384,7 +382,7 @@ button.danger {
 @media (max-width: 600px) {
   .btn {
     width: 100%;
-    margin: calc(var( --space-xs) + 1px) 0;
+    margin: calc(var(--space-xs) + 1px) 0;
   }
   .singleInput {
     flex-direction: column;
@@ -444,11 +442,11 @@ button.danger {
   rotate: -180deg;
 }
 .historyNavs {
-height: 0;
-width: 100%;
-overflow: hidden;
-padding-left: var(--space-md);
-transition: all 0.4s ease;
+  height: 0;
+  width: 100%;
+  overflow: hidden;
+  padding-left: var(--space-md);
+  transition: all 0.4s ease;
 }
 .historyNavs.dropNav {
   max-height: fit-content;
@@ -458,7 +456,7 @@ transition: all 0.4s ease;
 /*CARDS*/
 .card {
   background: var(--card-bg);
-  padding: calc(var( --space-md) );
+  padding: calc(var(--space-md));
   margin: var(--space-sm) 0;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -467,7 +465,8 @@ transition: all 0.4s ease;
 .card:hover {
   transform: translateY(-2px);
 }
-.dropdown-list button.dropdown-item, button.dropdown-item {
+.dropdown-list button.dropdown-item,
+button.dropdown-item {
   background: none;
   color: var(--color);
   text-align: left;
@@ -530,7 +529,8 @@ transition: all 0.4s ease;
 }
 
 .navAccountIdentityCard {
-  padding: calc(var( --space-xs) - 2px) calc(var( --space-xs) + 1px) calc(var( --space-sm) + 2px);
+  padding: calc(var(--space-xs) - 2px) calc(var(--space-xs) + 1px)
+    calc(var(--space-sm) + 2px);
   margin: var(--space-sm) 0 var(--space-xs);
   position: sticky;
   bottom: 0;
@@ -552,8 +552,8 @@ transition: all 0.4s ease;
   height: 50px;
   border-radius: 50%;
 }
-.grid .profileImg{
- width: 60px;
+.grid .profileImg {
+  width: 60px;
   height: 60px;
 }
 #subscriptionType {
@@ -566,8 +566,6 @@ transition: all 0.4s ease;
   opacity: 0.5;
 }
 
-
-
 /*CONSENT*/
 .consent-banner {
   position: fixed;
@@ -578,7 +576,7 @@ transition: all 0.4s ease;
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   z-index: 3;
 }
 
@@ -610,7 +608,7 @@ transition: all 0.4s ease;
 .pageOpenLink {
   display: block;
   width: fit-content;
-    opacity: 1;
+  opacity: 1;
 }
 .pageOpenLink:hover {
   opacity: 1;
@@ -626,7 +624,7 @@ transition: all 0.4s ease;
   width: 360px;
   max-width: 100%;
   background: var(--card-bg);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .modal-actions {
@@ -654,7 +652,6 @@ transition: all 0.4s ease;
   margin: var(--space-md);
   background: var(--form-bg);
 }
-
 
 /*NOTES PAGE STYLE*/
 .notesContainer {
@@ -697,7 +694,7 @@ transition: all 0.4s ease;
   margin-bottom: 30px;
 }
 .ql-editor.ql-blank::before {
-  color: #888;              /* muted placeholder color */
+  color: #888; /* muted placeholder color */
   font-style: italic;
   font-weight: 400;
   font-size: 0.95rem;
@@ -710,9 +707,9 @@ transition: all 0.4s ease;
   bottom: 0;
   padding: var(--space-sm);
   width: 100%;
-max-width: 800px;
-border-radius: var(--radius);
-backdrop-filter: var(--filter);
+  max-width: 800px;
+  border-radius: var(--radius);
+  backdrop-filter: var(--filter);
 }
 .notesActionBtn {
   width: 100%;
@@ -723,15 +720,15 @@ backdrop-filter: var(--filter);
 #saveNoteBtn:hover {
   background: var(--primary-light);
 }
- #exportNotesBtn {
+#exportNotesBtn {
   color: #fff;
   background: var(--card-bg);
 }
 #notesList {
-position: sticky;
-top: 0;
-overflow-y: auto;
-max-height: 600px;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+  max-height: 600px;
 }
 #notesList::-webkit-scrollbar {
   width: var(--space-xs);
@@ -776,24 +773,22 @@ max-height: 600px;
 
 @media (max-width: 800px) {
   .notesContainer {
-display: flex;
-flex-direction: column;
+    display: flex;
+    flex-direction: column;
   }
   #notesList {
-  height: calc(var(--space-lg));
-  transition: all 0.4s ease;
-}
-#notesListContainer:hover #notesList {
-  height: 300px;
-  overflow: auto;
-}
+    height: calc(var(--space-lg));
+    transition: all 0.4s ease;
+  }
+  #notesListContainer:hover #notesList {
+    height: 300px;
+    overflow: auto;
+  }
 }
 
-.modal-actions btn{
-  
+.modal-actions btn {
   margin-top: var(--space-md);
 }
-
 
 .activityList {
   display: flex;
@@ -808,14 +803,16 @@ flex-direction: column;
   border-radius: 8px;
 }
 
-.activityHeader, .discussionHeader {
+.activityHeader,
+.discussionHeader {
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 14px;
 }
 
-.activityHeader .profileImg, .discussionHeader .profileImg {
+.activityHeader .profileImg,
+.discussionHeader .profileImg {
   width: 28px;
   height: 28px;
   border: 1px solid var(--border);
