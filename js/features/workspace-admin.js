@@ -502,7 +502,7 @@ async function loadSettings(container, workspace, currentUserId) {
   transferCard.classList.add("card");
   transferCard.innerHTML = `
     <h3>Transfer Ownership</h3>
-    <p class="placeholder">Transfering ownership to another member means you will no longer be the owner of this workspace and will <b>NOT</b> be able to perform sensitive actions on this workspace.</p>
+    <p class="placeholderText">Transfering ownership to another member means you will no longer be the owner of this workspace and will <b>NOT</b> be able to perform sensitive actions on this workspace.</p>
     <p class="mutedText">This action cannot be undone by you again.</p>
     <button class="btn danger" id="transferBtn">Transfer Ownership</button>
   `;
