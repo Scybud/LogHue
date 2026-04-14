@@ -168,6 +168,23 @@ export function openLoginModal() {
   }  
 }
 
+export async function openTransferOwnershipModal(workspace) {
+    await loadComponent(
+      "https://loghue.com/components/modals/transfer-ownership",
+      "modalContainer",
+    );
+    attachTransferOwnershipEvents(workspace);
+  };
+
+  export async function openApiKeyModal(workspace) {
+    await loadComponent(
+        "https://loghue.com/components/modals/create-api-key",
+        "modalContainer",
+      );
+      attachCreateApiKeyEvents(workspace.id);
+  }
+
+
 export async function confirmAction(message, actions = []) {
   // Load modal only when needed
   await loadComponent(

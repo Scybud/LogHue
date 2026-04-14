@@ -1,5 +1,5 @@
 import { attachSidebarEvents } from "./../components/sidebar.js";
-import { openCreateTaskModal, openAddMemeberModal, confirmAction, actionMsg } from "./../utils/modals.js";
+import { openCreateTaskModal, openAddMemeberModal, confirmAction, actionMsg, openTransferOwnershipModal, openApiKeyModal } from "./../utils/modals.js";
 import { supabase } from "../supabase.js";
 import { loadComponent, closeModal } from "../ui.js";
 import { openStartDiscussionModal } from "../utils/modals.js";
@@ -457,37 +457,11 @@ async function loadSettings(container, workspace) {
 
   transferCard.innerHTML = `
     <h3>Transfer Ownership</h3>
-    <select id="transferSelect"></select>
-    <button class="primaryBtn" id="transferBtn">Transfer Ownership</button>
+    <button class="btn danger" id="transferBtn">Transfer Ownership</button>
   `;
 
-  const select = transferCard.querySelector("#transferSelect");
-
-  workspace.workspace_members.forEach((m) => {
-    if (m.role !== "owner") {
-      const opt = document.createElement("option");
-      opt.value = m.profiles.id;
-      opt.textContent = m.profiles.full_name;
-      select.append(opt);
-    }
-  });
-
   transferCard.querySelector("#transferBtn").onclick = async () => {
-    const newOwner = select.value;
-
-    const { error } = await supabase
-      .from("workspace_members")
-      .update({ role: "owner" })
-      .eq("user_id", newOwner)
-      .eq("workspace_id", workspace.id);
-
-    if (error) {
-      actionMsg("Failed to transfer ownership", "error");
-      return;
-    }
-
-    actionMsg("Ownership transferred!", "success");
-    setTimeout(() => window.location.reload(), 1500);
+    await openTransferOwnershipModal(workspace);
   };
 
   // -------------------------
@@ -515,10 +489,11 @@ async function loadSettings(container, workspace) {
     </table>
   `;
 
-  loadApiKeys(apiCard.querySelector("#apiKeysTable"), workspace.id);
+  apiCard.querySelector("#createApiKeyBtn").onclick = async () => {
+    await openApiKeyModal(workspace);
+  };
 
-  apiCard.querySelector("#createApiKeyBtn").onclick = () =>
-    openApiKeyModal(workspace.id);
+  loadApiKeys(apiCard.querySelector("#apiKeysTable"), workspace.id);
 
   section.append(title, infoCard, transferCard, apiCard);
   container.append(section);

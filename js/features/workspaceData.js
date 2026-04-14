@@ -319,7 +319,7 @@ async function attachCreateWorkspaceEvent(container, workspaces) {
         .insert({
           workspace_id: newWorkspace.id,
           user_id: user.id,
-          role: "admin",
+          role: "owner",
         });
 
       if (memberInsertError) {
@@ -350,7 +350,7 @@ async function attachCreateWorkspaceEvent(container, workspaces) {
 
 function updateworkspaceCount() {
   const createdWorkspaces = savedWorkspaceData.filter(
-    (ws) => ws.role === "admin",
+    (ws) => ws.role === "owner",
   );
   const openedWorkspaces = savedWorkspaceData.filter(
     (ws) => ws.status === "active",
