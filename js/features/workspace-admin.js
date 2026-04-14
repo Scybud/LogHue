@@ -445,9 +445,24 @@ async function loadSettings(container, workspace) {
   infoCard.innerHTML = `
     <h3>Workspace Info</h3>
     <p><strong>Name:</strong> ${workspace.name}</p>
-    <p><strong>Workspace ID:</strong> ${workspace.id}</p>
+    <div><strong>Workspace ID:</strong> <div class=workspaceIdContainer><input class="inputField workspaceId" readonly value="${workspace.id}"> <button class="copyBtn" title="Copy">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <rect x="9" y="9" width="10" height="10" rx="2"
+              stroke="currentColor" stroke-width="2"/>
+            <rect x="5" y="5" width="10" height="10" rx="2"
+              stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </button></div></div>
     <p><strong>Owner:</strong> ${owner?.profiles.full_name || "Unknown"}</p>
   `;
+
+  // Copy button
+  infoCard.querySelector(".copyBtn").addEventListener("click", (e) => {
+    e.stopPropagation();
+    const target = document.querySelector(".workspaceId").value;
+    navigator.clipboard.writeText(target);
+    actionMsg("URL copied to clipboard!", "success");
+  });
 
   // -------------------------
   // OWNERSHIP TRANSFER CARD

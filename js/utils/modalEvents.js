@@ -142,6 +142,74 @@ const { pushNotifData, pushNotifError } = await supabase.functions.invoke(
   });
 }
 
+//CREATE API EVENTS
+export function attachCreateApiKeyEvents(workspaceId) {
+  const modal = document.querySelector(".api-key-modal");
+  if (!modal) return;
+
+  // Generate button
+  const generateBtn = modal.querySelector("#generate-api-key-btn");
+  if (!generateBtn) return;
+
+  generateBtn.onclick = async () => {
+    const nameInput = modal.querySelector("#api-key-name");
+    const name = nameInput.value.trim();
+
+    if (!name) {
+      actionMsg("Please enter a name for the API key.", "error");
+      return;
+    }
+
+    // Collect permissions
+    const permissions = [
+      ...modal.querySelectorAll("input[type=checkbox]:checked"),
+    ].map((c) => c.value);
+
+    // 1. Generate raw key
+    const rawKey = `lh_live_${crypto.randomUUID().replace(/-/g, "")}`;
+
+    // 2. Hash key
+    const hash = await bcrypt.hash(rawKey, 10);
+
+    // 3. Store in DB
+    const { error } = await supabase.from("api_keys").insert({
+      workspace_id: workspaceId,
+      name,
+      key_hash: hash,
+      prefix: rawKey.slice(0, 8),
+      permissions,
+    });
+
+    if (error) {
+      console.error(error);
+      actionMsg("Failed to create API key.", "error");
+      return;
+    }
+
+    // 4. Replace modal with "copy key" screen
+    modal.innerHTML = `
+      <svg class="closeModalBtn" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3.5" y="3.5" width="17" height="17" rx="6" ry="6" fill="currentColor" opacity="0.06"/>
+        <path d="M9 9l6 6M15 9l-6 6"/>
+      </svg>
+
+      <h2>Your API Key</h2>
+      <p class="placeholderText">Copy this key now. You will not see it again.</p>
+
+      <input class="inputField" id="raw-api-key" value="${rawKey}" readonly />
+
+      <button class="btn" id="copy-api-key-btn">Copy</button>
+    `;
+
+    // Copy button
+    modal.querySelector("#copy-api-key-btn").onclick = async () => {
+      await navigator.clipboard.writeText(rawKey);
+      actionMsg("API key copied!", "success");
+    };
+  };
+}
+
+
 //ADD MEMEBR EVENTS
 export async function attachAddMemberEvents(workspaceId) {
   const emailSection = document.getElementById("invite-email-section");
