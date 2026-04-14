@@ -498,7 +498,7 @@ async function loadSettings(container, workspace) {
           <th>Created</th>
           <th>Last Used</th>
           <th>Permissions</th>
-          <th></th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody id="apiKeysTable"></tbody>
