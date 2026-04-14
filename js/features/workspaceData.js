@@ -472,7 +472,7 @@ function attachOpenWorkspaceClickEvent() {
     const wsId = btn.dataset.id;
     const role = btn.dataset.role;
 
-    if (role === "admin") {
+    if (role === "admin" || role === "owner") {
       window.location.href = `workspace-dashboard-admin?ws=${wsId}`;
     } else {
       window.location.href = `workspace-dashboard-member?ws=${wsId}`;
