@@ -472,7 +472,7 @@ async function loadSettings(container, workspace) {
 
   apiCard.innerHTML = `
     <h3>API Keys</h3>
-    <button class="primaryBtn" id="createApiKeyBtn">Create API Key</button>
+    <button class="btn-secondary btn" id="createApiKeyBtn">Create API Key</button>
 
     <table class="table">
       <thead>
