@@ -19,6 +19,14 @@ export let savedWorkspaceData = [];
 
 
 function getWorkspaceDropdown(ws) {
+  if (ws.role === "owner") {
+    return createDropdown([
+      { label: "Delete ", action: () => deleteWorkspace(ws.id) },
+      { label: "Archive Workspace", action: () => archiveWorkspace(ws.id) },
+      { label: "Edit Workspace", action: () => editWorkspace(ws, ws.id) },
+      { label: "Open Workspace", action: () => openWorkspace(ws.id, ws.role) },
+    ]);
+  }
   if (ws.role === "admin"){
     return createDropdown([
       { label: "Delete ", action: () => deleteWorkspace(ws.id) },
@@ -303,7 +311,7 @@ async function attachCreateWorkspaceEvent(container, workspaces) {
     const newWorkspace = data[0];
 
     // Assign role manually for UI consistency
-    newWorkspace.role = "admin";
+    newWorkspace.role = "owner";
 
     //ADD WORKSPACE ADMIN AS MEMBER
     const { data: existing } = await supabase
@@ -392,7 +400,7 @@ export function createWorkspaceCardElement(ws) {
 
   const roleSpan = document.createElement("span");
   const roleClass =
-    ws.role === "admin" || ws.role === "member" ? ws.role : "unknown";
+    ws.role === "admin" || ws.role === "owner" || ws.role === "member" ? ws.role : "unknown";
 
   roleSpan.classList.add("tag", roleClass);
   roleSpan.textContent = ws.role;
