@@ -956,21 +956,23 @@ const currentUserRole = currentUser?.role;
 const currentUserIsOwner = currentUserRole === "owner";
 const currentUserIsAdmin = currentUserRole === "admin";
 
-if (isSelf) {
+if (isSelf || isOwner) {
+  // cannot remove yourself or the owner
   adminActions.append(assignTaskBtn);
-} else if (isAdmin) {
-  adminActions.append(assignTaskBtn);
-} else if (isOwner) {
-  adminActions.append(assignTaskBtn);
-} else if (isAdmin && currentUserIsAdmin) {
-  adminActions.append(assignTaskBtn);
-} else if (currentUserIsAdmin && isMember) {
-  adminActions.append(assignTaskBtn, removeMemberBtn);
 } else if (currentUserIsOwner) {
+  // owner can remove admins + members
+  adminActions.append(assignTaskBtn, removeMemberBtn);
+} else if (currentUserIsOwner || isAdmin) {
+  // owner can remove admins + members
+  adminActions.append(assignTaskBtn, removeMemberBtn);
+} else if (currentUserIsAdmin && isMember) {
+  // admin can remove members only
   adminActions.append(assignTaskBtn, removeMemberBtn);
 } else {
-  adminActions.append(assignTaskBtn, removeMemberBtn);
+  // everyone else: assign only
+  adminActions.append(assignTaskBtn);
 }
+
 
 // Members see nothing
 memberCard.append(cardHeader, adminActions);
