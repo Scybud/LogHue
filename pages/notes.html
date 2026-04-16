@@ -29,6 +29,53 @@
     .mainContent {
       padding-bottom: 100px;
     }
+
+    /* MOBILE SIDEBAR */
+@media (min-width: 600px) and (max-width: 1200px) {
+    .main {
+    display: flex !important;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .mainContent {
+    width: 100%;
+  }
+  Button.menuBtn {
+    display: none;
+  }
+  .mainContent {
+  padding-bottom: 30px;
+}
+  .sidebarContainer {
+    width: 70px;
+    height: 100% ;
+    transition: width 0.35s ease;
+    border-right: 1px solid var(--border);
+  }
+  .sidebarContainer:hover {
+    width: 400px;
+  }
+  .sidebarContainer:hover .navText, .sidebarContainer:hover div.navSectionLabel {
+    opacity: 1;
+  }
+  .sidebarContainer .navText, .sidebarContainer div.navSectionLabel {
+    opacity: 0;
+    text-wrap: nowrap;
+    transition: opacity 0.4s ease;
+  }
+  .sidebarContainer span.navIcon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+.sidebarContainer span.navIcon svg{
+width: 30px;
+height: 30px;
+}
+  .sidebarContainer.slideShow {
+    transform: translateX(0);
+  }
+}
   </style>
 </head>
 

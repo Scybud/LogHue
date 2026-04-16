@@ -172,7 +172,8 @@ function renderNotesList(notes) {
     item.classList.add("noteItem");
     item.dataset.id = note.id;
 
-    const noteTitle = note.title || "Untitled";
+    const noteTitle = document.createElement("p")
+    noteTitle.textContent = note.title || "Untitled";
 
     const deleteBtn = document.createElement("button");
     deleteBtn.type = "button";
@@ -186,12 +187,8 @@ function renderNotesList(notes) {
   <path d="M9 6V4h6v2" />
 </svg>
 `;
-    // truncate safely
-    const shortenedTitle =
-      noteTitle.length > 25 ? noteTitle.slice(0, 25) + "..." : noteTitle;
 
-    item.textContent = shortenedTitle;
-    item.append(deleteBtn);
+    item.append(noteTitle, deleteBtn);
     item.onclick = () => openNote(note);
 
     notesList.appendChild(item);

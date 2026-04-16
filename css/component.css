@@ -771,6 +771,8 @@ button.dropdown-item {
 }
 .noteItem {
   display: flex;
+  position: relative;
+  align-items: center;
   justify-content: space-between;
   background: var(--card-bg);
   padding: var(--space-md) var(--space-sm);
@@ -779,12 +781,20 @@ button.dropdown-item {
   cursor: pointer;
   transition: all 0.4s ease;
 }
+.noteItem p {
+  margin: 0;
+  margin-right: calc(var(--space-lg) + 16px);
+    white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .noteItem .deleteBtn {
   color: var(--bg);
   background-color: var(--color);
   padding: var(--space-sm);
   margin: 0;
   align-items: center;
+  margin-right: var(--space-xs);
   max-width: fit-content;
 }
 .noteItem:hover {
