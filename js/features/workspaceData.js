@@ -15,6 +15,7 @@ let workspaceNameEl;
 let workspaceDescriptionEl;
 let createWorkspaceBtn;
 let upperDashboardContainer;
+let user = null;
 export let savedWorkspaceData = [];
 
 
@@ -29,7 +30,6 @@ function getWorkspaceDropdown(ws) {
   }
   if (ws.role === "admin"){
     return createDropdown([
-      { label: "Delete ", action: () => deleteWorkspace(ws.id) },
       { label: "Archive Workspace", action: () => archiveWorkspace(ws.id) },
       { label: "Edit Workspace", action: () => editWorkspace(ws, ws.id) },
       { label: "Open Workspace", action: () => openWorkspace(ws.id, ws.role) },
@@ -75,36 +75,26 @@ export function dropdownClick() {
 export async function initWorkspaces() {
   await sessionReady;
 
-  const user = sessionState.user;
+   user = sessionState.user;
 
   //GET CREATED WORKSPACES
-  const { data: createdWorkspaces, error: createdError } = await supabase
-    .from("workspaces")
-    .select("*")
-    .eq("created_by", user.id)
-    .order("created_at", { ascending: false });
+const { data: createdWorkspaces, error: createdError } = await supabase
+  .from("workspace_members")
+  .select("role, workspaces: workspace_id(*)")
+  .eq("user_id", user.id);
+
 
   if (createdError) {
     console.error(createdError);
     alert(createdError);
   }
 
-  //GET WORKSPACES THE USER IS A MEMBER OF
-  const { data: memberWorkspaces, error: memberError } = await supabase
-    .from("workspace_members")
-    .select("role, workspaces: workspace_id(*)")
-    .eq("user_id", user.id);
-
-  if (memberError) {
-    console.error(memberError);
-    alert(memberError);
-  }
-
   //NORMALISE MEMBER WORKSPACES
-  const normalizedMemberWorkspaces = (memberWorkspaces || []).map((m) => ({
-    ...m.workspaces,
-    role: m.role, // override role from membership table
-  }));
+const normalizedCreated = createdWorkspaces.map((m) => ({
+  ...m.workspaces,
+  role: m.role,
+}));
+
 
   workspaceNameEl = document.getElementById("workspacename");
   workspaceDescriptionEl = document.getElementById("workspaceDescription");
@@ -112,8 +102,8 @@ export async function initWorkspaces() {
   upperDashboardContainer = document.getElementById("upperDashboardContainer");
 
   const combinedWorkspaceData = [
-    ...createdWorkspaces.map((ws) => ({ ...ws, role: "admin" })),
-    ...normalizedMemberWorkspaces,
+    ...createdWorkspaces,
+    ...normalizedCreated,
   ];
 
   // Remove duplicates by workspace id
@@ -399,11 +389,10 @@ export function createWorkspaceCardElement(ws) {
   h3.appendChild(document.createTextNode(ws.name + " "));
 
   const roleSpan = document.createElement("span");
-  const roleClass =
-    ws.role === "admin" || ws.role === "owner" || ws.role === "member" ? ws.role : "unknown";
+  const roleClass = ws.role || "unknown";
 
   roleSpan.classList.add("tag", roleClass);
-  roleSpan.textContent = ws.role;
+  roleSpan.textContent = roleClass;
 
   h3.append(roleSpan);
 
@@ -498,7 +487,11 @@ async function deleteWorkspace(id) {
 //PERFORM WORKSPACE DELETE IF CONFIRMED
 async function performWorkspaceDelete(id) {
 
-    const { error } = await supabase.from("workspaces").delete().eq("id", id);
+    const { error } = await supabase
+      .from("workspaces")
+      .delete()
+      .eq("id", id)
+      .eq("created_by", user.id);
 
     if (error) {
       console.error(error);

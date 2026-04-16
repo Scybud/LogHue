@@ -2,7 +2,7 @@
 const sidebar = document.querySelector(".sidebarContainer");
 export function sidebarToggle() {
   if (!sidebar) return;
-  sidebar.classList.toggle("show");
+  sidebar.classList.toggle("slideShow");
 }
 
 // Attaches sidebar toggle events to buttons

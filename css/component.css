@@ -533,9 +533,7 @@ button.dropdown-item {
 }
 
 .navAccountIdentityCard {
-  padding: calc(var(--space-xs) - 2px) calc(var(--space-xs) + 1px)
-    calc(var(--space-sm) + 2px);
-  margin: var(--space-sm) 0 var(--space-xs);
+  margin: var(--space-sm) 0 0;
   position: sticky;
   bottom: 0;
   max-width: 100%;
@@ -546,7 +544,7 @@ button.dropdown-item {
   background: var(--card-bg);
   gap: var(--space-md);
   border-radius: 0;
-  border-top: 1px solid;
+  border-top: 1px solid var(--border);
 }
 .text p {
   margin: 0;
@@ -561,10 +559,8 @@ button.dropdown-item {
   height: 60px;
 }
 #subscriptionType {
-  border: 1px solid var(--border);
   padding: 2px;
   display: inline-block;
-  border-radius: var(--radius);
   margin-top: calc(var(--space-sm) - 2);
   font-size: 0.9rem;
   opacity: 0.5;

@@ -930,38 +930,61 @@ function loadMembers(members, container) {
     );
     assignTaskBtn.textContent = "Assign Task";
 
-    const removeMemberBtn = document.createElement("button")
-    removeMemberBtn.type = "button"
-removeMemberBtn.id = mbr.profiles.id;
- removeMemberBtn.classList.add(
-   "btn",
-   "btn-sm",
-   "btn-primary",
-   "danger",
-   "removeMemberBtn",
- );
+    const removeMemberBtn = document.createElement("button");
+    removeMemberBtn.type = "button";
+    removeMemberBtn.id = mbr.profiles.id;
+    removeMemberBtn.classList.add(
+      "btn",
+      "btn-sm",
+      "btn-primary",
+      "danger",
+      "removeMemberBtn",
+    );
     removeMemberBtn.textContent = "Remove member";
 
     const adminActions = document.createElement("div");
     adminActions.classList.add("adminActions");
-if (mbr.role === "admin" || mbr.role === "owner") {
+
+    const isSelf = mbr.user_id === user.id;
+const isOwner = mbr.role === "owner";
+const isAdmin = mbr.role === "admin";
+const isMember = mbr.role === "member";
+
+const currentUser = loadedMembers.find(m => m.user_id === user.id);
+const currentUserRole = currentUser?.role;
+
+const currentUserIsOwner = currentUserRole === "owner";
+const currentUserIsAdmin = currentUserRole === "admin";
+
+if (isSelf) {
   adminActions.append(assignTaskBtn);
+} else if (isAdmin) {
+  adminActions.append(assignTaskBtn);
+} else if (isOwner) {
+  adminActions.append(assignTaskBtn);
+} else if (isAdmin && currentUserIsAdmin) {
+  adminActions.append(assignTaskBtn);
+} else if (currentUserIsAdmin && isMember) {
+  adminActions.append(assignTaskBtn, removeMemberBtn);
+} else if (currentUserIsOwner) {
+  adminActions.append(assignTaskBtn, removeMemberBtn);
 } else {
   adminActions.append(assignTaskBtn, removeMemberBtn);
 }
 
-    memberCard.append(cardHeader, adminActions);
-    divGrid.append(memberCard);
-  });
+// Members see nothing
+memberCard.append(cardHeader, adminActions);
+divGrid.append(memberCard);
+});
 
   section.append(sectionTitle, divGrid);
   container.append(section);
-
-  //ATTACH TASK CREATION LOGIC FOR EACH MEMBER CARD
-        assignMemberTask();
+//ATTACH TASK CREATION LOGIC FOR EACH MEMBER CARD
+assignMemberTask();
 //ATTACH MEMBER REMOVAL LOGIC FOR EACH MEMBER CARD'
 removeMember();
 }
+
 
 export function formatDateTime(isoString) {
   const date = new Date(isoString);

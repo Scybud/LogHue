@@ -58,7 +58,7 @@ export async function renderDashboard() {
       "activeWorkspaceCount",
     );
     createdWorkspaces = savedWorkspaceData.filter(
-      (ws) => ws.role === "admin" && ws.status === "active",
+      (ws) => ws.role === "owner" && ws.status === "active",
     );
     closedWorkspaces = savedWorkspaceData.filter(
      (ws) => ws.status === "closed",
