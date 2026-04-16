@@ -21,11 +21,20 @@
    <label>Name</label>
    <input class="inputField" id="api-key-name" placeholder=" eg. Syncally Integration" />
 
-   <fieldset>
-      <legend>Permissions</legend>
-      <label><input type="checkbox" value="read:documents" checked /> Read Documents</label>
-      <label><input type="checkbox" value="write:documents" /> Write Documents</label>
+   <fieldset class="permissionsFieldset">
+      <legend class="permissionsLegend">Permissions</legend>
+   
+      <label class="permissionItem">
+         <input type="checkbox" value="read:documents" checked />
+         <span>Read Documents</span>
+      </label>
+   
+      <label class="permissionItem">
+         <input type="checkbox" value="write:documents" />
+         <span>Write Documents</span>
+      </label>
    </fieldset>
+
 
    <button type="button" class="btn" id="generate-api-key-btn">Generate</button>
 </div>

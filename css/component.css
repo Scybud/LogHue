@@ -21,15 +21,35 @@
 label {
   font-size: 0.9rem;
 }
-legend {
-  color: var(--chevron-color);
+.permissionsFieldset {
+  border: 1px solid #e5e5ec;
+  padding: 14px 16px;
+  border-radius: 8px;
+  margin-top: 16px;
 }
-fieldset {
+
+.permissionsLegend {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 0 6px;
+  color: #333;
+}
+
+.permissionItem {
   display: flex;
-  flex-direction: column;
-  padding: var(--space-sm);
-  margin: var(--space-md);
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+  font-size: 14px;
+  cursor: pointer;
 }
+
+.permissionItem input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
 form .btn {
   width: 100%;
   margin-top: var(--space-sm);
