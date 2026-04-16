@@ -31,51 +31,63 @@
     }
 
     /* MOBILE SIDEBAR */
-@media (min-width: 600px) and (max-width: 1200px) {
-    .main {
-    display: flex !important;
-    width: 100%;
-    justify-content: space-between;
-  }
-  .mainContent {
-    width: 100%;
-  }
-  Button.menuBtn {
-    display: none;
-  }
-  .mainContent {
-  padding-bottom: 30px;
-}
-  .sidebarContainer {
-    width: 70px;
-    height: 100% ;
-    transition: width 0.35s ease;
-    border-right: 1px solid var(--border);
-  }
-  .sidebarContainer:hover {
-    width: 400px;
-  }
-  .sidebarContainer:hover .navText, .sidebarContainer:hover div.navSectionLabel {
-    opacity: 1;
-  }
-  .sidebarContainer .navText, .sidebarContainer div.navSectionLabel {
-    opacity: 0;
-    text-wrap: nowrap;
-    transition: opacity 0.4s ease;
-  }
-  .sidebarContainer span.navIcon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-.sidebarContainer span.navIcon svg{
-width: 30px;
-height: 30px;
-}
-  .sidebarContainer.slideShow {
-    transform: translateX(0);
-  }
-}
+    @media (min-width: 600px) and (max-width: 1200px) {
+      .main {
+        display: flex !important;
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .mainContent {
+        width: 100%;
+      }
+
+      Button.menuBtn {
+        display: none;
+      }
+
+      .mainContent {
+        padding-bottom: 30px;
+      }
+
+      .sidebarContainer {
+        width: 70px;
+        height: 100%;
+        transition: width 0.35s ease;
+        border-right: 1px solid var(--border);
+      }
+
+      .sidebarContainer:hover {
+        width: 400px;
+      }
+
+      .sidebarContainer:hover .navText,
+      .sidebarContainer:hover div.navSectionLabel {
+        opacity: 1;
+      }
+
+      .sidebarContainer .navText,
+      .sidebarContainer div.navSectionLabel {
+        opacity: 0;
+        text-wrap: nowrap;
+        transition: opacity 0.4s ease;
+      }
+
+      .sidebarContainer span.navIcon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .sidebarContainer span.navIcon svg {
+        width: 30px;
+        height: 30px;
+      }
+
+      .sidebarContainer.slideShow {
+        transform: translateX(0);
+      }
+    }
   </style>
 </head>
 
@@ -166,10 +178,10 @@ height: 30px;
   <!-- Quill JS -->
   <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
   <!--HTML TO PDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <!--HTML TO DOCX-->
-<script src="https://cdn.jsdelivr.net/npm/docx@7.8.2/build/index.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docx@7.8.2/build/index.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
   <script type="module" src="https://loghue.com/js/features/notes.js"></script>
 </body>
