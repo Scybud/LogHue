@@ -9,7 +9,6 @@ import { setLoading } from "../ui.js";
 
 
 function checkIfEmpty() {
-  console.log("ALL WORKSPACES:", savedWorkspaceData)
   const closedWorkspaces = savedWorkspaceData.filter(
     (ws) => ws.status === "closed",
   );
