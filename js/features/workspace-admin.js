@@ -881,7 +881,38 @@ details.addEventListener("click", (e) => {
   container.append(section);
 }
 
+function canRemoveMember(mbr, adminActions, assignTaskBtn, removeMemberBtn) {
+   const isSelf = mbr.user_id === user.id;
+   const isOwner = mbr.role === "owner";
+   const isAdmin = mbr.role === "admin";
+   const isMember = mbr.role === "member";
 
+   const currentUser = loadedMembers.find(
+     (m) => String(m.profiles.id) === String(user.id),
+   );
+   const currentUserRole = currentUser?.role;
+
+   const currentUserIsOwner = currentUserRole === "owner";
+   const currentUserIsAdmin = currentUserRole === "admin";
+
+   let canRemove = false;
+
+   if (!isSelf && !isOwner) {
+     if (currentUserIsOwner) {
+       canRemove = true; // owner removes anyone except owner/self
+     } else if (currentUserIsAdmin && isMember) {
+       canRemove = true; // admin removes members only
+     }
+   }
+
+   // UI rendering
+   if (canRemove) {
+     adminActions.append(assignTaskBtn, removeMemberBtn);
+   } else {
+     adminActions.append(assignTaskBtn);
+   }
+
+}
 function loadMembers(members, container) {
   if (!members || members.length === 0) {
     container.innerHTML = `<p class="placeholderText">No members found.</p>`;
@@ -945,34 +976,7 @@ function loadMembers(members, container) {
     const adminActions = document.createElement("div");
     adminActions.classList.add("adminActions");
 
-    const isSelf = mbr.user_id === user.id;
-const isOwner = mbr.role === "owner";
-const isAdmin = mbr.role === "admin";
-const isMember = mbr.role === "member";
-
-const currentUser = loadedMembers.find(m => m.user_id === user.id);
-const currentUserRole = currentUser?.role;
-
-const currentUserIsOwner = currentUserRole === "owner";
-const currentUserIsAdmin = currentUserRole === "admin";
-
-if (isSelf || isOwner) {
-  // cannot remove yourself or the owner
-  adminActions.append(assignTaskBtn);
-} else if (currentUserIsOwner) {
-  // owner can remove admins + members
-  adminActions.append(assignTaskBtn, removeMemberBtn);
-} else if (currentUserIsOwner || isAdmin) {
-  // owner can remove admins + members
-  adminActions.append(assignTaskBtn, removeMemberBtn);
-} else if (currentUserIsAdmin && isMember) {
-  // admin can remove members only
-  adminActions.append(assignTaskBtn, removeMemberBtn);
-} else {
-  // everyone else: assign only
-  adminActions.append(assignTaskBtn);
-}
-
+   canRemoveMember(mbr, adminActions, assignTaskBtn, removeMemberBtn);
 
 // Members see nothing
 memberCard.append(cardHeader, adminActions);
