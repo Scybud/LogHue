@@ -5,7 +5,7 @@ import {
 } from "./workspaceData.js";
 import {createWorkspaceCardElement} from "./workspaceData.js"
 
-async function renderAllWorkspaces() {
+export async function renderAllWorkspaces() {
   const workspacesReady = getWorkspaceReady();
 
 await workspacesReady;
@@ -23,8 +23,10 @@ await workspacesReady;
     div.prepend(wsCard);
   });
   const dashboardContent = document.getElementById("allWorkspacesContainer");
-  
-  dashboardContent.append( div);
+  if(dashboardContent) {
+
+    dashboardContent.append( div);
+  }
   
   dropdownClick()
 }

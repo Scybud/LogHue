@@ -9,6 +9,7 @@ import { setLoading } from "../ui.js";
 
 
 function checkIfEmpty() {
+  console.log("ALL WORKSPACES:", savedWorkspaceData)
   const closedWorkspaces = savedWorkspaceData.filter(
     (ws) => ws.status === "closed",
   );
@@ -101,7 +102,7 @@ export async function renderArchive() {
     const metaP = document.createElement("p");
     const metaSpan = document.createElement("span");
     metaSpan.className = "meta";
-    metaSpan.textContent = `Created on: ${formattedTDate}`;
+    metaSpan.textContent = `Closed on: ${formattedTDate}`;
     metaP.appendChild(metaSpan);
 
     headerLeft.appendChild(title);
@@ -122,7 +123,7 @@ export async function renderArchive() {
     // --- Restore section ---
     let restoreSection;
 
-    if (ws.role === "admin") {
+    if (ws.role === "admin" || ws.role === "owner") {
       const btn = document.createElement("button");
       btn.className = "btn btn-secondary restoreWorkspaceBtn";
       btn.textContent = "Restore";
@@ -199,7 +200,5 @@ async function performWorkspaceRestore(id) {
     actionMsg("Workspace restored! Open it in the 'All Worksoace' page", "success");
 
 // Refresh UI
-setTimeout(() => {
-
-  window.location.reload();
-}, 2000)}
+renderArchive();
+}

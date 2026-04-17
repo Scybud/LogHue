@@ -78,7 +78,7 @@ export async function initWorkspaces() {
    user = sessionState.user;
 
   //GET CREATED WORKSPACES
-const { data: createdWorkspaces, error: createdError } = await supabase
+const { data: membership, error: createdError } = await supabase
   .from("workspace_members")
   .select("role, workspaces: workspace_id(*)")
   .eq("user_id", user.id);
@@ -90,7 +90,7 @@ const { data: createdWorkspaces, error: createdError } = await supabase
   }
 
   //NORMALISE MEMBER WORKSPACES
-const normalizedCreated = createdWorkspaces.map((m) => ({
+const normalizedCreated = (membership || []).map((m) => ({
   ...m.workspaces,
   role: m.role,
 }));
@@ -101,27 +101,12 @@ const normalizedCreated = createdWorkspaces.map((m) => ({
   createWorkspaceBtn = document.getElementById("createWorkspace");
   upperDashboardContainer = document.getElementById("upperDashboardContainer");
 
-  const combinedWorkspaceData = [
-    ...createdWorkspaces,
-    ...normalizedCreated,
-  ];
 
-  // Remove duplicates by workspace id
-  const uniqueWorkspaces = [];
-  const seen = new Set();
-
-  for (const ws of combinedWorkspaceData) {
-    if (!seen.has(ws.id)) {
-      seen.add(ws.id);
-      uniqueWorkspaces.push(ws);
-    }
-  }
-
-  savedWorkspaceData = uniqueWorkspaces || [];
+  savedWorkspaceData = normalizedCreated || [];
 
   updateworkspaceCount();
   checkIfEmpty();
-  attachCreateWorkspaceEvent(upperDashboardContainer, createdWorkspaces);
+  attachCreateWorkspaceEvent(upperDashboardContainer, membership);
   attachOpenWorkspaceClickEvent();
 }
 
@@ -347,7 +332,7 @@ async function attachCreateWorkspaceEvent(container, workspaces) {
 }
 
 function updateworkspaceCount() {
-  const createdWorkspaces = savedWorkspaceData.filter(
+  const membership = savedWorkspaceData.filter(
     (ws) => ws.role === "owner",
   );
   const openedWorkspaces = savedWorkspaceData.filter(
@@ -365,7 +350,7 @@ function updateworkspaceCount() {
   );
   const activeWorkspaceCount = document.getElementById("activeWorkspaceCount");
   dataCount(activeWorkspaceCount, openedWorkspaces);
-  dataCount(createdWorkspacesCount, createdWorkspaces);
+  dataCount(createdWorkspacesCount, membership);
   dataCount(closedWorkspacesCount, closedWorkspaces);
 }
 
@@ -546,7 +531,7 @@ if (error) {
 setTimeout(() => {
 
   window.location.reload();
-}, 2000)
+}, 2000);
 }
 
 //EDIT WORKSPACE
