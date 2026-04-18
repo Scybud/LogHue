@@ -74,7 +74,7 @@ export async function initMemberWorkspaceData() {
     .select(
       `*, 
        workspace_tasks(*, profiles:assigned_to (id, full_name, avatar_url)), 
-       workspace_members(role, profiles (id, full_name, avatar_url))`,
+       workspace_members(role, profiles (id, full_name, avatar_url, plan:plan_id (name)))`,
     )
     .eq("id", workspaceId)
     .single();
@@ -92,11 +92,6 @@ export async function initMemberWorkspaceData() {
 
   if (workspaceName) {
     workspaceName.textContent = workspace.name;
-    const memberTag = document.createElement("span");
-    memberTag.className = "tag";
-    memberTag.textContent = "Member";
-    workspaceName.appendChild(document.createTextNode(" "));
-    workspaceName.appendChild(memberTag);
   }
   document.title = `${workspace.name} | LogHue`;
 
@@ -244,7 +239,7 @@ currentUser = userData.user;
   break;
 
       case "settings":
-        loadSettings(container, workspace, user.id);
+        loadSettings(container, workspace, currentUser.id);
         break;
   }
 }
@@ -296,7 +291,7 @@ async function loadSettings(container, workspace, currentUserId) {
 
   apiCard.innerHTML = `
     <h3>API Keys</h3>
-    <button class="btn-secondary btn" id="createApiKeyBtn">Create API Key</button>
+<p class="mutedText">Only admins and owner can create API Keys.</p>
 
     <table class="table">
       <thead>
@@ -314,37 +309,9 @@ async function loadSettings(container, workspace, currentUserId) {
     </table>
   `;
 
-  apiCard.querySelector("#createApiKeyBtn").onclick = async () => {
-    await openApiKeyModal(workspace);
-  };
-
   loadApiKeys(apiCard.querySelector("#apiKeysTable"), workspace.id);
 
-  // -------------------------
-  // ONLY OWNER: OWNERSHIP TRANSFER CARD
-  // -------------------------
-  const me = workspace.workspace_members.find(
-    (m) => m.user_id === currentUserId || m.profiles?.id === currentUserId,
-  );
-
-  const transferCard = document.createElement("div");
-  transferCard.classList.add("card");
-  transferCard.innerHTML = `
-    <h3>Transfer Ownership</h3>
-    <p class="tunedText">Transfering ownership to another member means you will no longer be the owner of this workspace and will <b>NOT</b> be able to perform sensitive actions on this workspace.</p>
-    <p class="mutedText">This action cannot be undone by you again.</p>
-    <button class="btn danger" id="transferBtn">Transfer Ownership</button>
-  `;
-
-  if (me?.role === "owner") {
-    transferCard.querySelector("#transferBtn").onclick = async () => {
-      await openTransferOwnershipModal(workspace);
-    };
-    section.append(title, infoCard, apiCard, transferCard);
-  } else {
-    // no transfer card for non‑owners
-    section.append(title, infoCard, apiCard);
-  }
+  section.append(title, infoCard, apiCard);
 
   container.append(section);
 }
@@ -659,9 +626,17 @@ function loadMembers(members, container) {
     avatar.classList.add("profileImg");
     avatar.src = mbr.profiles.avatar_url;
 
+        const profileAvatarContainer = document.createElement("div");
+        profileAvatarContainer.classList.add(
+          "profileAvatarContainer",
+          `${mbr.profiles.plan.name}`,
+        );
+        profileAvatarContainer.append(avatar);
+
     const header = document.createElement("div");
     header.classList.add("cardHeader");
-    header.append(tag, avatar, name);
+    header.append(tag, profileAvatarContainer, name);
+header.title = `${mbr.profiles.plan.name} plan member`;
 
     card.append(header);
     grid.append(card);

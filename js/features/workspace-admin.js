@@ -953,7 +953,7 @@ profileAvatarContainer.append(avatar);
     const cardHeader = document.createElement("div");
     cardHeader.classList.add("cardHeader");
     cardHeader.append(tag, profileAvatarContainer, memberName);
-cardHeader.title = `${mbr.profiles.plan.name} member`;
+cardHeader.title = `${mbr.profiles.plan.name} plan member`;
 
     const assignTaskBtn = document.createElement("button");
     assignTaskBtn.type = "button";
