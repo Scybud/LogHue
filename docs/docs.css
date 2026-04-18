@@ -21,7 +21,9 @@
   transform: translateX(-100%);
   transition: 0.3s;
 }
-
+.docs-sidebar a:hover {
+      text-decoration: none;
+}
 .docs-sidebar.open {
   transform: translateX(0);
 }
@@ -88,6 +90,7 @@
 }
 
 .doc-card:hover {
+      text-decoration: none;
   border-color: var(--accent);
   transform: translateY(-2px);
   box-shadow: var(--shadow);
