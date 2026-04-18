@@ -86,7 +86,7 @@ export async function initAdminWorkspaceData() {
   const { data: workspace, error } = await supabase
     .from("workspaces")
     .select(
-      `*, workspace_tasks(*, profiles:assigned_to (id, full_name, avatar_url)), workspace_members(role, profiles (id, full_name, avatar_url))`,
+      `*, workspace_tasks(*, profiles:assigned_to (id, full_name, avatar_url)), workspace_members(role, profiles (id, full_name, avatar_url, plan:plan_id (name)))`,
     )
     .eq("id", workspaceId)
     .single();
@@ -946,9 +946,14 @@ function loadMembers(members, container) {
     avatar.classList.add("profileImg");
     avatar.src = mbr.profiles.avatar_url;
 
+    const profileAvatarContainer = document.createElement("div");
+    profileAvatarContainer.classList.add("profileAvatarContainer", `${mbr.profiles.plan.name}`);
+profileAvatarContainer.append(avatar);
+
     const cardHeader = document.createElement("div");
     cardHeader.classList.add("cardHeader");
-    cardHeader.append(tag, avatar, memberName);
+    cardHeader.append(tag, profileAvatarContainer, memberName);
+cardHeader.title = `${mbr.profiles.plan.name} member`;
 
     const assignTaskBtn = document.createElement("button");
     assignTaskBtn.type = "button";
