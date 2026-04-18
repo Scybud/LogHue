@@ -322,7 +322,7 @@ function renderComments() {
   feed.innerHTML = "";
 
   if (!currentDiscussion.comments?.length) {
-    feed.innerHTML = `<p class="placeholderText">No comments yet.</p>`;
+    feed.innerHTML = `<p class="placeholderText">No comments yet. Be the first to comment!</p>`;
     return;
   }
 
