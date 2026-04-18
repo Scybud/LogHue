@@ -570,9 +570,13 @@ button.dropdown-item {
   margin: 0;
 }
 .profileImg {
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
+  border: 1px solid var(--border);
+}
+.profileImg:hover {
+  border-color: var(--border-light);
 }
 .grid .profileImg {
   width: 60px;

@@ -461,10 +461,9 @@ flex-direction: column;
   height: fit-content;
   border-radius: 50%;
 }
-.profileAvatarContainer::after {
+.profileAvatarContainer.Team::after, .profileAvatarContainer.Pro::after{
   content: "◆";
   position: absolute;
-  color: var(--accent);
   top: 0;
   right: 0;
   font-size: 1.1rem;
@@ -472,7 +471,12 @@ flex-direction: column;
   display: inline-block;
   transform: translateY(1px);
 }
-
+.profileAvatarContainer.Team::after{
+  color: var(--accent);
+}
+.profileAvatarContainer.Pro::after {
+    color: var(--secondary);
+}
 .profileAvatar:hover {
   border-color: var(--border-light);
 }

@@ -80,12 +80,22 @@ function userInfoUi() {
     profileImg.src =
       sessionState.profile?.avatar_url ||
       "https://loghue.com/assets/images/default_profile.png";
+
+      profileImg.classList.add(sessionState.plan.name);
   }
 
   if (profileAvatar) {
     profileAvatar.src =
       sessionState.profile?.avatar_url ||
       "https://loghue.com/assets/images/default_profile.png";
+
+      const profileAvatarContainer = document.querySelectorAll(".profileAvatarContainer")
+
+      if(profileAvatarContainer) {
+        profileAvatarContainer.forEach((pac) => {
+          pac.classList.add(sessionState.plan.name);
+        });
+      }
   }
     if (subscriptionType && sessionState.plan) {
       // PLAN
