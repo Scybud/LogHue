@@ -1,532 +1,594 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Features | LogHue</title>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Features | LogHue</title>
+    <link rel="stylesheet" href="./css/base.css" />
+    <link rel="stylesheet" href="./css/theme.css" />
 
-  <link rel="stylesheet" href="./css/base.css" />
-  <link rel="stylesheet" href="./css/theme.css" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./assets/icons/favicons/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./assets/icons/favicons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="./assets/icons/favicons/favicon-16x16.png"
+    />
 
-  <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/favicons/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/favicons/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicons/favicon-16x16.png" />
+    <style>
+      body {
+        color: var(--color);
+      }
 
-  <style>
-    body {
-
-      color: var(--color);
-    }
-
-    main {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-    }
-
-    .backBtn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: sticky;
-      top: 30px;
-      left: 20px;
-      padding: 0 auto;
-      width: fit-content;
-      background: none;
-      color: var(--link);
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .backBtn:hover {
-      background: var(--bg-hover);
-      opacity: 0.8;
-      transform: translate(-2px);
-
-    }
-
-    .backBtn:active {
-      transform: translate(-10px);
-    }
-
-    header {
-      width: 100%;
-      max-width: 900px;
-      text-align: center;
-      margin-bottom: 60px;
-    }
-
-    header h1 {
-      font-weight: 700;
-      margin-bottom: 0.4em;
-    }
-
-    header p {
-      font-size: 1.15rem;
-      opacity: 0.85;
-    }
-
-    .logo {
-      font-weight: 700;
-      font-size: 1.6rem;
-      color: #fff;
-    }
-
-    .logo span {
-      background: var(--gradient);
-      background-clip: text;
-      color: transparent;
-    }
-
-    section {
-      max-width: 900px;
-      width: 100%;
-      margin-bottom: 60px;
-    }
-
-    h2 {
-      margin-bottom: 0.6em;
-      font-weight: 600;
-    }
-
-    h3 {
-      margin-top: 1.4rem;
-      font-weight: 600;
-    }
-
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 24px;
-      margin-top: 20px;
-    }
-
-    .feature-card {
-      border: 1px solid var(--border);
-      padding: 20px;
-      border-radius: 10px;
-      background: var(--background);
-    }
-
-    .feature-card h3 {
-      margin-top: 0;
-    }
-
-    .usecase {
-      margin-top: 20px;
-      padding: 20px;
-      border-left: 4px solid var(--accent);
-      background: var(--background-secondary);
-      border-radius: 6px;
-      transition: all 0.2s ease;
-    }
-
-    .usecase:hover {
-      border: none;
-      border-top: 4px solid var(--primary);
-    }
-
-    /* ------------------------- */
-    /* FOOTER */
-    /* ------------------------- */
-    .footer {
-      background: #050505;
-      padding: var(--space-lg) var(--space-xl);
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 0.85rem;
-    }
-
-    .footer-inner {
-      max-width: 1120px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-lg);
-      justify-content: space-between;
-    }
-
-    .footer-brand {
-      flex: 1;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: var(--space-xl);
-      flex-wrap: wrap;
-    }
-
-    .footer-links h4 {
-      margin-bottom: var(--space-xs);
-      font-size: 0.95rem;
-    }
-
-    .text-sm {
-      margin: 0;
-      padding: 0;
-    }
-
-    .footer-links ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .footer-links ul li {
-      margin-bottom: 4px;
-    }
-
-    .footer-links ul li a {
-      color: rgba(255, 255, 255, 0.6);
-      text-decoration: none;
-      transition: 0.2s;
-    }
-
-    .footer-links ul li a:hover {
-      color: var(--accent);
-    }
-
-    .footer-bottom {
-      width: 100%;
-      text-align: center;
-      margin-top: var(--space-lg);
-    }
-
-    /* ------------------------- */
-    /* RESPONSIVE */
-    /* ------------------------- */
-    @media (max-width: 1024px) {
-
-      .hero-inner,
-      .example-inner {
+      main {
+        display: flex;
         flex-direction: column;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .desktop-nav {
-        display: none;
+        align-items: center;
+        padding: 40px 20px;
       }
 
-      .mobile-menu-btn {
-        display: block;
+      .backBtn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: sticky;
+        top: 30px;
+        left: 20px;
+        padding: 0 auto;
+        width: fit-content;
+        background: none;
+        color: var(--link);
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
       }
 
-      .hero,
-      .section {
-        padding: var(--space-lg);
+      .backBtn:hover {
+        background: var(--bg-hover);
+        opacity: 0.8;
+        transform: translate(-2px);
       }
 
-      .feature-grid,
-      .what-grid,
-      .how-steps,
-      .who-grid {
-        grid-template-columns: 1fr;
+      .backBtn:active {
+        transform: translate(-10px);
+      }
+
+      header {
+        width: 100%;
+        max-width: 900px;
+        text-align: center;
+        margin-bottom: 60px;
+      }
+
+      header h1 {
+        font-weight: 700;
+        margin-bottom: 0.4em;
+      }
+
+      header p {
+        font-size: 1.15rem;
+        opacity: 0.85;
+      }
+
+      .logo {
+        font-weight: 700;
+        font-size: 1.6rem;
+        color: #fff;
+      }
+
+      .logo span {
+        background: var(--gradient);
+        background-clip: text;
+        color: transparent;
+      }
+
+      section {
+        max-width: 900px;
+        width: 100%;
+        margin-bottom: 60px;
+      }
+
+      h2 {
+        margin-bottom: 0.6em;
+        font-weight: 600;
+      }
+
+      h3 {
+        margin-top: 1.4rem;
+        font-weight: 600;
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 24px;
+        margin-top: 20px;
+      }
+
+      .feature-card {
+        border: 1px solid var(--border);
+        padding: 20px;
+        border-radius: 10px;
+        background: var(--background);
+      }
+
+      .feature-card h3 {
+        margin-top: 0;
+      }
+
+      .usecase {
+        margin-top: 20px;
+        padding: 20px;
+        border-left: 4px solid var(--accent);
+        background: var(--background-secondary);
+        border-radius: 6px;
+        transition: all 0.2s ease;
+      }
+
+      .usecase:hover {
+        border: none;
+        border-top: 4px solid var(--primary);
+      }
+
+      /* ------------------------- */
+      /* FOOTER */
+      /* ------------------------- */
+      .footer {
+        background: #050505;
+        padding: var(--space-lg) var(--space-xl);
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.85rem;
       }
 
       .footer-inner {
-        flex-direction: column;
+        max-width: 1120px;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-lg);
+        justify-content: space-between;
       }
-    }
-  </style>
-</head>
 
-<body>
-  <button type="button" class="btn backBtn btn-sm"> <!-- Back Icon -->
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M11.75 4.25L6 10L11.75 15.75" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
-        stroke-linejoin="round" />
-    </svg>
-    <span>Back</span>
-  </button>
+      .footer-brand {
+        flex: 1;
+      }
 
-  <main>
+      .footer-links {
+        display: flex;
+        gap: var(--space-xl);
+        flex-wrap: wrap;
+      }
 
-    <header>
-      <h1>Features That Keep Teams Organized and Moving</h1>
-      <p>
-        LogHue is built for teams that need clarity, structure, and
-        accountability, without the noise of bloated tools. Whether you're
-        coordinating a project or documenting your work, LogHue keeps everything
-        clean and predictable.
-      </p>
-    </header>
+      .footer-links h4 {
+        margin-bottom: var(--space-xs);
+        font-size: 0.95rem;
+      }
 
-    <!-- CORE FEATURES -->
-    <section>
-      <h2>Core Workspace Features</h2>
+      .text-sm {
+        margin: 0;
+        padding: 0;
+      }
 
-      <div class="feature-grid">
-        <div class="feature-card">
-          <h3>Team‑Ready Workspaces</h3>
-          <p>
-            Each workspace is a dedicated environment for your team. Tasks,
-            notes, activity, and members all live in one structured space,
-            making collaboration clear and predictable.
-          </p>
-        </div>
+      .footer-links ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
 
-        <div class="feature-card">
-          <h3>Task Management</h3>
-          <p>
-            Create tasks, assign owners, update details, and track progress.
-            Admins manage structure; members update their own work. Every change
-            is logged for transparency.
-          </p>
-        </div>
+      .footer-links ul li {
+        margin-bottom: 4px;
+      }
 
-        <div class="feature-card">
-          <h3>Activity Timeline</h3>
-          <p>
-            Every workspace includes a chronological activity feed. See who
-            updated what, when, and why, without digging through messages or
-            guessing what changed.
-          </p>
-        </div>
+      .footer-links ul li a {
+        color: rgba(255, 255, 255, 0.6);
+        text-decoration: none;
+        transition: 0.2s;
+      }
 
-        <div class="feature-card">
-          <h3>LogHue Notes</h3>
-          <p>
-            A clean, minimal writing space for documentation, meeting notes, and
-            internal knowledge. Export support is coming soon, making it easy to
-            share or archive your work.
-          </p>
-        </div>
+      .footer-links ul li a:hover {
+        color: var(--accent);
+      }
 
-        <div class="feature-card">
-          <h3>Role‑Based Access</h3>
-          <p>
-            Admins manage workspace structure and settings. Members update tasks
-            and contribute content. Guests can view or participate depending on
-            permissions. Simple, predictable, and secure.
-          </p>
-        </div>
+      .footer-bottom {
+        width: 100%;
+        text-align: center;
+        margin-top: var(--space-lg);
+      }
 
-        <div class="feature-card">
-          <h3>Real‑Time Sync</h3>
-          <p>
-            Powered by Supabase’s real‑time engine, updates appear instantly
-            across all devices. No refreshes, no delays — your team always sees
-            the latest state.
-          </p>
-        </div>
-      </div>
-    </section>
+      /* ------------------------- */
+      /* RESPONSIVE */
+      /* ------------------------- */
+      @media (max-width: 1024px) {
+        .hero-inner,
+        .example-inner {
+          flex-direction: column;
+        }
+      }
 
-    <!-- PERSONAL TOOLS -->
-    <section>
-      <h2>Personal Tools Inside LogHue</h2>
-      <p>
-        While LogHue is team‑first, it includes personal tools that help
-        individuals stay organized and reflect on their work, even outside a
-        team environment.
-      </p>
+      @media (max-width: 768px) {
+        .desktop-nav {
+          display: none;
+        }
 
-      <div class="feature-grid">
-        <div class="feature-card">
-          <h3>Personal Task Logger</h3>
-          <p>
-            Log completed tasks, add notes, and track your personal progress
-            over time. Perfect for self‑review, accountability, and building a
-            history of your work.
-          </p>
-        </div>
+        .mobile-menu-btn {
+          display: block;
+        }
 
-        <div class="feature-card">
-          <h3>Personal Notes</h3>
-          <p>
-            Use LogHue Notes as a lightweight personal documentation tool. Draft
-            ideas, write study notes, or keep reference material, all in a
-            clean, distraction‑free editor.
-          </p>
-        </div>
-      </div>
-    </section>
+        .hero,
+        .section {
+          padding: var(--space-lg);
+        }
 
-    <!-- USE CASES -->
-    <section>
-      <h2>Built for Real Workflows</h2>
+        .feature-grid,
+        .what-grid,
+        .how-steps,
+        .who-grid {
+          grid-template-columns: 1fr;
+        }
 
-      <div class="usecase">
-        <h3>Teams & Organizations</h3>
+        .footer-inner {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <button type="button" class="btn backBtn btn-sm">
+      <!-- Back Icon -->
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M11.75 4.25L6 10L11.75 15.75"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      <span>Back</span>
+    </button>
+
+    <main>
+      <header>
+        <h1>Features That Keep Teams Organized and Moving</h1>
         <p>
-          LogHue is designed for teams that need structure. Plan work, track
-          progress, document decisions, and keep everyone aligned. Workspaces
-          provide clarity without unnecessary complexity.
+          LogHue is built for teams that need clarity, structure, and
+          accountability, without the noise of bloated tools. Whether you're
+          coordinating a project or documenting your work, LogHue keeps
+          everything clean and predictable.
         </p>
-      </div>
+      </header>
 
-      <div class="usecase">
-        <h3>Independent Creators</h3>
+      <!-- CORE FEATURES -->
+      <section>
+        <h2>Core Workspace Features</h2>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h3>Team‑Ready Workspaces</h3>
+            <p>
+              Each workspace is a dedicated environment for your team. Tasks,
+              notes, activity, and members all live in one structured space,
+              making collaboration clear and predictable.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <h3>Task Management</h3>
+            <p>
+              Create tasks, assign owners, update details, and track progress.
+              Admins manage structure; members update their own work. Every
+              change is logged for transparency.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <h3>Activity Timeline</h3>
+            <p>
+              Every workspace includes a chronological activity feed. See who
+              updated what, when, and why, without digging through messages or
+              guessing what changed.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <h3>LogHue Notes</h3>
+            <p>
+              A clean, minimal writing space for documentation, meeting notes,
+              and internal knowledge. Export support is coming soon, making it
+              easy to share or archive your work.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <h3>Role‑Based Access</h3>
+            <p>
+              Admins manage workspace structure and settings. Members update
+              tasks and contribute content. Guests can view or participate
+              depending on permissions. Simple, predictable, and secure.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <h3>Real‑Time Sync</h3>
+            <p>
+              Powered by Supabase’s real‑time engine, updates appear instantly
+              across all devices. No refreshes, no delays — your team always
+              sees the latest state.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PERSONAL TOOLS -->
+      <section>
+        <h2>Personal Tools Inside LogHue</h2>
         <p>
-          Even though LogHue is team‑oriented, solo creators benefit from the
-          personal task logger and notes system. Organize your work, track your
-          progress, and keep your ideas structured.
+          While LogHue is team‑first, it includes personal tools that help
+          individuals stay organized and reflect on their work, even outside a
+          team environment.
         </p>
-      </div>
 
-      <div class="usecase">
-        <h3>Students & Learners</h3>
-        <p>
-          Use workspaces for group projects or rely on personal notes and the
-          task logger for individual study. LogHue helps you stay organized
-          without overwhelming you.
-        </p>
-      </div>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h3>Personal Task Logger</h3>
+            <p>
+              Log completed tasks, add notes, and track your personal progress
+              over time. Perfect for self‑review, accountability, and building a
+              history of your work.
+            </p>
+          </div>
 
-      <div class="usecase">
-        <h3>Developers & Technical Teams</h3>
-        <p>
-          Track issues, document architecture, and maintain clarity across
-          technical work. LogHue offers a lightweight, structured alternative to
-          heavy project‑management tools.
-        </p>
-      </div>
-    </section>
+          <div class="feature-card">
+            <h3>Personal Notes</h3>
+            <p>
+              Use LogHue Notes as a lightweight personal documentation tool.
+              Draft ideas, write study notes, or keep reference material, all in
+              a clean, distraction‑free editor.
+            </p>
+          </div>
+        </div>
+      </section>
 
-    <!-- TECHNICAL DEPTH -->
-    <section>
-      <h2>Under the Hood</h2>
+      <!-- USE CASES -->
+      <section>
+        <h2>Built for Real Workflows</h2>
 
-      <div class="feature-grid">
-        <div class="feature-card">
-          <h3>Supabase‑Powered Backend</h3>
+        <div class="usecase">
+          <h3>Teams & Organizations</h3>
           <p>
-            Authentication, database, storage, and real‑time sync, all powered
-            by a modern, scalable backend built for reliability and speed.
+            LogHue is designed for teams that need structure. Plan work, track
+            progress, document decisions, and keep everyone aligned. Workspaces
+            provide clarity without unnecessary complexity.
           </p>
         </div>
 
-        <div class="feature-card">
-          <h3>Secure by Design</h3>
+        <div class="usecase">
+          <h3>Independent Creators</h3>
           <p>
-            Role‑based permissions, secure storage, and GDPR‑aligned data
-            handling ensure your team’s work stays safe and compliant.
+            Even though LogHue is team‑oriented, solo creators benefit from the
+            personal task logger and notes system. Organize your work, track
+            your progress, and keep your ideas structured.
           </p>
         </div>
 
-        <div class="feature-card">
-          <h3>Modular Architecture</h3>
+        <div class="usecase">
+          <h3>Students & Learners</h3>
           <p>
-            LogHue is built from isolated modules that scale cleanly. This keeps
-            the interface predictable and prevents features from interfering
-            with each other.
+            Use workspaces for group projects or rely on personal notes and the
+            task logger for individual study. LogHue helps you stay organized
+            without overwhelming you.
           </p>
         </div>
 
-        <div class="feature-card">
-          <h3>Lightweight, Predictable Interface</h3>
+        <div class="usecase">
+          <h3>Developers & Technical Teams</h3>
           <p>
-            LogHue is designed to stay fast and consistent. Every workspace
-            loads cleanly, updates instantly, and keeps your structure intact —
-            without unnecessary animations, clutter, or distractions.
+            Track issues, document architecture, and maintain clarity across
+            technical work. LogHue offers a lightweight, structured alternative
+            to heavy project‑management tools.
           </p>
         </div>
+      </section>
+
+      <!-- TECHNICAL DEPTH -->
+      <section>
+        <h2>Under the Hood</h2>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h3>Supabase‑Powered Backend</h3>
+            <p>
+              Authentication, database, storage, and real‑time sync, all powered
+              by a modern, scalable backend built for reliability and speed.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <h3>Secure by Design</h3>
+            <p>
+              Role‑based permissions, secure storage, and GDPR‑aligned data
+              handling ensure your team’s work stays safe and compliant.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <h3>Modular Architecture</h3>
+            <p>
+              LogHue is built from isolated modules that scale cleanly. This
+              keeps the interface predictable and prevents features from
+              interfering with each other.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <h3>Lightweight, Predictable Interface</h3>
+            <p>
+              LogHue is designed to stay fast and consistent. Every workspace
+              loads cleanly, updates instantly, and keeps your structure intact
+              — without unnecessary animations, clutter, or distractions.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="logo">Log<span>Hue</span></div>
+          <p>
+            Calm workspace management for modern teams. <br />
+            A Scybud Product
+          </p>
+        </div>
+        <div class="footer-links">
+          <a href="index">Home</a>
+
+          <div>
+            <h4>Product</h4>
+            <ul>
+              <li><a href="/features">Features</a></li>
+              <li><a href="/pricing">Pricing</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Company</h4>
+            <ul>
+              <li><a href="/about">About</a></li>
+              <li><a href="mailto:scybudtech@gmail.com">Contact</a></li>
+              <li><a href="/support">Support</a></li>
+              <li><a href="/docs">Help</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="legal/privacy-policy">Privacy Policy</a></li>
+              <li><a href="legal/terms">Terms of Service</a></li>
+              <li><a href="legal/impressum">Impressum</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Scybud</h4>
+            <ul>
+              <li><a href="/scybud-apps">Other apps</a></li>
+            </ul>
+          </div>
+        </div>
       </div>
-    </section>
-  </main>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <div class="logo">Log<span>Hue</span></div>
-        <p>
-          Calm workspace management for modern teams. <br />
-          A Scybud Product
-        </p>
+      <div style="display: block" class="backLinks">
+        <!--FORGE:TO BACKLINK-->
+        <a
+          href="https://forg.to/products/loghue"
+          target="_blank"
+          rel="noopener"
+        >
+          <img
+            src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
+            alt="LogHue - Upvote on Forg on forg."
+            height="54"
+            width="250"
+          />
+        </a>
+
+        <!--NEXTGEN TOOLS BACKLINK-->
+        <a
+          href="https://www.nxgntools.com/tools/loghue?utm_source=loghue"
+          target="_blank"
+          rel="noopener"
+          style="display: inline-block; width: auto"
+        >
+          <img
+            src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON"
+            alt="Featured on NextGen Tools"
+            height="54"
+            width="250"
+          />
+        </a>
+
+        <!--MARJETINGDB BACKLIN-->
+        <a href="https://marketingdb.live" target="_blank"
+          ><img
+            src="https://marketingdb.live/badge.svg"
+            alt="Listed on MarketingDB"
+            width="250"
+            height="54"
+        /></a>
+
+        <!--PRODUCT HINT BACKLINK-->
+        <a
+          href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
+          target="_blank"
+          rel="noopener noreferrer"
+          ><img
+            alt="LogHue - See what is happening without chasing updates | Product Hunt"
+            width="250"
+            height="54"
+            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"
+        /></a>
+
+        <!--LAUNCHIGNITER BACKLINK-->
+        <a
+          href="https://launchigniter.com/product/loghue?ref=badge-loghue"
+          target="_blank"
+        >
+          <img
+            src="https://launchigniter.com/api/badge/loghue?theme=dark"
+            alt="Featured on LaunchIgniter"
+            width="250"
+            height="54"
+          />
+        </a>
+
+        <!--PRODUCT HOT BACKLINK-->
+        <a
+          href="https://producthot.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="https://producthot.com/badages-awards.svg"
+            alt="Featured on Product Hot"
+            height="54"
+            width="250"
+          />
+        </a>
       </div>
-      <div class="footer-links">
-        <a href="index">Home</a>
 
-        <div>
-          <h4>Product</h4>
-          <ul>
-            <li><a href="/features">Features</a></li>
-            <li><a href="/pricing">Pricing</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Company</h4>
-          <ul>
-            <li><a href="/about">About</a></li>
-            <li><a href="mailto:scybudtech@gmail.com">Contact</a></li>
-            <li><a href="/support">Support</a></li>
-
-          </ul>
-        </div>
-        <div>
-          <h4>Legal</h4>
-          <ul>
-            <li><a href="legal/privacy-policy">Privacy Policy</a></li>
-            <li><a href="legal/terms">Terms of Service</a></li>
-            <li><a href="legal/impressum">Impressum</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Scybud</h4>
-          <ul>
-            <li><a href="/scybud-apps">Other apps</a></li>
-          </ul>
-        </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 LogHue. A Scybud Product. All rights reserved.</p>
       </div>
-    </div>
+    </footer>
 
-    <div style="display: block;" class="backLinks">
+    <script>
+      const backBtn = document.querySelector(".backBtn");
 
-      <!--FORGE:TO BACKLINK-->
-      <a href="https://forg.to/products/loghue" target="_blank" rel="noopener">
-        <img src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
-          alt="LogHue - Upvote on Forg on forg." height="54" width="250" />
-      </a>
-
-      <!--NEXTGEN TOOLS BACKLINK-->
-      <a href="https://www.nxgntools.com/tools/loghue?utm_source=loghue" target="_blank" rel="noopener"
-        style="display: inline-block; width: auto;">
-        <img src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON" alt="Featured on NextGen Tools"
-          height="54" width="250" />
-      </a>
-
-      <!--MARJETINGDB BACKLIN-->
-      <a href="https://marketingdb.live" target="_blank"><img src="https://marketingdb.live/badge.svg"
-          alt="Listed on MarketingDB" width="250" height="54" /></a>
-
-      <!--PRODUCT HINT BACKLINK-->
-      <a href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
-        target="_blank" rel="noopener noreferrer"><img
-          alt="LogHue - See what is happening without chasing updates | Product Hunt" width="250" height="54"
-          src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"></a>
-
-      <!--LAUNCHIGNITER BACKLINK-->
-      <a href="https://launchigniter.com/product/loghue?ref=badge-loghue" target="_blank">
-        <img src="https://launchigniter.com/api/badge/loghue?theme=dark" alt="Featured on LaunchIgniter" width="250"
-          height="54" />
-      </a>
-
-      <!--PRODUCT HOT BACKLINK-->
-      <a href="https://producthot.com" target="_blank" rel="noopener noreferrer">
-        <img src="https://producthot.com/badages-awards.svg" alt="Featured on Product Hot" height="54" width="250" />
-      </a>
-    </div>
-
-    <div class="footer-bottom">
-      <p>&copy; 2026 LogHue. A Scybud Product. All rights reserved.</p>
-    </div>
-  </footer>
-
-  <script>
-    const backBtn = document.querySelector(".backBtn");
-
-    if (backBtn) {
-      backBtn.addEventListener("click", () => {
-        window.history.back()
-      })
-    } 
-  </script>
-</body>
-
+      if (backBtn) {
+        backBtn.addEventListener("click", () => {
+          window.history.back();
+        });
+      }
+    </script>
+  </body>
 </html>

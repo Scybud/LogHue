@@ -1,46 +1,79 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LogHue | Calm workspace management for modern teams</title>
+    <meta
+      name="description"
+      content="LogHue is a workspace‑centric collaboration platform built for clarity, modularity, and scalable team workflows. Create, organize, and collaborate without chaos."
+    />
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LogHue | Calm workspace management for modern teams</title>
-  <meta name="description"
-    content="LogHue is a workspace‑centric collaboration platform built for clarity, modularity, and scalable team workflows. Create, organize, and collaborate without chaos." />
+    <meta
+      name="keywords"
+      content="LogHue, Scybud, collaboration platform, modular workspaces, team productivity, workspace management, project organization, scalable workflows, clean UI, builder tools"
+    />
 
-  <meta name="keywords"
-    content="LogHue, Scybud, collaboration platform, modular workspaces, team productivity, workspace management, project organization, scalable workflows, clean UI, builder tools" />
+    <meta name="author" content="Scybud" />
 
-  <meta name="author" content="Scybud" />
+    <meta name="robots" content="index, follow" />
 
-  <meta name="robots" content="index, follow" />
+    <meta
+      property="og:title"
+      content="LogHue — Modular Workspaces for Clear, Scalable Collaboration"
+    />
+    <meta
+      property="og:description"
+      content="A workspace‑first platform designed for teams who value clarity, modularity, and predictable workflows."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://loghue.com" />
+    <meta
+      property="og:image"
+      content="https://loghue.com/assets/images/og-image.png"
+    />
+    <meta property="og:site_name" content="LogHue" />
 
-  <meta property="og:title" content="LogHue — Modular Workspaces for Clear, Scalable Collaboration" />
-  <meta property="og:description"
-    content="A workspace‑first platform designed for teams who value clarity, modularity, and predictable workflows." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://loghue.com" />
-  <meta property="og:image" content="https://loghue.com/assets/images/og-image.png" />
-  <meta property="og:site_name" content="LogHue" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="LogHue — Modular Workspaces for Clear, Scalable Collaboration"
+    />
+    <meta
+      name="twitter:description"
+      content="A clean, modular collaboration platform built for teams who care about structure and clarity."
+    />
+    <meta
+      name="twitter:image"
+      content="https://loghue.com/assets/images/og-image.png"
+    />
 
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="LogHue — Modular Workspaces for Clear, Scalable Collaboration" />
-  <meta name="twitter:description"
-    content="A clean, modular collaboration platform built for teams who care about structure and clarity." />
-  <meta name="twitter:image" content="https://loghue.com/assets/images/og-image.png" />
+    <link rel="stylesheet" href="css/landing.css" />
+    <link rel="stylesheet" href="css/component.css" />
+    <link rel="stylesheet" href="css/utilities.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/theme.css" />
 
-  <link rel="stylesheet" href="css/landing.css" />
-  <link rel="stylesheet" href="css/component.css" />
-  <link rel="stylesheet" href="css/utilities.css" />
-  <link rel="stylesheet" href="css/base.css" />
-  <link rel="stylesheet" href="css/theme.css" />
+    <!-- FAVICONS -->
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./assets/icons/favicons/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./assets/icons/favicons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="./assets/icons/favicons/favicon-16x16.png"
+    />
 
-  <!-- FAVICONS -->
-  <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/favicons/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/favicons/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicons/favicon-16x16.png" />
-
-  <script type="application/ld+json">
+    <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
@@ -56,277 +89,416 @@
       }
     </script>
 
-  <style>
-    .backLinks {
-      width: 100%;
-      overflow: hidden;
-      display: flex;
-      gap: 8px;
-    }
-
-    .backLinks a {
-      display: inline;
-      animation: slide 10s linear alternate infinite;
-    }
-
-    .backLinks:hover a {
-      animation-play-state: paused;
-    }
-
-    @keyframes slide {
-      from {
-        transform: translateX(100px);
+    <style>
+      .backLinks {
+        width: 100%;
+        overflow: hidden;
+        display: flex;
+        gap: 8px;
       }
 
-      to {
-        transform: translateX(-1000px);
+      .backLinks a {
+        display: inline;
+        animation: slide 10s linear alternate infinite;
       }
-    }
-  </style>
-</head>
 
-<body>
-  <!-- Global Modal Container -->
-  <div id="modalContainer"></div>
-  <!-- HEADER -->
-  <header class="header">
-    <a href="https://loghue.com" class="logo-link">
-      <div class="logo">Log<span>Hue</span></div>
-    </a>
-    <nav class="nav desktop-nav">
+      .backLinks:hover a {
+        animation-play-state: paused;
+      }
+
+      @keyframes slide {
+        from {
+          transform: translateX(100px);
+        }
+
+        to {
+          transform: translateX(-1000px);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Global Modal Container -->
+    <div id="modalContainer"></div>
+    <!-- HEADER -->
+    <header class="header">
+      <a href="https://loghue.com" class="logo-link">
+        <div class="logo">Log<span>Hue</span></div>
+      </a>
+      <nav class="nav desktop-nav">
+        <a href="features">Features</a>
+        <a href="pricing">Pricing</a>
+        <a href="#what">What LogHue does</a>
+        <a href="#how">How it works</a> <a href="#who">Who it is for</a>
+        <a
+          href="https://app.loghue.com/auth"
+          id="loginBtn"
+          class="btn nav-login"
+          >Login</a
+        >
+        <button id="themeToggle" class="theme-toggle">🌙</button>
+      </nav>
+      <button id="mobileMenuBtn" class="mobile-menu-btn">☰</button>
+    </header>
+    <!-- MOBILE SIDEBAR -->
+    <aside id="mobileSidebar" class="mobile-sidebar">
+      <button id="closeSidebar" class="close-sidebar">×</button>
       <a href="features">Features</a>
-      <a href="pricing">Pricing</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="#what">What LogHue does</a>
       <a href="#what">What LogHue does</a>
       <a href="#how">How it works</a> <a href="#who">Who it is for</a>
-      <a href="https://app.loghue.com/auth" id="loginBtn" class="btn nav-login">Login</a>
-      <button id="themeToggle" class="theme-toggle">🌙</button>
-    </nav>
-    <button id="mobileMenuBtn" class="mobile-menu-btn">☰</button>
-  </header>
-  <!-- MOBILE SIDEBAR -->
-  <aside id="mobileSidebar" class="mobile-sidebar">
-    <button id="closeSidebar" class="close-sidebar">×</button>
-    <a href="features">Features</a>
-    <a href="pricing.html">Pricing</a>
-    <a href="#what">What LogHue does</a>
-    <a href="#what">What LogHue does</a>
-    <a href="#how">How it works</a> <a href="#who">Who it is for</a>
-    <a href="https://app.loghue.com/auth" id="loginBtnMobile" class="btn nav-login">Login</a>
-    <a href="https://app.loghue.com" class="btn">Dashboard</a>
-  </aside>
-  <main>
-    <!-- HERO -->
-    <section class="hero">
-      <div class="hero-inner">
-        <div class="hero-content">
-          <p class="hero-tag">Workspace centered collaboration</p>
-          <h1>See what is happening without chasing updates.</h1>
-          <p class="hero-text">
-            LogHue lets teams create workspaces, assign tasks, log what was
-            done, and review progress in a calm and focused environment.
+      <a
+        href="https://app.loghue.com/auth"
+        id="loginBtnMobile"
+        class="btn nav-login"
+        >Login</a
+      >
+      <a href="https://app.loghue.com" class="btn">Dashboard</a>
+    </aside>
+    <main>
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-inner">
+          <div class="hero-content">
+            <p class="hero-tag">Workspace centered collaboration</p>
+            <h1>See what is happening without chasing updates.</h1>
+            <p class="hero-text">
+              LogHue lets teams create workspaces, assign tasks, log what was
+              done, and review progress in a calm and focused environment.
+            </p>
+            <div class="hero-actions">
+              <a href="https://app.loghue.com/auth" class="cta-btn"
+                >Get Started</a
+              >
+              <a href="#what" class="secondary-btn">See what you can do</a>
+            </div>
+            <div class="hero-highlights">
+              <div class="hero-pill">Workspaces with clear tasks</div>
+              <div class="hero-pill">Logs with notes and dates</div>
+              <div class="hero-pill">Admins review and close work</div>
+            </div>
+          </div>
+          <div class="hero-illustration">
+            <div class="mock-shell">
+              <div class="mock-sidebar">
+                <div class="mock-logo"></div>
+                <div class="mock-nav-item active"></div>
+                <div class="mock-nav-item"></div>
+                <div class="mock-nav-item"></div>
+                <div class="mock-nav-item"></div>
+                <div class="mock-nav-footer"></div>
+              </div>
+              <div class="mock-main">
+                <div class="mock-topbar">
+                  <div class="mock-title"></div>
+                  <div class="mock-user"></div>
+                </div>
+                <div class="mock-stats-row">
+                  <div class="mock-stat-card"></div>
+                  <div class="mock-stat-card"></div>
+                  <div class="mock-stat-card"></div>
+                  <div class="mock-stat-card"></div>
+                </div>
+                <div class="mock-section-title"></div>
+                <div class="mock-workspace-list">
+                  <div class="mock-workspace-card">
+                    <div class="mock-workspace-main">
+                      <div class="mock-workspace-name"></div>
+                      <div class="mock-workspace-meta"></div>
+                    </div>
+                    <div class="mock-chip"></div>
+                  </div>
+                  <div class="mock-workspace-card">
+                    <div class="mock-workspace-main">
+                      <div class="mock-workspace-name"></div>
+                      <div class="mock-workspace-meta"></div>
+                    </div>
+                    <div class="mock-chip"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- FEATURES -->
+      <section id="features" class="section features">
+        <div class="section-inner">
+          <h2>Why teams choose LogHue</h2>
+          <p class="section-lead">
+            LogHue gives structure to the way work moves from idea to
+            completion, without adding noise or clutter.
           </p>
-          <div class="hero-actions">
-            <a href="https://app.loghue.com/auth" class="cta-btn">Get Started</a>
-            <a href="#what" class="secondary-btn">See what you can do</a>
-          </div>
-          <div class="hero-highlights">
-            <div class="hero-pill">Workspaces with clear tasks</div>
-            <div class="hero-pill">Logs with notes and dates</div>
-            <div class="hero-pill">Admins review and close work</div>
-          </div>
-        </div>
-        <div class="hero-illustration">
-          <div class="mock-shell">
-            <div class="mock-sidebar">
-              <div class="mock-logo"></div>
-              <div class="mock-nav-item active"></div>
-              <div class="mock-nav-item"></div>
-              <div class="mock-nav-item"></div>
-              <div class="mock-nav-item"></div>
-              <div class="mock-nav-footer"></div>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h3>Workspace centered</h3>
+              <p>
+                Create focused spaces for teams, projects, or departments and
+                keep tasks, logs, and members together.
+              </p>
             </div>
-            <div class="mock-main">
-              <div class="mock-topbar">
-                <div class="mock-title"></div>
-                <div class="mock-user"></div>
-              </div>
-              <div class="mock-stats-row">
-                <div class="mock-stat-card"></div>
-                <div class="mock-stat-card"></div>
-                <div class="mock-stat-card"></div>
-                <div class="mock-stat-card"></div>
-              </div>
-              <div class="mock-section-title"></div>
-              <div class="mock-workspace-list">
-                <div class="mock-workspace-card">
-                  <div class="mock-workspace-main">
-                    <div class="mock-workspace-name"></div>
-                    <div class="mock-workspace-meta"></div>
-                  </div>
-                  <div class="mock-chip"></div>
-                </div>
-                <div class="mock-workspace-card">
-                  <div class="mock-workspace-main">
-                    <div class="mock-workspace-name"></div>
-                    <div class="mock-workspace-meta"></div>
-                  </div>
-                  <div class="mock-chip"></div>
-                </div>
-              </div>
+            <div class="feature-card">
+              <h3>Task and progress tracking</h3>
+              <p>
+                Assign tasks, log what was done, add notes and dates, and see
+                what is in progress or complete.
+              </p>
+            </div>
+            <div class="feature-card">
+              <h3>Clear roles</h3>
+              <p>
+                Admins guide the work, members focus on doing the work, and
+                everyone sees what matters to them.
+              </p>
+            </div>
+            <div class="feature-card">
+              <h3>Calm and modern design</h3>
+              <p>
+                A dark, focused interface that feels familiar and stays out of
+                the way of real work.
+              </p>
             </div>
           </div>
         </div>
-      </div>
-    </section>
-    <!-- FEATURES -->
-    <section id="features" class="section features">
-      <div class="section-inner">
-        <h2>Why teams choose LogHue</h2>
-        <p class="section-lead">
-          LogHue gives structure to the way work moves from idea to
-          completion, without adding noise or clutter.
-        </p>
-        <div class="feature-grid">
-          <div class="feature-card">
-            <h3>Workspace centered</h3>
-            <p>
-              Create focused spaces for teams, projects, or departments and
-              keep tasks, logs, and members together.
-            </p>
-          </div>
-          <div class="feature-card">
-            <h3>Task and progress tracking</h3>
-            <p>
-              Assign tasks, log what was done, add notes and dates, and see
-              what is in progress or complete.
-            </p>
-          </div>
-          <div class="feature-card">
-            <h3>Clear roles</h3>
-            <p>
-              Admins guide the work, members focus on doing the work, and
-              everyone sees what matters to them.
-            </p>
-          </div>
-          <div class="feature-card">
-            <h3>Calm and modern design</h3>
-            <p>
-              A dark, focused interface that feels familiar and stays out of
-              the way of real work.
-            </p>
-          </div>
+      </section>
+
+      <section class="section backlinksContainer">
+        <div class="backLinks">
+          <!--FORGE:TO BACKLINK-->
+          <a
+            href="https://forg.to/products/loghue"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
+              alt="LogHue - Upvote on Forg on forg."
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--NEXTGEN TOOLS BACKLINK-->
+          <a
+            href="https://www.nxgntools.com/tools/loghue?utm_source=loghue"
+            target="_blank"
+            rel="noopener"
+            style="display: inline-block; width: auto"
+          >
+            <img
+              src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON"
+              alt="Featured on NextGen Tools"
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--MARJETINGDB BACKLIN-->
+          <a href="https://marketingdb.live" target="_blank"
+            ><img
+              src="https://marketingdb.live/badge.svg"
+              alt="Listed on MarketingDB"
+              width="250"
+              height="54"
+          /></a>
+
+          <!--PRODUCT HINT BACKLINK-->
+          <a
+            href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><img
+              alt="LogHue - See what is happening without chasing updates | Product Hunt"
+              width="250"
+              height="54"
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"
+          /></a>
+
+          <!--LAUNCHIGNITER BACKLINK-->
+          <a
+            href="https://launchigniter.com/product/loghue?ref=badge-loghue"
+            target="_blank"
+          >
+            <img
+              src="https://launchigniter.com/api/badge/loghue?theme=dark"
+              alt="Featured on LaunchIgniter"
+              width="250"
+              height="54"
+            />
+          </a>
+
+          <!--PRODUCT HOT BACKLINK-->
+          <a
+            href="https://producthot.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="https://producthot.com/badages-awards.svg"
+              alt="Featured on Product Hot"
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--FORGE:TO BACKLINK-->
+          <a
+            href="https://forg.to/products/loghue"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
+              alt="LogHue - Upvote on Forg on forg."
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--NEXTGEN TOOLS BACKLINK-->
+          <a
+            href="https://www.nxgntools.com/tools/loghue?utm_source=loghue"
+            target="_blank"
+            rel="noopener"
+            style="display: inline-block; width: auto"
+          >
+            <img
+              src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON"
+              alt="Featured on NextGen Tools"
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--MARJETINGDB BACKLIN-->
+          <a href="https://marketingdb.live" target="_blank"
+            ><img
+              src="https://marketingdb.live/badge.svg"
+              alt="Listed on MarketingDB"
+              width="250"
+              height="54"
+          /></a>
+
+          <!--PRODUCT HINT BACKLINK-->
+          <a
+            href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><img
+              alt="LogHue - See what is happening without chasing updates | Product Hunt"
+              width="250"
+              height="54"
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"
+          /></a>
+
+          <!--LAUNCHIGNITER BACKLINK-->
+          <a
+            href="https://launchigniter.com/product/loghue?ref=badge-loghue"
+            target="_blank"
+          >
+            <img
+              src="https://launchigniter.com/api/badge/loghue?theme=dark"
+              alt="Featured on LaunchIgniter"
+              width="250"
+              height="54"
+            />
+          </a>
+
+          <!--PRODUCT HOT BACKLINK-->
+          <a
+            href="https://producthot.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="https://producthot.com/badages-awards.svg"
+              alt="Featured on Product Hot"
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--FORGE:TO BACKLINK-->
+          <a
+            href="https://forg.to/products/loghue"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
+              alt="LogHue - Upvote on Forg on forg."
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--NEXTGEN TOOLS BACKLINK-->
+          <a
+            href="https://www.nxgntools.com/tools/loghue?utm_source=loghue"
+            target="_blank"
+            rel="noopener"
+            style="display: inline-block; width: auto"
+          >
+            <img
+              src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON"
+              alt="Featured on NextGen Tools"
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--MARJETINGDB BACKLIN-->
+          <a href="https://marketingdb.live" target="_blank"
+            ><img
+              src="https://marketingdb.live/badge.svg"
+              alt="Listed on MarketingDB"
+              width="250"
+              height="54"
+          /></a>
+
+          <!--PRODUCT HINT BACKLINK-->
+          <a
+            href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><img
+              alt="LogHue - See what is happening without chasing updates | Product Hunt"
+              width="250"
+              height="54"
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"
+          /></a>
+
+          <!--LAUNCHIGNITER BACKLINK-->
+          <a
+            href="https://launchigniter.com/product/loghue?ref=badge-loghue"
+            target="_blank"
+          >
+            <img
+              src="https://launchigniter.com/api/badge/loghue?theme=dark"
+              alt="Featured on LaunchIgniter"
+              width="250"
+              height="54"
+            />
+          </a>
+
+          <!--PRODUCT HOT BACKLINK-->
+          <a
+            href="https://producthot.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="https://producthot.com/badages-awards.svg"
+              alt="Featured on Product Hot"
+              height="54"
+              width="250"
+            />
+          </a>
         </div>
-      </div>
-    </section>
-
-    <section class="section backlinksContainer">
-      <div class="backLinks">
-
-        <!--FORGE:TO BACKLINK-->
-        <a href="https://forg.to/products/loghue" target="_blank" rel="noopener">
-          <img src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
-            alt="LogHue - Upvote on Forg on forg." height="54" width="250" />
-        </a>
-
-        <!--NEXTGEN TOOLS BACKLINK-->
-        <a href="https://www.nxgntools.com/tools/loghue?utm_source=loghue" target="_blank" rel="noopener"
-          style="display: inline-block; width: auto;">
-          <img src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON" alt="Featured on NextGen Tools"
-            height="54" width="250" />
-        </a>
-
-        <!--MARJETINGDB BACKLIN-->
-        <a href="https://marketingdb.live" target="_blank"><img src="https://marketingdb.live/badge.svg"
-            alt="Listed on MarketingDB" width="250" height="54" /></a>
-
-        <!--PRODUCT HINT BACKLINK-->
-        <a href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
-          target="_blank" rel="noopener noreferrer"><img
-            alt="LogHue - See what is happening without chasing updates | Product Hunt" width="250" height="54"
-            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"></a>
-
-        <!--LAUNCHIGNITER BACKLINK-->
-        <a href="https://launchigniter.com/product/loghue?ref=badge-loghue" target="_blank">
-          <img src="https://launchigniter.com/api/badge/loghue?theme=dark" alt="Featured on LaunchIgniter" width="250"
-            height="54" />
-        </a>
-
-        <!--PRODUCT HOT BACKLINK-->
-        <a href="https://producthot.com" target="_blank" rel="noopener noreferrer">
-          <img src="https://producthot.com/badages-awards.svg" alt="Featured on Product Hot" height="54" width="250" />
-        </a>
-
-        <!--FORGE:TO BACKLINK-->
-        <a href="https://forg.to/products/loghue" target="_blank" rel="noopener">
-          <img src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
-            alt="LogHue - Upvote on Forg on forg." height="54" width="250" />
-        </a>
-
-        <!--NEXTGEN TOOLS BACKLINK-->
-        <a href="https://www.nxgntools.com/tools/loghue?utm_source=loghue" target="_blank" rel="noopener"
-          style="display: inline-block; width: auto;">
-          <img src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON" alt="Featured on NextGen Tools"
-            height="54" width="250" />
-        </a>
-
-        <!--MARJETINGDB BACKLIN-->
-        <a href="https://marketingdb.live" target="_blank"><img src="https://marketingdb.live/badge.svg"
-            alt="Listed on MarketingDB" width="250" height="54" /></a>
-
-        <!--PRODUCT HINT BACKLINK-->
-        <a href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
-          target="_blank" rel="noopener noreferrer"><img
-            alt="LogHue - See what is happening without chasing updates | Product Hunt" width="250" height="54"
-            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"></a>
-
-        <!--LAUNCHIGNITER BACKLINK-->
-        <a href="https://launchigniter.com/product/loghue?ref=badge-loghue" target="_blank">
-          <img src="https://launchigniter.com/api/badge/loghue?theme=dark" alt="Featured on LaunchIgniter" width="250"
-            height="54" />
-        </a>
-
-        <!--PRODUCT HOT BACKLINK-->
-        <a href="https://producthot.com" target="_blank" rel="noopener noreferrer">
-          <img src="https://producthot.com/badages-awards.svg" alt="Featured on Product Hot" height="54" width="250" />
-        </a>
-
-        <!--FORGE:TO BACKLINK-->
-        <a href="https://forg.to/products/loghue" target="_blank" rel="noopener">
-          <img src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
-            alt="LogHue - Upvote on Forg on forg." height="54" width="250" />
-        </a>
-
-        <!--NEXTGEN TOOLS BACKLINK-->
-        <a href="https://www.nxgntools.com/tools/loghue?utm_source=loghue" target="_blank" rel="noopener"
-          style="display: inline-block; width: auto;">
-          <img src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON" alt="Featured on NextGen Tools"
-            height="54" width="250" />
-        </a>
-
-        <!--MARJETINGDB BACKLIN-->
-        <a href="https://marketingdb.live" target="_blank"><img src="https://marketingdb.live/badge.svg"
-            alt="Listed on MarketingDB" width="250" height="54" /></a>
-
-        <!--PRODUCT HINT BACKLINK-->
-        <a href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
-          target="_blank" rel="noopener noreferrer"><img
-            alt="LogHue - See what is happening without chasing updates | Product Hunt" width="250" height="54"
-            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"></a>
-
-        <!--LAUNCHIGNITER BACKLINK-->
-        <a href="https://launchigniter.com/product/loghue?ref=badge-loghue" target="_blank">
-          <img src="https://launchigniter.com/api/badge/loghue?theme=dark" alt="Featured on LaunchIgniter" width="250"
-            height="54" />
-        </a>
-
-        <!--PRODUCT HOT BACKLINK-->
-        <a href="https://producthot.com" target="_blank" rel="noopener noreferrer">
-          <img src="https://producthot.com/badages-awards.svg" alt="Featured on Product Hot" height="54" width="250" />
-        </a>
-
-      </div>
-    </section>
-    <!-- JOIN WAITLIST
+      </section>
+      <!-- JOIN WAITLIST
       <section id="joinWaitlist" class="section join-waitlist">
         <div class="section-inner">
           <h2>Join Waitlist</h2>
@@ -358,235 +530,236 @@
       </section>
       -->
 
-    <!-- WHAT -->
-    <section id="what" class="section what">
-      <div class="section-inner">
-        <h2>What you can do with LogHue</h2>
-        <div class="what-grid">
-          <div class="what-item">
-            <h3>Create workspaces</h3>
-            <p>
-              Set up a workspace for each team or project and keep tasks,
-              logs, and members in one place.
-            </p>
-          </div>
-          <div class="what-item">
-            <h3>Assign tasks with clarity</h3>
-            <p>
-              Give people clear tasks with context so they know what to do and
-              where to log their work.
-            </p>
-          </div>
-          <div class="what-item">
-            <h3>Log real work</h3>
-            <p>
-              Team members record what they did, add notes, choose a date, and
-              mark progress as in progress or complete.
-            </p>
-          </div>
-          <div class="what-item">
-            <h3>Review and comment</h3>
-            <p>
-              Admins read logs, leave comments, and guide the work without
-              constant calls or messages.
-            </p>
-          </div>
-          <div class="what-item">
-            <h3>Track progress</h3>
-            <p>
-              See which tasks are active, which are waiting, and which are
-              done across all workspaces.
-            </p>
-          </div>
-          <div class="what-item">
-            <h3>Close tasks with confidence</h3>
-            <p>
-              When the work is complete, admins close the task so everyone
-              knows it is finished.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- HOW -->
-    <section id="how" class="section how">
-      <div class="section-inner">
-        <h2>How LogHue fits into a workday</h2>
-        <div class="how-steps">
-          <div class="how-step">
-            <span class="step-number">1</span>
-            <h3>Create a workspace</h3>
-            <p>
-              Sign in and create a workspace for a team, project, or group.
-            </p>
-          </div>
-          <div class="how-step">
-            <span class="step-number">2</span>
-            <h3>Add your team</h3>
-            <p>
-              Invite people by email and give them the right role for their
-              work.
-            </p>
-          </div>
-          <div class="how-step">
-            <span class="step-number">3</span>
-            <h3>Assign tasks</h3>
-            <p>
-              Create tasks with clear intent and assign them to the right
-              people.
-            </p>
-          </div>
-          <div class="how-step">
-            <span class="step-number">4</span>
-            <h3>Log what was done</h3>
-            <p>
-              Members log their work with notes, dates, and progress state.
-            </p>
-          </div>
-          <div class="how-step">
-            <span class="step-number">5</span>
-            <h3>Review and respond</h3>
-            <p>
-              Admins review logs, leave comments, and guide the next steps.
-            </p>
-          </div>
-          <div class="how-step">
-            <span class="step-number">6</span>
-            <h3>Close the task</h3>
-            <p>
-              When the work is complete, the task is closed and the team moves
-              on.
-            </p>
+      <!-- WHAT -->
+      <section id="what" class="section what">
+        <div class="section-inner">
+          <h2>What you can do with LogHue</h2>
+          <div class="what-grid">
+            <div class="what-item">
+              <h3>Create workspaces</h3>
+              <p>
+                Set up a workspace for each team or project and keep tasks,
+                logs, and members in one place.
+              </p>
+            </div>
+            <div class="what-item">
+              <h3>Assign tasks with clarity</h3>
+              <p>
+                Give people clear tasks with context so they know what to do and
+                where to log their work.
+              </p>
+            </div>
+            <div class="what-item">
+              <h3>Log real work</h3>
+              <p>
+                Team members record what they did, add notes, choose a date, and
+                mark progress as in progress or complete.
+              </p>
+            </div>
+            <div class="what-item">
+              <h3>Review and comment</h3>
+              <p>
+                Admins read logs, leave comments, and guide the work without
+                constant calls or messages.
+              </p>
+            </div>
+            <div class="what-item">
+              <h3>Track progress</h3>
+              <p>
+                See which tasks are active, which are waiting, and which are
+                done across all workspaces.
+              </p>
+            </div>
+            <div class="what-item">
+              <h3>Close tasks with confidence</h3>
+              <p>
+                When the work is complete, admins close the task so everyone
+                knows it is finished.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-    <!-- WHO -->
-    <section id="who" class="section who">
-      <div class="section-inner">
-        <h2>Who LogHue is for</h2>
-        <div class="who-grid">
-          <div class="who-card">
-            <h3>Teams in growing companies</h3>
-            <p>
-              Give each team a clear workspace where tasks, logs, and progress
-              live together.
-            </p>
-          </div>
-          <div class="who-card">
-            <h3>Managers who want clarity</h3>
-            <p>
-              See what is happening without chasing updates or asking for
-              reports.
-            </p>
-          </div>
-          <div class="who-card">
-            <h3>People who do the work</h3>
-            <p>
-              Know what to do, where to log it, and when it is considered
-              complete.
-            </p>
-          </div>
-          <div class="who-card">
-            <h3>Small groups that need structure</h3>
-            <p>
-              Keep tasks and progress in one place instead of scattered across
-              chats.
-            </p>
+      </section>
+      <!-- HOW -->
+      <section id="how" class="section how">
+        <div class="section-inner">
+          <h2>How LogHue fits into a workday</h2>
+          <div class="how-steps">
+            <div class="how-step">
+              <span class="step-number">1</span>
+              <h3>Create a workspace</h3>
+              <p>
+                Sign in and create a workspace for a team, project, or group.
+              </p>
+            </div>
+            <div class="how-step">
+              <span class="step-number">2</span>
+              <h3>Add your team</h3>
+              <p>
+                Invite people by email and give them the right role for their
+                work.
+              </p>
+            </div>
+            <div class="how-step">
+              <span class="step-number">3</span>
+              <h3>Assign tasks</h3>
+              <p>
+                Create tasks with clear intent and assign them to the right
+                people.
+              </p>
+            </div>
+            <div class="how-step">
+              <span class="step-number">4</span>
+              <h3>Log what was done</h3>
+              <p>
+                Members log their work with notes, dates, and progress state.
+              </p>
+            </div>
+            <div class="how-step">
+              <span class="step-number">5</span>
+              <h3>Review and respond</h3>
+              <p>
+                Admins review logs, leave comments, and guide the next steps.
+              </p>
+            </div>
+            <div class="how-step">
+              <span class="step-number">6</span>
+              <h3>Close the task</h3>
+              <p>
+                When the work is complete, the task is closed and the team moves
+                on.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-    <!-- EXAMPLE -->
-    <section class="section example">
-      <div class="section-inner example-inner">
-        <div class="example-text">
-          <h2>See a day in a LogHue workspace</h2>
+      </section>
+      <!-- WHO -->
+      <section id="who" class="section who">
+        <div class="section-inner">
+          <h2>Who LogHue is for</h2>
+          <div class="who-grid">
+            <div class="who-card">
+              <h3>Teams in growing companies</h3>
+              <p>
+                Give each team a clear workspace where tasks, logs, and progress
+                live together.
+              </p>
+            </div>
+            <div class="who-card">
+              <h3>Managers who want clarity</h3>
+              <p>
+                See what is happening without chasing updates or asking for
+                reports.
+              </p>
+            </div>
+            <div class="who-card">
+              <h3>People who do the work</h3>
+              <p>
+                Know what to do, where to log it, and when it is considered
+                complete.
+              </p>
+            </div>
+            <div class="who-card">
+              <h3>Small groups that need structure</h3>
+              <p>
+                Keep tasks and progress in one place instead of scattered across
+                chats.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- EXAMPLE -->
+      <section class="section example">
+        <div class="section-inner example-inner">
+          <div class="example-text">
+            <h2>See a day in a LogHue workspace</h2>
+            <p>
+              A design team has a workspace. The lead creates a task for a new
+              landing page. A designer logs what they did, adds notes, and marks
+              the work as in progress. The lead reviews the log, leaves a
+              comment, and the designer continues. When the page is ready, the
+              lead closes the task and the team moves on with a clear record of
+              what happened.
+            </p>
+          </div>
+          <div class="example-card">
+            <div class="example-row">
+              <span class="example-label">Workspace</span>
+              <span class="example-value">Design team</span>
+            </div>
+            <div class="example-row">
+              <span class="example-label">Task</span>
+              <span class="example-value">New landing page</span>
+            </div>
+            <div class="example-row">
+              <span class="example-label">Member log</span>
+              <span class="example-value"
+                >Worked on layout and responsive states</span
+              >
+            </div>
+            <div class="example-row">
+              <span class="example-label">Admin comment</span>
+              <span class="example-value"
+                >Looks good, continue with content section</span
+              >
+            </div>
+            <div class="example-row">
+              <span class="example-label">State</span>
+              <span class="example-value">Completed</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="logo">Log<span>Hue</span></div>
           <p>
-            A design team has a workspace. The lead creates a task for a new
-            landing page. A designer logs what they did, adds notes, and marks
-            the work as in progress. The lead reviews the log, leaves a
-            comment, and the designer continues. When the page is ready, the
-            lead closes the task and the team moves on with a clear record of
-            what happened.
+            Calm workspace management for modern teams. <br />
+            A Scybud Product
           </p>
         </div>
-        <div class="example-card">
-          <div class="example-row">
-            <span class="example-label">Workspace</span>
-            <span class="example-value">Design team</span>
+        <div class="footer-links">
+          <div>
+            <h4>Product</h4>
+            <ul>
+              <li><a href="/features">Features</a></li>
+              <li><a href="/pricing">Pricing</a></li>
+            </ul>
           </div>
-          <div class="example-row">
-            <span class="example-label">Task</span>
-            <span class="example-value">New landing page</span>
+          <div>
+            <h4>Company</h4>
+            <ul>
+              <li><a href="/about">About</a></li>
+              <li><a href="mailto:scybudtech@gmail.com">Contact</a></li>
+              <li><a href="/support">Support</a></li>
+              <li><a href="/docs">Help</a></li>
+            </ul>
           </div>
-          <div class="example-row">
-            <span class="example-label">Member log</span>
-            <span class="example-value">Worked on layout and responsive states</span>
+          <div>
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="legal/privacy-policy">Privacy Policy</a></li>
+              <li><a href="legal/terms">Terms of Service</a></li>
+              <li><a href="legal/impressum">Imressum</a></li>
+            </ul>
           </div>
-          <div class="example-row">
-            <span class="example-label">Admin comment</span>
-            <span class="example-value">Looks good, continue with content section</span>
-          </div>
-          <div class="example-row">
-            <span class="example-label">State</span>
-            <span class="example-value">Completed</span>
+          <div>
+            <h4>Scybud</h4>
+            <ul>
+              <li><a href="/scybud-apps">Other apps</a></li>
+            </ul>
           </div>
         </div>
       </div>
-    </section>
-  </main>
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <div class="logo">Log<span>Hue</span></div>
-        <p>
-          Calm workspace management for modern teams. <br />
-          A Scybud Product
-        </p>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 LogHue. A Scybud Product. All rights reserved.</p>
       </div>
-      <div class="footer-links">
-        <div>
-          <h4>Product</h4>
-          <ul>
-            <li><a href="/features">Features</a></li>
-            <li><a href="/pricing">Pricing</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Company</h4>
-          <ul>
-            <li><a href="/about">About</a></li>
-            <li><a href="mailto:scybudtech@gmail.com">Contact</a></li>
-            <li><a href="/support">Support</a></li>
-
-          </ul>
-        </div>
-        <div>
-          <h4>Legal</h4>
-          <ul>
-            <li><a href="legal/privacy-policy">Privacy Policy</a></li>
-            <li><a href="legal/terms">Terms of Service</a></li>
-            <li><a href="legal/impressum">Imressum</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Scybud</h4>
-          <ul>
-            <li><a href="/scybud-apps">Other apps</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="footer-bottom">
-      <p>&copy; 2026 LogHue. A Scybud Product. All rights reserved.</p>
-    </div>
-
-  </footer>
-  <script type="module" src="js/landing.js"></script>
-</body>
-
+    </footer>
+    <script type="module" src="js/landing.js"></script>
+  </body>
 </html>
