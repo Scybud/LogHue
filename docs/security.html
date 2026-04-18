@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Security & Privacy | LogHue Help</title>
+    <link rel="stylesheet" href="../../css/base.css" />
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/component.css" />
+    <link rel="stylesheet" href="../../css/utilities.css" />
+    <link rel="stylesheet" href="../../css/dashboard.css" />
+    <link rel="stylesheet" href="../../css/pages.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../../assets/icons/favicons/favicon-32x32.png"
+    />
+  </head>
+
+  <body>
+    <div class="docs-layout">
+      <aside id="docs-sidebar" class="docs-sidebar"></aside>
+      <main class="docs-main">
+        <header id="docs-navbar" class="docs-navbar"></header>
+        <div id="doc-content" class="docs-content">
+          <div class="doc-page-header">
+            <h1>🔐 Security & Privacy</h1>
+            <p>How LogHue keeps your data safe</p>
+          </div>
+
+          <div class="doc-section">
+            <h2>Data Security</h2>
+            <div class="security-card">
+              <h3><span class="icon">🗄️</span> Secure Storage</h3>
+              <p>
+                Your data is stored using Supabase, a trusted cloud database
+                service. All data is encrypted in transit (HTTPS) and at rest.
+              </p>
+            </div>
+            <div class="security-card">
+              <h3><span class="icon">🔒</span> Authentication</h3>
+              <p>
+                We use secure session-based authentication. Your password is
+                never stored in plain text — we use industry-standard hashing.
+              </p>
+            </div>
+            <div class="security-card">
+              <h3><span class="icon">👥</span> Access Control</h3>
+              <p>
+                Your workspace content is only visible to invited members.
+                Row-level security ensures data is isolated between workspaces.
+              </p>
+            </div>
+          </div>
+
+          <div class="doc-section">
+            <h2>Privacy</h2>
+            <ul>
+              <li>
+                <strong>We never sell your data</strong> — Your information
+                stays yours
+              </li>
+              <li>
+                <strong>Minimal data collection</strong> — We only collect
+                what's needed to provide the service
+              </li>
+              <li>
+                <strong>Workspace privacy</strong> — Only invited members can
+                see your workspace content
+              </li>
+              <li>
+                <strong>No third-party sharing</strong> — Your data is never
+                shared with advertisers
+              </li>
+            </ul>
+          </div>
+
+          <div class="doc-section">
+            <h2>Account Security</h2>
+            <p>You can take additional steps to secure your account:</p>
+            <ul>
+              <li>Use a <strong>strong, unique password</strong></li>
+              <li>
+                Enable <strong>two-factor authentication</strong> if available
+              </li>
+              <li>Keep your <strong>login credentials private</strong></li>
+              <li><strong>Log out</strong> when using shared devices</li>
+            </ul>
+          </div>
+
+          <div class="doc-section">
+            <h2>Cookies</h2>
+            <p>LogHue uses cookies for essential functionality:</p>
+            <ul>
+              <li><strong>Session cookies</strong> — Keep you logged in</li>
+              <li>
+                <strong>Preferences</strong> — Remember your theme settings
+              </li>
+            </ul>
+            <p>
+              You can customize cookie preferences or decline non-essential
+              cookies through the cookies banner in the app.
+            </p>
+          </div>
+
+          <div class="doc-section">
+            <h2>Account Deletion</h2>
+            <div class="warning-box">
+              <p>
+                <strong>Warning:</strong> Account deletion is permanent and
+                cannot be undone.
+              </p>
+            </div>
+            <p>When you delete your account:</p>
+            <ul>
+              <li>All your <strong>personal data</strong> is removed</li>
+              <li>All <strong>workspaces</strong> you own are deleted</li>
+              <li>
+                All <strong>tasks, logs, and discussions</strong> are removed
+              </li>
+              <li>
+                You are <strong>removed from all member workspaces</strong>
+              </li>
+            </ul>
+            <p>
+              To delete your account: Go to
+              <strong>Settings → Account → Delete Account</strong>
+            </p>
+          </div>
+
+          <div class="doc-section">
+            <h2>Questions?</h2>
+            <p>If you have questions about security or privacy:</p>
+            <ul>
+              <li>
+                Visit our
+                <strong><a href="../../support.html">Support Page</a></strong>
+              </li>
+              <li>Email us at <strong>support@loghue.com</strong></li>
+              <li>
+                Read our
+                <strong
+                  ><a href="../../legal/privacy-policy.html"
+                    >Privacy Policy</a
+                  ></strong
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div class="doc-page-nav">
+            <div class="page-nav">
+              <a href="tasks.html" class="nav-prev">← Tasks & Logs</a>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script src="components/sidebar.js"></script>
+    <script src="components/navbar.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        if (window.docsNavbar)
+          window.docsNavbar.setPageTitle("Security & Privacy");
+      });
+    </script>
+  </body>
+</html>

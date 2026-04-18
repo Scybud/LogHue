@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Roles & Permissions | LogHue Help</title>
+    <link rel="stylesheet" href="../../css/base.css" />
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/component.css" />
+    <link rel="stylesheet" href="../../css/utilities.css" />
+    <link rel="stylesheet" href="../../css/dashboard.css" />
+    <link rel="stylesheet" href="../../css/pages.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../../assets/icons/favicons/favicon-32x32.png"
+    />
+  </head>
+
+  <body>
+    <div class="docs-layout">
+      <aside id="docs-sidebar" class="docs-sidebar"></aside>
+      <main class="docs-main">
+        <header id="docs-navbar" class="docs-navbar"></header>
+        <div id="doc-content" class="docs-content">
+          <div class="doc-page-header">
+            <h1>👥 Roles & Permissions</h1>
+            <p>Understand who can do what in your workspace</p>
+          </div>
+
+          <div class="doc-section">
+            <h2>Two Roles, Clear Responsibilities</h2>
+            <p>
+              LogHue uses a simple role system to keep workspaces organized:
+            </p>
+
+            <div class="role-card admin">
+              <h3>⭐ Admin <span class="role-badge admin">Admin</span></h3>
+              <p>
+                Admins are workspace leaders. They have full control over the
+                workspace and can:
+              </p>
+              <ul>
+                <li>Create, edit, and close tasks</li>
+                <li>Review all work and logs</li>
+                <li>Add and remove members</li>
+                <li>Change member roles</li>
+                <li>Update workspace settings</li>
+                <li>Archive or transfer the workspace</li>
+              </ul>
+            </div>
+
+            <div class="role-card member">
+              <h3>👤 Member <span class="role-badge member">Member</span></h3>
+              <p>Members are the core contributors. They can:</p>
+              <ul>
+                <li>Create tasks</li>
+                <li>Log their work</li>
+                <li>Participate in discussions</li>
+                <li>View all workspace content</li>
+                <li>Leave the workspace</li>
+              </ul>
+              <p>Members cannot change settings or manage other members.</p>
+            </div>
+          </div>
+
+          <div class="doc-section">
+            <h2>Permission Comparison</h2>
+            <table class="permission-table">
+              <tr>
+                <th>Action</th>
+                <th>Admin</th>
+                <th>Member</th>
+              </tr>
+              <tr>
+                <td>Create tasks</td>
+                <td class="check">✓</td>
+                <td class="check">✓</td>
+              </tr>
+              <tr>
+                <td>Edit own tasks</td>
+                <td class="check">✓</td>
+                <td class="check">✓</td>
+              </tr>
+              <tr>
+                <td>Edit any task</td>
+                <td class="check">✓</td>
+                <td class="cross">✗</td>
+              </tr>
+              <tr>
+                <td>Close tasks</td>
+                <td class="check">✓</td>
+                <td class="cross">✗</td>
+              </tr>
+              <tr>
+                <td>Add members</td>
+                <td class="check">✓</td>
+                <td class="cross">✗</td>
+              </tr>
+              <tr>
+                <td>Remove members</td>
+                <td class="check">✓</td>
+                <td class="cross">✗</td>
+              </tr>
+              <tr>
+                <td>Change roles</td>
+                <td class="check">✓</td>
+                <td class="cross">✗</td>
+              </tr>
+              <tr>
+                <td>Workspace settings</td>
+                <td class="check">✓</td>
+                <td class="cross">✗</td>
+              </tr>
+              <tr>
+                <td>Archive workspace</td>
+                <td class="check">✓</td>
+                <td class="cross">✗</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="doc-section">
+            <h2>Changing Roles</h2>
+            <p>Admins can change a member's role at any time:</p>
+            <ul>
+              <li>Go to <strong>Settings → Members</strong></li>
+              <li>Find the member you want to change</li>
+              <li>
+                Click <strong>"Promote to Admin"</strong> or
+                <strong>"Demote to Member"</strong>
+              </li>
+              <li>Confirm the change</li>
+            </ul>
+            <p>Every workspace should have at least one admin.</p>
+          </div>
+
+          <div class="doc-section">
+            <h2>Leaving a Workspace</h2>
+            <p>Members can leave a workspace anytime:</p>
+            <ul>
+              <li>Go to <strong>Settings → Members</strong></li>
+              <li>Click <strong>"Leave Workspace"</strong></li>
+            </ul>
+            <p>
+              <strong>Note:</strong> Admins cannot leave a workspace without
+              first transferring ownership to another admin.
+            </p>
+          </div>
+
+          <div class="doc-page-nav">
+            <div class="page-nav">
+              <a href="workspaces.html" class="nav-prev">← Workspaces</a>
+              <a href="tasks.html" class="nav-next">Tasks & Logs →</a>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script src="components/sidebar.js"></script>
+    <script src="components/navbar.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        if (window.docsNavbar)
+          window.docsNavbar.setPageTitle("Roles & Permissions");
+      });
+    </script>
+  </body>
+</html>

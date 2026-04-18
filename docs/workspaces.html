@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Workspaces | LogHue Help</title>
+    <link rel="stylesheet" href="../../css/base.css" />
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/component.css" />
+    <link rel="stylesheet" href="../../css/utilities.css" />
+    <link rel="stylesheet" href="../../css/dashboard.css" />
+    <link rel="stylesheet" href="../../css/pages.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../../assets/icons/favicons/favicon-32x32.png"
+    />
+  </head>
+
+  <body>
+    <div class="docs-layout">
+      <aside id="docs-sidebar" class="docs-sidebar"></aside>
+      <main class="docs-main">
+        <header id="docs-navbar" class="docs-navbar"></header>
+        <div id="doc-content" class="docs-content">
+          <div class="doc-page-header">
+            <h1>🏢 Workspaces</h1>
+            <p>Everything about creating and managing workspaces</p>
+          </div>
+
+          <div class="doc-section">
+            <h2>What is a Workspace?</h2>
+            <p>
+              A workspace is a dedicated area for your team to collaborate. It's
+              like a digital office where everything related to a project lives
+              together:
+            </p>
+            <ul>
+              <li><strong>Tasks</strong> — Work items that need to be done</li>
+              <li>
+                <strong>Logs</strong> — Records of what team members have worked
+                on
+              </li>
+              <li><strong>Discussions</strong> — Conversations and comments</li>
+              <li><strong>Notes</strong> — Important information and ideas</li>
+              <li>
+                <strong>Members</strong> — People who work in the workspace
+              </li>
+            </ul>
+            <div class="info-box">
+              <p>
+                <strong>Tip:</strong> Create separate workspaces for different
+                projects, teams, or departments to keep things organized.
+              </p>
+            </div>
+          </div>
+
+          <div class="doc-section">
+            <h2>Creating a Workspace</h2>
+            <p>Creating a workspace is simple:</p>
+            <ul>
+              <li>Go to your <strong>Dashboard</strong></li>
+              <li>
+                Click the <strong>"+"</strong> button or
+                <strong>"New Workspace"</strong>
+              </li>
+              <li>Enter a <strong>name</strong> for your workspace</li>
+              <li>Add a <strong>description</strong> (optional but helpful)</li>
+              <li>Click <strong>"Create"</strong></li>
+            </ul>
+            <p>
+              You can create as many workspaces as you need — there's no limit!
+            </p>
+          </div>
+
+          <div class="doc-section">
+            <h2>Workspace Settings</h2>
+            <p>Admins can manage workspace settings:</p>
+            <ul>
+              <li><strong>Rename</strong> — Change the workspace name</li>
+              <li>
+                <strong>Description</strong> — Update the workspace description
+              </li>
+              <li>
+                <strong>Members</strong> — Add, remove, or change member roles
+              </li>
+              <li>
+                <strong>Archive</strong> — Archive the workspace when done
+              </li>
+              <li>
+                <strong>Transfer Ownership</strong> — Give ownership to another
+                admin
+              </li>
+            </ul>
+            <p>
+              Access settings by clicking the <strong>Settings</strong> button
+              in your workspace.
+            </p>
+          </div>
+
+          <div class="doc-section">
+            <h2>Archiving Workspaces</h2>
+            <p>
+              When a project ends, you can archive the workspace instead of
+              deleting it. Archived workspaces:
+            </p>
+            <ul>
+              <li>Are hidden from your main dashboard</li>
+              <li>Preserve all tasks, logs, and discussions</li>
+              <li>Can be restored anytime</li>
+              <li>Don't count against any limits</li>
+            </ul>
+            <p>To archive: Go to Settings → click "Archive Workspace".</p>
+          </div>
+
+          <div class="doc-section">
+            <h2>Transferring Ownership</h2>
+            <p>
+              If you need to step away from a workspace, you can transfer
+              ownership to another admin:
+            </p>
+            <ul>
+              <li>Go to <strong>Settings → Members</strong></li>
+              <li>Find the admin you want to transfer to</li>
+              <li>Click <strong>"Transfer Ownership"</strong></li>
+              <li>Confirm the transfer</li>
+            </ul>
+            <p>Only workspace owners can transfer ownership.</p>
+          </div>
+
+          <div class="doc-page-nav">
+            <div class="page-nav">
+              <a href="getting-started.html" class="nav-prev"
+                >← Getting Started</a
+              >
+              <a href="roles.html" class="nav-next">Roles & Permissions →</a>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script src="components/sidebar.js"></script>
+    <script src="components/navbar.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        if (window.docsNavbar) window.docsNavbar.setPageTitle("Workspaces");
+      });
+    </script>
+  </body>
+</html>
