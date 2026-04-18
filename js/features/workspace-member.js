@@ -240,10 +240,176 @@ currentUser = userData.user;
   );
 
   loadDiscussions("Discussions History", discussionHistory || [], container, "No discussion histories yet.");
+}
   break;
+
+      case "settings":
+        loadSettings(container, workspace, user.id);
+        break;
+  }
 }
+async function loadSettings(container, workspace, currentUserId) {
+  container.innerHTML = "";
+
+  const section = document.createElement("section");
+  section.classList.add("section");
+
+  const title = document.createElement("h2");
+  title.classList.add("sectionTitle");
+  title.textContent = "Workspace Settings";
+
+  // -------------------------
+  // WORKSPACE INFO CARD
+  // -------------------------
+  const infoCard = document.createElement("div");
+  infoCard.classList.add("card", "workspaceInfoCard");
+
+  const owner = workspace.workspace_members.find((m) => m.role === "owner");
+
+  infoCard.innerHTML = `
+    <h3>Workspace Info</h3>
+    <p><strong>Name:</strong> ${workspace.name}</p>
+    <p><strong>Description:</strong> ${workspace.description}</p>
+    <div><strong>Workspace ID:</strong> <div class=workspaceIdContainer><input class="inputField workspaceId" readonly value="${workspace.id}"> <button class="copyBtn" title="Copy">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <rect x="9" y="9" width="10" height="10" rx="2"
+              stroke="currentColor" stroke-width="2"/>
+            <rect x="5" y="5" width="10" height="10" rx="2"
+              stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </button></div></div>
+    <p><strong>Owner:</strong> ${owner?.profiles.full_name || "Unknown"}</p>
+  `;
+
+  infoCard.querySelector(".copyBtn").addEventListener("click", (e) => {
+    e.stopPropagation();
+    const target = document.querySelector(".workspaceId").value;
+    navigator.clipboard.writeText(target);
+    actionMsg("Copied to clipboard!", "success");
+  });
+
+  // -------------------------
+  // API KEYS CARD
+  // -------------------------
+  const apiCard = document.createElement("div");
+  apiCard.classList.add("card");
+
+  apiCard.innerHTML = `
+    <h3>API Keys</h3>
+    <button class="btn-secondary btn" id="createApiKeyBtn">Create API Key</button>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Prefix</th>
+          <th>Created</th>
+          <th>Last Used</th>
+          <th>Status</th>
+          <th>Permissions</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="apiKeysTable"></tbody>
+    </table>
+  `;
+
+  apiCard.querySelector("#createApiKeyBtn").onclick = async () => {
+    await openApiKeyModal(workspace);
+  };
+
+  loadApiKeys(apiCard.querySelector("#apiKeysTable"), workspace.id);
+
+  // -------------------------
+  // ONLY OWNER: OWNERSHIP TRANSFER CARD
+  // -------------------------
+  const me = workspace.workspace_members.find(
+    (m) => m.user_id === currentUserId || m.profiles?.id === currentUserId,
+  );
+
+  const transferCard = document.createElement("div");
+  transferCard.classList.add("card");
+  transferCard.innerHTML = `
+    <h3>Transfer Ownership</h3>
+    <p class="tunedText">Transfering ownership to another member means you will no longer be the owner of this workspace and will <b>NOT</b> be able to perform sensitive actions on this workspace.</p>
+    <p class="mutedText">This action cannot be undone by you again.</p>
+    <button class="btn danger" id="transferBtn">Transfer Ownership</button>
+  `;
+
+  if (me?.role === "owner") {
+    transferCard.querySelector("#transferBtn").onclick = async () => {
+      await openTransferOwnershipModal(workspace);
+    };
+    section.append(title, infoCard, apiCard, transferCard);
+  } else {
+    // no transfer card for non‑owners
+    section.append(title, infoCard, apiCard);
+  }
+
+  container.append(section);
 }
+
+async function loadApiKeys(tbody, workspaceId) {
+  const { data: keys, error } = await supabase
+    .from("api_keys")
+    .select("*")
+    .eq("workspace_id", workspaceId)
+    .order("created_at", { ascending: false });
+
+  if (error) return;
+
+  tbody.innerHTML = "";
+
+  keys.forEach((key) => {
+    const tr = document.createElement("tr");
+
+    const actionBtnClass =
+      key.revoked === true ? "restoreApiBtn" : "revokeApiBtn";
+
+    tr.innerHTML = `
+      <td>${key.name}</td>
+      <td>${key.prefix}</td>
+      <td>${formatDateTime(key.created_at)}</td>
+      <td>${key.last_used_at ? formatDateTime(key.last_used_at) : "—"}</td>
+      <td>${key.revoked === true ? "Revoked" : "Active"}</td>
+      <td>${key.permissions.join(", ")}</td>
+      <td><button class="${actionBtnClass}" id="${key.id}">Revoke</button></td>
+    `;
+
+    const revokeBtn = tr.querySelector(".revokeApiBtn");
+const restoreBtn = tr.querySelector(".restoreApiBtn");
+
+if(revokeBtn) {
+  revokeBtn.textContent = "Revoke";
+
+  revokeBtn.onclick = async () => {
+    await supabase
+    .from("api_keys")
+    .update({ revoked: true })
+    .eq("id", key.id);
+    loadApiKeys(tbody, workspaceId);
+    actionMsg("API Key revoked!", "success");
+  };
 }
+if(restoreBtn) {
+  restoreBtn.textContent = "Restore";
+
+  restoreBtn.onclick = async () => {
+    await supabase
+    .from("api_keys")
+    .update({ revoked: false })
+    .eq("id", key.id);
+    loadApiKeys(tbody, workspaceId);
+    actionMsg("API Key Restored!", "success");
+  };
+}
+
+tbody.append(tr);
+
+
+    });
+}
+
 export function loadDiscussions(sectionTitle, discussions, container, emptyStateText) {
   if (!discussions || discussions.length === 0) {
     container.innerHTML = `<p class="placeholderText">${emptyStateText}</p>`;
