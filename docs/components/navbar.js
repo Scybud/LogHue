@@ -27,7 +27,7 @@ class DocsNavbar {
         </svg>
       </button>
       <div class="headerTitle">
-        <a href="../index.html" class="logo">
+        <a href="https://loghue.com" class="logo">
           <span class="logo-icon">📘</span>
           <span class="logo-text">LogHue</span>
         </a>
@@ -35,7 +35,7 @@ class DocsNavbar {
         <span class="page-title">Help Center</span>
       </div>
       <div class="headerActions">
-        <a href="../../index.html" class="headerLink">Go to App</a>
+        <a href="https://loghue.com" class="headerLink">Go to App</a>
       </div>
     `;
   }
