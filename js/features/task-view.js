@@ -446,7 +446,7 @@ function attachLogSubmitHandler() {
       task_status: currentTask.status,
     }).select().single();
 
-    const createdLog = data[0];
+    const createdLog = data;
 
     if(currentTask.assigned_to != null) {
       await notifyUser({
