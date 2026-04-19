@@ -45,7 +45,9 @@
   top: 0;
   z-index: 50;
 }
-
+.docs-navbar a:first-child {
+  text-decoration: none;
+}
 .docs-content {
   max-width: 900px;
   margin: 0 auto;
@@ -477,13 +479,10 @@
 }
 
 /* Responsive */
-@media (min-width: 768px) {
+@media (min-width: 800px) {
   .docs-sidebar {
     transform: translateX(0);
     position: sticky;
   }
 
-  .docs-main {
-    margin-left: 260px;
-  }
 }
