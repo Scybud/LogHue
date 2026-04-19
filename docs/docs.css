@@ -49,7 +49,6 @@
   text-decoration: none;
 }
 .docs-content {
-  max-width: 900px;
   margin: 0 auto;
   padding: var(--space-xl) var(--space-lg);
 }
@@ -299,8 +298,8 @@
 
 /* Warning Box */
 .warning-box {
-  background: #fef3c7;
-  border: 1px solid #f59e0b;
+  background: #826f20;
+  border: 1px solid var(--warning);
   border-radius: var(--radius);
   padding: var(--space-md);
   margin: var(--space-md) 0;
@@ -323,8 +322,11 @@
   margin-bottom: var(--space-md);
 }
 
-.role-card.admin {
+.role-card.owner {
   border-left: 4px solid var(--accent);
+}
+.role-card.admin {
+  border-left: 4px solid var(--primary);
 }
 
 .role-card.member {
@@ -345,14 +347,18 @@
   font-size: 0.8rem;
   font-weight: 600;
 }
+.role-badge.owner {
+  background: #000000;
+  color: #edcf3a;
+}
 
 .role-badge.admin {
-  background: #ede9fe;
+  background: #212121;
   color: #7c3aed;
 }
 
 .role-badge.member {
-  background: #d1fae5;
+  background: #2e2e2e;
   color: #059669;
 }
 
