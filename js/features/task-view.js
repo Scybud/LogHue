@@ -437,13 +437,36 @@ function attachLogSubmitHandler() {
 
     const { data: userData } = await supabase.auth.getUser();
 
-    await supabase.from("workspace_task_logs").insert({
+    const { data, error } = await supabase.from("workspace_task_logs").insert({
       workspace_id: currentWorkspace.id,
       task_id: currentTask.id,
       created_by: userData.user.id,
       log_note: note,
       task_status: currentTask.status,
     });
+
+    const createdLog = data[0];
+
+    if(currentTask.assigned_to != null) {
+      await notifyUser({
+        workspaceId: currentWorkspace.id, receiverUserId: currentTask.created_by, actorId: userData.user.id, type: "task_logged", entityId: createdLog.id, entityType: "log",
+      })
+    }
+    
+    //push notif
+    const { pushNotifData, pushNotifError } = await supabase.functions.invoke(
+      "trigger-push",
+      {
+        body: {
+          workspace_id: currentWorkspace.id,
+          payload: {
+            title: "Update was just logged on a task",
+            body: "Push notifications message!",
+            url: "https://app.loghue.com/",
+          },
+        },
+      },
+    );
 
     input.value = "";
     await loadTask(currentTask.id);
