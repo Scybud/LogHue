@@ -443,7 +443,7 @@ function attachLogSubmitHandler() {
       created_by: userData.user.id,
       log_note: note,
       task_status: currentTask.status,
-    });
+    }).select().single();
 
     const createdLog = data[0];
 
