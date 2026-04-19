@@ -1,4 +1,5 @@
 import { supabase } from "../supabase.js";
+import { notifyUser } from "../utils/notifications.js";
 import { formatDateTime, loadActivities } from "./workspace-admin.js";
 
 let currentTask = null;
