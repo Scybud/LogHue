@@ -23,6 +23,9 @@
 .settingsCard .danger{
   max-width: 300px;
 }
+#deleteAccount:hover {
+  background: red;
+}
 
 .settingsCardTitle {
   font-size: 1.2rem;
