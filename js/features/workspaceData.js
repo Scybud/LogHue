@@ -77,7 +77,7 @@ export async function initWorkspaces() {
 
    user = sessionState.user;
 
-  //GET CREATED WORKSPACES
+  //GET Membership WORKSPACES
 const { data: membership, error: createdError } = await supabase
   .from("workspace_members")
   .select("role, workspaces: workspace_id(*)")
@@ -88,6 +88,11 @@ const { data: membership, error: createdError } = await supabase
     console.error(createdError);
     alert(createdError);
   }
+
+  const { data: createdWorkspaces, error: createdError } = await supabase
+    .from("workspaces")
+    .select("role, workspaces: workspace_id(*)")
+    .eq("created_by", user.id);
 
   //NORMALISE MEMBER WORKSPACES
 const normalizedCreated = (membership || []).map((m) => ({
@@ -106,7 +111,7 @@ const normalizedCreated = (membership || []).map((m) => ({
 
   updateworkspaceCount();
   checkIfEmpty();
-  attachCreateWorkspaceEvent(upperDashboardContainer, membership);
+  attachCreateWorkspaceEvent(upperDashboardContainer, createdWorkspaces);
   attachOpenWorkspaceClickEvent();
 }
 
