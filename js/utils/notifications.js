@@ -145,6 +145,24 @@ export async function renderGlobalNotifications(notifications) {
 
       notif.task = task;
     }
+if (notif.type === "task_logged") {
+  let task = null;
+
+  try {
+    const { data } = await supabase
+      .from("workspace_tasks")
+      .select("title")
+      .eq("id", notif.entity_id)
+      .maybeSingle();
+
+    task = data;
+  } catch (e) {
+    task = null;
+  }
+
+  notif.task = task;
+}
+
 
     if (notif.type === "discussion_started") {
       let discussion = null;
@@ -168,22 +186,33 @@ export async function renderGlobalNotifications(notifications) {
 
     const link = document.createElement("a");
     link.className = "notificationLink";
-    link.href =
-      notif.type === "task_assigned"
-        ? `task-view?task=${encodeURIComponent(notif.entity_id)}`
-        : `discussion-view?dcn=${encodeURIComponent(notif.entity_id)}`;
+    if (notif.type === "task_assigned") {
+      link.href = `task-view?task=${encodeURIComponent(notif.entity_id)}`;
+    } else if (notif.type === "discussion_started") {
+      link.href = `discussion-view?dcn=${encodeURIComponent(notif.entity_id)}`;
+    } else if (notif.type === "task_logged") {
+      link.href = `task-view?task=${encodeURIComponent(notif.entity_id)}`;
+    }
+
 
     const actorName = document.createElement("b");
     actorName.textContent = notif.actor.full_name || "Someone";
     link.appendChild(actorName);
 
-    const bodyText = document.createTextNode(
-      notif.type === "task_assigned"
-        ? ` assigned you to "${notif.task?.title || (notif.task === null ? "a deleted task" : "a task")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}" `
-        : notif.type === "discussion_started"
-          ? ` started a discussion "${notif.discussion?.title || (notif.discussion === null ? "a deleted discussion" : "a discussion")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}" `
-          : ` ${notif.type}`,
-    );
+    let bodyTextContent = "";
+
+    if (notif.type === "task_assigned") {
+      bodyTextContent = ` assigned you to "${notif.task?.title || (notif.task === null ? "a deleted task" : "a task")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}" `;
+    } else if (notif.type === "discussion_started") {
+      bodyTextContent = ` started a discussion "${notif.discussion?.title || (notif.discussion === null ? "a deleted discussion" : "a discussion")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}" `;
+    } else if (notif.type === "task_logged") {
+      bodyTextContent = ` logged progress on "${notif.task?.title || (notif.task === null ? "a deleted task" : "a task")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}" `;
+    } else {
+      bodyTextContent = ` ${notif.type}`;
+    }
+
+    const bodyText = document.createTextNode(bodyTextContent);
+
     link.appendChild(bodyText);
 
     const timeSpan = document.createElement("span");
@@ -191,7 +220,7 @@ export async function renderGlobalNotifications(notifications) {
     timeSpan.textContent = time;
     link.appendChild(timeSpan);
 
-    if (notif.type === "task_assigned" || notif.type === "discussion_started") {
+    if (notif.type === "task_assigned" || notif.type === "discussion_started" || notif.type === "task_logged") {
       notifEl.appendChild(link);
     } else {
       notifEl.textContent = `New notification: ${notif.type}`;
