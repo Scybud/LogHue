@@ -50,6 +50,8 @@ function loadData() {
 
   if (settingsAvatarEl && sessionState.profile.avatar_url) {
     settingsAvatarEl.src = sessionState.profile.avatar_url;
+  } else {
+    settingsAvatarEl.src = "https://loghue.com/assets/images/default_profile.png"
   }
 
   //Notification preference
