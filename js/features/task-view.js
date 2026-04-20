@@ -1,4 +1,5 @@
 import { supabase } from "../supabase.js";
+import { actionMsg } from "../utils/modals.js";
 import { notifyUser } from "../utils/notifications.js";
 import { formatDateTime, loadActivities } from "./workspace-admin.js";
 
@@ -106,7 +107,35 @@ async function initTaskView() {
 
 function loadSidebar() {
   const workspacePageSidebar = document.getElementById("workspacePageSidebar");
-  const isAdmin = userRole.role === "admin" || userRole.role === "owner";
+  let isAdmin;
+  if(userRole) {
+
+     isAdmin = userRole.role === "admin" || userRole.role === "owner";
+  }
+
+if(!isAdmin || !userRole || userRole === null) return workspacePageSidebar.innerHTML = `<nav><!-- DASHBOARD -->
+    <a href="index" class="navBtn" data-section="index" id="dashboardLink">
+      <span class="navIcon">
+        <!-- Back / Dashboard Icon -->
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M11.75 4.25L6 10L11.75 15.75"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </span>
+      <span class="navText">Dashboard</span>
+    </a>
+</nav>`
 
   workspacePageSidebar.innerHTML = `<!--CLOSE BUTTON -->
   <button type="button" class="menuBtn" id="closeSidebar">
@@ -245,7 +274,10 @@ async function loadTask(taskId) {
 
   if (error) {
     console.error(error);
-    alert("Failed to load task.");
+        document.getElementById("taskViewContent").innerHTML =
+          `<p class="placeholderText">Invalid task link. <a href="index">Go Home</a></p>`;
+          loadSidebar();
+    actionMsg("Failed to load task.", "error");
     return;
   }
 
