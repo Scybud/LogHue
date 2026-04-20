@@ -162,7 +162,10 @@ actionMsg("Check your email inbox to confirm the new email", "success");
 
     const { error: uploadError } = await supabase.storage
       .from("avatars")
-      .upload(filePath, pendingAvatarProfile, { upsert: true });
+      .upload(filePath, pendingAvatarProfile, { upsert: true, metadata: {
+        owner: sessionState.user.id
+      },
+     });
 
     if (uploadError) {
          
