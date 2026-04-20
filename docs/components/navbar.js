@@ -29,7 +29,9 @@ class DocsNavbar {
       <div class="headerTitle">
         <a href="https://loghue.com" class="logo">
           <span class="logo-icon">📘</span>
-          <span class="logo-text">LogHue</span>
+          <div class="logo-container>
+          <div class="logo">Log<span>Hue</span> <strong class="logo-docs-text">docs</strong></div>
+          </div>
         </a>
         <span class="separator">›</span>
         <span class="page-title">Help Center</span>
