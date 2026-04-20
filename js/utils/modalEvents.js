@@ -96,7 +96,7 @@ const { pushNotifData, pushNotifError } = await supabase.functions.invoke(
       workspace_id: workspaceId,
       payload: {
         title: "Task was just created",
-        body: "Push notifications are working!",
+        body: "Push notifications Sent!",
         url: "https://app.loghue.com/",
       },
     },

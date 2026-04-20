@@ -480,7 +480,7 @@ function attachLogSubmitHandler() {
 
     const createdLog = data;
 
-    if(currentTask.assigned_to != null) {
+    if(currentTask.created_by != null) {
       await notifyUser({
         workspaceId: currentWorkspace.id, receiverUserId: currentTask.created_by, actorId: userData.user.id, type: "task_logged", entityId: currentTask.id, entityType: "log",
       })
