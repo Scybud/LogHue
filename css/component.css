@@ -44,7 +44,7 @@ label {
   cursor: pointer;
 }
 
-.permissionItem input[type="checkbox"] {
+ input[type="checkbox"] {
   width: 16px;
   height: 16px;
   cursor: pointer;
