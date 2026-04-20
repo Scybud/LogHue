@@ -78,15 +78,15 @@ export async function initWorkspaces() {
    user = sessionState.user;
 
   //GET Membership WORKSPACES
-const { data: membership, error: createdError } = await supabase
+const { data: membership, error: membershipError } = await supabase
   .from("workspace_members")
   .select("role, workspaces: workspace_id(*)")
   .eq("user_id", user.id);
 
 
-  if (createdError) {
-    console.error(createdError);
-    alert(createdError);
+  if (membershipError) {
+    console.error(membershipError);
+    alert(membershipError);
   }
 
   const { data: createdWorkspaces, error: createdError } = await supabase
@@ -94,6 +94,11 @@ const { data: membership, error: createdError } = await supabase
     .select("role, workspaces: workspace_id(*)")
     .eq("created_by", user.id);
 
+     if (createdError) {
+       console.error(createdError);
+       actionMsg(createdError);
+     }
+     
   //NORMALISE MEMBER WORKSPACES
 const normalizedCreated = (membership || []).map((m) => ({
   ...m.workspaces,
