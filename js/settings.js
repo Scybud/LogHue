@@ -156,8 +156,20 @@ saveBtn.addEventListener("click", async () => {
 actionMsg("Check your email inbox to confirm the new email", "success");  
 }
 
-  //AVATAR CHANGED?
+//AVATAR CHANGED?
+//EXTRACT FILEPATH
+function extractFilePath(publicUrl) {
+  const parts = publicUrl.split("/object/public/avatars/");
+  return parts[1] || null;
+}
+
   if (pendingAvatarProfile) {
+    const oldPath = extractFilePath(sessionState.originalAvatar);
+
+    if (oldPath) {
+      await supabase.storage.from("avatars").remove([oldPath]);
+    }
+
     const filePath = `${sessionState.user.id}-${Date.now()}.webp`;
 
     const { error: uploadError } = await supabase.storage
