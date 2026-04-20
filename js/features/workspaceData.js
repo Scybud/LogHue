@@ -91,14 +91,14 @@ const { data: membership, error: membershipError } = await supabase
 
   const { data: createdWorkspaces, error: createdError } = await supabase
     .from("workspaces")
-    .select("role, workspaces: workspace_id(*)")
+    .select("created_by")
     .eq("created_by", user.id);
 
      if (createdError) {
        console.error(createdError);
        actionMsg(createdError);
      }
-     
+
   //NORMALISE MEMBER WORKSPACES
 const normalizedCreated = (membership || []).map((m) => ({
   ...m.workspaces,
