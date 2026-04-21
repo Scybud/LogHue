@@ -6,6 +6,7 @@ import { openStartDiscussionModal } from "../utils/modals.js";
 import { sessionState } from "../session.js";
 import { createDropdown } from "../ui.js";
 import {navDropdowns} from "../components/sidebar.js"
+import { archiveWorkspace, deleteWorkspace, editWorkspace } from "./workspaceData.js";
 
 export let currentWorkspace = null;
 export let loadedMembers = [];
@@ -102,7 +103,7 @@ export async function initAdminWorkspaceData() {
   }
 
 
-  if (!workspace || workspaceId.length < 10) {
+  if (!workspace || workspaceId.length < 10 || workspace.status === "closed") {
     window.location.href = "index";
     return;
   }
@@ -425,9 +426,20 @@ async function loadSettings(container, workspace, currentUserId) {
   const section = document.createElement("section");
   section.classList.add("section");
 
-  const title = document.createElement("h2");
-  title.classList.add("sectionTitle");
-  title.textContent = "Workspace Settings";
+  const sectionTitle = document.createElement("h2");
+  sectionTitle.classList.add("sectionTitle");
+  sectionTitle.textContent = "Workspace Settings";
+
+  const docLink = document.createElement("a");
+  docLink.classList.add("docLink");
+  docLink.href = "https://docs.loghue.com/workspaces#workspaceSettings";
+  docLink.target = "_blank";
+  docLink.rel = "noopener";
+  docLink.textContent = "Docs";
+
+  const sectionHeader = document.createElement("div");
+  sectionHeader.classList.add("sectionHeader");
+  sectionHeader.append(sectionTitle, docLink);
 
   // -------------------------
   // WORKSPACE INFO CARD
@@ -442,14 +454,14 @@ async function loadSettings(container, workspace, currentUserId) {
     <p><strong>Name:</strong> ${workspace.name}</p>
     <p><strong>Description:</strong> ${workspace.description}</p>
     <div><strong>Workspace ID:</strong> <div class=workspaceIdContainer><input class="inputField workspaceId" readonly value="${workspace.id}"> <button class="copyBtn" title="Copy">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-            <rect x="9" y="9" width="10" height="10" rx="2"
-              stroke="currentColor" stroke-width="2"/>
-            <rect x="5" y="5" width="10" height="10" rx="2"
-              stroke="currentColor" stroke-width="2"/>
-          </svg>
+          Copy
         </button></div></div>
     <p><strong>Owner:</strong> ${owner?.profiles.full_name || "Unknown"}</p>
+    <div class="SettingsActionBtnsContainer">
+    <button id="editWorkspace" class="btn btn-primary">Edit Workspace</button>
+    <button id="archiveWorkspace" class="btn btn-secondary">Archive Workspace</button>
+    </div>
+
   `;
 
   infoCard.querySelector(".copyBtn").addEventListener("click", (e) => {
@@ -490,34 +502,85 @@ async function loadSettings(container, workspace, currentUserId) {
   };
 
   loadApiKeys(apiCard.querySelector("#apiKeysTable"), workspace.id);
-
+  
   // -------------------------
   // ONLY OWNER: OWNERSHIP TRANSFER CARD
   // -------------------------
   const me = workspace.workspace_members.find(
     (m) => m.user_id === currentUserId || m.profiles?.id === currentUserId,
   );
-
+  
   const transferCard = document.createElement("div");
   transferCard.classList.add("card");
   transferCard.innerHTML = `
-    <h3>Transfer Ownership</h3>
-    <p class="tunedText">Transfering ownership to another member means you will no longer be the owner of this workspace and will <b>NOT</b> be able to perform sensitive actions on this workspace.</p>
-    <p class="mutedText">This action cannot be undone by you again.</p>
-    <button class="btn danger" id="transferBtn">Transfer Ownership</button>
+  <h3>Transfer Ownership</h3>
+  <p class="tunedText">Transfering ownership to another member means you will no longer be the owner of this workspace and will <b>NOT</b> be able to perform sensitive actions on this workspace.</p>
+  <p class="mutedText">This action cannot be undone by you again.</p>
+  <button type="button" class="btn danger" id="transferBtn">Transfer Ownership</button>
   `;
+  
+  const deleteCard = document.createElement("div")
+  deleteCard.classList.add("card", "deleteCard");
+  deleteCard.innerHTML = `
+  <h3>⚠️Delete Workspace</h3>
+  <p class="tunedText">Deleting this workspace means all all content: tasks, discussions, histories and everything related to this workspace will be errased. Members will be removed from this workspace as well.</p>
+  <p class="mutedText">This action <b>CANNOT</b> be undone. Please be sure of your intentions before performing this action.</p>
+  <button type="button" class="btn danger" id="deleteWorkspace">Delete Workspace</button>
+  `;
+
+  const containerTitle = document.createElement("h3")
+  containerTitle.textContent = "⚠️ Danger Zone";
+
+  
+  const dangerContainerInner = document.createElement("div");
+  dangerContainerInner.classList.add("danger", "settingsCard");
+  dangerContainerInner.append(transferCard, deleteCard);
+
+  const dangerContainer = document.createElement("div");
+  dangerContainer.classList.add("danger");
+  dangerContainer.append(containerTitle, dangerContainerInner);
 
   if (me?.role === "owner") {
     transferCard.querySelector("#transferBtn").onclick = async () => {
       await openTransferOwnershipModal(workspace);
     };
-    section.append(title, infoCard, apiCard, transferCard);
+    section.append(sectionHeader, infoCard, apiCard, dangerContainer);
   } else {
     // no transfer card for non‑owners
-    section.append(title, infoCard, apiCard);
+    section.append(sectionHeader, infoCard, apiCard);
+  }
+  
+  container.append(section);
+
+  await attachSettingsActions(workspace, workspace.id)
+}
+
+async function attachSettingsActions(ws, id) {
+  const editWorkspaceBtn = document.querySelector("#editWorkspace");
+const archiveWorkspaceBtn = document.querySelector("#archiveWorkspace");
+const deleteWorkspaceBtn = document.querySelector("#deleteWorkspace");
+
+  if (editWorkspaceBtn) {
+   editWorkspaceBtn.onclick = async () => {
+    await editWorkspace(ws, id);
+  };
   }
 
-  container.append(section);
+   if (archiveWorkspaceBtn) {
+   archiveWorkspaceBtn.onclick = async () => {
+    await archiveWorkspace(id);
+  };
+  }
+
+     if (deleteWorkspaceBtn) {
+       deleteWorkspaceBtn.onclick = async () => {
+         await deleteWorkspace(id);
+       };
+     } else {
+      console.log("h")
+     }
+
+  
 }
 
 async function loadApiKeys(tbody, workspaceId) {
@@ -815,9 +878,22 @@ export function loadTasks(title, tasks, container) {
   const section = document.createElement("section");
   section.classList.add("section");
 
+  
   const sectionTitle = document.createElement("h2");
   sectionTitle.classList.add("sectionTitle");
   sectionTitle.textContent = title;
+  
+  const docLink = document.createElement("a")
+  docLink.classList.add("docLink");
+  docLink.href = "https://docs.loghue.com/tasks";
+  docLink.target = "_blank"
+  docLink.rel = "noopener"
+  docLink.textContent = "Docs"
+
+
+  const sectionHeader = document.createElement("div")
+  sectionHeader.classList.add("sectionHeader");
+  sectionHeader.append(sectionTitle, docLink)
 
   const divGrid = document.createElement("div");
   divGrid.classList.add("container", "double-grid");
@@ -877,7 +953,7 @@ details.addEventListener("click", (e) => {
     divGrid.append(taskCard);
   });
 
-  section.append(sectionTitle, divGrid);
+  section.append(sectionHeader, divGrid);
   container.append(section);
 }
 
@@ -925,6 +1001,17 @@ function loadMembers(members, container) {
   const sectionTitle = document.createElement("h2");
   sectionTitle.classList.add("sectionTitle");
   sectionTitle.textContent = "Workspace Members";
+
+    const docLink = document.createElement("a");
+    docLink.classList.add("docLink");
+    docLink.href = "https://docs.loghue.com/roles";
+    docLink.target = "_blank";
+    docLink.rel = "noopener";
+    docLink.textContent = "Docs";
+
+    const sectionHeader = document.createElement("div");
+    sectionHeader.classList.add("sectionHeader");
+    sectionHeader.append(sectionTitle, docLink);
 
   const divGrid = document.createElement("div");
   divGrid.classList.add("grid");
@@ -988,7 +1075,7 @@ memberCard.append(cardHeader, adminActions);
 divGrid.append(memberCard);
 });
 
-  section.append(sectionTitle, divGrid);
+  section.append(sectionHeader, divGrid);
   container.append(section);
 //ATTACH TASK CREATION LOGIC FOR EACH MEMBER CARD
 assignMemberTask();

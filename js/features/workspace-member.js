@@ -85,6 +85,15 @@ export async function initMemberWorkspaceData() {
     return;
   }
 
+    if (
+      !workspace ||
+      workspaceId.length < 10 ||
+      workspace.status === "closed"
+    ) {
+      window.location.href = "index";
+      return;
+    }
+    
   currentWorkspace = workspace;
 
   const container = document.getElementById("memberWorkspaceDashboardContent");

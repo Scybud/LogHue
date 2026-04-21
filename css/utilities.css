@@ -586,6 +586,8 @@ tbody td {
   cursor: pointer;
   opacity: 0.6;
   display: flex;
+  font-weight: 600;
+  min-width: fit-content;
   align-items: center;
 }
 
@@ -682,7 +684,32 @@ transform: scale(0.9);
     color: var(--text-muted);
   }
 }
-
+div.danger.settingsCard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+  border-radius: var(--radius);
+  padding: var(--space-sm);
+  border: 1px solid var(--danger);
+  overflow-x: auto;
+}
+@media (max-width: 600px) {
+  div.danger.settingsCard {
+  display: flex;
+  flex-direction: column;
+grid-template-columns: 1fr;
+}
+}
+.settingsCard .card {
+  min-width: 300px;
+}
+.deleteCard {
+  background: var(--bg);
+}
+.deleteCard::before {
+  content: "";
+  font-size: 1.5rem;
+}
 /* Base container must be relative */
 section.isLoading {
   position: relative;

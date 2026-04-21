@@ -15,3 +15,8 @@ section {
   padding: var(--space-xs);
   min-height: 400px;
 }
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+}
