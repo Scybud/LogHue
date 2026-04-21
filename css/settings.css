@@ -17,12 +17,11 @@
   min-width: 100%;
 }
 
-.settingsCard.danger {
+div.settingsCard.danger {
+  display: block;
   border-color: var(--danger);
 }
-.settingsCard .danger{
-  max-width: 300px;
-}
+
 #deleteAccount:hover {
   background: red;
 }

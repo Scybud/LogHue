@@ -684,7 +684,7 @@ transform: scale(0.9);
     color: var(--text-muted);
   }
 }
-div.danger.settingsCard {
+.danger.settingsCard {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-sm);
@@ -710,6 +710,45 @@ grid-template-columns: 1fr;
   content: "";
   font-size: 1.5rem;
 }
+.docLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 6px 10px;
+  border-radius: 6px;
+text-align: right;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--lh-text-strong);
+  text-decoration: none;
+
+  background: var(--active);
+  border: 1px solid var(--lh-border);
+
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.docLink:hover {
+  background: var(--bg);
+  border-color: var(--lh-blue);
+  color: var(--lh-blue);
+}
+
+.docLink:active {
+  background: var(--lh-surface-4);
+  border-color: var(--lh-blue-strong);
+  color: var(--lh-blue-strong);
+}
+
+.docLink svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+}
+
 /* Base container must be relative */
 section.isLoading {
   position: relative;
