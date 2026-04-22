@@ -724,6 +724,7 @@ text-align: right;
   text-decoration: none;
 
   background: var(--active);
+  color: var(--color);
   border: 1px solid var(--lh-border);
 
   transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;

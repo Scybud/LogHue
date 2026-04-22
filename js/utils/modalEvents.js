@@ -79,6 +79,8 @@ export function attachCreateTaskEvent(workspaceId) {
 
     createTaskBtn.disabled = false;
 
+    await actionMsg("Task created!", "success");
+    
     // Only one task is created, use the first item
     const createdTask = data[0];
 
@@ -87,21 +89,6 @@ if(createdTask.assigned_to != null) {
     workspaceId, receiverUserId: createdTask.assigned_to, actorId: user.id, type: "task_assigned", entityId: createdTask.id, entityType: "task",
   })
 }
-
-//push notif
-const { pushNotifData, pushNotifError } = await supabase.functions.invoke(
-  "trigger-push",
-  {
-    body: {
-      workspace_id: workspaceId,
-      payload: {
-        title: "Task was just created",
-        body: "Push notifications Sent!",
-        url: "https://app.loghue.com/",
-      },
-    },
-  },
-);
 
     // Render the task in the UI
     const taskCard = document.createElement("div");

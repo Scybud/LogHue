@@ -358,6 +358,9 @@ button.danger {
   opacity: 0;
   transform: translateY(-6px);
 }
+.taskCard {
+  cursor: pointer;
+}
 
 .placeholderText,
 .commonPlaceholderText {

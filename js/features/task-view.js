@@ -6,7 +6,7 @@ import { formatDateTime, loadActivities } from "./workspace-admin.js";
 let currentTask = null;
 let currentWorkspace = null;
 let userRole = null;
-
+let isAdmin;
 //GET USER ROLE
 async function getUserRole(workspaceId) {
   const { data: userData } = await supabase.auth.getUser();
@@ -292,7 +292,7 @@ function renderTaskHeader() {
   const container = document.querySelector(".taskHeader");
   if (!container) return;
 
-  const isAdmin = userRole.role === "admin" || userRole.role === "owner";
+   isAdmin = userRole.role === "admin" || userRole.role === "owner";
 
   container.innerHTML = `
     <div class="taskHeaderTop">
@@ -454,7 +454,7 @@ function attachLogSubmitHandler() {
   if (!btn || !input) return;
 
   // Only assigned member can write logs
-  if (
+  if ( !isAdmin &&
     userRole.userId !== currentTask.assigned_to ||
     currentTask.status === "completed"
   ) {
@@ -466,8 +466,7 @@ function attachLogSubmitHandler() {
 
   btn.addEventListener("click", async () => {
     const note = input.value.trim();
-    if (!note) return;
-
+    if (!note) return actionMsg("Write something before submitting.", "error");
     const { data: userData } = await supabase.auth.getUser();
 
     const { data, error } = await supabase.from("workspace_task_logs").insert({
@@ -485,21 +484,6 @@ function attachLogSubmitHandler() {
         workspaceId: currentWorkspace.id, receiverUserId: currentTask.created_by, actorId: userData.user.id, type: "task_logged", entityId: currentTask.id, entityType: "log",
       })
     }
-    
-    //push notif
-    const { pushNotifData, pushNotifError } = await supabase.functions.invoke(
-      "trigger-push",
-      {
-        body: {
-          workspace_id: currentWorkspace.id,
-          payload: {
-            title: "Update was just logged on a task",
-            body: "Push notifications message!",
-            url: "https://app.loghue.com/",
-          },
-        },
-      },
-    );
 
     input.value = "";
     await loadTask(currentTask.id);
@@ -510,29 +494,38 @@ function attachLogSubmitHandler() {
 /* ---------------------------------------------
    MARK TASK DONE (DB + UI + LOGS)
 --------------------------------------------- */
-async function attachMarkDoneHandler(taskId) {
+function attachMarkDoneHandler(taskId) {
   const btn = document.getElementById("markTaskDoneBtn");
   if (!btn) return;
 
-  btn.addEventListener("click", async () => {
-    const newStatus =
-      currentTask.status === "completed" ? "in progress" : "completed";
+ btn.onclick = async () => {
+  const newStatus =
+    currentTask.status === "completed" ? "in progress" : "completed";
 
-    const { error } = await supabase
-      .from("workspace_tasks")
-      .update({ status: newStatus, completed_at: new Date().toISOString()})
-      .eq("id", taskId);
+  const { error } = await supabase
+    .from("workspace_tasks")
+    .update({
+      status: newStatus,
+      completed_at:
+        newStatus === "completed" ? new Date().toISOString() : null,
+    })
+    .eq("id", taskId);
 
-    if (error) {
-      alert(error.message);
-      return;
-    }
+  if (error) {
+    alert(error.message);
+    return;
+  }
 
-    await loadTask(currentTask.id);
-    renderTaskHeader();
-    renderLogs();
-  });
+  await loadTask(currentTask.id);
+  renderTaskHeader();
+  renderLogs();
+
+  // ⬇️ reattach because renderTaskHeader replaced the button
+  attachMarkDoneHandler(currentTask.id);
 }
+}
+
+
 
 /* ---------------------------------------------
    ADD COMMENT (INLINE INSIDE LOG)

@@ -7,6 +7,7 @@ import { sessionState } from "../session.js";
 import { createDropdown } from "../ui.js";
 import {navDropdowns} from "../components/sidebar.js"
 import { archiveWorkspace, deleteWorkspace, editWorkspace } from "./workspaceData.js";
+import { notifyUser } from "../utils/notifications.js";
 
 export let currentWorkspace = null;
 export let loadedMembers = [];
@@ -936,6 +937,7 @@ export function loadTasks(title, tasks, container) {
     taskMeta.append(assignee, assignedOn);
 
     const viewBtn = document.createElement("button");
+        viewBtn.type = "button";
     viewBtn.classList.add("btn", "btn-primary");
     viewBtn.textContent = "View Task";
 
@@ -944,12 +946,33 @@ export function loadTasks(title, tasks, container) {
       window.location.href = `task-view?task=${tsk.id}`;
     });
 
+    const pingBtn = document.createElement("button");
+    pingBtn.type = "button"
+    pingBtn.classList.add("btn", "btn-secondary");
+    pingBtn.textContent = "Ping Assignee";
+    pingBtn.title = "Pinging assignee will send a notification to them asking for update on the task.";
+
+     pingBtn.addEventListener("click", async (e) => {
+       e.stopPropagation();
+
+       await notifyUser({
+           workspaceId: currentWorkspace.id,
+         receiverUserId: tsk.profiles.id,
+         actorId: user.id,
+         type: "task_ping",
+         entityId: tsk.id,
+         entityType: "task",
+       });
+
+       actionMsg("Assignee pinged!", "success");
+     });
+
 details.addEventListener("click", (e) => {
   e.stopPropagation();
 });
 
 
-    taskCard.append(taskTitle, taskMeta, details, viewBtn);
+    taskCard.append(taskTitle, taskMeta, details, viewBtn, pingBtn);
     divGrid.append(taskCard);
   });
 

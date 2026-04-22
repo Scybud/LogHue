@@ -145,7 +145,7 @@ export async function renderGlobalNotifications(notifications) {
 
       notif.task = task;
     }
-if (notif.type === "task_logged") {
+if (notif.type === "task_logged" || notif.type ==="task_ping") {
   let task = null;
 
   try {
@@ -186,7 +186,7 @@ if (notif.type === "task_logged") {
 
     const link = document.createElement("a");
     link.className = "notificationLink";
-    if (notif.type === "task_assigned") {
+    if (notif.type === "task_assigned" || notif.type === "task_ping") {
       link.href = `task-view?task=${encodeURIComponent(notif.entity_id)}`;
     } else if (notif.type === "discussion_started") {
       link.href = `discussion-view?dcn=${encodeURIComponent(notif.entity_id)}`;
@@ -203,6 +203,8 @@ if (notif.type === "task_logged") {
 
     if (notif.type === "task_assigned") {
       bodyTextContent = ` assigned you to "${notif.task?.title || (notif.task === null ? "a deleted task" : "a task")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}" `;
+    } else if(notif.type === "task_ping") {
+      bodyTextContent = ` pinged you on "${notif.task?.title || (notif.task === null ? "a deleted task" : "a task")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}". Log an update now`;
     } else if (notif.type === "discussion_started") {
       bodyTextContent = ` started a discussion "${notif.discussion?.title || (notif.discussion === null ? "a deleted discussion" : "a discussion")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}" `;
     } else if (notif.type === "task_logged") {
@@ -220,11 +222,17 @@ if (notif.type === "task_logged") {
     timeSpan.textContent = time;
     link.appendChild(timeSpan);
 
-    if (notif.type === "task_assigned" || notif.type === "discussion_started" || notif.type === "task_logged") {
+    if (
+      notif.type === "task_assigned" ||
+      notif.type === "discussion_started" ||
+      notif.type === "task_logged" ||
+      notif.type === "task_ping"
+    ) {
       notifEl.appendChild(link);
     } else {
       notifEl.textContent = `New notification: ${notif.type}`;
     }
+
 
     container.append(notifEl);
 
