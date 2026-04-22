@@ -225,6 +225,17 @@ navDropdowns();
            return;
          }
 
+         const newTask = data
+
+         notifyUser({
+           workspaceId: currentWorkspace.id,
+           receiverUserId: assignedToValue,
+           actorId: user.id,
+           type: "task_assigned",
+           entityId: newTask.id,
+           entityType: "task",
+         });
+         
          // Render new task
          const createdTask = data[0];
          const container = document.querySelector(".grid");
