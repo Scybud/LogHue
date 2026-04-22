@@ -408,10 +408,10 @@ function renderLogs() {
         </svg>
         Comment
       `;
-      logCard.appendChild(replyButton);
+      logCard.append(replyButton);
     }
 
-    feed.appendChild(logCard);
+    feed.prepend(logCard);
   });
 
   attachCommentHandlers();
