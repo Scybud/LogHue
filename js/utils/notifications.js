@@ -204,7 +204,7 @@ if (notif.type === "task_logged" || notif.type ==="task_ping") {
     if (notif.type === "task_assigned") {
       bodyTextContent = ` assigned you to "${notif.task?.title || (notif.task === null ? "a deleted task" : "a task")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}" `;
     } else if(notif.type === "task_ping") {
-      bodyTextContent = ` pinged you on "${notif.task?.title || (notif.task === null ? "a deleted task" : "a task")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}". Log an update now`;
+      bodyTextContent = ` pinged you on "${notif.task?.title || (notif.task === null ? "a deleted task" : "a task")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}". "Log an update now!"`;
     } else if (notif.type === "discussion_started") {
       bodyTextContent = ` started a discussion "${notif.discussion?.title || (notif.discussion === null ? "a deleted discussion" : "a discussion")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}" `;
     } else if (notif.type === "task_logged") {
