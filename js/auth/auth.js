@@ -193,16 +193,16 @@ function setupOAuthButton(buttonId, provider) {
     const redirectTo = params.get("redirect");
 
     // Build callback URL with redirect param included
-    const callbackUrl = redirectTo
-      ? `https://app.loghue.com/auth/callback?redirect=${encodeURIComponent(
-          redirectTo,
-        )}`
-      : "https://app.loghue.com/auth/callback";
+    const callbackUrl = "https://app.loghue.com/auth/callback";
 
+    if (redirectTo) {
+      localStorage.setItem("post_login_redirect", redirectTo);
+    }
+    
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: callbackUrl,
+        redirectTo: "https://app.loghue.com/auth/callback",
       },
     });
 
