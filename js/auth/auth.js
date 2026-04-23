@@ -198,11 +198,11 @@ function setupOAuthButton(buttonId, provider) {
     if (redirectTo) {
       localStorage.setItem("post_login_redirect", redirectTo);
     }
-    
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: "https://app.loghue.com/auth/callback",
+        redirectTo: callbackUrl,
       },
     });
 
