@@ -1,8 +1,9 @@
 // Toggles the main sidebar visibility
 const sidebar = document.querySelector(".sidebarContainer");
 export function sidebarToggle() {
-  if (!sidebar) return;
-  sidebar.classList.toggle("slideShow");
+  if (sidebar) {
+    sidebar.classList.toggle("slideShow");
+  }
 }
 
 // Attaches sidebar toggle events to buttons
@@ -18,12 +19,16 @@ export function attachSidebarToggle() {
   }
 
   //ACTION BUTTONS
-  const actionBtns = sidebar.querySelectorAll(".actionBtn");
-  actionBtns.forEach((actionBtn) => {
-    if (actionBtn) {
-      actionBtn.addEventListener("click", sidebarToggle);
+  if(sidebar) {
+    const actionBtns = sidebar.querySelectorAll(".actionBtn");
+    if(actionBtns) {
+      actionBtns.forEach((actionBtn) => {
+        if (actionBtn) {
+          actionBtn.addEventListener("click", sidebarToggle);
+        }
+      });
     }
-  });
+  }
 
   //NAV BUTTONS AND LINKS
   const navBtns = document.querySelectorAll(".navBtn");
@@ -31,7 +36,7 @@ export function attachSidebarToggle() {
     if(navBtn) {
       navBtn.addEventListener("click", sidebarToggle);
     }
-  })
+  });
   }
 
 export function toggleNotification() {

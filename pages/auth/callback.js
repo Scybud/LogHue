@@ -6,7 +6,7 @@ supabase.auth.getSession().then(({ data }) => {
   const redirectTo = params.get("redirect");
 
   if (redirectTo) {
-    // Send them to the intended page (invite, workspace, etc.)
+    // Send user to the intended page
     window.location.href = decodeURIComponent(redirectTo);
   } else {
     // Default fallback

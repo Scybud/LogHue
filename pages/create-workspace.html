@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Workspace</title>
+
+    <!--CSS LINK-->
+    <link rel="stylesheet" href="https://loghue.com/css/base.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/pages.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/theme.css" />
+        <link rel="stylesheet" href="https://loghue.com/css/utilities.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/component.css" />
+
+    <!--FAVICONS-->
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="https://loghue.com/assets/icons/favicons/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="https://loghue.com/assets/icons/favicons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="https://loghue.com/assets/icons/favicons/favicon-16x16.png"
+    />
+
+    <style>
+      .tunedText {
+        text-align: center;
+      }
+      h1 {
+        margin: 20px 0;
+      }
+
+      .loader {
+      border: 4px solid rgba(255,255,255,0.2);
+      border-top: 4px solid var(--primary-light);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+#WorkspaceCreationForm.fadeOut {
+  animation: fadeOut 1s ease;
+}
+@keyframes fadeOut {
+      to { opacity: 0; }
+    }
+
+    .msg {
+      font-size: 18px;
+    }
+    .loaderContainer {
+      display: none;
+    }
+    </style>
+  </head>
+  <body>
+        <div id="actionsMessage"></div>
+
+    <!--PRELOADER-->
+    <div class="preLoaderContainer">
+      <div class="tt-wave-loader"><span></span><span></span><span></span></div>
+      <div class="label">Log<span>Hue</span></div>
+    </div>
+
+    <h1 class="pageTitle">Set Up Your Workspace</h1>
+    <p class="tunedText">A simple name and description is all you need to start working together.</p>
+
+    <main class="main">
+     <form class="form" id="WorkspaceCreationForm">
+      <label for="workspacename">Workspace Name</label>
+         <input type="text" class="inputField" id="workspacename" placeholder="e.g. Marketing Team" required>
+         <label for="workspaceDescription">Workspace Description</label>
+         <textarea placeholder="e.g. Marketing Team for the LogHue Project..." name="workspaceDescription" id="workspaceDescription" class="inputField textArea" required></textarea>
+         <button type="button" class="btn" id="createWorkspaceOpen">Create Workspace</button>
+        </form>
+    </main>
+
+    <div class="loaderContainer">
+      <div class="loader"></div>
+        <p class="msg tunedText">Your workspace has been created successfully.</p>
+        <p class="msg tunedText">Redirecting to dashboard...</p>
+    </div>
+     <!-- JS -->
+<script type="module">
+  import {sessionState, sessionReady} from "https://loghue.com/js/session.js";
+  import { actionMsg } from "https://loghue.com/js/utils/modals.js"
+  import {supabase} from "https://loghue.com/js/supabase.js"
+
+  
+  async function attachCreateWorkspaceEvent() {
+    await sessionReady
+    
+    const user = sessionState.user;
+    
+    const createWorkspaceBtn = document.getElementById("createWorkspaceOpen");
+    const workspaceNameEl = document.getElementById("workspacename");
+    const workspaceDescriptionEl = document.getElementById("workspaceDescription");
+    
+    const { data: createdWorkspaces, error: createdError } = await supabase
+    .from("workspaces")
+    .select("created_by")
+    .eq("created_by", user.id);
+
+     if (createdError) {
+       console.error(createdError);
+       actionMsg(createdError);
+     }
+
+  if (!createWorkspaceBtn) return;
+
+  if (createWorkspaceBtn.__listenerAttached) return;
+  createWorkspaceBtn.__listenerAttached = true;
+
+  //When log task button is clicked to create new log
+  createWorkspaceBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const workspaceNameValue = workspaceNameEl.value.trim();
+    const workspaceDescriptionValue = workspaceDescriptionEl.value.trim();
+    
+    if (!user) return alert("You must be logged in.");
+    
+    if(!workspaceNameValue || !workspaceDescriptionValue) {
+      actionMsg(
+        "All field must not be empty",
+        "error",
+      );
+      return;
+    }
+
+        if(createdWorkspaces.length >= sessionState.plan.max_workspaces && sessionState.plan.max_workspaces !== null) {
+                    actionMsg("You have exceeded the limit for workspace creation on your current plan. Subscribe to a new plan to create more workspaces!", "error");
+                    return;
+        }
+
+    //DEFINE DATA CONTENT
+    const workspaceData = {
+      name: workspaceNameValue,
+      description: workspaceDescriptionValue,
+      created_by: user.id,
+    };
+
+    //INSERT INTO SUPABASE
+    const { data, error } = await supabase
+      .from("workspaces")
+      .insert(workspaceData)
+      .select();
+
+    if (error) {
+      console.error(error);
+          actionMsg("Failed to create workspace!", "error");
+      return;
+    }
+
+    const newWorkspace = data[0];
+
+    // Assign role manually for UI consistency
+    newWorkspace.role = "owner";
+
+    //ADD WORKSPACE ADMIN AS MEMBER
+    const { data: existing } = await supabase
+      .from("workspace_members")
+      .select("*")
+      .eq("workspace_id", newWorkspace.id)
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (!existing) {
+      const { error: memberInsertError } = await supabase
+        .from("workspace_members")
+        .insert({
+          workspace_id: newWorkspace.id,
+          user_id: user.id,
+          role: "owner",
+        });
+
+      if (memberInsertError) {
+                  actionMsg("Workspace creation was successful but an error occured", "error");
+        console.error(memberInsertError);
+      }
+    }
+
+    //RESET FORM
+    workspaceNameEl.value = "";
+    workspaceDescriptionEl.value = "";
+
+    actionMsg("Workspace created successfully!", "success");
+
+    const WorkspaceCreationForm = document.getElementById("WorkspaceCreationForm")
+    WorkspaceCreationForm.classList.add("fadeOut");
+    setTimeout(() => {
+      WorkspaceCreationForm.remove();
+      document.querySelector(".loaderContainer").classList.add("show");
+    }, 1000);
+
+    setTimeout(() => {
+    window.location.href = "index"
+    }, 4500);
+  });
+}
+  
+attachCreateWorkspaceEvent();
+</script>
+  <script type="module" src="https://loghue.com/js/session.js" defer></script>
+  <script type="module" src="https://loghue.com/js/utils/noAuthSessionProtect.js" defer></script>
+  <script type="module" src="https://loghue.com/js/app.js" defer></script>
+  </body>
+</html>
