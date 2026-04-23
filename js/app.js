@@ -49,8 +49,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   // General sidebar is safe everywhere
   await loadComponent(
-    "https://loghue.com/components/sidebar-general",
-    "generalSidebarContainer",
+    "https://loghue.com/components/sidebar",
+    "sidebarContainer",
   );
 
   // SESSION FUNCTION
