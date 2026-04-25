@@ -337,7 +337,7 @@ input.error {
   transform: translateX(-50%);
   max-width: 300px ;
   width: 100% ;
-  padding: 0 var(--space-xs);
+  padding: var(--space-xs);
   height: fit-content;
   transition: top 0.5s ease;
 }

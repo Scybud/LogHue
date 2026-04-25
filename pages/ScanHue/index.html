@@ -9,27 +9,48 @@
 
       <!--CSS LINKS-->
     <link rel="stylesheet" href="https://loghue.com/css/base.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/theme.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/pages.css" />
     <link rel="stylesheet" href="https://loghue.com/css/component.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/layout.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/dashboard.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/utilities.css" />
-  <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="https://loghue.com/css/utilities.css">
+
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <div class="container">
-    <h1>Extract Text</h1>
+    <div id="actionsMessage"></div>
 
+
+  <h1 class="logo">Scan<span>Hue</span></h1>
+  <p class="tunedText">Extract text from images.</p>
+<main>
+
+  <section class="InputContainer">
+    <h2>Extract Text</h2>
+    
     <input class="inputField" type="file" id="imageInput" accept="image/*">
+    
+    <div class="previewContainer">
+      <div class="previewUpper">
+        <h2>Image Preview</h2>
+        <button id="processBtn" class="btn btn-sm btn-primary">Extract Text</button>
+      </div>
+      <canvas id="previewCanvas">
+      </canvas>
+    </div>
+    
+  </section>
 
-    <canvas id="previewCanvas"></canvas>
+  <section class="outputContainer">
+    <div class="outputContainerInner">
+      <h2>Extracted Text</h2>
+      <textarea class="inputField" id="output" placeholder="Extracted text will appear here..."></textarea>
+    </div>
 
-    <button id="processBtn" class="btn btn-sm btn-primary">Extract Text</button>
-
-    <textarea class="card" id="output" placeholder="Extracted text will appear here..."></textarea>
-  </div>
+    <div class="outputLower">
+      <button type="button" class="btn btn-secondary" id="copyBtn">Copy</button>
+            <button type="button" class="btn btn-primary" id="editInNotesBtn">Edit In Notes</button>
+    </div>
+  </section>
+</main>
 
   <script type="module" src="app.js"></script>
 

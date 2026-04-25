@@ -107,6 +107,35 @@ function initNotes() {
 
 initNotes();
 
+async function loadExtractedText() {
+  const savedText = localStorage.getItem("extractedText");
+
+  if(savedText) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const { data, error } = await supabase
+      .from("personal_notes")
+      .insert({
+        user_id: user.id,
+        title: "Untitled",
+        content: savedText,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    await loadNotes();
+    openNote(data);
+
+    localStorage.removeItem("extractedText")
+  }
+}
 /*
 --------------------------------
 LOAD USER NOTES

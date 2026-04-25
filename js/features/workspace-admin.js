@@ -733,7 +733,7 @@ function loadInviteHistory(invites, container) {
     row.querySelector(".copyBtn").addEventListener("click", (e) => {
       e.stopPropagation();
       navigator.clipboard.writeText(target);
-      actionMsg("URL copied to clipboard!", "success");
+      actionMsg("Copied to clipboard!", "success");
     });
 
     // ACTIONS (NO innerHTML)

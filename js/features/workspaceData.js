@@ -76,13 +76,13 @@ export async function initWorkspaces() {
   await sessionReady;
 
    user = sessionState.user;
+if(!user) return;
 
   //GET Membership WORKSPACES
 const { data: membership, error: membershipError } = await supabase
   .from("workspace_members")
   .select("role, workspaces: workspace_id(*)")
   .eq("user_id", user.id);
-
 
   if (membershipError) {
     console.error(membershipError);

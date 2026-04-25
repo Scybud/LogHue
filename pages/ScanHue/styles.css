@@ -1,18 +1,58 @@
-body {
-  margin: 0;
-  padding: 40px;
+main {
+  margin: calc(var(--space-xl) * 2) 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+}
+@media (max-width: 800px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+}
+h1.logo {
+  font-size: clamp(2rem, 10vw, 3rem);
+  text-align: center;
+}
+h2 {
+    font-size: clamp(1.5rem, 7.5vw, 1.75rem);
+  text-align: left;
+}
+.tunedText {
+  text-align: center;
+}
+.btn-primary {
+  color: #000;
 }
 
-.container {
+.InputContainer, .outputContainer {
+  width: 100%;
   max-width: 600px;
   margin: auto;
+  margin-bottom: var(--space-xl);
 }
-
+.InputContainer .inputField {
+  cursor: pointer;
+}
+.outputContainer {
+  height: 100%;
+}
+.outputContainerInner {
+  position: sticky;
+  top: 0;
+  
+}
+.previewContainer {
+  margin-top: 20px;
+}
+.previewUpper {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: var(--space-sm);
+}
 #previewCanvas{
   width: 100%;
-  max-height: 300px;
   border: 1px solid var(--border);
-  margin-top: 20px;
     border-radius: var(--radius);
 }
 #previewCanvas::after {
@@ -25,4 +65,7 @@ body {
   padding: var(--space-sm);
   resize: none;
   color: var(--color);
+}
+.outputLower {
+  display: none;
 }

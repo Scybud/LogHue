@@ -1,11 +1,53 @@
 import {supabase} from "https://loghue.com/js/supabase.js"
+import { actionMsg } from "https://loghue.com/js/utils/modals.js";
 
 const imageInput = document.getElementById("imageInput");
 const processBtn = document.getElementById("processBtn");
+const canvas = document.getElementById("previewCanvas");
 const output = document.getElementById("output");
+const outputLower = document.querySelector(".outputLower");
+const copyBtn = document.getElementById("copyBtn");
+const editInNotesBtn = document.getElementById("editInNotesBtn");
 
 let selectedImage = null;
 let cropBox = null;
+
+    // Copy button
+    copyBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      navigator.clipboard.writeText(output.value);
+      actionMsg("Copied to clipboard!", "success");
+    });
+
+    //EDIT IN LOGHUE NOTES
+    editInNotesBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      localStorage.setItem("extractedText", output.value);
+
+      window.location.href = "../notes"
+    });
+
+    
+function canvasDefault() {
+   const ctx = canvas.getContext("2d");
+
+   const img = new Image();
+   img.crossOrigin = "anonymous"; // important for CORS safety
+   img.src = "preview-placeholder.png";
+
+   img.onload = () => {
+     // scale image to fit canvas width
+     const scale = canvas.width / img.width;
+     const newHeight = img.height * scale;
+
+     canvas.height = newHeight;
+     ctx.drawImage(img, 0, 0, canvas.width, newHeight);
+   };
+}
+window.addEventListener("load", () => {
+canvasDefault();
+});
+
 
 // --- Preview image ---
 imageInput.addEventListener("change", (e) => {
@@ -19,7 +61,6 @@ imageInput.addEventListener("change", (e) => {
     const img = new Image();
 img.crossOrigin = "anonymous";
 img.onload = () => {
-  const canvas = document.getElementById("previewCanvas");
   const ctx = canvas.getContext("2d");
 
   const targetWidth = 1000;
@@ -34,7 +75,6 @@ img.src = reader.result;
   reader.readAsDataURL(file);
 });
 
-const canvas = document.getElementById("previewCanvas");
 /*
 
 // --- Crop selection (drag box) ---
@@ -112,7 +152,7 @@ const res = await fetch(
 // --- Process button ---
 processBtn.addEventListener("click", async () => {
   if (!selectedImage) {
-    alert("Please select an image first");
+    actionMsg("Please select an image first", "error");
     return;
   }
 
@@ -139,8 +179,13 @@ processBtn.addEventListener("click", async () => {
     const text = await runOCRViaEdgeFunction(targetCanvas);
     output.value = text;
 
+outputLower.classList.add("show");
+
     if(text === null) return console.log("Undefined")
-  } catch (err) {
-    output.value = "Error: " + err.message;
+  } catch (err) {  
+
+    outputLower.classList.add("show");
+
+  output.value = "Error: " + err.message;
   }
 });
