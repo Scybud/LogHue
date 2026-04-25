@@ -31,7 +31,7 @@ function initNotes() {
   if (!editorContainer) return;
 
   editorContainer.innerHTML = `
-    <input id="noteTitle" placeholder="Note title" class="noteTitle inputField" />
+    <input id="noteTitle" name="noteTitle" placeholder="Note title" class="noteTitle inputField" />
     <div id="editor"></div>
 
     <div class="actionBtnsContainer">
@@ -86,6 +86,7 @@ function initNotes() {
   });
 
   loadNotes();
+  loadExtractedText();
   deleteNote();
   /*
   Attach save handler
