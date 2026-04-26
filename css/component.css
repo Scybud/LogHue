@@ -719,6 +719,9 @@ button.dropdown-item {
   background-color: var(--card-bg);
   border: 1px solid var(--border);
 }
+.ql-toolbar.ql-snow .ql-stroke, .ql-toolbar.ql-snow button{
+  stroke: var(--accent);
+}
 #editorContainer {
   color: var(--color);
   padding: 0;
