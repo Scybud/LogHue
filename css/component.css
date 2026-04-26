@@ -690,7 +690,8 @@ button.dropdown-item {
 }
 .notesContainer #noteTitle {
   border-width: 2px;
-  width: fit-content;
+  width: 100%;
+  max-width: 350px;
   background-color: var(--card-bg);
 }
 #createNote {
@@ -735,7 +736,7 @@ button.dropdown-item {
   flex-wrap: wrap;
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: 1;
   backdrop-filter: var(--filter);
 }
 .actionBtnsContainer {
