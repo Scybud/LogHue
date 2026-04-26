@@ -9,13 +9,17 @@ GLOBAL STATE
 let quill = null;
 let currentNoteId = null;
 let savednoteDetails = [];
+let isLoading = false;
 
-function setNotesLoading(state) {
-  const notesList = document.getElementById("notesList");
-  const editorContainer = document.getElementById("editorContainer");
+// -------------------------------
+// Loading State
+// -------------------------------
+function setLoading(state) {
+  isLoading = state;
 
-  notesList?.classList.toggle("isLoading", state);
-  editorContainer?.classList.toggle("isLoading", state);
+  const notesContainer = document.querySelector(".notesContainer");
+
+  notesContainer?.classList.toggle("isLoading", state);
 }
 
 /*
@@ -24,8 +28,9 @@ INITIALIZE NOTES UI
 --------------------------------
 */
 function initNotes() {
+  setLoading(true);
+
   const editorContainer = document.getElementById("editorContainer");
-  setNotesLoading(true);
 
   // Safety check in case the container doesn't exist
   if (!editorContainer) return;
@@ -103,7 +108,7 @@ function initNotes() {
     e.target.value = ""; // reset dropdown
   });
 
-  setNotesLoading(false);
+  setLoading(false);
 }
 
 initNotes();
@@ -244,6 +249,8 @@ CREATE NOTE
 --------------------------------
 */
 async function createNote() {
+  setLoading(true);
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -266,6 +273,8 @@ async function createNote() {
   await loadNotes();
   openNote(data);
 
+  setLoading(false);
+
   actionMsg("Note created. Start typing!", "success");
 }
 
@@ -279,6 +288,8 @@ SAVE NOTE
 --------------------------------
 */
 async function saveNote() {
+  setLoading(true);
+
   const title = document.getElementById("noteTitle").value;
   const content = quill.root.innerHTML;
 
@@ -303,6 +314,7 @@ async function saveNote() {
     }
 
     await loadNotes();
+    
     openNote(data);
   }
 
@@ -323,11 +335,14 @@ async function saveNote() {
   actionMsg("Note saved successfully!", "success");
 
   await loadNotes();
+  setLoading(false);
 }
 
 async function deleteNote() {
+
   const notelist = document.getElementById("notesList");
-  if (!notelist) return;
+  if (!notelist) return setLoading(false);
+
   notelist.addEventListener("click", async (e) => {
     const btn = e.target.closest(".deleteBtn");
     if (!btn) return;
@@ -349,6 +364,7 @@ async function deleteNote() {
   });
 
   await loadNotes();
+
 }
 
 //FILE EXPORT HELPER
@@ -365,7 +381,10 @@ function exportFile(filename, content, type = "text/plain") {
 }
 
 function exportCurrentNote(type) {
+      setLoading(true);
+
   if (!currentNoteId) {
+    setLoading(false);
     actionMsg("Save the note before exporting.", "error");
     return;
   }
@@ -440,6 +459,7 @@ function exportCurrentNote(type) {
       let currentLine = "";
 
       function addLine(text, options = {}) {
+
         const {
           bold = false,
           italic = false,
@@ -501,20 +521,27 @@ function exportCurrentNote(type) {
       break;
 
     default:
+            setLoading(false);
+
       actionMsg("Invalid export type.", "error");
       return;
   }
 
   if (didExport) {
+          setLoading(false);
+
     actionMsg("Note exported!", "success");
   }
 }
 
 //For Delete Button
 async function attachDeletenoteEvent(noteToDelete, id) {
+
   const { error } = await supabase.from("personal_notes").delete().eq("id", id);
 
   if (error) {
+      setLoading(false);
+
     console.error(error);
     alert(error.message);
     return;

@@ -8,9 +8,18 @@ const output = document.getElementById("output");
 const outputLower = document.querySelector(".outputLower");
 const copyBtn = document.getElementById("copyBtn");
 const editInNotesBtn = document.getElementById("editInNotesBtn");
+const fileName = document.getElementById("fileName");
 
 let selectedImage = null;
 let cropBox = null;
+
+
+imageInput.addEventListener("change", () => {
+  fileName.textContent = imageInput.files.length
+    ? imageInput.files[0].name
+    : "No file chosen";
+});
+
 
     // Copy button
     copyBtn.addEventListener("click", (e) => {

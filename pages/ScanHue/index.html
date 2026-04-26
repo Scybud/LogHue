@@ -25,9 +25,13 @@
 
   <section class="InputContainer">
     <h2>Extract Text</h2>
-    
-    <input class="inputField" type="file" id="imageInput" accept="image/*">
-    
+
+    <div class="inputField">
+      <input class="fileInput" type="file" id="imageInput" accept="image/*">
+      <label for="imageInput" class="file-label">Choose File</label>
+      <span id="fileName" class="file-name">No file chosen</span>
+    </div>
+
     <div class="previewContainer">
       <div class="previewUpper">
         <h2>Image Preview</h2>
@@ -42,7 +46,7 @@
   <section class="outputContainer">
     <div class="outputContainerInner">
       <h2>Extracted Text</h2>
-      <textarea class="inputField" id="output" name="output" placeholder="Extracted text will appear here..."></textarea>
+      <textarea readonly class="inputField" id="output" name="output" placeholder="Extracted text will appear here..."></textarea>
     </div>
 
     <div class="outputLower">
