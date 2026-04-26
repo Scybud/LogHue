@@ -729,20 +729,23 @@ button.dropdown-item {
   font-weight: 400;
   font-size: 0.95rem;
 }
-.actionBtnsContainer {
-  position: absolute;
+.editorTop {
   display: flex;
-  gap: var(--space-sm);
-  right: 0;
-  bottom: 0;
-  padding: var(--space-sm);
-  width: 100%;
-  max-width: 800px;
-  border-radius: var(--radius);
+  justify-content: space-between;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 2;
   backdrop-filter: var(--filter);
 }
+.actionBtnsContainer {
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  border-radius: var(--radius);
+}
 .notesActionBtn {
-  width: 100%;
+  min-width: 100px;
 }
 .notesActionBtn:hover {
   opacity: 1;

@@ -36,21 +36,23 @@ function initNotes() {
   if (!editorContainer) return;
 
   editorContainer.innerHTML = `
-    <input id="noteTitle" name="noteTitle" placeholder="Note title" class="noteTitle inputField" />
+  <div class="editorTop">
+  <input id="noteTitle" name="noteTitle" placeholder="Note title" class="noteTitle inputField" />
+  <div class="actionBtnsContainer">
+  <button id="saveNoteBtn" class="btn-sm btn notesActionBtn">Save</button>
+  
+  <select id="exportNotesBtn" class="btn-sm btn btn-secondary notesActionBtn">
+  <option value="">Export As</option>
+  <option value="pdf">PDF</option>
+  <option value="txt">TXT</option>
+  <option value="docx">DOCX</option>
+  <option value="md">Markdown</option>
+  <option value="html">HTML</option>
+  </select>
+  </div>
+  </div>
     <div id="editor"></div>
 
-    <div class="actionBtnsContainer">
-    <button id="saveNoteBtn" class="btn-sm btn notesActionBtn">Save</button>
-
-    <select id="exportNotesBtn" class="btn-sm btn btn-secondary notesActionBtn">
-        <option value="">Export As</option>
-    <option value="pdf">PDF</option>
-        <option value="txt">TXT</option>
-    <option value="docx">DOCX</option>
-    <option value="md">Markdown</option>
-    <option value="html">HTML</option>
-    </select>
-    </div>
   `;
 
   /*
