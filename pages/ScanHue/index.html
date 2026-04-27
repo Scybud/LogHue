@@ -1,62 +1,72 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-      
-  <title>ScanHue | Extract Text | LogHue</title>
+    <title>ScanHue | Extract Text | LogHue</title>
 
-      <!--CSS LINKS-->
+    <!--CSS LINKS-->
     <link rel="stylesheet" href="https://loghue.com/css/base.css" />
     <link rel="stylesheet" href="https://loghue.com/css/component.css" />
-<link rel="stylesheet" href="https://loghue.com/css/utilities.css">
+    <link rel="stylesheet" href="https://loghue.com/css/utilities.css" />
 
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
     <div id="actionsMessage"></div>
 
+    <h1 class="logo">Scan<span>Hue</span></h1>
+    <p class="tunedText">Extract text from images.</p>
+    <main>
+      <section class="InputContainer">
+        <h2>Image</h2>
 
-  <h1 class="logo">Scan<span>Hue</span></h1>
-  <p class="tunedText">Extract text from images.</p>
-<main>
+        <div class="inputField">
+          <input
+            class="fileInput"
+            type="file"
+            id="imageInput"
+            accept="image/*"
+          />
+          <label for="imageInput" class="file-label">Choose File</label>
+          <span id="fileName" class="file-name">No file chosen</span>
+        </div>
 
-  <section class="InputContainer">
-    <h2>Image</h2>
+        <div class="previewContainer">
+          <div class="previewUpper">
+            <h2>Image Preview</h2>
+            <button id="processBtn" class="btn btn-sm btn-primary">
+              Extract Text
+            </button>
+          </div>
+          <canvas id="previewCanvas"> </canvas>
+        </div>
+      </section>
 
-    <div class="inputField">
-      <input class="fileInput" type="file" id="imageInput" accept="image/*">
-      <label for="imageInput" class="file-label">Choose File</label>
-      <span id="fileName" class="file-name">No file chosen</span>
-    </div>
+      <section class="outputContainer">
+        <div class="outputContainerInner">
+          <h2>Extracted Text</h2>
+          <textarea
+            readonly
+            class="inputField"
+            id="output"
+            name="output"
+            placeholder="Extracted text will appear here..."
+          ></textarea>
+        </div>
 
-    <div class="previewContainer">
-      <div class="previewUpper">
-        <h2>Image Preview</h2>
-        <button id="processBtn" class="btn btn-sm btn-primary">Extract Text</button>
-      </div>
-      <canvas id="previewCanvas">
-      </canvas>
-    </div>
-    
-  </section>
+        <div class="outputLower">
+          <button type="button" class="btn btn-secondary" id="copyBtn">
+            Copy
+          </button>
+          <button type="button" class="btn btn-primary" id="editInNotesBtn">
+            Edit In Notes
+          </button>
+        </div>
+      </section>
+    </main>
 
-  <section class="outputContainer">
-    <div class="outputContainerInner">
-      <h2>Extracted Text</h2>
-      <textarea readonly class="inputField" id="output" name="output" placeholder="Extracted text will appear here..."></textarea>
-    </div>
-
-    <div class="outputLower">
-      <button type="button" class="btn btn-secondary" id="copyBtn">Copy</button>
-            <button type="button" class="btn btn-primary" id="editInNotesBtn">Edit In Notes</button>
-    </div>
-  </section>
-</main>
-
-  <script type="module" src="app.js"></script>
-
-</body>
+    <script type="module" src="app.js"></script>
+  </body>
 </html>
