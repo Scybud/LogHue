@@ -140,14 +140,23 @@ canvas.addEventListener("mouseup", (e) => {
 async function runOCRViaEdgeFunction(canvas) {
   const dataUrl = canvas.toDataURL("image/png");
 
-const res = await fetch(
-  "https://qqactsebaxdottiiyrng.functions.supabase.co/scanhue-ocr",
-  {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ image: dataUrl }),
-  },
-);
+  // 🔐 GET REAL USER SESSION
+  const { data: session } = await supabase.auth.getSession();
+  const token = session?.session?.access_token;
+
+  const res = await fetch(
+    "https://qqactsebaxdottiiyrng.functions.supabase.co/scanhue-ocr",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({
+        image: dataUrl,
+      }),
+    },
+  );
 
   const data = await res.json();
 
@@ -155,9 +164,12 @@ const res = await fetch(
     throw new Error(data.error || "OCR failed");
   }
 
+  if (data.cached) {
+    actionMsg("Fast result (cached)", "success");
+  }
+
   return data.text;
 }
-
 // --- Process button ---
 processBtn.addEventListener("click", async () => {
   if (!selectedImage) {

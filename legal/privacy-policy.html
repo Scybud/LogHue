@@ -270,6 +270,27 @@
       understand how the Service is used and to improve stability, performance, and user experience.
     </p>
 
+    <h3>2.4 OCR Image Processing Data (ADDED)</h3>
+    <ul>
+      <li>Images uploaded for text extraction (OCR)</li>
+      <li>Temporary image data sent to Google Cloud Vision API</li>
+      <li>Extracted text results from images</li>
+    </ul>
+    <p>
+      Images submitted for OCR are processed using third-party AI services (Google Cloud Vision API). Images are not permanently stored unless required for system functionality or abuse prevention.
+    </p>
+
+    <h3>2.5 Guest Usage & Device Data (ADDED)</h3>
+    <ul>
+      <li>IP address (hashed or pseudonymised)</li>
+      <li>Device and browser information</li>
+      <li>Temporary session identifiers stored locally in the browser (localStorage)</li>
+    </ul>
+    <p>
+      This data is used to enforce rate limits, prevent abuse, and maintain service stability for users without accounts.
+    </p>
+
+
     <h2 id="purposes">3. Purposes of Processing</h2>
     <p>We process personal data for the following purposes:</p>
 
@@ -349,10 +370,20 @@
       </li>
     </ul>
     <p>
-      Currently, LogHue uses <strong>Supabase</strong> for authentication, database, and storage. Additional services may
-      be integrated over time; where relevant, they will be bound by data‑processing agreements and appropriate
-      safeguards.
+      When using OCR, image data is transmitted to Google Cloud services for processing. This is required for text extraction functionality.
     </p>
+<p>
+  Currently, LogHue uses <strong>Supabase</strong> for authentication, database, and storage.
+  We also use third-party service providers such as <strong>Google Cloud Vision API</strong> for OCR processing
+  and <strong>Stripe</strong> for payment processing where applicable.
+  Additional services may be integrated over time; where relevant, they will be bound by data-processing agreements
+  and appropriate safeguards.
+</p>
+
+    <p>
+      Stripe processes payment information independently; we do not store full payment card details.
+    </p>
+    
 
     <h2 id="transfers">6. International Data Transfers</h2>
     <p>
@@ -376,6 +407,11 @@
       <li>Providing and maintaining the Service</li>
       <li>Complying with legal obligations</li>
       <li>Resolving disputes and enforcing agreements</li>
+    </ul>
+        <ul>
+      <li>Guest usage data: retained 7–30 days then deleted or anonymised</li>
+      <li>OCR processing data: not stored long-term unless required for abuse prevention</li>
+      <li>Rate limiting logs: short-term retention only</li>
     </ul>
     <p>
       Workspace content is generally retained for as long as the workspace exists or until it is deleted by authorized
