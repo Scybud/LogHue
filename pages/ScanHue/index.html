@@ -10,17 +10,78 @@
     <link rel="stylesheet" href="https://loghue.com/css/base.css" />
     <link rel="stylesheet" href="https://loghue.com/css/component.css" />
     <link rel="stylesheet" href="https://loghue.com/css/utilities.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/dashboard.css" />
 
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <header class="pageHeader">
+      <div class="headerLeft">
+  <a href="../dashboard" class="backLink"><!-- Back Icon -->
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M11.75 4.25L6 10L11.75 15.75"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      Dashboard</a>
+      </div>
+
+      <div class="headerRight">
+
+<div class="profileAvatarContainer">
+          <img src="https://loghue.com/assets/images/default_profile.png" alt="profile Image" class="profileAvatar">
+        </div>
+      </div>
+    </header>
+
     <div id="actionsMessage"></div>
+<div id="modalContainer" class="hidden">
+  <div class="modalContainer">
+    <div class="card">
+      <h2>Limit Reached</h2>
+
+      <p id="limitText">
+        You’ve used all your OCR scans for this month.
+      </p>
+
+      <div class="usageBox">
+        <span id="usageCount">0</span>
+        <span>/</span>
+        <span id="usageLimit">0</span>
+      </div>
+
+      <p class="hint">
+        Upgrade to continue scanning without interruptions.
+      </p>
+
+      <div class="actions">
+        <button id="upgradeBtn" class="btn btn-sm btn-primary">Upgrade Plan</button>
+        <button id="closeModal" class="btn btn-sm btn-secondary">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
     <h1 class="logo">Scan<span>Hue</span></h1>
     <p class="tunedText">Extract text from images.</p>
     <main>
       <section class="InputContainer">
-        <h2>Image</h2>
+        <div class="inputUpper">
+          <h2>Image</h2>
+<div id="usageBar" class="usageBar">
+  <span id="usageText">0 / 0 scans used</span>
+</div>
+        </div>
 
         <div class="inputField">
           <input
@@ -29,7 +90,7 @@
             id="imageInput"
             accept="image/*"
           />
-          <label for="imageInput" class="file-label">Choose File</label>
+          <label tabindex="0" for="imageInput" class="file-label">Choose File</label>
           <span id="fileName" class="file-name">No file chosen</span>
         </div>
 
@@ -40,7 +101,11 @@
               Extract Text
             </button>
           </div>
-          <canvas id="previewCanvas"> </canvas>
+
+          <div class="previewCanvasContainer">
+            <canvas id="previewCanvas"> </canvas>
+          </div>
+
         </div>
       </section>
 
@@ -48,21 +113,22 @@
         <div class="outputContainerInner">
           <h2>Extracted Text</h2>
           <textarea
+          tabindex="-1"
             readonly
             class="inputField"
             id="output"
             name="output"
             placeholder="Extracted text will appear here..."
           ></textarea>
-        </div>
-
-        <div class="outputLower">
-          <button type="button" class="btn btn-secondary" id="copyBtn">
-            Copy
-          </button>
-          <button type="button" class="btn btn-primary" id="editInNotesBtn">
-            Edit In Notes
-          </button>
+          
+          <div class="outputLower">
+            <button type="button" class="btn btn-secondary" id="copyBtn">
+              Copy
+            </button>
+            <button type="button" class="btn btn-primary" id="editInNotesBtn">
+              Edit In Notes
+            </button>
+          </div>
         </div>
       </section>
     </main>

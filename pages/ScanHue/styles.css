@@ -30,6 +30,12 @@ h2 {
   margin: auto;
   margin-bottom: var(--space-xl);
 }
+.inputUpper {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  align-items: center;
+}
 .InputContainer .fileInput {
   display: none; 
 }
@@ -47,9 +53,7 @@ h2 {
   font-weight: 600;
   transition: background 0.2s ease;
 }
-button:focus {
-  border: 1px solid var(--accent);
-}
+
 .file-label:hover {
   background: #737373;
 }
@@ -80,10 +84,29 @@ button:focus {
 #previewCanvas{
   width: 100%;
   border: 1px solid var(--border);
-    border-radius: var(--radius);
+  border-radius: var(--radius);
 }
-#previewCanvas::after {
-  content: "Image Preview";
+.previewCanvasContainer {
+  position: relative;
+  height: fit-content;
+}
+.previewCanvasContainer.scan::after {
+  content: "";
+  position: absolute;
+  top: -11px;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  z-index: 3;
+  box-shadow: 0 10px 15px var(--success);
+  animation: scan 2s linear alternate infinite;
+}
+@keyframes scan {
+  from {
+    top: -11px;
+  } to {
+    top: 95%;
+  }
 }
 #output {
     font-family: "Inter", sans-serif, system-ui;
@@ -97,4 +120,49 @@ button:focus {
 }
 .outputLower {
   display: none;
+}
+
+#modalContainer {
+  background: rgba(0,0,0,0.6);
+}
+
+.hidden {
+  display: none;
+}
+
+.modalContainer .card {
+  background: #111;
+  color: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  width: 320px;
+  text-align: center;
+}
+
+.usageBox {
+  margin: 16px 0;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+#upgradeBtn {
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#closeModal {
+  background: transparent;
+  border: 1px solid #555;
+  color: var(--tunedText);
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
 }

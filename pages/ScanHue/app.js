@@ -1,4 +1,4 @@
-import {supabase} from "https://loghue.com/js/supabase.js"
+import { supabase } from "https://loghue.com/js/supabase.js";
 import { actionMsg } from "https://loghue.com/js/utils/modals.js";
 
 const imageInput = document.getElementById("imageInput");
@@ -13,50 +13,48 @@ const fileName = document.getElementById("fileName");
 let selectedImage = null;
 let cropBox = null;
 
-
 imageInput.addEventListener("change", () => {
   fileName.textContent = imageInput.files.length
     ? imageInput.files[0].name
     : "No file chosen";
 });
 
-
-    // Copy button
-    copyBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      navigator.clipboard.writeText(output.value);
-      actionMsg("Copied to clipboard!", "success");
-    });
-
-    //EDIT IN LOGHUE NOTES
-    editInNotesBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      localStorage.setItem("extractedText", output.value);
-
-      window.location.href = "../notes"
-    });
-
-    
-function canvasDefault() {
-   const ctx = canvas.getContext("2d");
-
-   const img = new Image();
-   img.crossOrigin = "anonymous"; // important for CORS safety
-   img.src = "preview-placeholder.png";
-
-   img.onload = () => {
-     // scale image to fit canvas width
-     const scale = canvas.width / img.width;
-     const newHeight = img.height * scale;
-
-     canvas.height = newHeight;
-     ctx.drawImage(img, 0, 0, canvas.width, newHeight);
-   };
-}
-window.addEventListener("load", () => {
-canvasDefault();
+// Copy button
+copyBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  navigator.clipboard.writeText(output.value);
+  actionMsg("Copied to clipboard!", "success");
 });
 
+//EDIT IN LOGHUE NOTES
+editInNotesBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  localStorage.setItem("extractedText", output.value);
+
+  window.location.href = "../notes";
+});
+
+function canvasDefault() {
+  const ctx = canvas.getContext("2d");
+
+  const img = new Image();
+  img.crossOrigin = "anonymous"; // important for CORS safety
+  img.src = "preview-placeholder.png";
+
+  img.onload = () => {
+    // scale image to fit canvas width
+    const scale = canvas.width / img.width;
+    const newHeight = img.height * scale;
+
+    canvas.height = newHeight;
+    ctx.drawImage(img, 0, 0, canvas.width, newHeight);
+  };
+}
+window.addEventListener("load", () => {
+  canvasDefault();
+    loadUsage(); 
+
+});
 
 // --- Preview image ---
 imageInput.addEventListener("change", (e) => {
@@ -68,73 +66,22 @@ imageInput.addEventListener("change", (e) => {
   const reader = new FileReader();
   reader.onload = () => {
     const img = new Image();
-img.crossOrigin = "anonymous";
-img.onload = () => {
-  const ctx = canvas.getContext("2d");
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const ctx = canvas.getContext("2d");
 
-  const targetWidth = 1000;
-  const scale = targetWidth / img.width;
-  canvas.width = targetWidth;
-  canvas.height = img.height * scale;
+      const targetWidth = 1000;
+      const scale = targetWidth / img.width;
+      canvas.width = targetWidth;
+      canvas.height = img.height * scale;
 
-  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-};
-img.src = reader.result;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    };
+    img.src = reader.result;
   };
   reader.readAsDataURL(file);
 });
 
-/*
-
-// --- Crop selection (drag box) ---
-const ctx = canvas.getContext("2d");
-
-let startX,
-  startY,
-  isDragging = false;
-
-canvas.addEventListener("mousedown", (e) => {
-  startX = e.offsetX;
-  startY = e.offsetY;
-  isDragging = true;
-});
-
-canvas.addEventListener("mousemove", (e) => {
-  if (!isDragging) return;
-
-  const currentX = e.offsetX;
-  const currentY = e.offsetY;
-
-  const w = currentX - startX;
-  const h = currentY - startY;
-
-  const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  ctx.putImageData(imgData, 0, 0);
-
-  ctx.strokeStyle = "red";
-  ctx.lineWidth = 2;
-  ctx.strokeRect(startX, startY, w, h);
-});
-
-canvas.addEventListener("mouseup", (e) => {
-  isDragging = false;
-
-  const endX = e.offsetX;
-  const endY = e.offsetY;
-
-  cropBox = {
-    x: Math.min(startX, endX),
-    y: Math.min(startY, endY),
-    w: Math.abs(endX - startX),
-    h: Math.abs(endY - startY),
-  };
-
-  if (cropBox.w === 0 || cropBox.h === 0) {
-    cropBox = null;
-    alert("Invalid crop selection");
-  }
-});
-*/
 
 // --- OCR via Supabase Edge Function ---
 async function runOCRViaEdgeFunction(canvas) {
@@ -161,14 +108,18 @@ async function runOCRViaEdgeFunction(canvas) {
   const data = await res.json();
 
   if (!res.ok) {
-    throw new Error(data.error || "OCR failed");
+    throw {
+      message: data.error || "OCR failed",
+      used: data.used,
+      limit: data.limit,
+    };
   }
 
   if (data.cached) {
     actionMsg("Fast result (cached)", "success");
   }
 
-  return data.text;
+  return data;
 }
 // --- Process button ---
 processBtn.addEventListener("click", async () => {
@@ -177,36 +128,91 @@ processBtn.addEventListener("click", async () => {
     return;
   }
 
-  output.value = "Processing...";
+  processBtn.disabled = true;
+  document.querySelector(".previewCanvasContainer").classList.add("scan");
 
-  let targetCanvas = canvas;
-/*
-  if (cropBox) {
-    const cropped = ctx.getImageData(
-      cropBox.x,
-      cropBox.y,
-      cropBox.w,
-      cropBox.h,
-    );
-    const tempCanvas = document.createElement("canvas");
-    tempCanvas.width = cropBox.w;
-    tempCanvas.height = cropBox.h;
-    tempCanvas.getContext("2d").putImageData(cropped, 0, 0);
-    targetCanvas = tempCanvas;
-  }
-  */
+  output.value = "";
 
   try {
-    const text = await runOCRViaEdgeFunction(targetCanvas);
-    output.value = text;
-
-outputLower.classList.add("show");
-
-    if(text === null) return console.log("Undefined")
-  } catch (err) {  
-
+    const text = await runOCRViaEdgeFunction(canvas);
+    output.value = text.text;
+    updateUsageUI(text.used, text.limit);
+    outputLower.classList.add("show");
+  } catch (err) {
     outputLower.classList.add("show");
 
-  output.value = "Error: " + err.message;
+    if (err.message === "Limit reached") {
+      updateUsageUI(err.used, err.limit);
+
+      showLimitModal(err.used || 0, err.limit || 0);
+      return;
+    }
+
+    output.value = "Error: " + err.message;
+  } finally {
+    processBtn.disabled = false;
+    document.querySelector(".previewCanvasContainer").classList.remove("scan");
   }
 });
+
+const modal = document.getElementById("modalContainer");
+const usageCountEl = document.getElementById("usageCount");
+const usageLimitEl = document.getElementById("usageLimit");
+
+function showLimitModal(count, limit) {
+  usageCountEl.textContent = count;
+  usageLimitEl.textContent = limit;
+
+  modal.classList.remove("hidden");
+}
+
+document.getElementById("closeModal").onclick = () => {
+  modal.classList.add("hidden");
+};
+
+document.getElementById("upgradeBtn").onclick = () => {
+  window.location.href =
+    "https://app.loghue.com/billing/upgrade?plan=77c12c94-25a4-4567-91a7-7bbddb335001"; // adjust route
+};
+
+const usageText = document.getElementById("usageText");
+
+function updateUsageUI(used, limit) {
+  if (used == null || limit == null) return;
+
+  usageText.textContent = `${used} / ${limit} scans used`;
+
+  // optional visual feedback
+  const percent = used / limit;
+
+  if (percent > 0.9) {
+    usageText.style.color = "red";
+  } else if (percent > 0.7) {
+    usageText.style.color = "orange";
+  } else {
+    usageText.style.color = "inherit";
+  }
+}
+
+async function loadUsage() {
+  try {
+    const { data: session } = await supabase.auth.getSession();
+    const token = session?.session?.access_token;
+
+    const res = await fetch(
+      "https://qqactsebaxdottiiyrng.functions.supabase.co/scanhue-ocr-usage",
+      {
+        method: "GET",
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      },
+    );
+
+    const data = await res.json();
+
+    updateUsageUI(data.used, data.limit);
+  } catch (err) {
+    console.warn("Failed to load usage");
+  }
+}
