@@ -214,7 +214,7 @@ if(!isAdmin || !userRole || userRole === null) return workspacePageSidebar.inner
  }
 
     <!-- DASHBOARD -->
-    <a href="index" class="navBtn" data-section="index" id="dashboardLink">
+    <a href="dashboard" class="navBtn" data-section="index" id="dashboardLink">
       <span class="navIcon">
         <!-- Back / Dashboard Icon -->
         <svg
