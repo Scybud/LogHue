@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add‑ons | LogHue Help</title>
+
+    <!-- LogHue Styles -->
+    <link rel="stylesheet" href="https://loghue.com/css/base.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/theme.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/component.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/utilities.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/dashboard.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/pages.css" />
+    <link rel="stylesheet" href="https://loghue.com/docs/docs.css" />
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="https://loghue.com/assets/icons/favicons/favicon-32x32.png"
+    />
+  </head>
+
+  <body>
+    <div class="docs-layout">
+      <aside id="docs-sidebar" class="docs-sidebar"></aside>
+
+      <main class="docs-main">
+        <header id="docs-navbar" class="docs-navbar"></header>
+
+        <div id="doc-content" class="docs-content">
+
+          <!-- PAGE HEADER -->
+          <div class="doc-page-header">
+            <div class="doc-card-icon">
+              <!-- Add-ons Icon -->
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="4"/>
+                <path d="M7 9V7H9" stroke-linecap="round"/>
+                <path d="M17 9V7H15" stroke-linecap="round"/>
+                <path d="M7 15V17H9" stroke-linecap="round"/>
+                <path d="M17 15V17H15" stroke-linecap="round"/>
+              </svg>
+            </div>
+
+            <div class="doc-card-content">
+              <h1>Add‑ons</h1>
+              <p>Extend LogHue with optional tools that enhance your workflow.</p>
+            </div>
+          </div>
+
+          <!-- SECTION: What Are Add-ons -->
+          <div class="doc-section">
+            <h2>What Are Add‑ons?</h2>
+            <p>
+              Add‑ons are optional tools that expand what LogHue can do. They are not
+              required for everyday use, but they provide extra capabilities for
+              teams that want more automation, more power, or more specialized workflows.
+            </p>
+            <p>
+              Add‑ons integrate seamlessly with the LogHue interface and follow the
+              same design principles: simple, fast, and distraction‑free.
+            </p>
+          </div>
+
+          <!-- SECTION: ScanHue -->
+          <div class="doc-section">
+            <h2>ScanHue</h2>
+            <p>
+              <strong>ScanHue</strong> is the first official LogHue add‑on. It allows you
+              to extract text from images using OCR (Optical Character Recognition).
+              Whether you have handwritten notes, whiteboard photos, or printed
+              documents, ScanHue converts them into clean, editable text.
+            </p>
+
+            <h3>What You Can Do With ScanHue</h3>
+            <ul>
+              <li>Upload an image and extract text instantly</li>
+              <li>Copy the extracted text with one click</li>
+              <li>Send the text directly into your notes</li>
+            </ul>
+
+            <h3>How to Use ScanHue</h3>
+
+            <div class="step-box">
+              <h3><span class="step-number">1</span> Open ScanHue</h3>
+              <p>
+                In the LogHue sidebar, click <strong>ScanHue</strong> or go to <a href="https://app.loghue.com/ScanHue" rel="noopener noreferrer" target="_blank">https://app.loghue.com/ScanHue</a>. The tool opens in
+                a clean, focused interface.
+              </p>
+            </div>
+
+            <div class="step-box">
+              <h3><span class="step-number">2</span> Upload an Image</h3>
+              <p>
+                Select the image you wish to scan file from your device.
+              </p>
+            </div>
+
+            <div class="step-box">
+              <h3><span class="step-number">3</span> Extract Text</h3>
+              <p>
+                Click <strong>Extract Text</strong>. ScanHue processes the image and displays
+                the extracted text in seconds.
+              </p>
+            </div>
+
+            <div class="step-box">
+              <h3><span class="step-number">5</span> Use the Result</h3>
+              <p>
+                Copy the text or send it directly into your
+                notes by clicking <strong>Edit in Notes</strong>.
+              </p>
+            </div>
+          </div>
+
+          <!-- SECTION: Future Add-ons -->
+          <div class="doc-section">
+            <h2>Future Add‑ons</h2>
+            <p>
+              ScanHue is the first add‑on, but it won’t necessarily be the last.
+              Additional add‑ons may be released over time depending on user needs,
+              demand, and the direction of LogHue’s development.
+            </p>
+            <p>
+              Some add‑ons may be free, while others may require a paid plan.
+              Details will be announced as new tools become available.
+            </p>
+          </div>
+
+          <!-- PAGE NAVIGATION -->
+          <div class="doc-page-nav">
+            <div class="page-nav">
+              <a href="security" class="nav-prev">← Security & Privacy</a>
+              <a href="https://app.loghue.com/ScanHue" target="_blank" class="nav-next">ScanHue →</a>
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </div>
+
+    <!-- LogHue Docs Scripts -->
+    <script src="https://loghue.com/docs/components/sidebar.js"></script>
+    <script src="https://loghue.com/docs/components/navbar.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        if (window.docsNavbar)
+          window.docsNavbar.setPageTitle("Add‑ons");
+      });
+    </script>
+  </body>
+</html>

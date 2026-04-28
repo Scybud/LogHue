@@ -49,7 +49,14 @@ class DocsSidebar {
         icon: "shield",
         url: "security",
       },
+      {
+        id: "addons",
+        title: "Add-ons",
+        icon: "plugin",
+        url: "addons",
+      },
     ];
+    
   }
 
   getIcon(iconName) {
@@ -65,6 +72,7 @@ class DocsSidebar {
         '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
       shield:
         '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+        plugin: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <path d="M10 2v4" /> <path d="M14 2v4" /> <path d="M12 6c-2.5 0-4 1.5-4 4v2H6v4h4v4h4v-4h4v-4h-2v-2c0-2.5-1.5-4-4-4z" /> </svg>'
     };
     return icons[iconName] || icons.home;
   }
