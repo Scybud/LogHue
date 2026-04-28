@@ -46,7 +46,7 @@ function canvasDefault() {
 
   const img = new Image();
   img.crossOrigin = "anonymous"; // important for CORS safety
-  img.src = "preview-placeholder.png";
+  img.src = "https://app.loghue.com/ScanHue/preview-placeholder.png";
 
   img.onload = () => {
     // scale image to fit canvas width
