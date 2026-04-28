@@ -20,6 +20,67 @@
       sizes="32x32"
       href="https://loghue.com/assets/icons/favicons/favicon-32x32.png"
     />
+
+    <style>
+      .logoContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+      }
+          .legal-footer {
+    width: 100%;
+    border-top: 1px solid var(--border);
+    margin-top: 60px;
+    padding: 32px 20px;
+    color: var(--muted);
+    display: flex;
+    justify-content: center;
+  }
+
+  .footer-inner {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .footer-brand {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color);
+  }
+
+  .footer-sub {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 400;
+    opacity: 0.7;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 0.95rem;
+  }
+
+  .footer-links a {
+        color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+  }
+
+  .footer-links a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+
+  .footer-meta {
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
+    </style>
   </head>
   <body>
     <header class="pageHeader">
@@ -52,6 +113,7 @@
     </header>
 
     <div id="actionsMessage"></div>
+
 <div id="modalContainer" class="hidden">
   <div class="modalContainer">
     <div class="card">
@@ -79,7 +141,123 @@
   </div>
 </div>
 
-    <h1 class="logo">Scan<span>Hue</span></h1>
+
+<div class="logoContainer">
+  <svg
+  id="icon-scanhue"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 64 64"
+  width="54"
+  height="54"
+>
+  <!-- Outer rounded frame (blue glow-ready) -->
+  <rect
+    x="6"
+    y="6"
+    width="52"
+    height="52"
+    rx="12"
+    fill="none"
+    stroke="#3B82F6"
+    stroke-width="2.5"
+  />
+
+  <!-- Corner scan brackets -->
+  <path
+    d="M16 22 V16 H24"
+    fill="none"
+    stroke="#3B82F6"
+    stroke-width="2"
+    stroke-linecap="round"
+  />
+  <path
+    d="M48 22 V16 H40"
+    fill="none"
+    stroke="#3B82F6"
+    stroke-width="2"
+    stroke-linecap="round"
+  />
+  <path
+    d="M16 42 V48 H24"
+    fill="none"
+    stroke="#3B82F6"
+    stroke-width="2"
+    stroke-linecap="round"
+  />
+  <path
+    d="M48 42 V48 H40"
+    fill="none"
+    stroke="#3B82F6"
+    stroke-width="2"
+    stroke-linecap="round"
+  />
+
+  <!-- Document shape -->
+  <path
+    d="M24 20 H36 L44 28 V44 H24 Z"
+    fill="none"
+    stroke="#FFFFFF"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M36 20 V28 H44"
+    fill="none"
+    stroke="#FFFFFF"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+
+  <!-- Text lines inside document -->
+  <line
+    x1="27"
+    y1="32"
+    x2="41"
+    y2="32"
+    stroke="#FFFFFF"
+    stroke-width="1.6"
+    stroke-linecap="round"
+  />
+  <line
+    x1="27"
+    y1="36"
+    x2="39"
+    y2="36"
+    stroke="#FFFFFF"
+    stroke-width="1.6"
+    stroke-linecap="round"
+  />
+  <line
+    x1="27"
+    y1="40"
+    x2="37"
+    y2="40"
+    stroke="#FFFFFF"
+    stroke-width="1.6"
+    stroke-linecap="round"
+  />
+
+  <!-- Scan beam -->
+  <rect
+    x="20"
+    y="30"
+    width="24"
+    height="4"
+    rx="2"
+    fill="#3B82F6"
+    opacity="0.35"
+  />
+
+  <!-- Yellow accent dot (ScanHue identity) -->
+  <circle
+    cx="40"
+    cy="24"
+    r="2.2"
+    fill="#FACC15"
+  />
+</svg>
+<h1 class="logo">Scan<span>Hue</span></h1>
+</div>
     <p class="tunedText">Extract text from images.</p>
     <main>
       <section class="InputContainer">
@@ -139,7 +317,26 @@
         </div>
       </section>
     </main>
+  <footer class="legal-footer">
+  <div class="footer-inner">
 
+    <div class="footer-brand">
+               <div class="logo">Log<span>Hue</span></div>
+      <span class="footer-sub">A Scybud Product</span>
+    </div>
+
+    <nav class="footer-links">
+      <a href="https://loghue.com/legal/terms">Terms of Service</a>
+      <a href="https://loghue.com/legal/privacy-policy">Privacy Policy</a>
+      <a href="https://loghue.com/legal/impressum">Impressum</a>
+    </nav>
+
+    <div class="footer-meta">
+      &copy; 2026 LogHue. A Scybud Product. All rights reserved.
+    </div>
+
+  </div>
+</footer>
     <script type="module" src="https://app.loghue.com/ScanHue/app.js"></script>
   </body>
 </html>
