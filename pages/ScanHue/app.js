@@ -13,6 +13,13 @@ const fileName = document.getElementById("fileName");
 let selectedImage = null;
 let cropBox = null;
 
+let guestId = localStorage.getItem("loghue_anon_id");
+
+if (!guestId) {
+  guestId = crypto.randomUUID();
+  localStorage.setItem("loghue_anon_id", guestId);
+}
+
 imageInput.addEventListener("change", () => {
   fileName.textContent = imageInput.files.length
     ? imageInput.files[0].name
@@ -101,6 +108,7 @@ async function runOCRViaEdgeFunction(canvas) {
       },
       body: JSON.stringify({
         image: dataUrl,
+        guestId,
       }),
     },
   );
@@ -141,14 +149,18 @@ processBtn.addEventListener("click", async () => {
   } catch (err) {
     outputLower.classList.add("show");
 
-    if (err.message === "Limit reached") {
+    if (err.message === "limit reached" || err.message === "Limit reached") {
       updateUsageUI(err.used, err.limit);
 
       showLimitModal(err.used || 0, err.limit || 0);
       return;
+    } else if (err.message === "too many requests") {
+      actionMsg("Too many requests. Please wait 5minutes before retrying.")
+      return;
     }
 
     output.value = "Error: " + err.message;
+    output.style.color = "red";
   } finally {
     processBtn.disabled = false;
     document.querySelector(".previewCanvasContainer").classList.remove("scan");
@@ -199,20 +211,26 @@ async function loadUsage() {
     const { data: session } = await supabase.auth.getSession();
     const token = session?.session?.access_token;
 
-    const res = await fetch(
-      "https://qqactsebaxdottiiyrng.functions.supabase.co/scanhue-ocr-usage",
-      {
-        method: "GET",
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    const [usageRes, entRes] = await Promise.all([
+      fetch(
+        "https://qqactsebaxdottiiyrng.functions.supabase.co/scanhue-ocr-usage",
+        {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
         },
-      },
-    );
+      ),
+      fetch(
+        "https://qqactsebaxdottiiyrng.functions.supabase.co/scanhue-entitlements",
+        {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        },
+      ),
+    ]);
 
-    const data = await res.json();
+    const usage = await usageRes.json();
+    const ent = await entRes.json();
 
-    updateUsageUI(data.used, data.limit);
-  } catch (err) {
+    updateUsageUI(usage.used, ent.limit);
+  } catch {
     console.warn("Failed to load usage");
   }
 }
