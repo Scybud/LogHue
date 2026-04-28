@@ -34,7 +34,7 @@ async function startUpgrade() {
   //  Call Edge Function (I turned off JWT) 
   const { data, error } = await supabase.functions.invoke("create-checkout", {
     body: {
-      planId, // userId is NOT sent — server derives it securely
+      id: planId, // userId is NOT sent — server derives it securely
     },
   });
 
