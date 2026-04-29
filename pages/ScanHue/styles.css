@@ -13,6 +13,9 @@ h1.logo {
   font-size: clamp(2rem, 10vw, 3rem);
   text-align: center;
 }
+.logo {
+  color: var(--color);
+}
 h2 {
     font-size: clamp(1.5rem, 7.5vw, 1.75rem);
   text-align: left;
