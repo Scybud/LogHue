@@ -2,18 +2,22 @@ import { sessionState, sessionReady } from "../session.js";
 
 async function loadBilling() {
   await sessionReady;
+
   const user = sessionState.user;
   if (!user) {
     window.location.href = "../auth?redirect=/billing";
     return;
   }
 
-  const plan = sessionState.plan;
-  const planName = plan?.name
-    ? plan.name.charAt(0).toUpperCase() + plan.name.slice(1)
-    : "Free";
+  
+  // PLAN SETUP
+  
+  const planNameRaw = sessionState.plan?.name || "Free";
+  const planName =
+    planNameRaw.charAt(0).toUpperCase() + planNameRaw.slice(1).toLowerCase();
 
-  document.getElementById("current-plan").textContent = planName;
+  const planBadge = document.getElementById("current-plan");
+  if (planBadge) planBadge.textContent = planName;
 
   const FEATURES = {
     Free: [
@@ -37,67 +41,118 @@ async function loadBilling() {
     ],
   };
 
+  
+  // CURRENT FEATURES
+  
   const currentList = document.getElementById("current-features");
-  currentList.innerHTML = "";
+  if (currentList) {
+    currentList.innerHTML = "";
 
-  (FEATURES[planName] || FEATURES["Free"]).forEach((f) => {
-    const li = document.createElement("li");
-    li.className = f.unlocked ? "" : "locked";
-    li.innerHTML = f.unlocked ? "✔️ " + f.text : "🔒 " + f.text;
-    currentList.appendChild(li);
-  });
-
-  const higherFeaturesList = document.getElementById("higherFeatures");
-  higherFeaturesList.innerHTML = "";
-
-  let nextPlanName = null;
-
-  if (planName === "Free") nextPlanName = "Pro";
-  else if (planName === "Pro") nextPlanName = "Team";
-  else nextPlanName = null; // Team has no higher plan
-
-  document.getElementById("nextPlan").textContent = nextPlanName;
-  if(nextPlanName) {
-    FEATURES[nextPlanName].forEach((f) => {
+    (FEATURES[planName] || FEATURES.Free).forEach((f) => {
       const li = document.createElement("li");
-      li.innerHTML = "✨ " + f.text;
-      higherFeaturesList.appendChild(li);
+      li.className = f.unlocked ? "" : "locked";
+      li.textContent = (f.unlocked ? "✔️ " : "🔒 ") + f.text;
+      currentList.appendChild(li);
     });
   }
 
+  
+  // NEXT PLAN PREVIEW
+  
+  const higherFeaturesList = document.getElementById("higherFeatures");
+  const nextPlanEl = document.getElementById("nextPlan");
+
+  let nextPlan = null;
+
+  if (planName === "Free") nextPlan = "Pro";
+  else if (planName === "Pro") nextPlan = "Team";
+
+  if (nextPlanEl) nextPlanEl.textContent = nextPlan || "—";
+
+  if (higherFeaturesList) {
+    higherFeaturesList.innerHTML = "";
+
+    if (nextPlan && FEATURES[nextPlan]) {
+      FEATURES[nextPlan].forEach((f) => {
+        const li = document.createElement("li");
+        li.textContent = "✨ " + f.text;
+        higherFeaturesList.appendChild(li);
+      });
+    }
+  }
+
+  
+  // ADDONS
+  const addonsList = document.getElementById("current-addons");
+
+  if (addonsList) {
+    addonsList.innerHTML = "";
+
+    const addons = sessionState.addons ?? [];
+
+    if (!addons.length) {
+      const li = document.createElement("li");
+      li.textContent = "No active addons";
+      li.style.opacity = "0.6";
+      addonsList.appendChild(li);
+    } else {
+      addons.forEach((addon) => {
+        const li = document.createElement("li");
+        li.textContent = `🧩 ${addon.name}`;
+        addonsList.appendChild(li);
+      });
+    }
+  }
+  
+  // BUTTONS
+  
   const upgradeToProBtn = document.getElementById("upgradeToProBtn");
   const upgradeToTeamBtn = document.getElementById("upgradeToTeamBtn");
 
-  if (planName === "Free") {
-    upgradeToTeamBtn.remove();
+  const planKey = planName.toLowerCase();
+
+  if (planKey === "free") {
+    upgradeToTeamBtn?.remove();
   }
 
-  // Hide upgrade button if already Pro or Team
-  if (planName === "Pro") {
-    upgradeToProBtn.remove();
-  } else if (planName === "Team") {
-    upgradeToProBtn.remove();
-    upgradeToTeamBtn.remove();
+  if (planKey === "pro") {
+    upgradeToProBtn?.remove();
+  }
 
-    document.getElementById("section-title").textContent =
-      "You’ve reached the top.";
-    document.querySelector(".upgrade-section-subtitle").textContent =
-      "You’re on LogHue’s highest plan. Everything we offer is already yours.";
+  if (planKey === "team") {
+    upgradeToProBtn?.remove();
+    upgradeToTeamBtn?.remove();
+
+    const title = document.getElementById("section-title");
+    if (title) title.textContent = "You’ve reached the top.";
+  }
+
+  
+  // NAVIGATION
+  
+  if (upgradeToProBtn) {
+    upgradeToProBtn.onclick = () => {
+      window.location.href =
+        "/billing/upgrade?plan=dee55ec9-ae01-40f3-b297-fe9faa8485d6";
+    };
+  }
+
+  if (upgradeToTeamBtn) {
+    upgradeToTeamBtn.onclick = () => {
+      window.location.href =
+        "/billing/upgrade?plan=e06ed82b-037b-4fac-bbec-94d761f1cdd5";
+    };
+  }
+
+  
+  // MANAGE SUB
+  
+  const manageBtn = document.getElementById("manage-btn");
+  if (manageBtn) {
+    manageBtn.onclick = () => {
+      window.location.href = "/billing/manage";
+    };
   }
 }
-
-// Upgrade button → redirect to upgrade page
-upgradeToProBtn.onclick = () => {
-  window.location.href = `/billing/upgrade?plan=dee55ec9-ae01-40f3-b297-fe9faa8485d6`;
-};
-
-upgradeToTeamBtn.onclick = () => {
-  window.location.href = `/billing/upgrade?plan=e06ed82b-037b-4fac-bbec-94d761f1cdd5`;
-};
-
-// Manage subscription
-document.getElementById("manage-btn").onclick = () => {
-  window.location.href = "/billing/manage";
-};
 
 loadBilling();

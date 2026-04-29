@@ -8,6 +8,8 @@
   <!-- Keep your existing CSS -->
   <link rel="stylesheet" href="https://loghue.com/css/base.css">
   <link rel="stylesheet" href="https://loghue.com/css/component.css">
+    <link rel="stylesheet" href="https://loghue.com/css/utilities.css">
+
 
   <!--FAVICONS-->
     <link
@@ -109,7 +111,7 @@
     }
 
     .btn-outline {
-      margin: auto;
+      margin: auto !important;
       background: transparent;
       border: 1px solid #ccc;
       color: #fff;
@@ -134,25 +136,34 @@
 </head>
 
 <body>
-   <a href="/" type="button" class=" backLink"> <!-- Back Icon -->
-        <svg
-  width="20"
-  height="20"
-  viewBox="0 0 20 20"
-  fill="none"
-  xmlns="http://www.w3.org/2000/svg"
->
-  <path
-    d="M11.75 4.25L6 10L11.75 15.75"
-    stroke="currentColor"
-    stroke-width="1.6"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-</svg>
- <span>Back to Dashboard</span>
-</a>
+   <header class="pageHeader">
+      <div class="headerLeft">
+  <a href="../dashboard" class="backLink"><!-- Back Icon -->
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M11.75 4.25L6 10L11.75 15.75"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      Dashboard</a>
+      </div>
 
+      <div class="headerRight">
+
+<div class="profileAvatarContainer">
+          <img src="https://loghue.com/assets/images/default_profile.png" alt="profile Image" class="profileAvatar">
+        </div>
+      </div>
+    </header>
 
   <div class="container">
     <h1>Your Billing</h1>
@@ -167,6 +178,12 @@
 
       <ul class="feature-list" id="current-features"></ul>
     </div>
+
+    <!--ADDONS SECTION-->
+    <div class="card">
+  <div class="section-title">Your Addons</div>
+  <ul class="feature-list" id="current-addons"></ul>
+</div>
 
     <!-- Upgrade Section -->
     <div class="card upgrade-section">

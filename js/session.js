@@ -1,14 +1,14 @@
 import { supabase } from "./supabase.js";
 
-
 export const sessionState = {
   user: null,
   profile: null,
   plan: null,
+  addons: [],
 };
 
-// Promise that resolves when session is fully loaded
 let resolveSessionReady;
+
 export const sessionReady = new Promise((resolve) => {
   resolveSessionReady = resolve;
 });
@@ -19,16 +19,15 @@ export async function initSession() {
     error,
   } = await supabase.auth.getSession();
 
-  const user = session?.user || null;
-
   if (error) {
-    console.error(error);
-    resolveSessionReady(); // resolve to avoid blocking
+    console.error("Session error:", error);
+    resolveSessionReady();
     return;
   }
 
+  const user = session?.user || null;
+
   if (!user) {
-    console.warn("No active session");
     resolveSessionReady();
     return;
   }
@@ -40,21 +39,49 @@ export async function initSession() {
     .single();
 
   if (profileError) {
-    console.error(profileError);
+    console.error("Profile error:", profileError);
     resolveSessionReady();
     return;
   }
 
+const { data: addonsData, error: addonsError } = await supabase
+  .from("user_addons")
+  .select(
+    `
+    addon_id,
+    status,
+    current_period_end,
+    addons:addons (
+      id,
+      name
+    )
+  `,
+  )
+  .eq("user_id", user.id)
+  .in("status", ["active", "trialing"]);
+
+const normalizedAddons = (addonsData || []).map((a) => {
+  const addon = Array.isArray(a.addons) ? a.addons[0] : a.addons;
+
+  return {
+    id: a.addon_id,
+    name: addon?.name || "Unknown addon",
+    status: a.status,
+    current_period_end: a.current_period_end,
+  };
+});
+
   sessionState.user = user;
   sessionState.profile = profile;
-  sessionState.plan = profile.plan;
+  sessionState.plan = profile?.plan || null;
+  sessionState.addons = normalizedAddons;
 
-  resolveSessionReady(); // session is now ready
+  resolveSessionReady();
 
-  userInfoUi();
+  renderUserUI();
 }
 
-function userInfoUi() {
+function renderUserUI() {
   const profileImg = document.querySelector(".profileImg");
   const profileAvatar = document.querySelector(".profileAvatar");
   const userName = document.getElementById("userName");
@@ -66,40 +93,36 @@ function userInfoUi() {
   const [local, domain] = email.split("@");
   const shortEmail = `${local.slice(0, 9)}...@${domain}`;
 
-  // NAME
+  const planName = sessionState.plan?.name || "Free";
+
   if (userName) {
-    if (sessionState.profile.full_name === "User") {
-      userName.textContent = shortEmail;
-    } else {
-      userName.textContent = sessionState.profile.full_name;
-    }
+    userName.textContent =
+      sessionState.profile.full_name === "User"
+        ? shortEmail
+        : sessionState.profile.full_name;
   }
 
-  // AVATAR
-  if (profileImg) {
-    profileImg.src =
-      sessionState.profile?.avatar_url ||
-      "https://loghue.com/assets/images/default_profile.png";
+  const avatarUrl =
+    sessionState.profile?.avatar_url ||
+    "https://loghue.com/assets/images/default_profile.png";
 
-      profileImg.classList.add(sessionState.plan.name);
+  if (profileImg) {
+    profileImg.src = avatarUrl;
+    profileImg.className = "profileImg";
+    profileImg.classList.add(planName);
   }
 
   if (profileAvatar) {
-    profileAvatar.src =
-      sessionState.profile?.avatar_url ||
-      "https://loghue.com/assets/images/default_profile.png";
+    profileAvatar.src = avatarUrl;
 
-      const profileAvatarContainer = document.querySelectorAll(".profileAvatarContainer")
-
-      if(profileAvatarContainer) {
-        profileAvatarContainer.forEach((pac) => {
-          pac.classList.add(sessionState.plan.name);
-        });
-      }
+    document.querySelectorAll(".profileAvatarContainer").forEach((el) => {
+      el.classList.add(planName);
+    });
   }
-    if (subscriptionType && sessionState.plan) {
-      // PLAN
-      subscriptionType.textContent = sessionState.plan.name;
-    }
+
+  if (subscriptionType) {
+    subscriptionType.textContent = planName;
+  }
 }
+
 initSession();
