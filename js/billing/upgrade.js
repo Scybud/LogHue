@@ -33,6 +33,12 @@ async function startUpgrade() {
       },
     });
 
+    
+    if (error?.message.includes("Already purchased")) {
+      actionMsg("You already have this plan", "info");
+      return;
+    }
+    
     if (error) {
       console.error(error);
       actionMsg("Failed to start checkout.", "error");
@@ -54,10 +60,10 @@ async function startUpgrade() {
     if (data?.success) {
       actionMsg(data.message || "Updated successfully!", "success");
 
-      // optional redirect
+      // redirect
       setTimeout(() => {
         window.location.href = "/billing";
-      }, 800);
+      }, 1000);
 
       return;
     }
