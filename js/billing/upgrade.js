@@ -2,6 +2,7 @@ import { supabase } from "../../js/supabase.js";
 import { actionMsg } from "../utils/modals.js";
 
 let loading = false;
+const msg = document.querySelector(".msg");
 
 async function startUpgrade() {
   if (loading) return;
@@ -22,7 +23,15 @@ async function startUpgrade() {
 
     if (!planId) {
       actionMsg("Missing plan ID.", "error");
+      msg.textContent = "Missing plan ID. Redirecting...";
+      msg.classList.add("error");
+
       loading = false;
+
+      // redirect
+      setTimeout(() => {
+        window.location.href = "/billing";
+      }, 1000);
       return;
     }
 
@@ -33,16 +42,29 @@ async function startUpgrade() {
       },
     });
 
-    
     if (error?.message.includes("Already purchased")) {
       actionMsg("You already have this plan", "info");
+      msg.textContent = "You already have this plan";
+      msg.classList.add("warning");
+
+      // redirect
+      setTimeout(() => {
+        window.location.href = "/billing";
+      }, 1000);
       return;
     }
-    
+
     if (error) {
       console.error(error);
       actionMsg("Failed to start checkout.", "error");
+      msg.textContent = "Failed to start checkout. Redirecting...";
+      msg.classList.add("error");
       loading = false;
+
+      // redirect
+      setTimeout(() => {
+        window.location.href = "/billing";
+      }, 1000);
       return;
     }
 
@@ -59,6 +81,8 @@ async function startUpgrade() {
     // -----------------------------
     if (data?.success) {
       actionMsg(data.message || "Updated successfully!", "success");
+      msg.textContent = "Updated successfully!";
+      msg.classList.add("success");
 
       // redirect
       setTimeout(() => {
@@ -70,6 +94,14 @@ async function startUpgrade() {
 
     console.error("Unexpected response:", data);
     actionMsg("Unexpected server response.", "error");
+    msg.textContent = "Unexpected server response. Redirecting...";
+    msg.classList.add("error");
+
+    // redirect
+    setTimeout(() => {
+      window.location.href = "/billing";
+    }, 1000);
+
   } finally {
     loading = false;
   }

@@ -886,7 +886,7 @@ button.dropdown-item {
   color: var(--text-muted);
 }
 
-.warning {
+.warningContainer {
   background: var(--warning);
   padding: var(--space-md);
   border-radius: var(--radius);
@@ -900,7 +900,10 @@ button.dropdown-item {
   border: var(--border);
   position: relative;
 }
-.warning .warningText {
+.warning {
+  color: var(--warning);
+}
+.warningContainer .warningText {
   margin: 0;
   padding: 0;
   font-size: 0.9rem;

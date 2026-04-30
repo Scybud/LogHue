@@ -109,6 +109,10 @@
         padding: 24px;
         border-radius: 12px;
         background: var(--background);
+        transition: scale 0.2s ease;
+      }
+      .plan:hover {
+        scale: 1.02;
       }
 
       .plan h2 {
@@ -144,7 +148,9 @@
         text-decoration: none;
         font-weight: 800;
       }
-
+.cta:hover {
+  background: var(--primary-light);
+}
       a.cta {
         color: #000000;
         text-decoration: none;
@@ -330,11 +336,8 @@
 
     <main>
       <header>
-        <h1>Simple, Transparent Pricing</h1>
-        <p>
-          LogHue is built for teams, with a free tier that helps individuals and
-          small groups get started.
-        </p>
+    <h1>Pricing that scales with your workflow</h1>
+<p>Start free. Upgrade when your team grows. Pay for OCR only when you need it.</p>
       </header>
 
       <div class="pricing-grid">
@@ -355,15 +358,23 @@
         </div>
 
         <!-- PRO PLAN -->
-        <div class="plan">
-          <h2>Pro</h2>
+<div class="plan" style="border: 2px solid var(--accent); position: relative; transform: scale(1.03);">
+  <h2>Pro</h2>
           <div class="price">$6 <span>/ user / month</span></div>
+          <p style="color: var(--primary); font-weight: 600; position: absolute; top: 6px; right: 8px;   padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(3, 101, 146, 0.164);
+  color: var(--primary);
+  font-size: 0.85rem;
+  margin-bottom: var(--space-sm);
+  font-weight: 600;;">Most Popular</p>
           <p>For small teams that need structure and collaboration.</p>
 
           <ul>
             <li>Up to 10 workspaces</li>
             <li>Up to 10 members per workspace</li>
             <li>Workspace activity history</li>
+            <li>100 OCR credits / month</li>
           </ul>
 
           <a
@@ -383,6 +394,7 @@
             <li>Unlimited workspaces</li>
             <li>Unlimited members</li>
             <li>Workspace activity history</li>
+            <li>250 OCR credits / month</li>
             <li>Priority support</li>
           </ul>
 
@@ -397,33 +409,50 @@
 
       <section style="max-width: 900px; width: 100%; margin-top: 80px">
   <h2>Power Add-ons</h2>
-  <p style="opacity: 0.85">
+  <p style="opacity: 0.85; text-align: center;">
     Enhance your plan with optional features. Cancel anytime.
   </p>
 
-  <div class="pricing-grid">
-
     <!-- OCR ADDON -->
-    <div class="plan">
-      <h2>OCR Scanner</h2>
-      <div class="price">$2.99 <span>/ month</span></div>
+<h3>OCR Credits</h3>
+<p style="opacity: 0.85; margin: 0;">
+  Add more OCR when you need it. No subscription required.
+</p>
 
-      <p>Extract text from images instantly using AI OCR.</p>
-<ul>
-  <li><strong>+2000</strong> OCR requests per month</li>
-  <li>Higher processing priority during peak usage</li>
-  <li>Extended usage capacity for heavy users</li>
-</ul>
+<div style=" margin: 12px auto ;" class="pricing-grid">
 
-      <a
-        class="cta"
-        href="https://app.loghue.com/billing/upgrade?plan=77c12c94-25a4-4567-91a7-7bbddb335001"
-      >
-        Add OCR
-      </a>
-    </div>
-
+  <div class="plan">
+    <h2>Launch</h2>
+    <div class="price">$2.99</div>
+    <p>Perfect for occasional usage.</p>
+    <ul>
+      <li><strong>400</strong> OCR credits</li>
+    </ul>
+    <a class="cta" href="https://app.loghue.com/billing/upgrade?plan=77c12c94-25a4-4567-91a7-7bbddb335001">Buy Credits</a>
   </div>
+
+  <div class="plan" style="border: 2px solid var(--primary);">
+    <h2>Grow 🔥</h2>
+    <div class="price">$6.99</div>
+    <p>Most popular for active users.</p>
+    <ul>
+      <li><strong>1000</strong> OCR credits</li>
+    </ul>
+    <a class="cta" href="https://app.loghue.com/billing/upgrade?plan=691ab5fa-4d46-47c1-8584-82251465636e">Buy Credits</a>
+  </div>
+
+  <div class="plan">
+    <h2>Scale</h2>
+    <div class="price">$14.99</div>
+    <p>Best for heavy workflows.</p>
+    <ul>
+      <li><strong>3000</strong> OCR credits</li>
+    </ul>
+    <a class="cta" href="https://app.loghue.com/billing/upgrade?plan=01db3652-f046-48f5-87e0-b9fb88917ba9">Buy Credits</a>
+  </div>
+
+</div>
+
 </section>
 
 
@@ -476,11 +505,11 @@
               <td>Yes</td>
               <td>Yes</td>
             </tr>
-            <tr>
-              <td>Admin Controls</td>
-              <td>Same for all plans</td>
-              <td>Same for all plans</td>
-              <td>Same for all plans</td>
+              <tr>
+              <td>OCR Credits</td>
+              <td>40</td>
+              <td>100</td>
+              <td>250</td>
             </tr>
             <tr>
               <td>Support</td>
