@@ -157,10 +157,10 @@ if (!closeWarningBtn) return;
 closeWarningBtn.addEventListener("click", () => {
   localStorage.setItem("removeWarning", "removed");
 
-  document.querySelector(".warning").remove()
+  document.querySelector(".warningContainer").remove();
 });
 
-if(warningState)  document.querySelector(".warning").remove();
+if(warningState)  document.querySelector(".warningContainer").remove();
 }
 
 
