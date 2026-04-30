@@ -589,7 +589,7 @@ const deleteWorkspaceBtn = document.querySelector("#deleteWorkspace");
          await deleteWorkspace(id);
        };
      } else {
-      console.log("h")
+      console.log("Admin active")
      }
 
   
