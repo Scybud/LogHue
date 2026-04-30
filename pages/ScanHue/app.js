@@ -1,5 +1,7 @@
 import { supabase } from "https://loghue.com/js/supabase.js";
 import { actionMsg } from "https://loghue.com/js/utils/modals.js";
+import { sessionReady, sessionState } from "https://loghue.com/js/session.js";
+
 
 const imageInput = document.getElementById("imageInput");
 const processBtn = document.getElementById("processBtn");
@@ -9,16 +11,36 @@ const outputLower = document.querySelector(".outputLower");
 const copyBtn = document.getElementById("copyBtn");
 const editInNotesBtn = document.getElementById("editInNotesBtn");
 const fileName = document.getElementById("fileName");
+const ads = document.querySelector(".ads");
+const pageHeader = document.querySelector(".pageHeader");
 
 let selectedImage = null;
 let cropBox = null;
 
 let guestId = localStorage.getItem("loghue_anon_id");
+let user = null;
+
 
 if (!guestId) {
   guestId = crypto.randomUUID();
   localStorage.setItem("loghue_anon_id", guestId);
 }
+
+async function loadUi() {
+await sessionReady
+user = sessionState.profile;
+
+  if(user) {
+    if(ads) {
+      ads.remove();
+    } 
+  }
+
+  if (!user) {
+    pageHeader.remove();
+  }
+}
+loadUi();
 
 imageInput.addEventListener("change", () => {
   fileName.textContent = imageInput.files.length
