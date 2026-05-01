@@ -6,7 +6,7 @@
   grid-template-columns: minmax(200px, 300px) 1fr;
   grid-template-areas: "sidebar mainContent";
   width: 100%;
-  height: calc(100dvh - var(--header-height, 44px)); /* header stays visible */
+  height: calc(100dvh - var(--header-height, 53px)); /* header stays visible */
   overflow: hidden; /* grid itself never scrolls */
   position: relative;
 }

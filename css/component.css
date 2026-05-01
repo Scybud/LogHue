@@ -766,6 +766,9 @@ button.dropdown-item {
   top: 0;
   overflow-y: auto;
   max-height: 600px;
+  border-radius: var(--radius);
+  border-top: 12px solid var(--bg);
+  border-bottom: 12px solid var(--border);
 }
 #notesList::-webkit-scrollbar {
   width: var(--space-xs);
@@ -817,7 +820,10 @@ button.dropdown-item {
 .noteItem:hover {
   opacity: 0.9;
 }
-
+button.toggleNotesListBtn {
+  width: fit-content;
+  display: none;
+}
 @media (max-width: 800px) {
   .notesContainer {
     display: flex;
@@ -827,7 +833,10 @@ button.dropdown-item {
     height: calc(var(--space-lg));
     transition: all 0.4s ease;
   }
-  #notesListContainer:hover #notesList {
+  button.toggleNotesListBtn {
+  display: block;
+}
+#notesList.expandList {
     height: 300px;
     overflow: auto;
   }
