@@ -352,7 +352,7 @@ input.error {
   align-items: center;   
   background: var(--bg);
   margin: 0;
-  height: 40px;
+  min-height: 40px;
   width: 100%;
   border-radius: var(--radius);
   padding: var(--space-xs);
