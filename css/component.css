@@ -727,6 +727,10 @@ button.dropdown-item {
   padding: 0;
   margin-bottom: 30px;
 }
+div#editor.ql-container.ql-snow {
+  height: 100%;
+  max-height: 540px;
+}
 .ql-editor.ql-blank::before {
   color: #888; /* muted placeholder color */
   font-style: italic;
@@ -818,7 +822,7 @@ button.dropdown-item {
   max-width: fit-content;
 }
 .noteItem:hover {
-  opacity: 0.9;
+  background: var(--active);
 }
 button.toggleNotesListBtn {
   width: fit-content;
@@ -839,6 +843,7 @@ button.toggleNotesListBtn {
 #notesList.expandList {
     height: 300px;
     overflow: auto;
+    background: var(--bg);
   }
 }
 
