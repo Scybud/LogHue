@@ -314,6 +314,7 @@ input.error {
 .taskContainer.show {
   opacity: 1;
   transform: translateY(0);
+  padding: var(--space-md) var(--space-sm);
 }
 
 .taskContainer.removing {
