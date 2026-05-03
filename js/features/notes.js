@@ -149,12 +149,12 @@ async function loadScanhueNote() {
       console.error(error);
       return;
     }
+    actionMsg("Imported from ScanHue", "success");
 
     await loadNotes();
     openNote(data);
 
     localStorage.removeItem("extractedText");
-    actionMsg("Imported from ScanHue", "success");
   }
 }
 /*
