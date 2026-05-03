@@ -481,21 +481,33 @@ function exportCurrentNote(type) {
       break;
 
     case "pdf":
+      console.log("HTML CONTENT:", htmlContent);
+      
       const element = document.createElement("div");
 
       element.style.position = "fixed";
       element.style.left = "-9999px"; // hide off-screen
       element.style.top = "0";
       element.style.width = "800px"; // important for layout
+element.style.display = "block";
+element.style.background = "#ffffff";
+element.style.padding = "20px";
 
-      element.innerHTML = `
-    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
 
-    <h1>${title}</h1>
-    <div class="ql-editor">
-      ${htmlContent}
-    </div>
-  `;
+    element.innerHTML = `
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .ql-editor {
+      line-height: 1.6;
+      font-size: 14px;
+    }
+  </style>
+
+  <h1>${title}</h1>
+  <div class="ql-editor">
+    ${htmlContent}
+  </div>
+`;
 
       document.body.appendChild(element);
 
