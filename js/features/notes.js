@@ -481,37 +481,31 @@ function exportCurrentNote(type) {
       break;
 
     case "pdf":
-      console.log("HTML CONTENT:", htmlContent);
-      
-      const element = document.createElement("div");
+      const editor = document.querySelector("#editor");
 
-      element.style.position = "fixed";
-      element.style.left = "-9999px"; // hide off-screen
-      element.style.top = "0";
-      element.style.width = "800px"; // important for layout
-element.style.display = "block";
-element.style.background = "#ffffff";
-element.style.padding = "20px";
+      if (!editor) {
+        actionMsg("Editor not found.", "error");
+        return;
+      }
 
+      // Clone the actual editor (this preserves real rendering)
+      const element = editor.cloneNode(true);
 
-    element.innerHTML = `
-  <style>
-    body { font-family: Arial, sans-serif; }
-    .ql-editor {
-      line-height: 1.6;
-      font-size: 14px;
-    }
-  </style>
+      // Wrap it
+      const wrapper = document.createElement("div");
+      wrapper.style.padding = "20px";
+      wrapper.style.background = "#fff";
+      wrapper.style.width = "800px";
 
-  <h1>${title}</h1>
-  <div class="ql-editor">
-    ${htmlContent}
-  </div>
-`;
+      // Add title
+      const titleEl = document.createElement("h1");
+      titleEl.innerText = title;
 
-      document.body.appendChild(element);
+      wrapper.appendChild(titleEl);
+      wrapper.appendChild(element);
 
-      // wait for render (CRITICAL)
+      document.body.appendChild(wrapper);
+
       setTimeout(() => {
         html2pdf()
           .set({
@@ -519,21 +513,19 @@ element.style.padding = "20px";
             filename: `${safeTitle}.pdf`,
             html2canvas: {
               scale: 2,
-              useCORS: true,
             },
             jsPDF: {
               unit: "mm",
               format: "a4",
               orientation: "portrait",
             },
-            pagebreak: { mode: ["avoid-all", "css", "legacy"] },
           })
-          .from(element)
+          .from(wrapper)
           .save()
           .then(() => {
-            document.body.removeChild(element);
+            document.body.removeChild(wrapper);
           });
-      }, 100);
+      }, 300);
 
       didExport = true;
       break;
