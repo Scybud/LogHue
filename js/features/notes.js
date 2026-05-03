@@ -411,7 +411,37 @@ function exportCurrentNote(type) {
 
   switch (type) {
     case "html":
-      exportFile(`${safeTitle}.html`, htmlContent, "text/html");
+      const fullHTML = `
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <meta charset="UTF-8">
+    <title>${title}</title>
+
+    <!-- Quill Snow Theme -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 40px;
+      }
+
+      .ql-editor {
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>${title}</h1>
+    <div class="ql-editor">
+      ${htmlContent}
+    </div>
+  </body>
+  </html>
+  `;
+
+      exportFile(`${safeTitle}.html`, fullHTML, "text/html");
       didExport = true;
       break;
 
@@ -451,82 +481,25 @@ function exportCurrentNote(type) {
       break;
 
     case "pdf":
-      const { jsPDF } = window.jspdf;
-      const pdfDoc = new jsPDF({ unit: "mm", format: "a4" });
+      const element = document.createElement("div");
 
-      const marginLeft = 20;
-      const marginTop = 20;
-      const pageWidth = 170;
-      let y = marginTop;
+      element.innerHTML = `
+    <h1>${title}</h1>
+    <div class="ql-editor">
+      ${htmlContent}
+    </div>
+  `;
 
-      const delta = quill.getContents();
+      html2pdf()
+        .set({
+          margin: 10,
+          filename: `${safeTitle}.pdf`,
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        })
+        .from(element)
+        .save();
 
-      // Title
-      pdfDoc.setFont("Times", "Bold");
-      pdfDoc.setFontSize(18);
-      pdfDoc.text(safeTitle, marginLeft, y);
-      y += 12;
-
-      let currentLine = "";
-
-      function addLine(text, options = {}) {
-        const {
-          bold = false,
-          italic = false,
-          size = 12,
-          spacing = 7,
-        } = options;
-
-        pdfDoc.setFont("Times", bold ? "Bold" : italic ? "Italic" : "Normal");
-        pdfDoc.setFontSize(size);
-
-        const lines = pdfDoc.splitTextToSize(text, pageWidth);
-
-        lines.forEach((line) => {
-          if (y > 280) {
-            pdfDoc.addPage();
-            y = marginTop;
-          }
-
-          pdfDoc.text(line, marginLeft, y);
-          y += spacing;
-        });
-      }
-
-      delta.ops.forEach((op) => {
-        if (!op.insert) return;
-
-        let text = op.insert;
-        const attr = op.attributes || {};
-
-        if (text === "\n") {
-          y += 4;
-          return;
-        }
-
-        // LISTS
-        if (attr.list) {
-          const bullet = attr.list === "bullet" ? "• " : "1. ";
-          text = bullet + text;
-        }
-
-        // HEADINGS
-        if (attr.header) {
-          addLine(text, {
-            bold: true,
-            size: 16,
-            spacing: 10,
-          });
-          return;
-        }
-
-        addLine(text, {
-          bold: attr.bold,
-          italic: attr.italic,
-        });
-      });
-
-      pdfDoc.save(`${safeTitle}.pdf`);
       didExport = true;
       break;
 
