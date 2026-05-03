@@ -188,6 +188,8 @@ function setupOAuthButton(buttonId, provider) {
   if (!btn) return;
 
   btn.addEventListener("click", async () => {
+        buttonLoading(btn);
+
     // Read redirect param from current URL
     const params = new URLSearchParams(window.location.search);
     const redirectTo = params.get("redirect");
@@ -208,7 +210,11 @@ function setupOAuthButton(buttonId, provider) {
 
     if (error) {
       actionMsg(`OAuth error: ${error.message}`);
+          buttonLoading(btn);
     }
+
+        buttonLoading(btn);
+
   });
 }
 
