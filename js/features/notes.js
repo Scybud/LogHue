@@ -154,7 +154,7 @@ async function loadScanhueNote() {
     await loadNotes();
     openNote(data);
 
-    localStorage.removeItem("extractedText");
+    localStorage.removeItem("scanhueNote");
   }
 }
 /*
