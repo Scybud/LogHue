@@ -58,10 +58,18 @@ function initNotes() {
   /*
   Create Quill AFTER editor exists in DOM
   */
+  const Font = Quill.import("formats/font");
+  Font.whitelist = [
+    "sans serif",
+    "serif",
+  ];
+  Quill.register(Font, true);
+
   quill = new Quill("#editor", {
     modules: {
       toolbar: [
         [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        [{ font: Font.whitelist }],
         ["bold", "italic", "underline", "link"],
         [
           { list: "ordered" },
@@ -122,7 +130,7 @@ initNotes();
 async function loadScanhueNote() {
   const savedText = localStorage.getItem("scanhueNote");
 
-  if(savedText) {
+  if (savedText) {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -214,7 +222,7 @@ function renderNotesList(notes) {
     item.classList.add("noteItem");
     item.dataset.id = note.id;
 
-    const noteTitle = document.createElement("p")
+    const noteTitle = document.createElement("p");
     noteTitle.textContent = note.title || "Untitled";
 
     const deleteBtn = document.createElement("button");
@@ -321,7 +329,7 @@ async function saveNote() {
     }
 
     await loadNotes();
-    
+
     openNote(data);
   }
 
@@ -346,7 +354,6 @@ async function saveNote() {
 }
 
 async function deleteNote() {
-
   const notelist = document.getElementById("notesList");
   if (!notelist) return setLoading(false);
 
@@ -371,7 +378,6 @@ async function deleteNote() {
   });
 
   await loadNotes();
-
 }
 
 //FILE EXPORT HELPER
@@ -388,7 +394,7 @@ function exportFile(filename, content, type = "text/plain") {
 }
 
 function exportCurrentNote(type) {
-      setLoading(true);
+  setLoading(true);
 
   if (!currentNoteId) {
     setLoading(false);
@@ -422,28 +428,27 @@ function exportCurrentNote(type) {
       didExport = true;
       break;
 
-      case "docx":
-  const { Document, Packer, Paragraph } = window.docx;
+    case "docx":
+      const { Document, Packer, Paragraph } = window.docx;
 
-  const doc = new Document({
-    sections: [
-      {
-        properties: {},
-        children: [
-          new Paragraph({
-            text: plainText,
-          }),
+      const doc = new Document({
+        sections: [
+          {
+            properties: {},
+            children: [
+              new Paragraph({
+                text: plainText,
+              }),
+            ],
+          },
         ],
-      },
-    ],
-  });
+      });
 
-  Packer.toBlob(doc).then((blob) => {
-    saveAs(blob, `${safeTitle}.docx`);
-  });
+      Packer.toBlob(doc).then((blob) => {
+        saveAs(blob, `${safeTitle}.docx`);
+      });
 
-  break;
-
+      break;
 
     case "pdf":
       const { jsPDF } = window.jspdf;
@@ -456,7 +461,6 @@ function exportCurrentNote(type) {
 
       const delta = quill.getContents();
 
-
       // Title
       pdfDoc.setFont("Times", "Bold");
       pdfDoc.setFontSize(18);
@@ -466,7 +470,6 @@ function exportCurrentNote(type) {
       let currentLine = "";
 
       function addLine(text, options = {}) {
-
         const {
           bold = false,
           italic = false,
@@ -528,14 +531,14 @@ function exportCurrentNote(type) {
       break;
 
     default:
-            setLoading(false);
+      setLoading(false);
 
       actionMsg("Invalid export type.", "error");
       return;
   }
 
   if (didExport) {
-          setLoading(false);
+    setLoading(false);
 
     actionMsg("Note exported!", "success");
   }
@@ -543,11 +546,10 @@ function exportCurrentNote(type) {
 
 //For Delete Button
 async function attachDeletenoteEvent(noteToDelete, id) {
-
   const { error } = await supabase.from("personal_notes").delete().eq("id", id);
 
   if (error) {
-      setLoading(false);
+    setLoading(false);
 
     console.error(error);
     alert(error.message);

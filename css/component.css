@@ -67,6 +67,7 @@ select {
   font-size: 1rem;
   transition: 0.3s;
 }
+
 .textArea {
   min-height: 150px;
   max-width: 100%;
@@ -824,6 +825,7 @@ div#editor.ql-container.ql-snow {
 .noteItem:hover {
   background: var(--active);
 }
+
 button.toggleNotesListBtn {
   width: fit-content;
   display: none;
@@ -846,6 +848,32 @@ button.toggleNotesListBtn {
     background: var(--bg);
   }
 }
+.ql-picker-options {
+    background-color: var(--input-bg) !important;
+ color: var(--input-color);
+  padding: calc(var(--space-xs) * 3);
+  border-radius: var(--radius);
+  outline: none;
+  border: 1px solid var(--border) !important;
+  transition: all 0.3s ease;
+}
+.ql-font-sans { font-family: sans-serif; }
+.ql-font-serif { font-family: serif; }
+.ql-font-mono { font-family: monospace; }
+
+.ql-font-inter { font-family: 'Inter', sans-serif; }
+.ql-font-poppins { font-family: 'Poppins', sans-serif; }
+.ql-font-roboto { font-family: 'Roboto', sans-serif; }
+.ql-font-lato { font-family: 'Lato', sans-serif; }
+.ql-font-montserrat { font-family: 'Montserrat', sans-serif; }
+.ql-font-opensans { font-family: 'Open Sans', sans-serif; }
+.ql-font-nunito { font-family: 'Nunito', sans-serif; }
+.ql-font-raleway { font-family: 'Raleway', sans-serif; }
+.ql-font-ubuntu { font-family: 'Ubuntu', sans-serif; }
+.ql-font-cabin { font-family: 'Cabin', sans-serif; }
+.ql-font-merriweather { font-family: 'Merriweather', serif; }
+.ql-font-playfair { font-family: 'Playfair Display', serif; }
+.ql-font-inconsolata { font-family: 'Inconsolata', monospace; }
 
 .modal-actions btn {
   margin-top: var(--space-md);
