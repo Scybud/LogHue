@@ -58,7 +58,7 @@ copyBtn.addEventListener("click", (e) => {
 //EDIT IN LOGHUE NOTES
 editInNotesBtn.addEventListener("click", (e) => {
   e.stopPropagation();
-  localStorage.setItem("extractedText", output.value);
+  localStorage.setItem("scanhueNote", output.value);
 
   window.location.href = "../notes";
 });
