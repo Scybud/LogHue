@@ -481,43 +481,45 @@ function exportCurrentNote(type) {
       break;
 
     case "pdf":
-      const editor = document.querySelector("#editor");
+      const cleanHTML = htmlContent.replace(/&nbsp;/g, " ");
 
-      if (!editor) {
-        actionMsg("Editor not found.", "error");
-        return;
-      }
-
-      // Clone the actual editor (this preserves real rendering)
-      const element = editor.cloneNode(true);
-
-      // Wrap it
       const wrapper = document.createElement("div");
-      wrapper.style.padding = "20px";
+
+      wrapper.style.width = "210mm";
+      wrapper.style.padding = "20mm";
       wrapper.style.background = "#fff";
-      wrapper.style.width = "800px";
+      wrapper.style.color = "#000";
+      wrapper.style.fontFamily = "Arial, sans-serif";
+      wrapper.style.fontSize = "12px";
+      wrapper.style.lineHeight = "1.6";
 
-      // Add title
-      const titleEl = document.createElement("h1");
-      titleEl.innerText = title;
-
-      wrapper.appendChild(titleEl);
-      wrapper.appendChild(element);
+      wrapper.innerHTML = `
+    <h1 style="text-align:center; margin-bottom:20px;">
+      ${title}
+    </h1>
+    <div>
+      ${cleanHTML}
+    </div>
+  `;
 
       document.body.appendChild(wrapper);
 
       setTimeout(() => {
         html2pdf()
           .set({
-            margin: 10,
+            margin: 0,
             filename: `${safeTitle}.pdf`,
             html2canvas: {
               scale: 2,
+              useCORS: true,
             },
             jsPDF: {
               unit: "mm",
               format: "a4",
               orientation: "portrait",
+            },
+            pagebreak: {
+              mode: ["css", "legacy"],
             },
           })
           .from(wrapper)
