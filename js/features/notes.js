@@ -483,22 +483,45 @@ function exportCurrentNote(type) {
     case "pdf":
       const element = document.createElement("div");
 
+      element.style.position = "fixed";
+      element.style.left = "-9999px"; // hide off-screen
+      element.style.top = "0";
+      element.style.width = "800px"; // important for layout
+
       element.innerHTML = `
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
+
     <h1>${title}</h1>
     <div class="ql-editor">
       ${htmlContent}
     </div>
   `;
 
-      html2pdf()
-        .set({
-          margin: 10,
-          filename: `${safeTitle}.pdf`,
-          html2canvas: { scale: 2 },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        })
-        .from(element)
-        .save();
+      document.body.appendChild(element);
+
+      // wait for render (CRITICAL)
+      setTimeout(() => {
+        html2pdf()
+          .set({
+            margin: 10,
+            filename: `${safeTitle}.pdf`,
+            html2canvas: {
+              scale: 2,
+              useCORS: true,
+            },
+            jsPDF: {
+              unit: "mm",
+              format: "a4",
+              orientation: "portrait",
+            },
+            pagebreak: { mode: ["avoid-all", "css", "legacy"] },
+          })
+          .from(element)
+          .save()
+          .then(() => {
+            document.body.removeChild(element);
+          });
+      }, 100);
 
       didExport = true;
       break;
