@@ -165,7 +165,9 @@ processBtn.addEventListener("click", async () => {
 
   try {
     const text = await runOCRViaEdgeFunction(canvas);
-    output.value = text.text;
+const cleaned = formatText(text.text);
+output.value = cleaned;
+
     updateUsageUI(text.used, text.limit);
     outputLower.classList.add("show");
   } catch (err) {
@@ -198,6 +200,29 @@ function showLimitModal(count, limit) {
   usageLimitEl.textContent = limit;
 
   modal.classList.remove("hidden");
+}
+
+function formatText(text) {
+  if (!text) return "";
+
+  return (
+    text
+      // Fix broken sentences (line breaks inside sentences)
+      .replace(/([a-z0-9,])\n([a-z])/gi, "$1 $2")
+
+      // Preserve real paragraphs (2+ line breaks → paragraph)
+      .replace(/\n{2,}/g, "\n\n")
+
+      // Remove excessive spaces
+      .replace(/[ \t]+/g, " ")
+
+      // Trim lines
+      .split("\n")
+      .map((line) => line.trim())
+      .join("\n")
+
+      .trim()
+  );
 }
 
 document.getElementById("closeModal").onclick = () => {
