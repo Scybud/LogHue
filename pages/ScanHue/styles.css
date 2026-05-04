@@ -113,7 +113,7 @@ h2 {
   }
 }
 #output {
-font-family: 'Patrick Hand', cursive;
+font-family: 'Patrick Hand', sans-serif, cursive;
   line-height: 1.8;
   letter-spacing: 0.5px;  cursor: auto;
   width: 100%;
