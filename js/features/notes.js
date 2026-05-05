@@ -216,7 +216,9 @@ function renderNotesList(notes) {
   if (!notesList) return;
 
   notesList.innerHTML = "";
-
+if(notes.length = 0) {
+  notesList.innerHTML = `<p class="placeholderText">No notes created yet.</p>`;
+}
   notes.forEach((note) => {
     const item = document.createElement("div");
     item.classList.add("noteItem");
