@@ -795,6 +795,78 @@ section.isLoading::before,
     transform: translate(-50%, -50%) rotate(360deg);  }
 }
 
+/* ============================
+   DOCUMENTS SECTION
+   ============================ */
+
+/* Document List */
+.documentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Document Item */
+.documentItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--lh-surface-2);
+  border: 1px solid var(--lh-border);
+  border-radius: 8px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.documentItem:hover {
+  background: var(--lh-surface-3);
+  border-color: var(--lh-blue);
+}
+
+/* Left side */
+.docLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.docLeft svg {
+  stroke: currentColor;
+}
+
+/* Info */
+.docInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.docTitle {
+  font-weight: 600;
+  color: var(--lh-text-strong);
+}
+
+.docMeta {
+  font-size: 0.8rem;
+  opacity: 0.6;
+}
+
+/* Download Button */
+.docDownloadBtn, .docViewBtn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: var(--lh-surface-4);
+  border: 1px solid var(--lh-border);
+  color: var(--lh-text-strong);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.docDownloadBtn:hover, .docViewBtn:hover {
+  background: var(--lh-blue);
+  border-color: var(--lh-blue);
+  color: white;
+}
+
 
 .disabled {
   cursor: not-allowed;

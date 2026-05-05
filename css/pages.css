@@ -20,3 +20,7 @@ section {
   display: flex;
   justify-content: space-between;
 }
+.sectionHeader button {
+  max-width: fit-content;
+  padding: 0 var(--space-xs);
+}
