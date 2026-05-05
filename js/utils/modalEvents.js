@@ -491,20 +491,30 @@ export async function attachCreateLogEvent() {
 
 
 //POPULATE TASK LIST
-export function populateTaskList(workspace, userId) {
+export async function populateTaskList(workspace, userId) {
   const taskLists = document.getElementById("taskLists");
   if (!taskLists) return;
 
-  const myTasks = workspace.workspace_tasks.filter(
-    (t) => String(t.assigned_to) === String(userId),
-  );
+  const tasks = workspace?.workspace_tasks || [];
+
+const myTasks = tasks.filter((t) => t.assigned_to === userId && t.status === "in progress");
 
   taskLists.innerHTML = "";
 
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Select a task";
+  placeholder.disabled = true;
+  placeholder.selected = true;
+  taskLists.append(placeholder);
+
   myTasks.forEach((task) => {
+    taskLists.disabled = false;
+    taskLists.classList.remove("disabled");
+
     const option = document.createElement("option");
     option.value = task.id;
-    option.textContent = task.title;
+    option.textContent = task.title || "Untitled Task" ;
     taskLists.append(option);
   });
 }
@@ -528,7 +538,7 @@ export async function insertTaskLogUpdate(supabase, workspaceId) {
   let note = document.getElementById("taskLogUpdateNote").value;
 
   if (!note) {
-    alert("Please add a note about what you finished");
+    actionMsg("Please add a note about what you finished");
     return;
   }
 

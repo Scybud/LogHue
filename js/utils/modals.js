@@ -87,7 +87,7 @@ export function openLogTaskModal(supabase, workspaceId, userId) {
   );
   
   // populate using workspace + user.id
-  populateTaskList(currentWorkspace, userId);
+  await populateTaskList(currentWorkspace, userId);
 
     const submitBtn = document.getElementById("logTaskUpdate");
     submitBtn.addEventListener("click", () => {
