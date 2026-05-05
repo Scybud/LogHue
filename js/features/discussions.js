@@ -23,6 +23,7 @@ export async function attachStartDiscussionEvent(ws, user) {
     if (!user) return actionMsg("You must be logged in.");
  if(!discussionContentValue) {
   actionMsg("Write something to start a discussion");
+  return;
  }
     //DEFINE DATA CONTENT
     const discussionData = {
