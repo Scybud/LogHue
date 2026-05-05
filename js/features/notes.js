@@ -221,6 +221,7 @@ if(notes.length === 0) {
   notesList.innerHTML = `<p class="placeholderText">No notes created yet.</p>`;
   return
 }
+
   notes.forEach((note) => {
     const item = document.createElement("div");
     item.classList.add("noteItem");

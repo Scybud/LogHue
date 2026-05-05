@@ -50,8 +50,8 @@ async function checkMemberAccess(workspaceId) {
     .single();
 
   if (error || membership.role !== "member") {
-    alert("Access Denied: You cannot access this workspace.");
-    window.location.href = "/index";
+    actionMsg("Access Denied: You cannot access this workspace.");
+    window.location.href = "dashboard";
   }
 }
 
@@ -63,7 +63,7 @@ export async function initMemberWorkspaceData() {
   const workspaceId = params.get("ws");
 
   if (!workspaceId) {
-    window.location.href = "/index";
+    window.location.href = "index";
     return;
   }
 
@@ -81,7 +81,7 @@ export async function initMemberWorkspaceData() {
 
   if (error) {
     console.error(error);
-    alert(error.message);
+    actionMsg(error.message);
     return;
   }
 
@@ -708,7 +708,10 @@ export function loadActivities(activities, container) {
            Open
         </a>
       `
-        : "";
+        : `<a class="btn pageOpenLink btn-sm btn-secondary"
+           href="https://app.loghue.com/task-view?dcn=${item.id}">
+           Open
+        </a>`;
 
     const div = document.createElement("div");
     div.classList.add("activityItem");

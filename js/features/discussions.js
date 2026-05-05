@@ -20,8 +20,10 @@ export async function attachStartDiscussionEvent(ws, user) {
     const discussionTitleValue = discussionTitleEl.value.trim();
     const discussionContentValue = discussionContentEl.value.trim();
 
-    if (!user) return alert("You must be logged in.");
-
+    if (!user) return actionMsg("You must be logged in.");
+ if(!discussionContentValue) {
+  actionMsg("Write something to start a discussion");
+ }
     //DEFINE DATA CONTENT
     const discussionData = {
       title: discussionTitleValue,
@@ -38,7 +40,7 @@ export async function attachStartDiscussionEvent(ws, user) {
 
     if (error) {
       console.error(error);
-      alert("Failed to create discussion.");
+      actionMsg("Failed to create discussion.");
       return;
     }
 
@@ -52,24 +54,6 @@ export async function attachStartDiscussionEvent(ws, user) {
       entityType: "discussion",
     });
 
-    //push notif
-    const { pushNotifData, pushNotifError } = await supabase.functions.invoke(
-      "trigger-push",
-      {
-        body: {
-          workspace_id: ws.id,
-          payload: {
-            title: "Discussion just started",
-            body: "Someone started a discussion!",
-            url: "https://app.loghue.com/",
-          },
-        },
-      },
-    );
-if(pushNotifError) {
-  console.error(pushNotifError);
-        actionMsg("Error sending push notification.", "error");
-}
     closeModal();
   });
 }
