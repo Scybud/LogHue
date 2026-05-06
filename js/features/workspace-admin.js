@@ -587,6 +587,9 @@ async function loadSettings(container, workspace, currentUserId) {
 async function loadDocuments(documents, container, workspace) {
   container.innerHTML = "";
 
+    const { data, userError } = await supabase.auth.getUser();
+const currentUser = data.user
+
   // Title
   const title = document.createElement("h2");
   title.className = "sectionTitle";
@@ -707,26 +710,89 @@ async function loadDocuments(documents, container, workspace) {
       left.appendChild(info);
 
       const downloadBtn = document.createElement("button");
-      downloadBtn.className = "docDownloadBtn";
+      downloadBtn.classList.add("docDownloadBtn", "docAction");
       downloadBtn.textContent = "Download";
       downloadBtn.dataset.path = doc.storage_path;
 
             const viewBtn = document.createElement("button");
-            viewBtn.className = "docViewBtn";
+            viewBtn.classList.add("docViewBtn", "docAction");
             viewBtn.textContent = "View";
             viewBtn.dataset.path = doc.storage_path;
 
+       const deleteBtn = document.createElement("button");
+       deleteBtn.textContent = "Delete";
+       deleteBtn.classList.add("danger", "docDeleteBtn", "docAction");
+       deleteBtn.dataset.path = doc.storage_path;
 
       item.appendChild(left);
-      item.append(viewBtn, downloadBtn);
+    if (doc.uploaded_by === currentUser.id) {
+    item.append(viewBtn, downloadBtn, deleteBtn);
+  } else {
+    item.append(viewBtn, downloadBtn);
+  }
 
-      list.appendChild(item);
-    });
+  list.appendChild(item);
+});
   }
 
   // Attach upload logic
-  handleDocUpload(uploadBtn, fileInput, currentWorkspace, container);
+  await handleDocUpload(uploadBtn, fileInput, currentWorkspace, container);
   handleFileDownload();
+   deleteWorkspaceDoc();
+}
+
+function deleteWorkspaceDoc() {
+  document.querySelectorAll(".docDeleteBtn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const path = btn.dataset.path;
+      if (!path) return;
+
+      confirmAction(
+        "Are you sure you want to delete this document?",
+        [
+          { label: "Cancel", type: "cancel" },
+          {
+            label: "Delete",
+            type: "confirm",
+            onClick: () => handleDocDelete(path, btn),
+          },
+        ],
+      );
+    });
+  });
+}
+async function handleDocDelete(path, btn) {
+  try {
+    // 1. Delete from storage
+    const { error: storageErr } = await supabase.storage
+      .from("workspace-documents")
+      .remove([path]);
+
+    if (storageErr) {
+      console.error("Storage delete error:", storageErr);
+      actionMsg("Failed to delete file from storage.", "error");
+      return;
+    }
+
+    // 2. Delete metadata row
+    const { error: dbErr } = await supabase
+      .from("workspace_documents")
+      .delete()
+      .eq("storage_path", path);
+
+    if (dbErr) {
+      console.error("DB delete error:", dbErr);
+      actionMsg("File removed from storage but DB row failed.", "warning");
+      return;
+    }
+
+    // 3. Remove from UI
+    btn.closest(".documentItem").remove();
+    actionMsg("Document deleted successfully.", "success");
+  } catch (err) {
+    console.error("Delete handler error:", err);
+    actionMsg("Unexpected error deleting document.", "error");
+  }
 }
 
 
@@ -802,7 +868,7 @@ function handleFileDownload() {
         .createSignedUrl(path, 60); // 60 seconds
 
       if (error) {
-        showUploadStatus("Download failed", true);
+        showUploadStatus("Download failed", true, adminWorkspaceDashboardContent);
         return;
       }
 
@@ -817,7 +883,7 @@ function handleFileDownload() {
 document.addEventListener("click", async (e) => {
   if (!e.target.classList.contains("docDownloadBtn")) return;
 
-      showUploadStatus("Downloading...", false);
+      showUploadStatus("Downloading...", false, adminWorkspaceDashboardContent);
 
   const path = e.target.dataset.path;
   if (!path) return;
@@ -828,7 +894,7 @@ document.addEventListener("click", async (e) => {
       .createSignedUrl(path, 60);
 
     if (error || !data?.signedUrl) {
-      showUploadStatus("Download failed", true);
+      showUploadStatus("Download failed", true, adminWorkspaceDashboardContent);
       return;
     }
 
@@ -851,8 +917,6 @@ document.addEventListener("click", async (e) => {
     showUploadStatus("Unexpected download error", true);
   } 
 });
-
-
 }
 
 

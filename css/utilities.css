@@ -809,7 +809,7 @@ section.isLoading::before,
 /* Document Item */
 .documentItem {
   display: grid;
-grid-template-columns: 1fr minmax(50px, 50px) minmax(50px, 100px);  
+grid-template-columns: 1fr minmax(50px, 50px) minmax(50px, 100px) minmax(50px, 60px);  
 gap: var(--space-md);
   padding: 14px 16px;
   background: var(--lh-surface-2);
@@ -822,7 +822,7 @@ gap: var(--space-md);
 display: flex;
 flex-wrap: wrap;
 }
-.docDownloadBtn, .docViewBtn {
+.docAction {
   max-width: fit-content;
 }
 }
@@ -859,17 +859,17 @@ flex-wrap: wrap;
 }
 
 /* Download Button */
-.docDownloadBtn, .docViewBtn {
+.docAction {
   padding: 6px 12px;
   border-radius: 6px;
   background: var(--lh-surface-4);
-  border: 1px solid var(--lh-border);
+  border: 1px solid var(--border);
   color: var(--lh-text-strong);
   cursor: pointer;
   transition: background 0.2s ease, border 0.2s ease;
 }
 
-.docDownloadBtn:hover, .docViewBtn:hover {
+.docAction:hover {
   border: 1px solid var(--border-light);
 }
 

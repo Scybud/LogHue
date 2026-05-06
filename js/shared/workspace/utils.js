@@ -1,11 +1,11 @@
-export function showUploadStatus(message, isError = false) {
+export function showUploadStatus(message, isError = false, container) {
   let box = document.getElementById("uploadStatusBox");
 
   if (!box) {
     box = document.createElement("div");
     box.id = "uploadStatusBox";
     box.className = "uploadStatus";
-   adminWorkspaceDashboardContent.prepend(box);
+   container.prepend(box);
   }
 
   box.textContent = message;
