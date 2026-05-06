@@ -80,10 +80,8 @@ export async function initAdminWorkspaceData() {
   //SECURE ADMIN WORKSPACE BY CHECKING FOR ADMIN ROLE
   await checkAdminAccess(workspaceId, user);
 
-  const adminWorkspaceDashboardContent = document.getElementById(
-    "adminWorkspaceDashboardContent",
-  );
-   setLoading(true, adminWorkspaceDashboardContent);
+  const container = document.getElementById("adminWorkspaceDashboardContent");
+   setLoading(true, container);
 
   //Load data
   const { data: workspace, error } = await supabase
@@ -99,7 +97,7 @@ export async function initAdminWorkspaceData() {
   if (error) {
     console.error(error);
     alert(error.message);
-     setLoading(false, adminWorkspaceDashboardContent);
+     setLoading(false, container);
 
     return;
   }
@@ -120,20 +118,20 @@ export async function initAdminWorkspaceData() {
     workspaceName.textContent = workspace.name;
   }
 
-  if (adminWorkspaceDashboardContent) {
-    adminWorkspaceDashboardContent.innerHTML = "";
+  if (container) {
+    container.innerHTML = "";
   }
 
-  if (workspace && adminWorkspaceDashboardContent) {
+  if (workspace && container) {
     const allTasks = workspace.workspace_tasks;
     //OPEN TASKS
     const tasks = allTasks.filter((ts) => ts.status === "in progress");
     loadTasks("Created Tasks",
       tasks || [],
-      adminWorkspaceDashboardContent,
+      container,
     );
   }
- setLoading(false, adminWorkspaceDashboardContent);
+ setLoading(false, container);
 
   attachSidebarEvents();
 navDropdowns();
@@ -807,7 +805,7 @@ async function handleDocUpload(uploadBtn, fileInput, workspace, container) {
     const file = fileInput.files[0];
     if (!file) return;
 
-    showUploadStatus("Uploading...");
+    showUploadStatus("Uploading...", false, container);
 uploadBtn.disabled = true;
 uploadBtn.classList.add("disabled");
 
@@ -868,7 +866,7 @@ function handleFileDownload() {
         .createSignedUrl(path, 60); // 60 seconds
 
       if (error) {
-        showUploadStatus("Download failed", true, adminWorkspaceDashboardContent);
+        showUploadStatus("Download failed", true, container);
         return;
       }
 
@@ -883,7 +881,7 @@ function handleFileDownload() {
 document.addEventListener("click", async (e) => {
   if (!e.target.classList.contains("docDownloadBtn")) return;
 
-      showUploadStatus("Downloading...", false, adminWorkspaceDashboardContent);
+      showUploadStatus("Downloading...", false, container);
 
   const path = e.target.dataset.path;
   if (!path) return;
@@ -894,7 +892,7 @@ document.addEventListener("click", async (e) => {
       .createSignedUrl(path, 60);
 
     if (error || !data?.signedUrl) {
-      showUploadStatus("Download failed", true, adminWorkspaceDashboardContent);
+      showUploadStatus("Download failed", true, container);
       return;
     }
 
