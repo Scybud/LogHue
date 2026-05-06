@@ -808,18 +808,26 @@ section.isLoading::before,
 
 /* Document Item */
 .documentItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+grid-template-columns: 1fr minmax(50px, 50px) minmax(50px, 100px);  
+gap: var(--space-md);
   padding: 14px 16px;
   background: var(--lh-surface-2);
   border: 1px solid var(--lh-border);
   border-radius: 8px;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
-
+@media (max-width: 600px) {
+  .documentItem {
+display: flex;
+flex-wrap: wrap;
+}
+.docDownloadBtn, .docViewBtn {
+  max-width: fit-content;
+}
+}
 .documentItem:hover {
-  background: var(--lh-surface-3);
+  background: var(--bg-hover);
   border-color: var(--lh-blue);
 }
 
@@ -858,15 +866,12 @@ section.isLoading::before,
   border: 1px solid var(--lh-border);
   color: var(--lh-text-strong);
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  transition: background 0.2s ease, border 0.2s ease;
 }
 
 .docDownloadBtn:hover, .docViewBtn:hover {
-  background: var(--lh-blue);
-  border-color: var(--lh-blue);
-  color: white;
+  border: 1px solid var(--border-light);
 }
-
 
 .disabled {
   cursor: not-allowed;

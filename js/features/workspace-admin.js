@@ -8,6 +8,7 @@ import { createDropdown } from "../ui.js";
 import {navDropdowns} from "../components/sidebar.js"
 import { archiveWorkspace, deleteWorkspace, editWorkspace } from "./workspaceData.js";
 import { notifyUser } from "../utils/notifications.js";
+import { showUploadStatus } from "../shared/workspace/utils.js";
 
 export let currentWorkspace = null;
 export let loadedMembers = [];
@@ -813,50 +814,46 @@ function handleFileDownload() {
   });
 
 
-  document.addEventListener("click", async (e) => {
-    if (!e.target.classList.contains("docDownloadBtn")) return;
+document.addEventListener("click", async (e) => {
+  if (!e.target.classList.contains("docDownloadBtn")) return;
 
-    const path = e.target.dataset.path;
-    if (!path) return;
+      showUploadStatus("Downloading...", false);
 
-    try {
-      const { data, error } = await supabase.storage
-        .from("workspace-documents")
-        .createSignedUrl(path, 60);
+  const path = e.target.dataset.path;
+  if (!path) return;
 
-      if (error || !data?.signedUrl) {
-        showUploadStatus("Download failed", true);
-        return;
-      }
+  try {
+    const { data, error } = await supabase.storage
+      .from("workspace-documents")
+      .createSignedUrl(path, 60);
 
-      // FORCE DOWNLOAD
-      const a = document.createElement("a");
-      a.href = data.signedUrl;
-      a.download = path.split("/").pop(); // filename
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    } catch (err) {
-      showUploadStatus("Unexpected download error", true);
+    if (error || !data?.signedUrl) {
+      showUploadStatus("Download failed", true);
+      return;
     }
-  });
+
+    // Fetch file as blob
+    const response = await fetch(data.signedUrl);
+    const blob = await response.blob();
+
+    // Create a forced download
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = path.split("/").pop(); // filename
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+        showUploadStatus("Download successful", false);
+
+  } catch (err) {
+    showUploadStatus("Unexpected download error", true);
+  } 
+});
+
 
 }
-
-function showUploadStatus(message, isError = false) {
-  let box = document.getElementById("uploadStatusBox");
-
-  if (!box) {
-    box = document.createElement("div");
-    box.id = "uploadStatusBox";
-    box.className = "uploadStatus";
-   adminWorkspaceDashboardContent.prepend(box);
-  }
-
-  box.textContent = message;
-  box.style.color = isError ? "#ff5252" : "#4caf50";
-}
-
 
 
 async function attachSettingsActions(ws, id) {
