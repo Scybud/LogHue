@@ -73,12 +73,15 @@ export async function renderArchive() {
     (ws) => ws.status === "closed",
   );
 
+    const div = document.createElement("div");
+    div.classList.add("double-grid");
+
   closedWorkspaces.forEach((ws) => {
     const formattedTDate = formatDateTime(ws.closed_at);
 
     // --- Card wrapper ---
     const card = document.createElement("div");
-    card.className = `workspaceCard card ${ws.status}`;
+    card.classList.add("workspaceCard", "card", `${ws.status}`);
     card.dataset.id = ws.id;
     card.title = "Workspace can only be accessed after restore";
 
@@ -101,7 +104,7 @@ export async function renderArchive() {
     const metaP = document.createElement("p");
     const metaSpan = document.createElement("span");
     metaSpan.className = "meta";
-    metaSpan.textContent = `Closed on: ${formattedTDate}`;
+    metaSpan.textContent = `Archived on: ${formattedTDate}`;
     metaP.appendChild(metaSpan);
 
     headerLeft.appendChild(title);
@@ -141,7 +144,8 @@ export async function renderArchive() {
     card.appendChild(restoreSection);
 
     // --- Add to container ---
-    historyContainer.appendChild(card);
+    div.appendChild(card);
+    historyContainer.append(div)
   });
 
   setLoading(false, historyContainer)

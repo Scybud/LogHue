@@ -159,10 +159,16 @@ header.pageHeader::-webkit-scrollbar-thumb:hover {
   display: block !important;
 }
 .closed {
-  opacity: 0.6;
   cursor: not-allowed;
 }
-
+.modalActions {
+  display: flex;
+  gap: var(--space-sm);
+  margin: var(--space-md) auto;
+}
+.modalActions button {
+flex: 1;
+}
 .lockScroll {
   overflow: hidden;
 }
