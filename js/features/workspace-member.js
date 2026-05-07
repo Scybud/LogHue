@@ -92,7 +92,7 @@ export async function initMemberWorkspaceData() {
       workspaceId.length < 10 ||
       workspace.status === "closed"
     ) {
-      window.location.href = "index";
+      window.location.href = "all-workspaces";
       return;
     }
     
