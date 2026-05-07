@@ -14,6 +14,7 @@ import {
 } from "./utils/modals.js";
 import {
   attachSidebarToggle,
+  toggleSearchBar,
 } from "./utils/toggle.js";
 import { initSession } from "./session.js";
 import { initPersonalTasks } from "./features/personalTasks.js";
@@ -76,6 +77,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   loadGlobalNotifications();
 
   toggleNotification();
+  toggleSearchBar();
 
   handleConcentEvents();
   setTheme();

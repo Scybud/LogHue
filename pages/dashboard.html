@@ -33,12 +33,56 @@
       href="https://loghue.com/assets/icons/favicons/favicon-16x16.png"
     />
     <link rel="manifest" href="https://loghue.com/site.webmanifest" />
+
   </head>
   <body>
     <!--PRELOADER-->
     <div class="preLoaderContainer">
       <div class="tt-wave-loader"><span></span><span></span><span></span></div>
       <div class="label">Log<span>Hue</span></div>
+    </div>
+    
+    <!--SEARCH-->
+    <div class="searchContainer">
+      <div class="searchInner">
+    
+        <input type="search" name="searchInput" id="searchInput" class="inputField searchInput" placeholder="Search workspaces, logs, noteshttps://loghue.com.">
+        
+        <!--SEARCH RESULT CONTAINER-->
+        <div class="searchResults">
+          <div class="searchItem">
+            <h4>LogHue Workspace</h4>
+          </div>
+          <div class="searchItem">
+            <h4>LogHue Workspace</h4>
+          </div>
+          <div class="searchItem">
+            <h4>LogHue Workspace</h4>
+          </div>
+          <div class="searchItem">
+            <h4>LogHue Workspace</h4>
+          </div>
+          <div class="searchItem">
+            <h4>LogHue Workspace</h4>
+          </div>
+          <div class="searchItem">
+            <h4>LogHue Workspace</h4>
+          </div>
+          <div class="searchItem">
+            <h4>LogHue Workspace</h4>
+          </div>
+          <div class="searchItem">
+            <h4>LogHue Workspace</h4>
+          </div>
+          <div class="searchItem">
+            <h4>LogHue Workspace</h4>
+          </div>
+          <div class="searchItem">
+            <h4>LogHue Workspace</h4>
+          </div>
+        </div>
+    
+      </div>
     </div>
 
     <header class="pageHeader">
@@ -61,6 +105,7 @@
       </div>
 
       <div class="headerRight">
+
         <button
           type="button"
           class="actionBtn"
@@ -86,6 +131,20 @@
             />
           </svg>
         </button>
+
+        <!--SEARCH BUTTON-->
+        <button
+          type="button"
+          class="actionBtn"
+          id="searchBarOpen"
+          title="Search"
+        >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="11" cy="11" r="7"></circle>
+  <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
+</svg>
+        </button>
+
 
         <button
           id="notificationToggleBtn"

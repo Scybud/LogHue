@@ -47,13 +47,26 @@ export function toggleNotification() {
   const notificationsContainer = document.getElementById("notificationsContainer");
 
   if(!notificationsContainer || !notificationToggleBtn){
-
-    console.log("elements not found"); 
     return;
   } 
 
   notificationToggleBtn.addEventListener("click", () => {
-notificationsContainer.classList.toggle("show")
+notificationsContainer.classList.toggle("show");
   })
 
+}
+
+export function toggleSearchBar() {
+const searchBarOpen = document.getElementById("searchBarOpen");
+const searchContainer = document.querySelector(".searchContainer");
+
+if (!searchBarOpen || !searchContainer) return;
+
+searchBarOpen.addEventListener("click", () => {
+searchContainer.classList.add("showFlex");
+})
+
+searchContainer.addEventListener("click", () => {
+  searchContainer.classList.remove("showFlex");
+})
 }

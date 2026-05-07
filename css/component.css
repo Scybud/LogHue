@@ -559,18 +559,20 @@ button.dropdown-item {
 }
 
 .navAccountIdentityCard {
-  margin: var(--space-sm) 0 0;
-  position: sticky;
+  background: var(--card-bg);
+  border-top: 1px solid var(--border);
+
   bottom: 0;
   max-width: 100%;
+  border-radius: 0;
+  margin: var(--space-md);
+  gap: var(--space-md);
+  flex-shrink: 0;
+
+  position: sticky;
   max-height: fit-content;
-  flex: 1;
   display: flex;
   justify-content: space-between;
-  background: var(--card-bg);
-  gap: var(--space-md);
-  border-radius: 0;
-  border-top: 1px solid var(--border);
 }
 .text p {
   margin: 0;
@@ -967,4 +969,60 @@ button.toggleNotesListBtn {
 .closeWarning:hover {
   opacity: 0.8;
   cursor: pointer;
+}
+
+     div.showFlex{
+        display: flex;
+      }
+      .searchContainer {
+        display: none;
+        justify-content: center;
+        position: fixed;
+
+         top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.573);
+  padding: var(--space-lg);
+}
+.searchInner {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  
+  flex-direction: column;
+  
+  background: var(--card-bg);
+  max-width: 800px;
+  border-color: --radius;
+  width: 100%;
+  max-height: 500px;
+  overflow: auto;
+}
+.searchInput {
+  max-width: 600px;
+  width: 100%;
+  margin: var(--space-lg) auto;
+  position: sticky;
+  top: 0;
+}
+.searchResults {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.searchItem {
+  padding: var(--space-md) var(--space-sm);
+  border-bottom: 1px solid var(--border);
+  width: 95%;
+border-radius: var(--radius);
+transition: background 0.2s ease;
+}
+.searchItem:hover {
+  background: var(--active);
 }
