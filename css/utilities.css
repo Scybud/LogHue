@@ -833,8 +833,8 @@ flex-wrap: wrap;
 }
 }
 .documentItem:hover {
-  background: var(--bg-hover);
-  border-color: var(--lh-blue);
+  background: var(--active);
+  border-color: var(--primary-light);
 }
 
 /* Left side */
