@@ -96,9 +96,9 @@ function renderResults(results) {
     const link =
       result.type === "workspace"
         ? result.role === "admin" || result.role === "owner"
-          ? `workspace-dashboard-admin?id=${result.id}`
-          : `workspace-dashboard-member?id=${result.id}`
-        : `task-view?id=${result.id}`;
+          ? `workspace-dashboard-admin?ws=${result.id}`
+          : `workspace-dashboard-member?ws=${result.id}`
+        : `task-view?task=${result.id}`;
 
         
     const div = document.createElement("div");
