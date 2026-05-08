@@ -1004,10 +1004,11 @@ button.toggleNotesListBtn {
 }
 .searchInput {
   max-width: 600px;
-  width: 100%;
+  width: 95%;
   margin: var(--space-lg) auto;
   position: sticky;
   top: 0;
+  box-shadow: 0 0 15px var(--shadow);
 }
 .searchResults {
   width: 100%;
@@ -1016,6 +1017,21 @@ button.toggleNotesListBtn {
   align-items: center;
   flex-direction: column;
 }
+.searchType {
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.7;
+  margin-bottom: 4px;
+}
+
+.searchType.workspace {
+  color: #4da3ff;
+}
+
+.searchType.task {
+  color: #ffb84d;
+}
+
 .searchItem {
   padding: var(--space-md) var(--space-sm);
   border-bottom: 1px solid var(--border);
