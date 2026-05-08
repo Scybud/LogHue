@@ -66,7 +66,10 @@ searchBarOpen.addEventListener("click", () => {
 searchContainer.classList.add("showFlex");
 })
 
-searchContainer.addEventListener("click", () => {
-  searchContainer.classList.remove("showFlex");
-})
+searchContainer.addEventListener("click", (e) => {
+  if (e.target === searchContainer) {
+    searchContainer.classList.remove("showFlex");
+  }
+});
+
 }

@@ -931,7 +931,9 @@ button.toggleNotesListBtn {
 }
 
 .warningContainer {
-  background: var(--warning);
+    background: #826f20;
+  border: 1px solid var(--warning);
+  color: #ffffff;
   padding: var(--space-md);
   border-radius: var(--radius);
   margin: var(--space-sm);
@@ -939,9 +941,7 @@ button.toggleNotesListBtn {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #000;
   font-weight: 600;
-  border: var(--border);
   position: relative;
 }
 .warning {
@@ -956,15 +956,16 @@ button.toggleNotesListBtn {
   background: none;
   border: none;
   position: absolute;
-  top: -10px;
-  right: -10px;
-  width: fit-content;
-  height: fit-content;
+  top: 0;
+  right: 0;
+  width: 25px;
+  height: 25px;
   padding: 0;
   margin: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  background: var(--accent);
 }
 .closeWarning:hover {
   opacity: 0.8;
@@ -992,7 +993,6 @@ button.toggleNotesListBtn {
   display: flex;
   justify-content: start;
   align-items: center;
-  
   flex-direction: column;
   
   background: var(--card-bg);
