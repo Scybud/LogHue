@@ -87,7 +87,7 @@ function renderResults(results) {
   resultsContainer.innerHTML = "";
 
   if (results.length === 0) {
-    resultsContainer.innerHTML = `<p>No results found</p>`;
+    resultsContainer.innerHTML = `<p class="tunedText">No results found for "${searchInput.value}"</p>`;
     return;
   }
 
