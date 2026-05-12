@@ -1556,13 +1556,20 @@ activityBody.classList.add("activityBody");
 if (item.type === "task_log") {
   const note = document.createElement("p");
   const noteStrong = document.createElement("strong");
-  noteStrong.textContent = "Note: ";
+  noteStrong.textContent = "Update: ";
   note.append(noteStrong, document.createTextNode(item.note || ""));
 
-  const status = document.createElement("p");
-  const statusStrong = document.createElement("strong");
-  statusStrong.textContent = "Status: ";
-  status.append(statusStrong, document.createTextNode(item.status || ""));
+const status = document.createElement("p");
+
+const statusLabel = document.createElement("strong");
+statusLabel.textContent = "Status: ";
+
+const statusValue = document.createElement("span");
+statusValue.classList.add("statusBadge");
+statusValue.textContent = item.status || "";
+
+status.append(statusLabel, statusValue);
+
 
   activityBody.append(note, status);
 
@@ -1583,12 +1590,16 @@ activityTime.textContent = formatDateTime(item.created_at);
 //BUTTON
 const btn = document.createElement("button")
 btn.type = "button"
-btn.classList.add("btn", "pageOpenLink", "btn-secondary")
+btn.classList.add("btn", "btn-sm", "pageOpenLink", "btn-primary")
 btn.textContent = "Open"
 if (item.type === "discussion") {
   btn.onclick = () => {
     window.location.href = `https://app.loghue.com/discussion-view?dcn=${item.id}`
-  }
+  } 
+} else if(item.type === "task_log") {
+ btn.onclick = () => {
+    window.location.href = `https://app.loghue.com/task-view?task=${item.id}`
+  } 
 }
 
 
