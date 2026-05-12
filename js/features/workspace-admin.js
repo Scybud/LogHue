@@ -380,6 +380,7 @@ async function renderSection(section, workspace, container) {
 
       const normalizedLogs = (logs || []).map((log) => ({
         id: log.id,
+        task_id: log.task_id,
         type: "task_log",
         actor: log.profiles,
         title: log.workspace_tasks?.title,
@@ -1581,7 +1582,7 @@ status.append(statusLabel, statusValue);
 
   activityBody.append(message);
 }
-
+console.log(item)
 //ACTIVITY TIME
 const activityTime = document.createElement("div")
 activityTime.classList.add("activityTime");
@@ -1598,7 +1599,7 @@ if (item.type === "discussion") {
   } 
 } else if(item.type === "task_log") {
  btn.onclick = () => {
-    window.location.href = `https://app.loghue.com/task-view?task=${item.id}`
+    window.location.href = `https://app.loghue.com/task-view?task=${item.task_id}`
   } 
 }
 

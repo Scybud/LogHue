@@ -884,3 +884,12 @@ flex-wrap: wrap;
   cursor: not-allowed;
   opacity: 0.5;
 }
+.statusBadge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  background: #ff6b3520;
+  color: #ff6b35;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
