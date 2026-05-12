@@ -465,8 +465,15 @@ function attachLogSubmitHandler() {
   }
 
   btn.addEventListener("click", async () => {
+    btn.disabled = true;
+
     const note = input.value.trim();
-    if (!note) return actionMsg("Write something before submitting.", "error");
+    if (!note) {
+    btn.disabled = false;
+    actionMsg("Write something before submitting.", "error");
+      return 
+    }
+
     const { data: userData } = await supabase.auth.getUser();
 
     const { data, error } = await supabase.from("workspace_task_logs").insert({
@@ -479,13 +486,20 @@ function attachLogSubmitHandler() {
 
     const createdLog = data;
 
-    if(currentTask.created_by != null) {
-      await notifyUser({
-        workspaceId: currentWorkspace.id, receiverUserId: currentTask.created_by, actorId: userData.user.id, type: "task_logged", entityId: currentTask.id, entityType: "log",
-      })
-    }
+  if (currentTask.created_by && currentTask.created_by !== userData.user.id) {
+    await notifyUser({
+      workspaceId: currentWorkspace.id,
+      receiverUserId: currentTask.created_by,
+      actorId: userData.user.id,
+      type: "task_logged",
+      entityId: currentTask.id,
+      entityType: "log",
+    });
+  }
 
     input.value = "";
+        btn.disabled = false;
+
     await loadTask(currentTask.id);
     renderLogs();
   });
