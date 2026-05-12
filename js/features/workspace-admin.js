@@ -14,6 +14,7 @@ export let currentWorkspace = null;
 export let loadedMembers = [];
 let user = null;
 let isLoading = false;
+let container;
 
 // Loading State
 function setLoading(state, container) {
@@ -26,7 +27,7 @@ document.addEventListener("click", async (e) => {
   const btn = e.target.closest(".navBtn");
   if (!btn) return;
 
-  const container = document.getElementById("adminWorkspaceDashboardContent");
+   container = document.getElementById("adminWorkspaceDashboardContent");
   const section = btn.dataset.section;
   
 setLoading(true, container);
