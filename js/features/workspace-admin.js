@@ -1520,7 +1520,7 @@ export function loadActivities(activities, container) {
   title.textContent = "Activities";
 
   const list = document.createElement("div");
-  list.classList.add("activityList");
+  list.classList.add("activityList", "double-grid");
 
   activities.forEach((item) => {
     const actor = item.actor;
@@ -1591,7 +1591,7 @@ activityTime.textContent = formatDateTime(item.created_at);
 //BUTTON
 const btn = document.createElement("button")
 btn.type = "button"
-btn.classList.add("btn", "btn-sm", "pageOpenLink", "btn-primary")
+btn.classList.add("btn", "pageOpenLink", "btn-primary")
 btn.textContent = "Open"
 if (item.type === "discussion") {
   btn.onclick = () => {
