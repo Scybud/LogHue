@@ -132,9 +132,10 @@ header.pageHeader::-webkit-scrollbar-thumb:hover {
   }
 }
 
-.active {
+.navBtn.active {
   font-weight: 900;
   background: var(--active);
+  color: var(--active-color);
 }
 
 #logoutBtn {
