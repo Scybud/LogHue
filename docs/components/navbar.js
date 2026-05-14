@@ -37,7 +37,7 @@ class DocsNavbar {
         <span class="page-title">Help Center</span>
       </div>
       <div class="headerActions">
-        <a href="https://loghue.com" class="headerLink">Go to App</a>
+        <a href="https://app.loghue.com" class="headerLink">Go to App</a>
       </div>
     `;
   }
