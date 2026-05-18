@@ -179,7 +179,7 @@ output.value = cleaned;
       showLimitModal(err.used || 0, err.limit || 0);
       return;
     } else if (err.message === "too many requests") {
-      actionMsg("Too many requests. Please wait 5minutes before retrying.")
+      actionMsg("Too many requests. Please wait 5 minutes before retrying.")
       return;
     }
 

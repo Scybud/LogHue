@@ -17,6 +17,8 @@ export async function initPersonalTasks() {
   await sessionReady;
   const user = sessionState.user;
 
+  if(!user) return;
+  
   personalCreatedLogs = document.getElementById("personalCreatedLogs");
 
   loggedTasksCount = document.getElementById("loggedTasksCount");
