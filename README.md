@@ -7,7 +7,7 @@ It brings tasks, logs, and progress into one focused workspace so work stays cle
 
 ---
 
-## 🚀 Overview
+## Overview
 
 Most teams don’t lack tools — they lack clarity.
 
@@ -21,7 +21,7 @@ Work gets scattered across chats, updates are missed, and progress becomes hard 
 
 ---
 
-## ✨ Core Features
+## Core Features
 
 ### 🧩 Workspace-Centered Collaboration
 Create dedicated workspaces for teams, projects, or departments.  
@@ -55,7 +55,7 @@ A clean, dark interface designed to reduce noise and keep attention on real work
 
 ---
 
-## 🛠️ How It Works
+## How It Works
 
 1. Create a workspace  
 2. Add your team  
@@ -66,7 +66,7 @@ A clean, dark interface designed to reduce noise and keep attention on real work
 
 ---
 
-## 🎯 Who It’s For
+## Who It’s For
 
 - **Growing teams** that need structure  
 - **Managers** who want visibility without micromanaging  
@@ -75,7 +75,7 @@ A clean, dark interface designed to reduce noise and keep attention on real work
 
 ---
 
-## 💡 Example Workflow
+## Example Workflow
 
 A team creates a workspace for a project.  
 A task is assigned.  
@@ -87,7 +87,7 @@ Everything is clear. Nothing is lost.
 
 ---
 
-## ⚙️ Tech Stack
+## Tech Stack
 
 - Frontend: HTML, CSS, JavaScript  
 - Backend: Supabase  
@@ -95,7 +95,7 @@ Everything is clear. Nothing is lost.
 
 ---
 
-## 🚧 Project Status
+## Project Status
 
 LogHue is currently in active development.
 
@@ -103,14 +103,14 @@ Core features are being refined, and backend systems like real-time updates and 
 
 ---
 
-## 📷 Preview
+## Preview
 
 ![Dashboard](/assets/images/dashboard-preview.png)
 ![Workspace Dashobard](/assets/images/workspace-admin-dashboard.png)
 
 ---
 
-## 🌍 Vision
+## Vision
 
 LogHue is building a new standard for how teams track work:
 
@@ -118,7 +118,7 @@ LogHue is building a new standard for how teams track work:
 
 ---
 
-## 📄 License
+## License
 
 Proprietary — All rights reserved.
 
@@ -126,4 +126,4 @@ Proprietary — All rights reserved.
 
 ## 👤 Author
 
-Built by Abdulroqib  
+Built by Abdulroqib  Oladipo
