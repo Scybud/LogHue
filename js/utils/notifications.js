@@ -85,7 +85,7 @@ export async function fetchNotificationsForUser() {
     .select(
       `
       *,
-      actor:profiles(full_name),
+      actor:profiles(full_name, avatar_url),
       workspace:workspaces(name),
       workspace_members!inner(user_id)
     `,
@@ -119,6 +119,9 @@ export async function renderGlobalNotifications(notifications) {
 
   if (notifBadge) {
     notifBadge.textContent = unreadCount;
+  }
+  if(unreadCount === 0) {
+    notifBadge.remove();
   }
 
   for (const notif of notifications) {
@@ -194,28 +197,29 @@ if (notif.type === "task_logged" || notif.type ==="task_ping") {
       link.href = `task-view?task=${encodeURIComponent(notif.entity_id)}`;
     }
 
+const actorAvatar = document.createElement("img");
+actorAvatar.classList.add("profileAvatar");
+actorAvatar.src = notif.actor.avatar_url ||
+  "https://loghue.com/assets/images/default_profile.png";
+  link.appendChild(actorAvatar);
 
-    const actorName = document.createElement("b");
-    actorName.textContent = notif.actor.full_name || "Someone";
-    link.appendChild(actorName);
+    const actorName = notif.actor.full_name || "Someone";
 
-    let bodyTextContent = "";
+    let bodyTextContent = document.createElement("p")
 
     if (notif.type === "task_assigned") {
-      bodyTextContent = ` assigned you to "${notif.task?.title || (notif.task === null ? "a deleted task" : "a task")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}" `;
+      bodyTextContent.textContent = `${actorName} assigned you to "${notif.task?.title || (notif.task === null ? "a deleted task" : "a task")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}" `;
     } else if(notif.type === "task_ping") {
-      bodyTextContent = ` pinged you on "${notif.task?.title || (notif.task === null ? "a deleted task" : "a task")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}". Log an update now!`;
+      bodyTextContent.textContent = `${actorName} pinged you on "${notif.task?.title || (notif.task === null ? "a deleted task" : "a task")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}". Log an update now!`;
     } else if (notif.type === "discussion_started") {
-      bodyTextContent = ` started a discussion "${notif.discussion?.title || (notif.discussion === null ? "a deleted discussion" : "a discussion")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}" `;
+      bodyTextContent.textContent = `${actorName} started a discussion "${notif.discussion?.title || (notif.discussion === null ? "a deleted discussion" : "a discussion")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}" `;
     } else if (notif.type === "task_logged") {
-      bodyTextContent = ` logged progress on "${notif.task?.title || (notif.task === null ? "a deleted task" : "a task")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}" `;
+      bodyTextContent.textContent = `${actorName} logged progress on "${notif.task?.title || (notif.task === null ? "a deleted task" : "a task")}" in workspace "${notif.workspace?.name || "Unknown Workspace"}" `;
     } else {
-      bodyTextContent = ` ${notif.type}`;
+      bodyTextContent.textContent = ` ${notif.type}`;
     }
 
-    const bodyText = document.createTextNode(bodyTextContent);
-
-    link.appendChild(bodyText);
+    link.appendChild(bodyTextContent);
 
     const timeSpan = document.createElement("span");
     timeSpan.className = "timestamp";

@@ -415,17 +415,20 @@ flex-direction: column;
 }
 #notificationsList .notificationsItem{
   border-radius: var(--radius);
-  margin-bottom: var(--space-xs);
   border-bottom: 1px solid var(--notif-border);
- padding: var(--space-md) var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-xs);
 }
 #notificationsList .notificationsItem:hover {
   background: var(--active);
   cursor: pointer;
 }
 #notificationsList  .notificationsItem a {
+  position: relative;
   color: var(--notif-text);
-
+  display: flex;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-md) var(--space-lg);
 }
 #notificationsList  .notificationsItem a:hover {
   text-decoration: none;
@@ -439,6 +442,9 @@ flex-direction: column;
 }
 .notificationsItem .timestamp {
     display: block;
+    position: absolute;
+    bottom: 0;
+
     margin: var(--space-sm) 0;
   font-size: 0.85rem;
   opacity: 0.8;
