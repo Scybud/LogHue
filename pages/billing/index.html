@@ -7,6 +7,8 @@
 
   <!-- Keep your existing CSS -->
   <link rel="stylesheet" href="https://loghue.com/css/base.css">
+      <link rel="stylesheet" href="https://loghue.com/css/theme.css" />
+
   <link rel="stylesheet" href="https://loghue.com/css/component.css">
     <link rel="stylesheet" href="https://loghue.com/css/utilities.css">
 
@@ -42,7 +44,7 @@
     }
 
     .subtext {
-      color: #777;
+      color: var(--text-muted);
       margin-bottom: 24px;
     }
 
@@ -62,7 +64,7 @@
         backdrop-filter: blur(30px);
   background: rgba(255, 119, 0, 0.29);
       border: 1px solid var(--tag);
-      color: #fff;
+      color: var(--color);
       margin-left: 8px;
     }
 
@@ -113,7 +115,7 @@
       margin: auto !important;
       background: transparent;
       border: 1px solid #ccc;
-      color: #fff;
+      color: var(--color);
     }
 
     .upgrade-section {
@@ -137,7 +139,7 @@
 <body>
    <header class="pageHeader">
       <div class="headerLeft">
-  <a href="../dashboard" class="backLink"><!-- Back Icon -->
+  <a href="https://loghue.com/dashboard" class="backLink"><!-- Back Icon -->
       <svg
         width="20"
         height="20"
@@ -203,6 +205,7 @@
 
   <script type="module" src="https://loghue.com/js/billing/index.js">
 </script>
+<script type="module" src="https://loghue.com/js/app.js"></script>
 <script type="module" src="https://loghue.com/js/session.js"></script>
 </body>
 </html>
