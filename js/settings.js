@@ -334,9 +334,19 @@ async function performAccountDeletionProcess() {
       .eq("created_by", session.user.id)
       .order("created_at", { ascending: false });
 
-      if(createdWorkspaces.length >= 1) {
-actionMsg("Workspace ownership must be transfered before account deletion", "error");
-return;
+      if (createdError) {
+        actionMsg("Could not verify workspace ownership.", "error");
+        deleteAccountBtn.disabled = false;
+        return;
+      }
+
+      if (createdWorkspaces?.length > 0) {
+        actionMsg(
+          "Workspace ownership must be transferred before account deletion",
+          "error",
+        );
+
+        return;
       }
       
   const email = session.user.email;
