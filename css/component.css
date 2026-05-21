@@ -3,7 +3,7 @@
   background-color: var(--form-bg);
   border: 1px solid var(--border);
   background: var(--form-bg);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
 
   display: flex;
   justify-content: center;
@@ -38,8 +38,8 @@ label {
 .permissionItem {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin: 8px 0;
+  gap: var(--space-sm);
+  margin: var(--space-sm) 0;
   font-size: 14px;
   cursor: pointer;
 }
@@ -61,7 +61,7 @@ select {
   color: var(--input-color);
   width: 100%;
   padding: calc(var(--space-xs) * 3);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   outline: none;
   border: 1px solid var(--border);
   font-size: 1rem;
@@ -95,7 +95,7 @@ select {
   justify-content: center;
   align-items: center;
   background-color: #f2f2f2;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
 }
 .workspaceInfoCard {
   display: flex;
@@ -122,7 +122,6 @@ PERSONAL LOGGED TASK SECTION
   display: flex;
   flex-direction: column;
   gap: calc(var(--space-md) - 2px);
-  border-radius: var(--radius);
 }
 
 input[type="datetime-local"]::-webkit-calendar-picker-indicator {
@@ -396,7 +395,7 @@ button.danger {
 .btn {
   background: var(--primary);
   padding: calc(var(--space-xs) * 3);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   margin: 0 var(--space-xs);
   font-size: 1rem;
   font-weight: 600;
@@ -488,7 +487,7 @@ button.danger {
   background: var(--card-bg);
   padding: calc(var(--space-md));
   margin: var(--space-sm) 0;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   box-shadow: var(--shadow);
   transition: transform 0.2s ease;
 }
@@ -526,7 +525,7 @@ button.dropdown-item {
   height: 100%;
 
   background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(10px) brightness(90%);
+  backdrop-filter: var(--filter) brightness(90%);
 }
 .modalContainer form {
   z-index: 9999;
@@ -544,7 +543,7 @@ button.dropdown-item {
 }
 @media (max-width: 600px) {
   #statsContainer {
-    gap: 1px;
+    gap: 2px;
     grid-template-columns: 1fr 1fr;
   }
   #statsContainer .card {
@@ -597,6 +596,9 @@ button.dropdown-item {
   font-size: 0.9rem;
   opacity: 0.5;
 }
+#subscriptionType::after {
+  content: " Plan";
+}
 
 /*CONSENT*/
 .consent-banner {
@@ -608,18 +610,18 @@ button.dropdown-item {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
   z-index: 3;
 }
 
 .consent-content h3 {
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-sm);
   font-size: 18px;
   font-weight: 600;
 }
 
 .consent-content p {
-  margin: 0 0 16px;
+  margin: 0 0 var(--space-md);
   font-size: 14px;
   color: var(--chevron-color);
 }
@@ -627,7 +629,7 @@ button.dropdown-item {
 .consent-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0 8px;
+  gap: 0 var(--space-sm);
   justify-content: flex-end;
 }
 
@@ -647,7 +649,7 @@ button.dropdown-item {
   text-decoration: none;
 }
 .modal-content {
-  padding: 24px;
+  padding: var(--space-lg);
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
@@ -660,10 +662,10 @@ button.dropdown-item {
 }
 
 .modal-actions {
-  margin-top: 20px;
+  margin-top: calc(var(--space-lg) - 4px);
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
+  gap: var(--space-sm);
 }
 
 .cardHeader {
@@ -678,7 +680,7 @@ button.dropdown-item {
   flex-direction: column;
   gap: var(--space-md);
   max-width: 500px;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   width: 100%;
   padding: var(--space-md);
   margin: var(--space-md);
@@ -706,12 +708,12 @@ button.dropdown-item {
   border: none;
   background: var(--mainContent-bg); /* your theme variable */
   color: var(--color);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   min-height: 300px;
   max-height: 100%;
 }
 #editor img {
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   width: 300px;
 }
 .ql-container.ql-snow {
@@ -753,7 +755,7 @@ div#editor.ql-container.ql-snow {
   display: flex;
   gap: var(--space-sm);
   padding: var(--space-sm);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
 }
 .notesActionBtn {
   min-width: 100px;
@@ -773,7 +775,7 @@ div#editor.ql-container.ql-snow {
   top: 0;
   overflow-y: auto;
   max-height: 600px;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   border-top: 12px solid var(--bg);
   border-bottom: 12px solid var(--border);
 }
@@ -784,12 +786,12 @@ div#editor.ql-container.ql-snow {
 
 #notesList::-webkit-scrollbar-track {
   background: var(--card-bg);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
 }
 
 #notesList::-webkit-scrollbar-thumb {
   background: #393838;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   border: 2px solid var(--card-bg);
 }
 
@@ -804,7 +806,7 @@ div#editor.ql-container.ql-snow {
   background: var(--card-bg);
   padding: var(--space-md) var(--space-sm);
   margin: var(--space-sm);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.4s ease;
 }
@@ -854,7 +856,7 @@ button.toggleNotesListBtn {
     background-color: var(--input-bg) !important;
  color: var(--input-color);
   padding: calc(var(--space-xs) * 3);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   outline: none;
   border: 1px solid var(--border) !important;
   transition: all 0.3s ease;
@@ -884,21 +886,21 @@ button.toggleNotesListBtn {
 .activityList {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-md);
 }
 
 .activityItem {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
-  padding: 12px 16px;
-  border-radius: 8px;
+  padding: calc(var(--space-xs) * 3) 16px;
+  border-radius: var(--radius-sm);
 }
 
 .activityHeader,
 .discussionHeader {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: calc(var(--space-xs) + 2px);
   font-size: 14px;
 }
 
@@ -920,12 +922,12 @@ button.toggleNotesListBtn {
 }
 
 .activityBody {
-  margin-top: 6px;
-  font-size: 14px;
+  margin-top:  calc(var(--space-xs) + 2px);
+  font-size:  calc(var(--space-md) - 2px);
 }
 
 .activityTime {
-  margin-top: 8px;
+  margin-top: calc(--space-sm);
   font-size: 12px;
   color: var(--text-muted);
 }
@@ -935,7 +937,7 @@ button.toggleNotesListBtn {
   border: 1px solid var(--warning);
   color: #ffffff;
   padding: var(--space-md);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   margin: var(--space-sm);
   text-align: center;
   display: flex;
@@ -953,6 +955,7 @@ button.toggleNotesListBtn {
   font-size: 0.9rem;
 }
 .closeWarning {
+  border-radius: var(--space-sm);
   background: none;
   border: none;
   position: absolute;
@@ -997,7 +1000,7 @@ button.toggleNotesListBtn {
   
   background: var(--card-bg);
   max-width: 800px;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   width: 100%;
   max-height: 500px;
   overflow: auto;
@@ -1021,7 +1024,7 @@ button.toggleNotesListBtn {
   font-size: 12px;
   font-weight: 600;
   opacity: 0.7;
-  margin-bottom: 4px;
+  margin-bottom: var(--space-xs);
 }
 
 .searchType.workspace {
@@ -1036,7 +1039,7 @@ button.toggleNotesListBtn {
   padding: var(--space-md) var(--space-sm);
   border-bottom: 1px solid var(--border);
   width: 95%;
-border-radius: var(--radius);
+border-radius: var(--radius-sm);
 transition: background 0.2s ease;
 }
 .searchItem:hover {

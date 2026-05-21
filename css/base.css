@@ -1,5 +1,6 @@
 /*IMPORT FORM*/
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://scybud.github.io/scybud-ui/css/variables.css");
 
 /*RESET*/
 * {
@@ -31,17 +32,6 @@ body {
 
 /*DEFAULT THEME*/
 :root {
-  --bg: #000;
-  --color: #fff;
-  --text: #fdfeff;
-  --text-muted: #b2b7c0;
-
-  --card-bg: #151515;
-  --mainContent-bg: #1a1a1a45;
-  --navBtn-bg: #222;
-  --input-bg: #1c1c1c;
-  --border: #333;
-
 --primary: #1565C0; 
   --primary-light: #1976D2;
   
@@ -53,33 +43,15 @@ body {
 
   --gradient: linear-gradient(to right, #1e88e5, #42a5f5);
 
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #e56458;
-
-  --active: #393838;
-  --bg-hover: #201f1f;
-
   --notif-bg-unread: #1e3a5f; /* dark blue for unread */
   --notif-bg-read: #2c2c2c; /* dark background for read */
   --notif-text: #eee;
+  --notif-border: #444;
 
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  --radius: 8px;
-
-  --tag: #2a2a2a;
+  --tag: #130404;
 --tag-text: #cfcfcf;
 
-  --header-bg: rgba(128, 128, 128, 0.258);
-  --link: #0393d6;
-  --form-bg: #111;
-  --input-color: #ffffff;
   --chevron-color: #c5c5c5;
-  --filter: blur(10px);
-  --notif-border: #444;
-  --border-light: #f3f4f633;
-
-  --neutral: #9ca3af;
 
   --brand-h: 17;
   --brand-s: 70%;
@@ -89,11 +61,6 @@ body {
   --brand-hover: hsl(var(--brand-h), var(--brand-s), 50%);
   --brand-soft: hsl(var(--brand-h), var(--brand-s), 90%);
 
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 32px;
 }
 
 /*COMPACT INTERFACE DENSITY*/
@@ -155,5 +122,5 @@ a .logo:hover {
   height: 100%;
   margin: 0 auto;
   display: block;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
 }
