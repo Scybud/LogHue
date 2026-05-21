@@ -124,7 +124,7 @@ height: 30px;
     transition: transform 0.35s ease;
     border-right: 1px solid var(--border);
   }
-
+  
   .sidebarContainer.slideShow {
     transform: translateX(0);
   }

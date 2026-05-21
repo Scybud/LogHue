@@ -36,7 +36,7 @@
 :root[data-theme="light"] {
     --bg: #ffffff;
     --color: #000000;
-  --text-muted: #545454;
+  --muted: #545454;
   --notif-bg-unread: #e6f7ff;
   --notif-bg-read: #fff;
   --notif-text: #000;

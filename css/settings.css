@@ -173,8 +173,8 @@ border: 1px solid var(--border);
   height: 18px;
   width: 18px;
   left: 2px;
-  top: 2px;
-  background-color: var(--text-muted);
+  top: 1px;
+  background-color: var(--muted);
   border-radius: 50%;
   transition: transform 0.25s ease;
 }

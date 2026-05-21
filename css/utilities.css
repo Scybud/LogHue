@@ -699,7 +699,7 @@ transform: scale(0.9);
     font-weight: 600;
     display: block;
     margin-bottom: 4px;
-    color: var(--text-muted);
+    color: var(--muted);
   }
 }
 .danger.settingsCard {
