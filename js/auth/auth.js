@@ -15,21 +15,6 @@ async function signup(name, email, password) {
     return false;
   }
 
-  if (data.user) {
-    const { error: profileError } = await supabase.from("profiles").upsert([
-      {
-        id: data.user.id,
-        full_name: name,
-        email: email,
-      },
-    ]);
-
-    if (profileError) {
-      actionMsg(profileError.message, "error");
-      return false;
-    }
-  }
-
   actionMsg("Account created successfully!", "success");
   return true;
 }
