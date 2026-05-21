@@ -9,7 +9,7 @@
 .settingsCard {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   padding: calc(var(--space-md) + 8px);
   display: flex;
   flex-direction: column;

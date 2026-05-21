@@ -6,12 +6,12 @@
 
 .mainContent::-webkit-scrollbar-track {
   background: var(--card-bg);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
 }
 
 *::-webkit-scrollbar-thumb {
   background: #393838;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   border: 2px solid var(--card-bg);
 }
 
@@ -42,13 +42,13 @@ header.pageHeader::-webkit-scrollbar {
 
 header.pageHeader::-webkit-scrollbar-track {
   background: var(--main-bg);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
 }
 
 header.pageHeader::-webkit-scrollbar-thumb {
   background: var(--bg);
   opacity: 0.1;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   border: 1px solid var(--card-bg);
 }
 
@@ -80,7 +80,7 @@ header.pageHeader::-webkit-scrollbar-thumb:hover {
   right: 0;
   color: var(--primary);
   background: none;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   transition: all 0.3s ease;
 }
@@ -93,7 +93,7 @@ header.pageHeader::-webkit-scrollbar-thumb:hover {
   font-weight: 600;
   background: none;
   color: var(--color);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   cursor: pointer;
   transition: 0.2s;
@@ -361,7 +361,7 @@ input.error {
   margin: 0;
   min-height: 40px;
   width: 100%;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   padding: var(--space-xs);
 }
 #actionsMessage.slideIn {
@@ -392,7 +392,7 @@ input.error {
 /*NOTIFICATIONS*/
 
 #notificationsContainer {
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   position: fixed;
   top: calc(var(--header-height) / 10);
   right: 0;
@@ -414,7 +414,7 @@ display: flex;
 flex-direction: column;
 }
 #notificationsList .notificationsItem{
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   border-bottom: 1px solid var(--notif-border);
   margin-bottom: var(--space-xs);
 }
@@ -640,7 +640,7 @@ tbody td {
   font-weight: 600;
   opacity: 0.7;
   padding: 5px;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   border: 1px solid var(--danger);
 }
 
@@ -656,7 +656,7 @@ tbody td {
   font-weight: 600;
   opacity: 0.7;
   padding: 5px;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   border: 1px solid var(--success);
 }
 .restoreApiBtn:hover {
@@ -706,7 +706,7 @@ transform: scale(0.9);
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-sm);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   padding: var(--space-sm);
   border: 1px solid var(--danger);
   overflow-x: auto;
