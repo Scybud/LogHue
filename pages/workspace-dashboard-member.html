@@ -115,16 +115,16 @@
         </section>
       </article>
     </main>
-
-    <script type="module">
-      import { initMemberWorkspaceData } from "https://loghue.com/js/features/workspace-member.js";
-
-      initMemberWorkspaceData();
-    </script>
+    
     <script
       type="module"
       src="https://loghue.com/js/utils/noAuthSessionProtect.js"
     ></script>
-    <script type="module" src="https://loghue.com/js/app.js"></script>
+    <script type="module" src="https://loghue.com/js/app.js" defer></script>
+    <script type="module" defer>
+      import { initMemberWorkspaceData } from "https://loghue.com/js/features/workspace-member.js";
+
+      initMemberWorkspaceData();
+    </script>
   </body>
 </html>

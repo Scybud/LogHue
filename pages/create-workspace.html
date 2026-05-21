@@ -125,8 +125,10 @@
         <p class="msg tunedText">Your workspace has been created successfully.</p>
         <p class="msg tunedText">Redirecting to dashboard...</p>
     </div>
+
+    
      <!-- JS -->
-<script type="module">
+<script type="module" defer>
   import {sessionState, sessionReady} from "https://loghue.com/js/session.js";
   import { actionMsg } from "https://loghue.com/js/utils/modals.js"
   import {supabase} from "https://loghue.com/js/supabase.js"
@@ -246,8 +248,8 @@
 attachCreateWorkspaceEvent();
 </script>
 
+<script type="module" src="https://loghue.com/js/utils/noAuthSessionProtect.js" defer></script>
 <script type="module" src="https://loghue.com/js/session.js" defer></script>
-  <script type="module" src="https://loghue.com/js/utils/noAuthSessionProtect.js" defer></script>
   <script type="module" src="https://loghue.com/js/app.js" defer></script>
   </body>
 </html>
