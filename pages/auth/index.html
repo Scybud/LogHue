@@ -45,13 +45,13 @@
         max-width: 460px;
         width: 100%;
         margin: 0 auto;
-        padding: 2rem;
+        padding: var(--space-md);
         text-align: center;
       }
 
       .authGateway .logo {
         width: 80px;
-        border-radius: var(--radius);
+        border-radius: var(--radius-md);
         corner-shape: squircle;
         margin-bottom: 1rem;
       }
@@ -62,12 +62,12 @@
       }
 
       .oauthBtn {
-        color: var(--color);
+        color: var(--text-primary);
         width: 100%;
         padding: 0.75rem;
-        border-radius: var(--radius);
+        border-radius: var(--radius-sm);
         border: 1px solid var(--border);
-        background: var(--surface);
+        background: var(--surface-primary);
         margin-bottom: 0.75rem;
         display: flex;
         justify-content: center;
@@ -78,10 +78,9 @@
           background 0.2s,
           border-color 0.2s;
       }
-
       .oauthBtn:hover {
-        background: var(--surface-2);
-        border-color: var(--border-hover);
+        background: var(--surface-secondary);
+        border-color: var(--border-light);
       }
 
       .oauthBtn .icon {
@@ -100,23 +99,23 @@
         margin-bottom: 0.75rem;
       }
       .secondaryBtn {
-        background: var(--surface-2);
+        background: var(--surface-secondary);
       }
       .primaryBtn,
       .secondaryBtn {
         width: 100%;
         display: block;
         padding: 0.75rem;
-        color: var(--color);
-        border-radius: var(--radius);
+        color: var(--color-primary);
+        border-radius: var(--radius-sm);
         cursor: pointer;
         transition: all 0.5 ease;
       }
       .primaryBtn:hover,
       .secondaryBtn:hover {
         text-decoration: none;
-        opacity: 0.7;
       }
+      
       button{
            width: 100%;
         display: block;
@@ -140,42 +139,10 @@
         height: 1px;
         background: var(--border-light);
       }
-      .oauthBtn {
-        width: 100%;
-        padding: 0.75rem;
-        border-radius: var(--radius);
-        border: 1px solid var(--border);
-        background: var(--surface);
-        margin-bottom: 0.75rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 0.5rem;
-        cursor: pointer;
-        transition:
-          background 0.2s,
-          border-color 0.2s;
-      }
-
-      .oauthBtn:hover {
-        background: var(--surface-2);
-        border-color: var(--border-hover);
-      }
-
-      .oauthBtn .icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .oauthBtn svg {
-        width: 18px;
-        height: 18px;
-      }
 .emailLogin:hover {
-  background: none;
-  border: 1px solid var(--primary);
-  color: var(--primary);
+  background: var(--surface-secondary);
+  border-color: var(--primary);
+  color: var(--text-primary);
 }
       .form {
         margin-top: 50px;
