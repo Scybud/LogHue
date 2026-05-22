@@ -174,11 +174,8 @@ font-family: 'Patrick Hand', sans-serif, cursive;
   cursor: pointer;
 }
 
-.sectionDescription {
-        font-size: 0.8rem;
-margin: 4px 0;
-color: var(--text-muted);
-      }
+
+
       .logoContainer {
         display: flex;
         justify-content: center;

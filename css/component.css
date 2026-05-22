@@ -535,8 +535,7 @@ button.dropdown-item {
 }
 
 .statNum {
-  font-size: 2rem;
-  font-weight: 600;
+  font-size: var(--text-3xl);
 }
 #statsContainer {
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));

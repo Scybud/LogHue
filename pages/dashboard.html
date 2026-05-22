@@ -6,6 +6,12 @@
     <title>Dashboard | LogHue</title>
 
     <!--CSS LINKS-->
+
+    <!--SCYBUD UI-->
+    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/variables.css">
+    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/typography.css">
+
+    <!--APP SPECIFIC CSS-->
     <link rel="stylesheet" href="https://loghue.com/css/base.css" />
     <link rel="stylesheet" href="https://loghue.com/css/layout.css" />
     <link rel="stylesheet" href="https://loghue.com/css/component.css" />
@@ -203,17 +209,17 @@
         </div>
         <div class="grid" id="statsContainer">
           <div class="card">
-            <span class="statsName">Active Workspaces</span>
+            <span class="text-bold">Active Workspaces</span>
             <div class="numContainer">
               <svg width="24" height="24" fill="#6CCF7F" viewBox="0 0 24 24">
                 <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
               </svg>
 
-              <span class="statNum" id="activeWorkspaceCount">0</span>
+              <span class="statNum text-bold" id="activeWorkspaceCount">0</span>
             </div>
           </div>
           <div class="card">
-            <span class="statsName">Created Workspaces</span>
+            <span class="text-bold">Created Workspaces</span>
 
             <div class="numConatiner">
               <svg width="24" height="24" fill="#6FB7FF" viewBox="0 0 24 24">
@@ -222,22 +228,22 @@
                 />
               </svg>
 
-              <span class="statNum" id="createdWorkspacesCount">0</span>
+              <span class="statNum text-bold" id="createdWorkspacesCount">0</span>
             </div>
           </div>
           <div class="card">
-            <span class="statsName">Closed Workspaces</span>
+            <span class="text-bold">Closed Workspaces</span>
 
             <div class="numConatiner">
               <svg width="24" height="24" fill="#9EA7B3" viewBox="0 0 24 24">
                 <path d="M3 4h18v4H3V4zm2 6h14v10H5V10z" />
               </svg>
 
-              <span class="statNum" id="closedWorkspacesCount">0</span>
+              <span class="statNum text-bold" id="closedWorkspacesCount">0</span>
             </div>
           </div>
           <div class="card">
-            <span class="statsName">Logged Tasks</span>
+            <span class="text-bold">Logged Tasks</span>
             <div class="numConatiner">
               <svg width="24" height="24" fill="#FFDD7A" viewBox="0 0 24 24">
                 <path
@@ -245,14 +251,14 @@
                 />
               </svg>
 
-              <span class="statNum" id="loggedTasksCount">0</span>
+              <span class="statNum text-bold" id="loggedTasksCount">0</span>
             </div>
           </div>
         </div>
 
         <section>
           <h2>Recent Workspaces</h2>
-          <p class="sectionDescription">
+          <p class="text-muted">
             Recently joined/created workspaces.
             <a
               class="docLink"
@@ -270,7 +276,7 @@
 
         <section class="personalCreatedLogsContainer">
           <h2>Recent Logs</h2>
-          <p class="sectionDescription">
+          <p class="text-muted">
             Your latest logged work. View your full history anytime.
           </p>
           <div id="recentLogs" class="logs"></div>

@@ -1,6 +1,5 @@
 /*IMPORT FORM*/
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
-@import url("https://scybud.github.io/scybud-ui/css/variables.css");
 
 /*RESET*/
 * {
@@ -16,7 +15,6 @@ body {
   padding: 0;
   max-width: 100%;
   width: 100%;
-  font-family: "Inter", sans-serif, system-ui;
   background: var(--bg);
   color: var(--color);
 }
