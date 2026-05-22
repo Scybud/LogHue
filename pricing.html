@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pricing | LogHue</title>
 
+       <!--SCYBUD UI-->
+    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/variables.css">
+    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/typography.css">
+
+    <!--APP SPECIFIC CSS-->
     <link rel="stylesheet" href="./css/base.css" />
     <link rel="stylesheet" href="./css/theme.css" />
 
@@ -68,18 +73,16 @@
       header {
         width: 100%;
         max-width: 900px;
-        text-align: center;
         margin-bottom: 60px;
       }
 
       header h1 {
-        font-size: 2.6rem;
         font-weight: 700;
         margin-bottom: 0.4em;
       }
 
       header p {
-        font-size: 1.15rem;
+        font-size: var(--text-md);
         opacity: 0.85;
       }
 
@@ -117,13 +120,10 @@
 
       .plan h2 {
         margin-top: 0;
-        font-size: 1.6rem;
-        font-weight: 600;
       }
 
       .price {
         font-size: 2rem;
-        font-weight: 700;
         margin: 12px 0;
       }
 
@@ -336,15 +336,15 @@
 
     <main>
       <header>
-    <h1>Pricing that scales with your workflow</h1>
-<p>Start free. Upgrade when your team grows. Pay for OCR only when you need it.</p>
+    <h1 class="text-center">Pricing that scales with your workflow</h1>
+<p class="text-center">Start free. Upgrade when your team grows. Pay for OCR only when you need it.</p>
       </header>
 
       <div class="pricing-grid">
         <!-- FREE PLAN -->
         <div class="plan">
           <h2>Free</h2>
-          <div class="price">$0 <span>/ forever</span></div>
+          <div class="price text-bold">$0 <span>/ forever</span></div>
           <p>For individuals and small groups exploring LogHue.</p>
 
           <ul>
@@ -360,7 +360,7 @@
         <!-- PRO PLAN -->
 <div class="plan" style="border: 2px solid var(--accent); position: relative; transform: scale(1.03);">
   <h2>Pro</h2>
-          <div class="price">$6 <span>/ user / month</span></div>
+          <div class="price text-bold">$6 <span>/ user / month</span></div>
           <p style="color: var(--primary); font-weight: 600; position: absolute; top: 6px; right: 8px;   padding: 4px 12px;
   border-radius: 999px;
   background: rgba(3, 101, 146, 0.164);
@@ -387,7 +387,7 @@
         <!-- PRO PLAN -->
         <div class="plan">
           <h2>Team</h2>
-          <div class="price">$15 <span>/ user / month</span></div>
+          <div class="price text-bold">$15 <span>/ user / month</span></div>
           <p>For growing teams and organizations that need full flexibility.</p>
 
           <ul>
@@ -408,8 +408,8 @@
 
 
       <section style="max-width: 900px; width: 100%; margin-top: 80px">
-  <h2>Power Add-ons</h2>
-  <p style="opacity: 0.85; text-align: center;">
+  <h2 class="text-center">Power Add-ons</h2>
+  <p class="text-center">
     Enhance your plan with optional features. Cancel anytime.
   </p>
 
@@ -423,7 +423,7 @@
 
   <div class="plan">
     <h2>Launch</h2>
-    <div class="price">$2.99</div>
+    <div class="price text-bold">$2.99</div>
     <p>Perfect for occasional usage.</p>
     <ul>
       <li><strong>400</strong> OCR credits</li>
@@ -433,7 +433,7 @@
 
   <div class="plan" style="border: 2px solid var(--primary);">
     <h2>Grow 🔥</h2>
-    <div class="price">$6.99</div>
+    <div class="price text-bold">$6.99</div>
     <p>Most popular for active users.</p>
     <ul>
       <li><strong>1000</strong> OCR credits</li>
@@ -443,7 +443,7 @@
 
   <div class="plan">
     <h2>Scale</h2>
-    <div class="price">$14.99</div>
+    <div class="price text-bold">$14.99</div>
     <p>Best for heavy workflows.</p>
     <ul>
       <li><strong>3000</strong> OCR credits</li>
@@ -457,7 +457,7 @@
 
 
       <section style="max-width: 900px; width: 100%; margin-top: 80px">
-        <h2>Compare Plans</h2>
+        <h2 class="text-center">Compare Plans</h2>
 
         <table class="comparison-table" style="overflow-x: auto">
           <thead>
@@ -522,11 +522,11 @@
       </section>
 
       <section style="max-width: 900px; width: 100%; margin-top: 80px">
-        <h2 style="font-size: 1.8rem; margin-bottom: 0.6em; font-weight: 600">
+        <h2 class="text-center">
           Why Upgrade to Team?
         </h2>
 
-        <p style="opacity: 0.85; margin-bottom: 20px">
+        <p style="margin: 20px 0">
           Pro is built for teams that outgrow the limits of the Free and Team
           plans. If your workspace is becoming central to your team’s workflow,
           Pro gives you the flexibility, scale, and control you need.
@@ -611,25 +611,25 @@
       </section>
 
       <section style="max-width: 900px; width: 100%; margin-top: 80px">
-        <h2 style="font-size: 1.8rem; margin-bottom: 0.6em; font-weight: 600">
+        <h2 class="text-center">
           Our Pricing Philosophy
         </h2>
 
-        <p style="opacity: 0.85; line-height: 1.65">
+        <p style="margin: 20px 0;">
           LogHue is built for teams that value clarity, structure, and
           simplicity. Our pricing reflects that philosophy, no hidden fees, no
           confusing add‑ons, and no artificial limitations designed to force
           upgrades.
         </p>
 
-        <p style="opacity: 0.85; line-height: 1.65; margin-top: 16px">
+        <p>
           The Free plan gives individuals and small groups everything they need
           to get started. The Pro plan supports growing groups with more
           structure and collaboration. And Team unlocks full flexibility for
           teams that rely on LogHue every day.
         </p>
 
-        <p style="opacity: 0.85; line-height: 1.65; margin-top: 16px">
+        <p>
           We believe great tools should scale with you, not get in your way.
         </p>
       </section>

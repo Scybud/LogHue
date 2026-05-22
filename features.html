@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Features | LogHue</title>
 
+         <!--SCYBUD UI-->
+    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/variables.css">
+    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/typography.css">
+
+    <!--APP SPECIFIC CSS-->
     <link rel="stylesheet" href="./css/base.css" />
     <link rel="stylesheet" href="./css/theme.css" />
 
@@ -68,7 +73,6 @@
       header {
         width: 100%;
         max-width: 900px;
-        text-align: center;
         margin-bottom: 60px;
       }
 
@@ -78,7 +82,7 @@
       }
 
       header p {
-        font-size: 1.15rem;
+        font-size: var(--text-lg);
         opacity: 0.85;
       }
 
@@ -102,12 +106,10 @@
 
       h2 {
         margin-bottom: 0.6em;
-        font-weight: 600;
       }
 
       h3 {
         margin-top: 1.4rem;
-        font-weight: 600;
       }
 
       .feature-grid {
@@ -268,8 +270,8 @@
 
     <main>
       <header>
-        <h1>Features That Keep Teams Organized and Moving</h1>
-        <p>
+        <h1 class="text-center">Features That Keep Teams Organized and Moving</h1>
+        <p class="text-center">
           LogHue is built for teams that need clarity, structure, and
           accountability, without the noise of bloated tools. Whether you're
           coordinating a project or documenting your work, LogHue keeps
@@ -279,7 +281,7 @@
 
       <!-- CORE FEATURES -->
       <section>
-        <h2>Core Workspace Features</h2>
+        <h2 class="text-center">Core Workspace Features</h2>
 
         <div class="feature-grid">
           <div class="feature-card">
@@ -340,7 +342,7 @@
 
       <!-- PERSONAL TOOLS -->
       <section>
-        <h2>Personal Tools Inside LogHue</h2>
+        <h2 class="text-center">Personal Tools Inside LogHue</h2>
         <p>
           While LogHue is team‑first, it includes personal tools that help
           individuals stay organized and reflect on their work, even outside a
@@ -370,7 +372,7 @@
 
       <!-- USE CASES -->
       <section>
-        <h2>Built for Real Workflows</h2>
+        <h2 class="text-center">Built for Real Workflows</h2>
 
         <div class="usecase">
           <h3>Teams & Organizations</h3>
@@ -411,7 +413,7 @@
 
       <!-- TECHNICAL DEPTH -->
       <section>
-        <h2>Under the Hood</h2>
+        <h2 class="text-center">Under the Hood</h2>
 
         <div class="feature-grid">
           <div class="feature-card">
