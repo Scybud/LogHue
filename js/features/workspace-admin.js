@@ -544,7 +544,7 @@ async function loadSettings(container, workspace, currentUserId) {
   transferCard.innerHTML = `
   <h3>Transfer Ownership</h3>
   <p class="tunedText">Transfering ownership to another member means you will no longer be the owner of this workspace and will <b>NOT</b> be able to perform sensitive actions on this workspace.</p>
-  <p class="mutedText">This action cannot be undone by you again.</p>
+  <p class="text-muted text-center">This action cannot be undone by you again.</p>
   <button type="button" class="btn danger" id="transferBtn">Transfer Ownership</button>
   `;
   
@@ -553,14 +553,13 @@ async function loadSettings(container, workspace, currentUserId) {
   deleteCard.innerHTML = `
   <h3>⚠️Delete Workspace</h3>
   <p class="tunedText">Deleting this workspace means all all content: tasks, discussions, histories and everything related to this workspace will be errased. Members will be removed from this workspace as well.</p>
-  <p class="mutedText">This action <b>CANNOT</b> be undone. Please be sure of your intentions before performing this action.</p>
+  <p class="text-muted text-center">This action <b>CANNOT</b> be undone. Please be sure of your intentions before performing this action.</p>
   <button type="button" class="btn danger" id="deleteWorkspace">Delete Workspace</button>
   `;
 
   const containerTitle = document.createElement("h3")
-  containerTitle.textContent = "⚠️ Danger Zone";
+  containerTitle.textContent = "Danger Zone";
 
-  
   const dangerContainerInner = document.createElement("div");
   dangerContainerInner.classList.add("danger", "settingsCard");
   dangerContainerInner.append(transferCard, deleteCard);
@@ -593,7 +592,7 @@ const currentUser = data.user
   // Title
   const title = document.createElement("h2");
   title.className = "sectionTitle";
-  title.textContent = "Documents";
+  title.textContent = "📂Documents";
 
   // Upload button
   const uploadBtn = document.createElement("button");
