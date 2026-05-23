@@ -1138,22 +1138,29 @@ function loadInviteHistory(invites, container) {
 }
 
 export async function loadDiscussions(title, discussions, container) {
+const sectionTitle = document.createElement("h2");
+sectionTitle.classList.add("sectionTitle");
+sectionTitle.textContent = "💬" + title;
+
+
+const sectionHeader = document.createElement("div");
+sectionHeader.classList.add("sectionHeader");
+sectionHeader.appendChild(sectionTitle);
+
+const section = document.createElement("div");
+section.classList.add("section");
+section.appendChild(sectionHeader);
 
   if (!discussions || discussions.length === 0) {
     const placeholderText = document.createElement("p")
     placeholderText.classList.add("placeholderText");
     placeholderText.textContent = "No discussions started yet.";
 
-    container.append(placeholderText);
+    section.append(placeholderText);
+    container.append(section);
     return;
   }
 
-  const section = document.createElement("section");
-  section.classList.add("section");
-
-  const sectionTitle = document.createElement("h2");
-  sectionTitle.classList.add("sectionTitle");
-  sectionTitle.textContent = title;
 
   const divGrid = document.createElement("div");
   divGrid.classList.add("container");
@@ -1230,22 +1237,10 @@ dcnHeader.append(img, span);
 
 
 export function loadTasks(title, tasks, container) {
-  if (!tasks || tasks.length === 0) {
-    const placeholderText = document.createElement("p")
-    placeholderText.classList.add("placeholderText");
-    placeholderText.textContent = "No tasks yet.";
 
-    container.append(placeholderText);
-    return;
-  }
-
-  const section = document.createElement("section");
-  section.classList.add("section");
-
-  
   const sectionTitle = document.createElement("h2");
   sectionTitle.classList.add("sectionTitle");
-  sectionTitle.textContent = title;
+  sectionTitle.textContent = "📝" + title;
   
   const docLink = document.createElement("a")
   docLink.classList.add("docLink");
@@ -1254,13 +1249,28 @@ export function loadTasks(title, tasks, container) {
   docLink.rel = "noopener"
   docLink.textContent = "Docs"
 
-
   const sectionHeader = document.createElement("div")
   sectionHeader.classList.add("sectionHeader");
   sectionHeader.append(sectionTitle, docLink)
+  
+  const section = document.createElement("div");
+  section.classList.add("section");
+  section.appendChild(sectionHeader);
+
+  if (!tasks || tasks.length === 0) {
+    const placeholderText = document.createElement("p")
+    placeholderText.classList.add("placeholderText");
+    placeholderText.textContent = "No tasks yet.";
+
+    section.appendChild(placeholderText);
+    container.append(section)
+    return;
+  }
+
 
   const divGrid = document.createElement("div");
   divGrid.classList.add("container", "double-grid");
+  section.appendChild(divGrid);
 
   tasks.forEach((tsk) => {
     const taskCard = document.createElement("div");
@@ -1339,7 +1349,6 @@ details.addEventListener("click", (e) => {
     divGrid.append(taskCard);
   });
 
-  section.append(sectionHeader, divGrid);
   container.append(section);
 }
 
