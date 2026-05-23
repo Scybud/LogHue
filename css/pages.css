@@ -13,7 +13,6 @@ section {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: var(--space-xs);
-  min-height: 400px;
 }
 
 .sectionHeader {

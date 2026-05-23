@@ -429,14 +429,14 @@ export function createWorkspaceCardElement(ws) {
   header.append(headerLeft, headerRight);
 
   // DESCRIPTION
+  /*
   const details = document.createElement("details");
   const summary = document.createElement("summary");
   summary.textContent = "Description";
-
+  details.append(summary, descP);
+*/
   const descP = document.createElement("p");
   descP.textContent = ws.description; // SAFE
-
-  details.append(summary, descP);
 
   // OPEN BUTTON
   const openBtn = document.createElement("button");
@@ -446,7 +446,7 @@ export function createWorkspaceCardElement(ws) {
   openBtn.textContent = "Open Workspace";
 
   // ASSEMBLE
-  workspaceCard.append(header, details, openBtn);
+  workspaceCard.append(header, descP, openBtn);
 
   if (ws.role === "admin") {
     const dropdown = getWorkspaceDropdown(ws);
