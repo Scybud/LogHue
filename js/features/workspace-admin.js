@@ -1590,7 +1590,7 @@ status.append(statusLabel, statusValue);
 
   activityBody.append(message);
 }
-console.log(item)
+
 //ACTIVITY TIME
 const activityTime = document.createElement("div")
 activityTime.classList.add("activityTime");
