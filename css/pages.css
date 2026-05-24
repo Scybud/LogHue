@@ -18,7 +18,9 @@ section {
   border-radius: var(--radius-sm);
   padding: var(--space-xs);
 }
-
+    .sectionDescription {
+      font-size: var(--text-xs);
+    }
 .sectionHeader {
   display: flex;
   justify-content: space-between;
