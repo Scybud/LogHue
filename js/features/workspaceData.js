@@ -378,10 +378,10 @@ export function createWorkspaceCardElement(ws) {
   const headerLeft = document.createElement("div");
   headerLeft.classList.add("workspaceCardHeaderLeft");
 
-  const h3 = document.createElement("h3");
-
+  const workspaceName = document.createElement("span");
+workspaceName.classList.add("text-bold", "workspaceName");
   // workspace name (SAFE)
-  h3.appendChild(document.createTextNode(ws.name + " "));
+  workspaceName.textContent = ws.name;
 
   const roleSpan = document.createElement("span");
   const roleClass = ws.role || "unknown";
@@ -389,7 +389,7 @@ export function createWorkspaceCardElement(ws) {
   roleSpan.classList.add("tag", roleClass);
   roleSpan.textContent = roleClass;
 
-  h3.append(roleSpan);
+  workspaceName.append(roleSpan);
 
   const p = document.createElement("p");
   const metaSpan = document.createElement("span");
@@ -398,7 +398,7 @@ export function createWorkspaceCardElement(ws) {
 
   p.append(metaSpan);
 
-  headerLeft.append(h3, p);
+  headerLeft.append(workspaceName, p);
 
   // HEADER RIGHT (menu button with SVG)
   const headerRight = document.createElement("div");
