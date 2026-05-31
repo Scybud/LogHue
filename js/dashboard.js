@@ -71,6 +71,14 @@ export async function renderDashboard() {
 
     const user = sessionState.user;
 
+    
+    if(sessionState.profile.onboarded === false) {
+      window.location.href = "https://app.loghue.com/create-workspace";
+      console.log("not unboarded");
+      return 
+    } 
+
+    
   if (!upperDashboardContainer) return;
 
   upperDashboardContainer.innerHTML = "";

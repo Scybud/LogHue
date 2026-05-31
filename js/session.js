@@ -89,12 +89,6 @@ function renderUserUI() {
 
   if (!sessionState.user || !sessionState.profile) return;
 
-if(sessionState.profile.onboarded === false) {
-  window.location.href = "https://app.loghue.com/create-workspace";
-  console.log("not unboarded");
-  return 
-} 
-
   const email = sessionState.user.email;
   const [local, domain] = email.split("@");
   const shortEmail = `${local.slice(0, 9)}...@${domain}`;
