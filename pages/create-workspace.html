@@ -86,7 +86,7 @@
     </style>
   </head>
   <body>
-    <a style="display: none;" href="dashboard" class="skipBtn"> <!-- Back Icon -->
+    <a href="dashboard" class="skipBtn"> <!-- Back Icon -->
        <span>Skip</span>
         <svg
   width="20"
@@ -180,7 +180,7 @@
       return;
     }
 
-        if(createdWorkspaces.length >= sessionState.plan.max_workspaces && sessionState.plan.max_workspaces !== null) {
+        if((createdWorkspaces?.length || 0) >= sessionState.plan.max_workspaces && sessionState.plan.max_workspaces !== null) {
                     actionMsg("You have exceeded the limit for workspace creation on your current plan. Subscribe to a new plan to create more workspaces!", "error");
                     return;
         }
@@ -207,8 +207,9 @@
     //MARK UNBOARDED TRUE
      const { data: onboarded, error: onboardedError } = await supabase
       .from("profiles")
-      .update("onboarded", true)
-      .eq("id", user.id);
+.update({ onboarded: true })
+.eq("id", user.id);
+
 
         if (onboardedError) {
       console.error(error);
@@ -258,7 +259,7 @@
     }, 1000);
 
     setTimeout(() => {
-    window.location.href = "index"
+    window.location.href = "dashboard"
     }, 4500);
   });
 }
