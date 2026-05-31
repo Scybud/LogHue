@@ -72,22 +72,21 @@ export async function renderDashboard() {
     const user = sessionState.user;
 
     if(sessionState.profile.onboarded === false) {
-const warningContainer = document.querySelector("warningContainer");
+const warningContainer = document.querySelector(".warningContainer");
 
 if (warningContainer) {
   warningContainer.innerHTML = "";
 
-  warningContainer.innerHtml = `
+  warningContainer.innerHTML = `
           <p class="warningText">
             Hi! You are recommended to get started by creating a workspace. <a href="create-workspace">Create workspace</a>
           </p>
         `;
 
       console.log("not onboarded");
-      return 
     } 
   }
-  
+
   if (!upperDashboardContainer) return;
 
   upperDashboardContainer.innerHTML = "";

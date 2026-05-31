@@ -954,6 +954,10 @@ button.toggleNotesListBtn {
   padding: 0;
   font-size: 0.9rem;
 }
+.warningContainer .warningText a {
+  color: #ffffff;
+  text-decoration: underline;
+}
 .closeWarning {
   border-radius: var(--space-sm);
   background: none;
