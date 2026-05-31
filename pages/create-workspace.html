@@ -204,6 +204,18 @@
       return;
     }
 
+    //MARK UNBOARDED TRUE
+     const { data: onboarded, error: onboardedError } = await supabase
+      .from("profiles")
+      .update("onboarded", true)
+      .eq("id", user.id);
+
+        if (onboardedError) {
+      console.error(error);
+          actionMsg("Failed to update profile!", "error");
+      return;
+    }
+
     const newWorkspace = data[0];
 
     // Assign role manually for UI consistency

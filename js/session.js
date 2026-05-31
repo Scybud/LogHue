@@ -88,6 +88,8 @@ function renderUserUI() {
   const subscriptionType = document.getElementById("subscriptionType");
 
   if (!sessionState.user || !sessionState.profile) return;
+if(sessionState.user.onboarded === false) return window.location.href = "https://app.loghue.com/create-workspace";
+
 
   const email = sessionState.user.email;
   const [local, domain] = email.split("@");
