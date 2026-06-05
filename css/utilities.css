@@ -19,40 +19,40 @@
   background: #555; /* slightly brighter primary */
 }
 
-header.pageHeader {
+.contentHeader {
   white-space: nowrap;
-  background-color: var(--header-bg);
-  backdrop-filter: blur(30px) brightness(80%);
+  backdrop-filter: var(--filter);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
   position: sticky;
   top: 0;
   z-index: 1;
-  width: 100%;
   height: var(--header-height);
+  margin-bottom: var(--space-md);
   padding: var(--space-xs) calc(var(--space-md) - 4px);
   overflow-x: auto;
 }
 /* CHROME, EDGE, SAFARI */
-header.pageHeader::-webkit-scrollbar {
+.contentHeader::-webkit-scrollbar {
   width: 2px;
   height: 2px;
 }
 
-header.pageHeader::-webkit-scrollbar-track {
+.contentHeader::-webkit-scrollbar-track {
   background: var(--main-bg);
   border-radius: var(--radius-sm);
 }
 
-header.pageHeader::-webkit-scrollbar-thumb {
+.contentHeader::-webkit-scrollbar-thumb {
   background: var(--bg);
   opacity: 0.1;
   border-radius: var(--radius-sm);
   border: 1px solid var(--card-bg);
 }
 
-header.pageHeader::-webkit-scrollbar-thumb:hover {
+.contentHeader::-webkit-scrollbar-thumb:hover {
   background: #0393d626; /* slightly brighter primary */
 }
 .headerLeft {

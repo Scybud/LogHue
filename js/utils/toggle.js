@@ -1,5 +1,5 @@
 // Toggles the main sidebar visibility
-const sidebar = document.querySelector(".sidebarContainer");
+const sidebar = document.querySelector(".sidebar");
 export function sidebarToggle() {
   if (sidebar) {
     sidebar.classList.toggle("slideShow");

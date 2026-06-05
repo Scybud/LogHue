@@ -1,5 +1,4 @@
-.pageTitle {
-  text-align: center;
+.pageTitle, .greet-user {
 font-size: clamp(1.5rem, 5vw, 2rem);
 }
 .workspaceName {

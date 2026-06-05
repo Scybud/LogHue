@@ -1,34 +1,29 @@
 /* MAIN GRID HOLDS EVERYTHING */
 .main {
-  display: grid;
-  grid-template-columns: minmax(200px, 300px) 1fr;
-  grid-template-areas: "sidebar mainContent";
   width: 100%;
-  height: calc(100dvh - var(--header-height, 53px)); /* header stays visible */
-  overflow: hidden; /* grid itself never scrolls */
-  position: relative;
+  height: 100%;
 }
 
 /* SIDEBAR COLUMN */
-.sidebarContainer {
-  grid-area: sidebar;
+.sidebar {
   background: var(--card-bg);
   padding-top: var(--space-md);
   display: flex;
   flex-direction: column;
-  height: 100%;
   overflow: hidden;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
   z-index: 3;
 }
 
 /* SIDEBAR INNER SCROLL */
 #sidebar {
   flex: 1;
+  width: 100%;
   overflow-y: auto;
   padding-bottom: 10px;
   margin-bottom: auto;
-    height: 100%;
     overflow-x: hidden;
 
 }
@@ -41,59 +36,16 @@
   grid-area: mainContent;
   background: var(--mainContent-bg);
   border-left: 1px solid var(--border);
-  padding: var(--space-sm) var(--space-sm) 0;
+  padding: 0 var(--space-sm) 0;
   overflow-y: auto;
   scroll-behavior: smooth;
   height: 100%;
+  width: 100%;
+  margin-left: 260px;
 }
 
 /* MOBILE SIDEBAR */
 @media (max-width: 800px) {
-    .main {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-  }
-  .mainContent {
-    width: 100%;
-  }
-  Button.menuBtn {
-    display: none;
-  }
-  .mainContent {
-  padding-bottom: 30px;
-}
-  .sidebarContainer {
-    width: 70px;
-    height: 100% ;
-    transition: width 0.35s ease;
-    border-right: 1px solid var(--border);
-  }
-  .sidebarContainer:hover {
-    width: 400px;
-  }
-  .sidebarContainer:hover .navText, .sidebarContainer:hover div.navSectionLabel {
-    opacity: 1;
-  }
-  .sidebarContainer .navText, .sidebarContainer div.navSectionLabel {
-    opacity: 0;
-    text-wrap: nowrap;
-    transition: opacity 0.4s ease;
-  }
-  .sidebarContainer span.navIcon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-.sidebarContainer span.navIcon svg{
-width: 30px;
-height: 30px;
-}
-  .sidebarContainer.slideShow {
-    transform: translateX(0);
-  }
-}
-@media (max-width: 600px) {
   .main {
     grid-template-columns: 1fr;
     grid-template-areas: "mainContent";
@@ -101,10 +53,10 @@ height: 30px;
  Button.menuBtn {
     display:block;
   }
- .sidebarContainer .navText, .sidebarContainer div.navSectionLabel {
+ .sidebar .navText, .sidebarContainer div.navSectionLabel {
     opacity: 1;
   }
-    .sidebarContainer span.navIcon {
+    .sidebar span.navIcon {
     width: auto;
     display: block;
     
@@ -112,8 +64,9 @@ height: 30px;
   .mainContent {
   padding-bottom: 30px;
   min-height: 100dvh;
+  margin-left: 0;
 }
-  .sidebarContainer {
+  .sidebar {
     position: fixed;
     left: 0;
     top: 0;
@@ -125,7 +78,7 @@ height: 30px;
     border-right: 1px solid var(--border);
   }
   
-  .sidebarContainer.slideShow {
+  .sidebar.slideShow {
     transform: translateX(0);
   }
 }

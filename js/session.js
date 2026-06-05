@@ -84,7 +84,7 @@ const normalizedAddons = (addonsData || []).map((a) => {
 function renderUserUI() {
   const profileImg = document.querySelector(".profileImg");
   const profileAvatar = document.querySelector(".profileAvatar");
-  const userName = document.getElementById("userName");
+  const userName = document.querySelectorAll(".userName");
   const subscriptionType = document.getElementById("subscriptionType");
 
   if (!sessionState.user || !sessionState.profile) return;
@@ -96,10 +96,13 @@ function renderUserUI() {
   const planName = sessionState.plan?.name || "Free";
 
   if (userName) {
-    userName.textContent =
+    userName.forEach((name) => {
+
+      name.textContent =
       sessionState.profile.full_name === "User"
-        ? shortEmail
-        : sessionState.profile.full_name;
+      ? shortEmail
+      : sessionState.profile.full_name;
+    })
   }
 
   const avatarUrl =

@@ -1,5 +1,5 @@
 .main {
-  background-color: var(--mainContent-bg);
+  background-color: var(--main-content-bg);
 }
 #workspaceName {
   position: relative;
