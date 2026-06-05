@@ -16,7 +16,7 @@ body {
   max-width: 100%;
   width: 100%;
   background: var(--bg-primary);
-  color: var(--color);
+  color: var(--text-primary);
 }
 
 /*MAIN*/
