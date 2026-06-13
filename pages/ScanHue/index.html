@@ -55,8 +55,8 @@
 
     <!--APP SPECIFIC CSS-->
   <link rel="stylesheet" href="https://loghue.com/css/base.css" />
-  <link rel="stylesheet" href="https://loghue.com/css/component.css" />
   <link rel="stylesheet" href="https://loghue.com/css/utilities.css" />
+  <link rel="stylesheet" href="https://loghue.com/css/component.css" />
   <link rel="stylesheet" href="https://loghue.com/css/theme.css" />
   <link rel="stylesheet" href="https://app.loghue.com/ScanHue/styles.css" />
 
@@ -69,7 +69,8 @@
   <body>
     <div class="contentHeader">
       <div class="headerLeft">
-  <a href="../dashboard" class="backLink"><!-- Back Icon -->
+  <button type="button" class="btn backBtn btn-sm">
+      <!-- Back Icon -->
       <svg
         width="20"
         height="20"
@@ -85,7 +86,8 @@
           stroke-linejoin="round"
         />
       </svg>
-      Dashboard</a>
+      <span>Back</span>
+    </button>
       </div>
 
       <div class="headerRight">
@@ -94,7 +96,7 @@
           <img src="https://loghue.com/assets/images/default_profile.png" alt="profile Image" class="profileAvatar">
         </div>
       </div>
-    </d>
+    </div>
 
     <div id="actionsMessage"></div>
 
@@ -346,6 +348,16 @@
 
   </div>
 </footer>
+<script>
+      const backBtn = document.querySelector(".backBtn");
+
+      if (backBtn) {
+        backBtn.addEventListener("click", () => {
+          window.history.back();
+        });
+      }
+    </script>
+    
     <script type="module" src="https://loghue.com/js/app.js"></script>
     <script type="module" src="https://app.loghue.com/ScanHue/app.js" defer></script>
   </body>
