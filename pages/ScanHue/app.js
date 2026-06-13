@@ -157,7 +157,7 @@ processBtn.addEventListener("click", async () => {
   if (!selectedImage) return actionMsg("Please select an image", "error");
 
   processBtn.disabled = true;
-  output.value = "";
+  output.value = "Extracting text...";
   
   try {
     const result = await runOCRViaEdgeFunction(canvas); // Your existing function
