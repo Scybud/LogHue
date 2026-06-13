@@ -29,18 +29,16 @@
       }
 
       body {
-        min-height: 100vh;
+        max-height: 100dvh;
         background: radial-gradient(circle at top, var(--bg), var(--main-bg));
-        color: white;
-        font-family: Inter, sans-serif;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 24px;
         overflow-x: hidden;
-        position: relative;
       }
 
+      main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
       /* background glow */
 
       .orb {
@@ -59,6 +57,7 @@
       .container {
         width: 100%;
         max-width: 820px;
+        margin: 24px;
         position: relative;
         z-index: 2;
       }
@@ -94,6 +93,7 @@
         letter-spacing: -0.08em;
         background: var(--gradient);
         -webkit-background-clip: text;
+        background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 12px;
       }
@@ -313,8 +313,10 @@
   <body>
     <div class="orb"></div>
 
-    <div class="container">
-      <div class="card">
+    <main> 
+
+      <div class="container">
+        <div class="card">
         <div class="badge">Route unavailable</div>
 
         <div class="error-code">404</div>
@@ -446,5 +448,8 @@
         </div>
       </div>
     </div>
+
+  </main>
+
   </body>
 </html>
