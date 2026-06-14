@@ -87,7 +87,7 @@ h5,
 h6,
 .statsName {
   font-weight: 600;
-  color: var(--color);
+  color: var(--text-primary);
 }
 h2 {
   text-align: center;

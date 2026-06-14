@@ -186,9 +186,9 @@ details[open] summary::before {
   display: inline-flex;
   align-items: center;
   padding: 0 0.4rem;
-  background: var(--surface-2);
+  background: var(--surface-secondary);
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-primary-light);
+  border: 1px solid var(--border-light);
   white-space: nowrap;
 }
 
@@ -373,7 +373,7 @@ button.danger {
 
 }
 .mutedText {
-  color: #5a7f89;
+  color: var(--muted);
   font-size: 0.8rem;
   text-align: center;
 }
@@ -493,6 +493,7 @@ button.danger {
 .navBtnDropdown::after {
   content: "▲";
   transition: all 0.4s ease;
+  color: var(--text-primary);
 }
 .dropped::after {
   rotate: -180deg;
@@ -807,7 +808,7 @@ div#editor.ql-container.ql-snow {
   border-bottom: 12px solid var(--border-primary);
 }
 #notesList::-webkit-scrollbar {
-  width: var(--space-xs);
+  width: var(--space-sm);
   height: var(--space-sm);
 }
 
@@ -945,7 +946,7 @@ button.toggleNotesListBtn {
 
 .taskName {
   font-weight: 600;
-  color: var(--accent-color);
+  color: var(--accent);
 }
 
 .activityBody {
@@ -1067,6 +1068,8 @@ button.toggleNotesListBtn {
 }
 
 .searchItem {
+  font-size: 1.05rem;
+  color: var(--text-primary);
   padding: var(--space-md) var(--space-sm);
   border-bottom: 1px solid var(--border-primary);
   width: 95%;
@@ -1074,5 +1077,7 @@ border-radius: var(--radius-sm);
 transition: background 0.2s ease;
 }
 .searchItem:hover {
+    color: var(--text-secondary);
+text-decoration: none;
   background: var(--active);
 }
