@@ -408,7 +408,6 @@ function renderReplies(replies, container) {
 /* ---------------------------------------------
    ADD TOP‑LEVEL COMMENT
 --------------------------------------------- */
-import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
 
 function attachCommentSubmitHandler() {
   const btn = document.getElementById("submitCommentBtn");
