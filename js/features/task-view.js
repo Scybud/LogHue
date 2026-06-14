@@ -449,7 +449,6 @@ function appendLogComments(comments, container) {
 /* ---------------------------------------------
    ADD LOG
 --------------------------------------------- */
-import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
 
 function attachLogSubmitHandler() {
   const btn = document.getElementById("submitLogBtn");

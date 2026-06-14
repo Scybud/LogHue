@@ -56,11 +56,11 @@ export async function attachStartDiscussionEvent(ws, user) {
 
     const createdDiscussion = data[0];
 
-    notifyWorkspace({
+   await notifyWorkspace({
       workspaceId: ws.id,
       actorId: user.id,
       type: "discussion_started",
-      entityId: createdDiscussion.id,
+      entityId: createdDiscussion?.id,
       entityType: "discussion",
     });
 
