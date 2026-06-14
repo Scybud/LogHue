@@ -44,8 +44,8 @@ export function attachCreateTaskEvent(workspaceId) {
       .value.trim();
     const assignedToValue = assignedTo.value;
 
-    if (!taskTitle || !taskDescription) {
-          actionMsg(" Title and description required!", "error");
+    if (!taskDescription) {
+          actionMsg("Description required!", "error");
       return;
     }
 
