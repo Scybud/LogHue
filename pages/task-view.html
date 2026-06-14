@@ -8,8 +8,8 @@
 
   <!--CSS LINKS-->
 
-   <!--SCYBUD UI-->
- <link
+    <!--SCYBUD UI-->
+    <link
       rel="stylesheet"
       href="https://scybud.github.io/scybud-ui/css/variables.css"
     />
@@ -29,6 +29,7 @@
       rel="stylesheet"
       href="https://scybud.github.io/scybud-ui/css/typography.css"
     />
+  
 
 
     <!--APP SPECIFIC CSS-->
@@ -88,7 +89,7 @@
       padding: 1.5rem;
       border-radius: 10px;
       background: var(--surface);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-primary);
       margin-bottom: 2rem;
     }
 
@@ -171,7 +172,7 @@
 ------------------------------ */
     .logCard {
       background: var(--surface);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-primary);
       border-radius: 10px;
       padding: 1rem;
     }
@@ -202,7 +203,7 @@
 ------------------------------ */
     .commentsThread {
       margin-left: 2.5rem;
-      border-left: 2px solid var(--border);
+      border-left: 2px solid var(--border-primary);
       padding-left: 1rem;
       display: flex;
       flex-direction: column;
@@ -215,10 +216,10 @@
     }
 
     .comment .commentBody {
-      background: var(--surface-2);
+      background: var(--surface-secondary);
       padding: 0.6rem 0.8rem;
       border-radius: 8px;
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-primary);
     }
 
     .comment .commentBody .timestamp {
@@ -236,8 +237,8 @@
       margin-top: 2rem;
       padding: 1rem;
       border-radius: 10px;
-      background: var(--mainContent-bg);
-      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
     }
 
     #logInput {
@@ -245,8 +246,8 @@
       min-height: 50px;
       padding: 0.8rem;
       border-radius: 8px;
-      border: 1px solid var(--border);
-      background: var(--surface-2);
+      border: 1px solid var(--border-primary);
+      background: var(--surface-primary);
       resize: vertical;
       font-family: inherit;
     }
@@ -262,7 +263,7 @@
     .primaryBtn {
       width: fit-content;
       padding: var(--space-xs) var(--space-sm);
-      border-radius: var(--radius);
+      border-radius: var(--radius-sm);
       border: none;
       font-weight: 600;
       cursor: pointer;
@@ -272,9 +273,9 @@
     .secondaryBtn {
       color: #fff;
       background: none;
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-primary);
       padding: var(--space-xs) var(--space-sm);
-      border-radius: var(--radius);
+      border-radius: var(--radius-sm);
       font-weight: 600;
       cursor: pointer;
       transition: background 0.2s ease, transform 0.1s ease;
@@ -302,7 +303,7 @@
     }
 
     .iconBtn:hover {
-      background: var(--surface-2);
+      background: var(--surface-primary);
       color: var(--text-primary);
     }
 
