@@ -4,6 +4,7 @@ import { supabase } from "../supabase.js";
 import { sessionState, sessionReady } from "../session.js";
 import { confirmAction, actionMsg } from "../utils/modals.js";
 import { createDropdown } from "../ui.js";
+import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
 
 if (window.__workspaceInit) {
   console.warn("workspaceData.js already initialized");
