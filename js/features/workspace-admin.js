@@ -1,12 +1,24 @@
 import { attachSidebarEvents } from "./../components/sidebar.js";
-import { openCreateTaskModal, openAddMemeberModal, confirmAction, actionMsg, openTransferOwnershipModal, openApiKeyModal } from "./../utils/modals.js";
+import {
+  openCreateTaskModal,
+  openAddMemeberModal,
+  confirmAction,
+  actionMsg,
+  openTransferOwnershipModal,
+  openApiKeyModal,
+} from "./../utils/modals.js";
 import { supabase } from "../supabase.js";
 import { loadComponent, closeModal } from "../ui.js";
 import { openStartDiscussionModal } from "../utils/modals.js";
 import { sessionState } from "../session.js";
 import { createDropdown } from "../ui.js";
-import {navDropdowns} from "../components/sidebar.js"
-import { archiveWorkspace, deleteWorkspace, editWorkspace } from "./workspaceData.js";
+import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
+import { navDropdowns } from "../components/sidebar.js";
+import {
+  archiveWorkspace,
+  deleteWorkspace,
+  editWorkspace,
+} from "./workspaceData.js";
 import { notifyUser } from "../utils/notifications.js";
 import { showUploadStatus } from "../shared/workspace/utils.js";
 
@@ -19,43 +31,43 @@ let container;
 // Loading State
 function setLoading(state, container) {
   isLoading = state;
-  
-    container?.classList.toggle("isLoading", state);
+
+  container?.classList.toggle("isLoading", state);
 }
 
 document.addEventListener("click", async (e) => {
   const btn = e.target.closest(".navBtn");
   if (!btn) return;
 
-   container = document.getElementById("adminWorkspaceDashboardContent");
+  container = document.getElementById("adminWorkspaceDashboardContent");
   const section = btn.dataset.section;
-  
-setLoading(true, container);
 
-try {
-  await new Promise(requestAnimationFrame);
-  await renderSection(section, currentWorkspace, container);
-} catch (err) {
-  console.error(err);
-} finally {
+  setLoading(true, container);
+
+  try {
+    await new Promise(requestAnimationFrame);
+    await renderSection(section, currentWorkspace, container);
+  } catch (err) {
+    console.error(err);
+  } finally {
     setLoading(false, container);
-}
-
+  }
 });
 
 //CHECK ADMIN ACCESS
 async function checkAdminAccess(workspaceId, user) {
   const { data: membership, error } = await supabase
-  .from("workspace_members")
-  .select("role")
-  .eq("workspace_id", workspaceId)
-  .eq("user_id", user.id)
+    .from("workspace_members")
+    .select("role")
+    .eq("workspace_id", workspaceId)
+    .eq("user_id", user.id)
     .single();
-    
-    if (error || (membership.role !== "admin" && membership.role !== "owner")) {
-      actionMsg(
-        "Access Denied: You do not have admin permissions for this workspace.", "error"
-      );
+
+  if (error || (membership.role !== "admin" && membership.role !== "owner")) {
+    actionMsg(
+      "Access Denied: You do not have admin permissions for this workspace.",
+      "error",
+    );
     window.location.href = "/all-workspaces"; // Send them to their main list
   }
 }
@@ -64,14 +76,14 @@ export async function initAdminWorkspaceData() {
   //Get workspace url
   const params = new URLSearchParams(window.location.search);
   const workspaceId = params.get("ws");
-  
+
   const { data, userError } = await supabase.auth.getUser();
-  
+
   if (userError) {
     console.error(userError);
     return;
   }
-   user = data.user;
+  user = data.user;
 
   if (!workspaceId) {
     window.location.href = "index";
@@ -82,7 +94,7 @@ export async function initAdminWorkspaceData() {
   await checkAdminAccess(workspaceId, user);
 
   const container = document.getElementById("adminWorkspaceDashboardContent");
-   setLoading(true, container);
+  setLoading(true, container);
 
   //Load data
   const { data: workspace, error } = await supabase
@@ -98,11 +110,10 @@ export async function initAdminWorkspaceData() {
   if (error) {
     console.error(error);
     alert(error.message);
-     setLoading(false, container);
+    setLoading(false, container);
 
     return;
   }
-
 
   if (!workspace || workspaceId.length < 10 || workspace.status === "closed") {
     window.location.href = "index";
@@ -127,15 +138,12 @@ export async function initAdminWorkspaceData() {
     const allTasks = workspace.workspace_tasks;
     //OPEN TASKS
     const tasks = allTasks.filter((ts) => ts.status === "in progress");
-    loadTasks("Created Tasks",
-      tasks || [],
-      container,
-    );
+    loadTasks("Created Tasks", tasks || [], container);
   }
- setLoading(false, container);
+  setLoading(false, container);
 
   attachSidebarEvents();
-navDropdowns();
+  navDropdowns();
 
   const members = Array.isArray(workspace.workspace_members)
     ? workspace.workspace_members
@@ -150,182 +158,189 @@ navDropdowns();
   openAddMemeberModal(currentWorkspace.id);
 }
 
- function assignMemberTask() {
-   const btns = document.querySelectorAll(".assignTaskBtn");
+function assignMemberTask() {
+  const btns = document.querySelectorAll(".assignTaskBtn");
 
-   btns.forEach((btn) => {
-     btn.addEventListener("click", async () => {
-       // Load modal
-       await loadComponent(
-         "https://loghue.com/components/modals/create-task",
-         "modalContainer",
-       );
+  btns.forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      // Load modal
+      await loadComponent(
+        "https://loghue.com/components/modals/create-task",
+        "modalContainer",
+      );
 
-       // Wait for DOM to render
-       await new Promise(requestAnimationFrame);
+      // Wait for DOM to render
+      await new Promise(requestAnimationFrame);
 
-       const assignedTo = document.getElementById("assignToDropdown");
-       const createTaskBtn = document.getElementById("createTaskBtn");
+      const assignedTo = document.getElementById("assignToDropdown");
+      const createTaskBtn = document.getElementById("createTaskBtn");
 
-  if (!assignedTo || !createTaskBtn) {
-    console.error("Modal not fully loaded");
+      if (!assignedTo || !createTaskBtn) {
+        console.error("Modal not fully loaded");
+        return;
+      }
+
+      // Find the member object
+      const memberId = btn.id;
+      const member = loadedMembers.find(
+        (m) => String(m.profiles.id) === String(memberId),
+      );
+
+      // Populate dropdown with ONLY this member
+      assignedTo.innerHTML = "";
+      if (member) {
+        const option = document.createElement("option");
+        option.value = member.profiles.id;
+        option.textContent = member.profiles.full_name;
+        assignedTo.append(option);
+      }
+
+      // Remove old listeners to prevent duplicates
+      createTaskBtn.replaceWith(createTaskBtn.cloneNode(true));
+      const newCreateTaskBtn = document.getElementById("createTaskBtn");
+
+      newCreateTaskBtn.addEventListener("click", async () => {
+        setButtonLoading(newCreateTaskBtn, true);
+
+        const taskTitle = document.getElementById("taskTitle").value.trim();
+        const taskDescription = document
+          .getElementById("taskDescription")
+          .value.trim();
+        const assignedToValue = assignedTo.value;
+
+        if (!taskTitle || !taskDescription) {
+          alert("Input fields must not be empty");
+          setButtonLoading(newCreateTaskBtn, false);
+          return;
+        }
+
+        checkAdminAccess(currentWorkspace.id, user);
+
+        const taskData = {
+          workspace_id: currentWorkspace.id,
+          created_by: user.id,
+          title: taskTitle,
+          status: "in progress",
+          assigned_to: assignedToValue,
+          description: taskDescription,
+        };
+
+        const { data, error } = await supabase
+          .from("workspace_tasks")
+          .insert(taskData)
+          .select();
+
+        if (error) {
+          console.error(error);
+          alert("Failed to create task.");
+          setButtonLoading(newCreateTaskBtn, false);
+          return;
+        }
+
+        const newTask = data;
+
+        notifyUser({
+          workspaceId: currentWorkspace.id,
+          receiverUserId: assignedToValue,
+          actorId: user.id,
+          type: "task_assigned",
+          entityId: newTask.id,
+          entityType: "task",
+        });
+
+        // Render new task
+        const createdTask = data[0];
+        const container = document.querySelector(".grid");
+
+        if (container) {
+          const taskCard = document.createElement("div");
+          taskCard.classList.add("card", "taskCard");
+
+          const titleEl = document.createElement("h3");
+          titleEl.textContent = createdTask.title;
+
+          const meta = document.createElement("p");
+          const assignee = loadedMembers.find(
+            (m) => m.profiles.id === createdTask.assigned_to,
+          );
+          meta.textContent = assignee
+            ? `Assigned to: ${assignee.profiles.full_name}`
+            : "Unassigned";
+
+          taskCard.append(titleEl, meta);
+          container.prepend(taskCard);
+        }
+
+        closeModal();
+        setButtonLoading(newCreateTaskBtn, false);
+      });
+    });
+  });
+}
+
+async function removeMember() {
+  const btns = document.querySelectorAll(".removeMemberBtn");
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  btns.forEach((btn) => {
+    if (!btn) return;
+    const id = btn.id;
+
+    btn.addEventListener("click", () => {
+      confirmAction(
+        "Are you sure? Removing this member from your workspace cannot be undone. All actions related to the user might also be deleted.",
+        [
+          { label: "Cancel", type: "cancel" },
+          {
+            label: "Remove",
+            type: "confirm",
+            onClick: () => performMemberRemoval(id, currentWorkspace.id, user),
+          },
+        ],
+      );
+    });
+  });
+}
+async function performMemberRemoval(id, workspaceId, user) {
+  checkAdminAccess(currentWorkspace.id, user);
+
+  const { error } = await supabase
+    .from("workspace_members")
+    .delete()
+    .eq("user_id", id)
+    .eq("workspace_id", workspaceId);
+
+  if (error) {
+    console.error(error);
+    actionMsg("Failed to remove member from workspace", "error");
     return;
   }
 
-       // Find the member object
-       const memberId = btn.id;
-       const member = loadedMembers.find(
-         (m) => String(m.profiles.id) === String(memberId),
-       );
+  actionMsg("Member removed!", "success");
 
-       // Populate dropdown with ONLY this member
-       assignedTo.innerHTML = "";
-       if (member) {
-         const option = document.createElement("option");
-         option.value = member.profiles.id;
-         option.textContent = member.profiles.full_name;
-         assignedTo.append(option);
-       }
-
-       // Remove old listeners to prevent duplicates
-       createTaskBtn.replaceWith(createTaskBtn.cloneNode(true));
-       const newCreateTaskBtn = document.getElementById("createTaskBtn");
-
-       newCreateTaskBtn.addEventListener("click", async () => {
-         const taskTitle = document.getElementById("taskTitle").value.trim();
-         const taskDescription = document
-           .getElementById("taskDescription")
-           .value.trim();
-         const assignedToValue = assignedTo.value;
-
-         if (!taskTitle || !taskDescription) {
-           alert("Input fields must not be empty");
-           return;
-         }
-
-           checkAdminAccess(currentWorkspace.id, user);
-
-         const taskData = {
-           workspace_id: currentWorkspace.id,
-           created_by: user.id,
-           title: taskTitle,
-           status: "in progress",
-           assigned_to: assignedToValue,
-           description: taskDescription,
-         };
-
-         const { data, error } = await supabase
-           .from("workspace_tasks")
-           .insert(taskData)
-           .select();
-
-         if (error) {
-           console.error(error);
-           alert("Failed to create task.");
-           return;
-         }
-
-         const newTask = data
-
-         notifyUser({
-           workspaceId: currentWorkspace.id,
-           receiverUserId: assignedToValue,
-           actorId: user.id,
-           type: "task_assigned",
-           entityId: newTask.id,
-           entityType: "task",
-         });
-         
-         // Render new task
-         const createdTask = data[0];
-         const container = document.querySelector(".grid");
-
-         if (container) {
-           const taskCard = document.createElement("div");
-           taskCard.classList.add("card", "taskCard");
-
-           const titleEl = document.createElement("h3");
-           titleEl.textContent = createdTask.title;
-
-           const meta = document.createElement("p");
-           const assignee = loadedMembers.find(
-             (m) => m.profiles.id === createdTask.assigned_to,
-           );
-           meta.textContent = assignee
-             ? `Assigned to: ${assignee.profiles.full_name}`
-             : "Unassigned";
-
-           taskCard.append(titleEl, meta);
-           container.prepend(taskCard);
-         }
-
-         closeModal();
-       });
-     });
-   });
- }
-
- async function removeMember() {
-  const btns = document.querySelectorAll(".removeMemberBtn");
-
-   const {
-           data: { user },
-         } = await supabase.auth.getUser();
-
-  btns.forEach((btn) => {
-if(!btn) return;
-       const id = btn.id;
-
-btn.addEventListener("click", () => {
-  confirmAction(
-    "Are you sure? Removing this member from your workspace cannot be undone. All actions related to the user might also be deleted.",
-    [
-      { label: "Cancel", type: "cancel" },
-      {
-        label: "Remove",
-        type: "confirm",
-        onClick: () => performMemberRemoval( id, currentWorkspace.id, user),
-      },
-    ],
-  );
-})
-  })
- }
-async function performMemberRemoval(id, workspaceId, user) {
-
-             checkAdminAccess(currentWorkspace.id, user);
-
-const { error } = await supabase.from("workspace_members").delete().eq("user_id", id).eq("workspace_id", workspaceId);
-
-    if (error) {
-      console.error(error);
-      actionMsg("Failed to remove member from workspace", "error");
-      return;
-    }
-
-    actionMsg("Member removed!", "success");
-
-       setTimeout(() => {
-         // Refresh UI
-         window.location.reload();
-   
-       }, 2000);
+  setTimeout(() => {
+    // Refresh UI
+    window.location.reload();
+  }, 2000);
 }
 
 async function renderSection(section, workspace, container) {
-  if(!container) return;
+  if (!container) return;
   container.innerHTML = "";
 
   //GET TASKS DATA GLOBALLY
   const allTasks = Array.isArray(workspace.workspace_tasks)
     ? workspace.workspace_tasks
     : [workspace.workspace_tasks];
-    
-    //GET ALL DISCUSSIONS GLOBALLY
-    const { data: allDiscussions, dcnError } = await supabase
-      .from("discussions")
-      .select(`*, profiles:created_by (full_name, avatar_url)`)
-      .eq("workspace_id", workspace.id);
+
+  //GET ALL DISCUSSIONS GLOBALLY
+  const { data: allDiscussions, dcnError } = await supabase
+    .from("discussions")
+    .select(`*, profiles:created_by (full_name, avatar_url)`)
+    .eq("workspace_id", workspace.id);
 
   switch (section) {
     case "createdTasks":
@@ -531,14 +546,14 @@ async function loadSettings(container, workspace, currentUserId) {
   };
 
   loadApiKeys(apiCard.querySelector("#apiKeysTable"), workspace.id);
-  
+
   // -------------------------
   // ONLY OWNER: OWNERSHIP TRANSFER CARD
   // -------------------------
   const me = workspace.workspace_members.find(
     (m) => m.user_id === currentUserId || m.profiles?.id === currentUserId,
   );
-  
+
   const transferCard = document.createElement("div");
   transferCard.classList.add("card");
   transferCard.innerHTML = `
@@ -547,8 +562,8 @@ async function loadSettings(container, workspace, currentUserId) {
   <p class="text-muted text-center">This action cannot be undone by you again.</p>
   <button type="button" class="btn danger" id="transferBtn">Transfer Ownership</button>
   `;
-  
-  const deleteCard = document.createElement("div")
+
+  const deleteCard = document.createElement("div");
   deleteCard.classList.add("card", "deleteCard");
   deleteCard.innerHTML = `
   <h3>⚠️Delete Workspace</h3>
@@ -557,7 +572,7 @@ async function loadSettings(container, workspace, currentUserId) {
   <button type="button" class="btn danger" id="deleteWorkspace">Delete Workspace</button>
   `;
 
-  const containerTitle = document.createElement("h3")
+  const containerTitle = document.createElement("h3");
   containerTitle.textContent = "Danger Zone";
 
   const dangerContainerInner = document.createElement("div");
@@ -577,17 +592,17 @@ async function loadSettings(container, workspace, currentUserId) {
     // no transfer card for non‑owners
     section.append(sectionHeader, infoCard, apiCard);
   }
-  
+
   container.append(section);
 
-  await attachSettingsActions(workspace, workspace.id)
+  await attachSettingsActions(workspace, workspace.id);
 }
 
 async function loadDocuments(documents, container, workspace) {
   container.innerHTML = "";
 
-    const { data, userError } = await supabase.auth.getUser();
-const currentUser = data.user
+  const { data, userError } = await supabase.auth.getUser();
+  const currentUser = data.user;
 
   // Title
   const title = document.createElement("h2");
@@ -713,31 +728,31 @@ const currentUser = data.user
       downloadBtn.textContent = "Download";
       downloadBtn.dataset.path = doc.storage_path;
 
-            const viewBtn = document.createElement("button");
-            viewBtn.classList.add("docViewBtn", "docAction");
-            viewBtn.textContent = "View";
-            viewBtn.dataset.path = doc.storage_path;
+      const viewBtn = document.createElement("button");
+      viewBtn.classList.add("docViewBtn", "docAction");
+      viewBtn.textContent = "View";
+      viewBtn.dataset.path = doc.storage_path;
 
-       const deleteBtn = document.createElement("button");
-       deleteBtn.textContent = "Delete";
-       deleteBtn.classList.add("danger", "docDeleteBtn", "docAction");
-       deleteBtn.dataset.path = doc.storage_path;
+      const deleteBtn = document.createElement("button");
+      deleteBtn.textContent = "Delete";
+      deleteBtn.classList.add("danger", "docDeleteBtn", "docAction");
+      deleteBtn.dataset.path = doc.storage_path;
 
       item.appendChild(left);
-    if (doc.uploaded_by === currentUser.id) {
-    item.append(viewBtn, downloadBtn, deleteBtn);
-  } else {
-    item.append(viewBtn, downloadBtn);
-  }
+      if (doc.uploaded_by === currentUser.id) {
+        item.append(viewBtn, downloadBtn, deleteBtn);
+      } else {
+        item.append(viewBtn, downloadBtn);
+      }
 
-  list.appendChild(item);
-});
+      list.appendChild(item);
+    });
   }
 
   // Attach upload logic
   await handleDocUpload(uploadBtn, fileInput, currentWorkspace, container);
   handleFileDownload();
-   deleteWorkspaceDoc();
+  deleteWorkspaceDoc();
 }
 
 function deleteWorkspaceDoc() {
@@ -746,17 +761,14 @@ function deleteWorkspaceDoc() {
       const path = btn.dataset.path;
       if (!path) return;
 
-      confirmAction(
-        "Are you sure you want to delete this document?",
-        [
-          { label: "Cancel", type: "cancel" },
-          {
-            label: "Delete",
-            type: "confirm",
-            onClick: () => handleDocDelete(path, btn),
-          },
-        ],
-      );
+      confirmAction("Are you sure you want to delete this document?", [
+        { label: "Cancel", type: "cancel" },
+        {
+          label: "Delete",
+          type: "confirm",
+          onClick: () => handleDocDelete(path, btn),
+        },
+      ]);
     });
   });
 }
@@ -794,21 +806,20 @@ async function handleDocDelete(path, btn) {
   }
 }
 
-
 async function handleDocUpload(uploadBtn, fileInput, workspace, container) {
   uploadBtn.addEventListener("click", () => fileInput.click());
 
-    const {
-        data: { session },
-      } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
     if (!file) return;
 
     showUploadStatus("Uploading...", false, container);
-uploadBtn.disabled = true;
-uploadBtn.classList.add("disabled");
+    uploadBtn.disabled = true;
+    uploadBtn.classList.add("disabled");
 
     try {
       const form = new FormData();
@@ -820,10 +831,10 @@ uploadBtn.classList.add("disabled");
         {
           method: "POST",
           body: form,
-            headers: {
-              Authorization: `Bearer ${session.access_token}`,
-            },
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
           },
+        },
       );
 
       const data = await res.json();
@@ -836,20 +847,20 @@ uploadBtn.classList.add("disabled");
       }
 
       showUploadStatus("Upload successful");
-        uploadBtn.disabled = false;
-        uploadBtn.classList.remove("disabled");
+      uploadBtn.disabled = false;
+      uploadBtn.classList.remove("disabled");
 
       // Refresh section
       renderSection("documents", workspace, container);
     } catch (err) {
       console.error(err);
       showUploadStatus(`Unexpected error: ${err}`, true);
-              uploadBtn.disabled = false;
-              uploadBtn.classList.remove("disabled");
+      uploadBtn.disabled = false;
+      uploadBtn.classList.remove("disabled");
     } finally {
       fileInput.value = "";
-              uploadBtn.disabled = false;
-              uploadBtn.classList.remove("disabled");
+      uploadBtn.disabled = false;
+      uploadBtn.classList.remove("disabled");
     }
   });
 }
@@ -878,73 +889,68 @@ function handleFileDownload() {
     }
   });
 
+  document.addEventListener("click", async (e) => {
+    if (!e.target.classList.contains("docDownloadBtn")) return;
 
-document.addEventListener("click", async (e) => {
-  if (!e.target.classList.contains("docDownloadBtn")) return;
+    showUploadStatus("Downloading...", false, container);
 
-      showUploadStatus("Downloading...", false, container);
+    const path = e.target.dataset.path;
+    if (!path) return;
 
-  const path = e.target.dataset.path;
-  if (!path) return;
+    try {
+      const { data, error } = await supabase.storage
+        .from("workspace-documents")
+        .createSignedUrl(path, 60);
 
-  try {
-    const { data, error } = await supabase.storage
-      .from("workspace-documents")
-      .createSignedUrl(path, 60);
+      if (error || !data?.signedUrl) {
+        showUploadStatus("Download failed", true, container);
+        return;
+      }
 
-    if (error || !data?.signedUrl) {
-      showUploadStatus("Download failed", true, container);
-      return;
+      // Fetch file as blob
+      const response = await fetch(data.signedUrl);
+      const blob = await response.blob();
+
+      // Create a forced download
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = path.split("/").pop(); // filename
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showUploadStatus("Download successful", false);
+    } catch (err) {
+      showUploadStatus("Unexpected download error", true);
     }
-
-    // Fetch file as blob
-    const response = await fetch(data.signedUrl);
-    const blob = await response.blob();
-
-    // Create a forced download
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = path.split("/").pop(); // filename
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-        showUploadStatus("Download successful", false);
-
-  } catch (err) {
-    showUploadStatus("Unexpected download error", true);
-  } 
-});
+  });
 }
-
 
 async function attachSettingsActions(ws, id) {
   const editWorkspaceBtn = document.querySelector("#editWorkspace");
-const archiveWorkspaceBtn = document.querySelector("#archiveWorkspace");
-const deleteWorkspaceBtn = document.querySelector("#deleteWorkspace");
+  const archiveWorkspaceBtn = document.querySelector("#archiveWorkspace");
+  const deleteWorkspaceBtn = document.querySelector("#deleteWorkspace");
 
   if (editWorkspaceBtn) {
-   editWorkspaceBtn.onclick = async () => {
-    await editWorkspace(ws, id);
-  };
+    editWorkspaceBtn.onclick = async () => {
+      await editWorkspace(ws, id);
+    };
   }
 
-   if (archiveWorkspaceBtn) {
-   archiveWorkspaceBtn.onclick = async () => {
-    await archiveWorkspace(id);
-  };
+  if (archiveWorkspaceBtn) {
+    archiveWorkspaceBtn.onclick = async () => {
+      await archiveWorkspace(id);
+    };
   }
 
-     if (deleteWorkspaceBtn) {
-       deleteWorkspaceBtn.onclick = async () => {
-         await deleteWorkspace(id);
-       };
-     } else {
-      console.log("Admin active")
-     }
-
-  
+  if (deleteWorkspaceBtn) {
+    deleteWorkspaceBtn.onclick = async () => {
+      await deleteWorkspace(id);
+    };
+  } else {
+    console.log("Admin active");
+  }
 }
 
 async function loadApiKeys(tbody, workspaceId) {
@@ -975,42 +981,38 @@ async function loadApiKeys(tbody, workspaceId) {
     `;
 
     const revokeBtn = tr.querySelector(".revokeApiBtn");
-const restoreBtn = tr.querySelector(".restoreApiBtn");
+    const restoreBtn = tr.querySelector(".restoreApiBtn");
 
-if(revokeBtn) {
-  revokeBtn.textContent = "Revoke";
+    if (revokeBtn) {
+      revokeBtn.textContent = "Revoke";
 
-  revokeBtn.onclick = async () => {
-    await supabase
-    .from("api_keys")
-    .update({ revoked: true })
-    .eq("id", key.id);
-    loadApiKeys(tbody, workspaceId);
-    actionMsg("API Key revoked!", "success");
-  };
+      revokeBtn.onclick = async () => {
+        await supabase
+          .from("api_keys")
+          .update({ revoked: true })
+          .eq("id", key.id);
+        loadApiKeys(tbody, workspaceId);
+        actionMsg("API Key revoked!", "success");
+      };
+    }
+    if (restoreBtn) {
+      restoreBtn.textContent = "Restore";
+
+      restoreBtn.onclick = async () => {
+        await supabase
+          .from("api_keys")
+          .update({ revoked: false })
+          .eq("id", key.id);
+        loadApiKeys(tbody, workspaceId);
+        actionMsg("API Key Restored!", "success");
+      };
+    }
+
+    tbody.append(tr);
+  });
 }
-if(restoreBtn) {
-  restoreBtn.textContent = "Restore";
-
-  restoreBtn.onclick = async () => {
-    await supabase
-    .from("api_keys")
-    .update({ revoked: false })
-    .eq("id", key.id);
-    loadApiKeys(tbody, workspaceId);
-    actionMsg("API Key Restored!", "success");
-  };
-}
-
-tbody.append(tr);
-
-
-    });
-}
-
 
 function loadInviteHistory(invites, container) {
-
   const table = document.createElement("table");
   table.classList.add("inviteTable");
 
@@ -1133,26 +1135,24 @@ function loadInviteHistory(invites, container) {
     });
   });
 
-
   container.append(table);
 }
 
 export async function loadDiscussions(title, discussions, container) {
-const sectionTitle = document.createElement("h2");
-sectionTitle.classList.add("sectionTitle");
-sectionTitle.textContent = "💬" + title;
+  const sectionTitle = document.createElement("h2");
+  sectionTitle.classList.add("sectionTitle");
+  sectionTitle.textContent = "💬" + title;
 
+  const sectionHeader = document.createElement("div");
+  sectionHeader.classList.add("sectionHeader");
+  sectionHeader.appendChild(sectionTitle);
 
-const sectionHeader = document.createElement("div");
-sectionHeader.classList.add("sectionHeader");
-sectionHeader.appendChild(sectionTitle);
-
-const section = document.createElement("div");
-section.classList.add("section");
-section.appendChild(sectionHeader);
+  const section = document.createElement("div");
+  section.classList.add("section");
+  section.appendChild(sectionHeader);
 
   if (!discussions || discussions.length === 0) {
-    const placeholderText = document.createElement("p")
+    const placeholderText = document.createElement("p");
     placeholderText.classList.add("placeholderText");
     placeholderText.textContent = "No discussions started yet.";
 
@@ -1160,7 +1160,6 @@ section.appendChild(sectionHeader);
     container.append(section);
     return;
   }
-
 
   const divGrid = document.createElement("div");
   divGrid.classList.add("container");
@@ -1180,13 +1179,15 @@ section.appendChild(sectionHeader);
 
     const img = document.createElement("img");
     img.classList.add("profileImg");
-    img.src = dcn.profiles?.avatar_url || "https://loghue.com/assets/images/default_profile.png";
+    img.src =
+      dcn.profiles?.avatar_url ||
+      "https://loghue.com/assets/images/default_profile.png";
 
-    const span = document.createElement("span")
+    const span = document.createElement("span");
     span.classList.add("actorName");
     span.textContent = dcn.profiles?.full_name || "Unknown User";
 
-dcnHeader.append(img, span);
+    dcnHeader.append(img, span);
 
     const dcnTitle = document.createElement("h3");
     dcnTitle.classList.add("taskTitle");
@@ -1230,43 +1231,39 @@ dcnHeader.append(img, span);
     divGrid.append(discussionCard);
   });
 
-  
   section.append(sectionTitle, divGrid);
   container.append(section);
 }
 
-
 export function loadTasks(title, tasks, container) {
-
   const sectionTitle = document.createElement("h2");
   sectionTitle.classList.add("sectionTitle");
   sectionTitle.textContent = "📝" + title;
-  
-  const docLink = document.createElement("a")
+
+  const docLink = document.createElement("a");
   docLink.classList.add("docLink");
   docLink.href = "https://docs.loghue.com/tasks";
-  docLink.target = "_blank"
-  docLink.rel = "noopener"
-  docLink.textContent = "Docs"
+  docLink.target = "_blank";
+  docLink.rel = "noopener";
+  docLink.textContent = "Docs";
 
-  const sectionHeader = document.createElement("div")
+  const sectionHeader = document.createElement("div");
   sectionHeader.classList.add("sectionHeader");
-  sectionHeader.append(sectionTitle, docLink)
-  
+  sectionHeader.append(sectionTitle, docLink);
+
   const section = document.createElement("div");
   section.classList.add("section");
   section.appendChild(sectionHeader);
 
   if (!tasks || tasks.length === 0) {
-    const placeholderText = document.createElement("p")
+    const placeholderText = document.createElement("p");
     placeholderText.classList.add("placeholderText");
     placeholderText.textContent = "No tasks yet.";
 
     section.appendChild(placeholderText);
-    container.append(section)
+    container.append(section);
     return;
   }
-
 
   const divGrid = document.createElement("div");
   divGrid.classList.add("container", "double-grid");
@@ -1310,7 +1307,7 @@ export function loadTasks(title, tasks, container) {
     taskMeta.append(assignee, assignedOn);
 
     const viewBtn = document.createElement("button");
-        viewBtn.type = "button";
+    viewBtn.type = "button";
     viewBtn.classList.add("btn", "btn-primary");
     viewBtn.textContent = "View Task";
 
@@ -1320,30 +1317,30 @@ export function loadTasks(title, tasks, container) {
     });
 
     const pingBtn = document.createElement("button");
-    pingBtn.type = "button"
+    pingBtn.type = "button";
     pingBtn.classList.add("btn", "btn-secondary");
     pingBtn.textContent = "Ping Assignee";
-    pingBtn.title = "Pinging assignee will send a notification to them asking for update on the task.";
+    pingBtn.title =
+      "Pinging assignee will send a notification to them asking for update on the task.";
 
-     pingBtn.addEventListener("click", async (e) => {
-       e.stopPropagation();
+    pingBtn.addEventListener("click", async (e) => {
+      e.stopPropagation();
 
-       await notifyUser({
-           workspaceId: currentWorkspace.id,
-         receiverUserId: tsk.profiles.id,
-         actorId: user.id,
-         type: "task_ping",
-         entityId: tsk.id,
-         entityType: "task",
-       });
+      await notifyUser({
+        workspaceId: currentWorkspace.id,
+        receiverUserId: tsk.profiles.id,
+        actorId: user.id,
+        type: "task_ping",
+        entityId: tsk.id,
+        entityType: "task",
+      });
 
-       actionMsg("Assignee pinged!", "success");
-     });
+      actionMsg("Assignee pinged!", "success");
+    });
 
-details.addEventListener("click", (e) => {
-  e.stopPropagation();
-});
-
+    details.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
 
     taskCard.append(taskTitle, taskMeta, details, viewBtn, pingBtn);
     divGrid.append(taskCard);
@@ -1353,36 +1350,35 @@ details.addEventListener("click", (e) => {
 }
 
 function canRemoveMember(mbr, adminActions, assignTaskBtn, removeMemberBtn) {
-   const isSelf = mbr.user_id === user.id;
-   const isOwner = mbr.role === "owner";
-   const isAdmin = mbr.role === "admin";
-   const isMember = mbr.role === "member";
+  const isSelf = mbr.user_id === user.id;
+  const isOwner = mbr.role === "owner";
+  const isAdmin = mbr.role === "admin";
+  const isMember = mbr.role === "member";
 
-   const currentUser = loadedMembers.find(
-     (m) => String(m.profiles.id) === String(user.id),
-   );
-   const currentUserRole = currentUser?.role;
+  const currentUser = loadedMembers.find(
+    (m) => String(m.profiles.id) === String(user.id),
+  );
+  const currentUserRole = currentUser?.role;
 
-   const currentUserIsOwner = currentUserRole === "owner";
-   const currentUserIsAdmin = currentUserRole === "admin";
+  const currentUserIsOwner = currentUserRole === "owner";
+  const currentUserIsAdmin = currentUserRole === "admin";
 
-   let canRemove = false;
+  let canRemove = false;
 
-   if (!isSelf && !isOwner) {
-     if (currentUserIsOwner) {
-       canRemove = true; // owner removes anyone except owner/self
-     } else if (currentUserIsAdmin && isMember) {
-       canRemove = true; // admin removes members only
-     }
-   }
+  if (!isSelf && !isOwner) {
+    if (currentUserIsOwner) {
+      canRemove = true; // owner removes anyone except owner/self
+    } else if (currentUserIsAdmin && isMember) {
+      canRemove = true; // admin removes members only
+    }
+  }
 
-   // UI rendering
-   if (canRemove) {
-     adminActions.append(assignTaskBtn, removeMemberBtn);
-   } else {
-     adminActions.append(assignTaskBtn);
-   }
-
+  // UI rendering
+  if (canRemove) {
+    adminActions.append(assignTaskBtn, removeMemberBtn);
+  } else {
+    adminActions.append(assignTaskBtn);
+  }
 }
 function loadMembers(members, container) {
   if (!members || members.length === 0) {
@@ -1397,16 +1393,16 @@ function loadMembers(members, container) {
   sectionTitle.classList.add("sectionTitle");
   sectionTitle.textContent = "Workspace Members";
 
-    const docLink = document.createElement("a");
-    docLink.classList.add("docLink");
-    docLink.href = "https://docs.loghue.com/roles";
-    docLink.target = "_blank";
-    docLink.rel = "noopener";
-    docLink.textContent = "Docs";
+  const docLink = document.createElement("a");
+  docLink.classList.add("docLink");
+  docLink.href = "https://docs.loghue.com/roles";
+  docLink.target = "_blank";
+  docLink.rel = "noopener";
+  docLink.textContent = "Docs";
 
-    const sectionHeader = document.createElement("div");
-    sectionHeader.classList.add("sectionHeader");
-    sectionHeader.append(sectionTitle, docLink);
+  const sectionHeader = document.createElement("div");
+  sectionHeader.classList.add("sectionHeader");
+  sectionHeader.append(sectionTitle, docLink);
 
   const divGrid = document.createElement("div");
   divGrid.classList.add("grid");
@@ -1429,13 +1425,16 @@ function loadMembers(members, container) {
     avatar.src = mbr.profiles.avatar_url;
 
     const profileAvatarContainer = document.createElement("div");
-    profileAvatarContainer.classList.add("profileAvatarContainer", `${mbr.profiles.plan.name}`);
-profileAvatarContainer.append(avatar);
+    profileAvatarContainer.classList.add(
+      "profileAvatarContainer",
+      `${mbr.profiles.plan.name}`,
+    );
+    profileAvatarContainer.append(avatar);
 
     const cardHeader = document.createElement("div");
     cardHeader.classList.add("cardHeader");
     cardHeader.append(tag, profileAvatarContainer, memberName);
-cardHeader.title = `${mbr.profiles.plan.name} plan member`;
+    cardHeader.title = `${mbr.profiles.plan.name} plan member`;
 
     const assignTaskBtn = document.createElement("button");
     assignTaskBtn.type = "button";
@@ -1463,21 +1462,20 @@ cardHeader.title = `${mbr.profiles.plan.name} plan member`;
     const adminActions = document.createElement("div");
     adminActions.classList.add("adminActions");
 
-   canRemoveMember(mbr, adminActions, assignTaskBtn, removeMemberBtn);
+    canRemoveMember(mbr, adminActions, assignTaskBtn, removeMemberBtn);
 
-// Members see nothing
-memberCard.append(cardHeader, adminActions);
-divGrid.append(memberCard);
-});
+    // Members see nothing
+    memberCard.append(cardHeader, adminActions);
+    divGrid.append(memberCard);
+  });
 
   section.append(sectionHeader, divGrid);
   container.append(section);
-//ATTACH TASK CREATION LOGIC FOR EACH MEMBER CARD
-assignMemberTask();
-//ATTACH MEMBER REMOVAL LOGIC FOR EACH MEMBER CARD'
-removeMember();
+  //ATTACH TASK CREATION LOGIC FOR EACH MEMBER CARD
+  assignMemberTask();
+  //ATTACH MEMBER REMOVAL LOGIC FOR EACH MEMBER CARD'
+  removeMember();
 }
-
 
 export function formatDateTime(isoString) {
   const date = new Date(isoString);
@@ -1513,12 +1511,12 @@ export function loadActivities(activities, container) {
   }
 
   if (!activities || activities.length === 0) {
-   const p = document.createElement("p");
-   p.classList.add("placeholderText");
-   p.textContent = "No activity in this workspace yet.";
+    const p = document.createElement("p");
+    p.classList.add("placeholderText");
+    p.textContent = "No activity in this workspace yet.";
 
-   container.append(p);
-   return;
+    container.append(p);
+    return;
   }
   const section = document.createElement("section");
   section.classList.add("section");
@@ -1540,13 +1538,12 @@ export function loadActivities(activities, container) {
         ? `gave an update on "${item.title || "Unknown Task"}"`
         : `started a discussion "${item.title || "Untitled"}"`;
 
-
     const div = document.createElement("div");
     div.classList.add("activityItem");
 
     //ACTIVITY HEADER
-    const activityHeader = document.createElement("div")
-    activityHeader.classList.add("activityHeader")
+    const activityHeader = document.createElement("div");
+    activityHeader.classList.add("activityHeader");
 
     const profileImg = document.createElement("img");
     profileImg.classList.add("profileImg");
@@ -1557,71 +1554,66 @@ export function loadActivities(activities, container) {
     actorName.textContent = `${name} ${label}`;
 
     activityHeader.append(profileImg, actorName);
-    
-//ACTIVITY BODY
-const activityBody = document.createElement("div");
-activityBody.classList.add("activityBody");
 
-if (item.type === "task_log") {
-  const note = document.createElement("p");
-  const noteStrong = document.createElement("strong");
-  noteStrong.textContent = "Update: ";
-  note.append(noteStrong, document.createTextNode(item.note || ""));
+    //ACTIVITY BODY
+    const activityBody = document.createElement("div");
+    activityBody.classList.add("activityBody");
 
-const status = document.createElement("p");
+    if (item.type === "task_log") {
+      const note = document.createElement("p");
+      const noteStrong = document.createElement("strong");
+      noteStrong.textContent = "Update: ";
+      note.append(noteStrong, document.createTextNode(item.note || ""));
 
-const statusLabel = document.createElement("strong");
-statusLabel.textContent = "Status: ";
+      const status = document.createElement("p");
 
-const statusValue = document.createElement("span");
-statusValue.classList.add("statusBadge");
-statusValue.textContent = item.status || "";
+      const statusLabel = document.createElement("strong");
+      statusLabel.textContent = "Status: ";
 
-status.append(statusLabel, statusValue);
+      const statusValue = document.createElement("span");
+      statusValue.classList.add("statusBadge");
+      statusValue.textContent = item.status || "";
 
+      status.append(statusLabel, statusValue);
 
-  activityBody.append(note, status);
+      activityBody.append(note, status);
+    } else {
+      const message = document.createElement("p");
+      const msgStrong = document.createElement("strong");
+      msgStrong.textContent = "Message: ";
+      message.append(msgStrong, document.createTextNode(item.note || ""));
 
-} else {
-  const message = document.createElement("p");
-  const msgStrong = document.createElement("strong");
-  msgStrong.textContent = "Message: ";
-  message.append(msgStrong, document.createTextNode(item.note || ""));
+      activityBody.append(message);
+    }
 
-  activityBody.append(message);
-}
+    //ACTIVITY TIME
+    const activityTime = document.createElement("div");
+    activityTime.classList.add("activityTime");
+    activityTime.textContent = formatDateTime(item.created_at);
 
-//ACTIVITY TIME
-const activityTime = document.createElement("div")
-activityTime.classList.add("activityTime");
-activityTime.textContent = formatDateTime(item.created_at);
+    //BUTTON
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.classList.add("btn", "pageOpenLink", "btn-primary");
+    btn.textContent = "Open";
+    if (item.type === "discussion") {
+      btn.onclick = () => {
+        window.location.href = `https://app.loghue.com/discussion-view?dcn=${item.id}`;
+      };
+    } else if (item.type === "task_log") {
+      btn.onclick = () => {
+        window.location.href = `https://app.loghue.com/task-view?task=${item.task_id}`;
+      };
+    }
 
-//BUTTON
-const btn = document.createElement("button")
-btn.type = "button"
-btn.classList.add("btn", "pageOpenLink", "btn-primary")
-btn.textContent = "Open"
-if (item.type === "discussion") {
-  btn.onclick = () => {
-    window.location.href = `https://app.loghue.com/discussion-view?dcn=${item.id}`
-  } 
-} else if(item.type === "task_log") {
- btn.onclick = () => {
-    window.location.href = `https://app.loghue.com/task-view?task=${item.task_id}`
-  } 
-}
-
-
-div.append(activityHeader, activityBody, activityTime, btn);
+    div.append(activityHeader, activityBody, activityTime, btn);
 
     list.appendChild(div);
   });
 
-
   section.append(title, list);
   container.append(section);
 }
-
 
 export async function createWorkspaceInvite({
   workspaceId,

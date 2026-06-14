@@ -18,7 +18,6 @@ let upperDashboardContainer;
 let user = null;
 export let savedWorkspaceData = [];
 
-
 function getWorkspaceDropdown(ws) {
   if (ws.role === "owner") {
     return createDropdown([
@@ -28,25 +27,24 @@ function getWorkspaceDropdown(ws) {
       { label: "Open Workspace", action: () => openWorkspace(ws.id, ws.role) },
     ]);
   }
-  if (ws.role === "admin"){
+  if (ws.role === "admin") {
     return createDropdown([
       { label: "Archive Workspace", action: () => archiveWorkspace(ws.id) },
       { label: "Edit Workspace", action: () => editWorkspace(ws, ws.id) },
       { label: "Open Workspace", action: () => openWorkspace(ws.id, ws.role) },
     ]);
   }
-  if(ws.role === "member") {
-  return createDropdown([
-    { label: "Leave Workspace", action: () => leaveWorkspace(ws.id) },
-    {label: "Open Workspace", action: () => openWorkspace(ws.id, ws.role)},
-  ]);
+  if (ws.role === "member") {
+    return createDropdown([
+      { label: "Leave Workspace", action: () => leaveWorkspace(ws.id) },
+      { label: "Open Workspace", action: () => openWorkspace(ws.id, ws.role) },
+    ]);
   }
 
   // fallback for unknown roles
   return createDropdown([
     { label: "View Workspace", action: () => viewWorkspace(ws.id) },
   ]);
-
 }
 
 export function dropdownClick() {
@@ -75,14 +73,14 @@ export function dropdownClick() {
 export async function initWorkspaces() {
   await sessionReady;
 
-   user = sessionState.user;
-if(!user) return;
+  user = sessionState.user;
+  if (!user) return;
 
   //GET Membership WORKSPACES
-const { data: membership, error: membershipError } = await supabase
-  .from("workspace_members")
-  .select("role, workspaces: workspace_id(*)")
-  .eq("user_id", user.id);
+  const { data: membership, error: membershipError } = await supabase
+    .from("workspace_members")
+    .select("role, workspaces: workspace_id(*)")
+    .eq("user_id", user.id);
 
   if (membershipError) {
     console.error(membershipError);
@@ -94,23 +92,21 @@ const { data: membership, error: membershipError } = await supabase
     .select("created_by")
     .eq("created_by", user.id);
 
-     if (createdError) {
-       console.error(createdError);
-       actionMsg(createdError);
-     }
+  if (createdError) {
+    console.error(createdError);
+    actionMsg(createdError);
+  }
 
   //NORMALISE MEMBER WORKSPACES
-const normalizedCreated = (membership || []).map((m) => ({
-  ...m.workspaces,
-  role: m.role,
-}));
-
+  const normalizedCreated = (membership || []).map((m) => ({
+    ...m.workspaces,
+    role: m.role,
+  }));
 
   workspaceNameEl = document.getElementById("workspacename");
   workspaceDescriptionEl = document.getElementById("workspaceDescription");
   createWorkspaceBtn = document.getElementById("createWorkspace");
   upperDashboardContainer = document.getElementById("upperDashboardContainer");
-
 
   savedWorkspaceData = normalizedCreated || [];
 
@@ -255,24 +251,34 @@ async function attachCreateWorkspaceEvent(container, workspaces) {
   //When log task button is clicked to create new log
   createWorkspaceBtn.addEventListener("click", async (e) => {
     e.preventDefault();
+    setButtonLoading(createWorkspaceBtn, true);
+
     const workspaceNameValue = workspaceNameEl.value.trim();
     const workspaceDescriptionValue = workspaceDescriptionEl.value.trim();
-    
+
     const user = sessionState.user;
-    if (!user) return alert("You must be logged in.");
-    
-    if(!workspaceNameValue || !workspaceDescriptionValue) {
-      actionMsg(
-        "All field must not be empty",
-        "error",
-      );
+    if (!user) {
+      setButtonLoading(createWorkspaceBtn, false);
+      return alert("You must be logged in.");
+    }
+
+    if (!workspaceNameValue || !workspaceDescriptionValue) {
+      actionMsg("All field must not be empty", "error");
+      setButtonLoading(createWorkspaceBtn, false);
       return;
     }
 
-        if(workspaces.length >= sessionState.plan.max_workspaces && sessionState.plan.max_workspaces !== null) {
-                    actionMsg("You have exceeded the limit for workspace creation on your current plan. Subscribe to a new plan to create more workspaces!", "error");
-                    return;
-        }
+    if (
+      workspaces.length >= sessionState.plan.max_workspaces &&
+      sessionState.plan.max_workspaces !== null
+    ) {
+      actionMsg(
+        "You have exceeded the limit for workspace creation on your current plan. Subscribe to a new plan to create more workspaces!",
+        "error",
+      );
+      setButtonLoading(createWorkspaceBtn, false);
+      return;
+    }
 
     //DEFINE DATA CONTENT
     const workspaceData = {
@@ -289,7 +295,8 @@ async function attachCreateWorkspaceEvent(container, workspaces) {
 
     if (error) {
       console.error(error);
-          actionMsg("Failed to create workspace!", "error");
+      actionMsg("Failed to create workspace!", "error");
+      setButtonLoading(createWorkspaceBtn, false);
       return;
     }
 
@@ -316,7 +323,10 @@ async function attachCreateWorkspaceEvent(container, workspaces) {
         });
 
       if (memberInsertError) {
-                  actionMsg("Workspace creation was successful but an error occured", "error");
+        actionMsg(
+          "Workspace creation was successful but an error occured",
+          "error",
+        );
         console.error(memberInsertError);
       }
     }
@@ -325,7 +335,7 @@ async function attachCreateWorkspaceEvent(container, workspaces) {
     const wsCard = createWorkspaceCardElement(newWorkspace);
 
     //RE-RENDER UI
-    if(container) {
+    if (container) {
       container.prepend(wsCard);
     }
     updateworkspaceCount();
@@ -338,13 +348,12 @@ async function attachCreateWorkspaceEvent(container, workspaces) {
     closeModal();
 
     actionMsg("Workspace created successfully!", "success");
+    setButtonLoading(createWorkspaceBtn, false);
   });
 }
 
 function updateworkspaceCount() {
-  const membership = savedWorkspaceData.filter(
-    (ws) => ws.role === "owner",
-  );
+  const membership = savedWorkspaceData.filter((ws) => ws.role === "owner");
   const openedWorkspaces = savedWorkspaceData.filter(
     (ws) => ws.status === "active",
   );
@@ -379,7 +388,7 @@ export function createWorkspaceCardElement(ws) {
   headerLeft.classList.add("workspaceCardHeaderLeft");
 
   const workspaceName = document.createElement("span");
-workspaceName.classList.add("text-bold", "workspaceName");
+  workspaceName.classList.add("text-bold", "workspaceName");
   // workspace name (SAFE)
   workspaceName.textContent = ws.name;
 
@@ -474,35 +483,39 @@ function attachOpenWorkspaceClickEvent() {
 
 //DELETE WORKSPACE
 export async function deleteWorkspace(id) {
-  confirmAction("Are you sure you want to delete this? All activites(Tasks, logs and discussions) related to this workspace will be deleted and members will be removed from the workspace permanently. It cannot be reversed", [
-    { label: "Cancel", type: "cancel" },
-    { label: "Delete", type: "confirm", onClick: () => performWorkspaceDelete(id) },
-  ]);
+  confirmAction(
+    "Are you sure you want to delete this? All activites(Tasks, logs and discussions) related to this workspace will be deleted and members will be removed from the workspace permanently. It cannot be reversed",
+    [
+      { label: "Cancel", type: "cancel" },
+      {
+        label: "Delete",
+        type: "confirm",
+        onClick: () => performWorkspaceDelete(id),
+      },
+    ],
+  );
 }
 //PERFORM WORKSPACE DELETE IF CONFIRMED
 async function performWorkspaceDelete(id) {
+  const { error } = await supabase
+    .from("workspaces")
+    .delete()
+    .eq("id", id)
+    .eq("created_by", user.id);
 
-    const { error } = await supabase
-      .from("workspaces")
-      .delete()
-      .eq("id", id)
-      .eq("created_by", user.id);
+  if (error) {
+    console.error(error);
+    actionMsg("Failed to delete workspace", "error");
+    return;
+  }
 
-    if (error) {
-      console.error(error);
-      actionMsg("Failed to delete workspace", "error");
-      return;
-    }
+  actionMsg("Workspace deleted!", "success");
 
-    actionMsg("Workspace deleted!", "success");
-
-       setTimeout(() => {
-         // Refresh UI
-         window.location.reload();
-   
-       }, 2000);
+  setTimeout(() => {
+    // Refresh UI
+    window.location.reload();
+  }, 2000);
 }
-
 
 //ARCHEIVE WORKSPACE
 export async function archiveWorkspace(id) {
@@ -514,34 +527,32 @@ export async function archiveWorkspace(id) {
       onClick: () => performWorkspaceArcheive(id),
     },
   ]);
-  
 }
 
 //PERFORM WORKSPACE ARCHEIVE IF CONFIRMED
 async function performWorkspaceArcheive(id) {
-const utcNow = new Date().toISOString();
+  const utcNow = new Date().toISOString();
 
-const { error } = await supabase
-  .from("workspaces")
-  .update({
-    status: "closed",
-    closed_at: utcNow,
-  })
-  .eq("id", id);
+  const { error } = await supabase
+    .from("workspaces")
+    .update({
+      status: "closed",
+      closed_at: utcNow,
+    })
+    .eq("id", id);
 
-if (error) {
-  console.error(error);
-  alert("Failed to archeive workspace");
-  return;
-}
+  if (error) {
+    console.error(error);
+    alert("Failed to archeive workspace");
+    return;
+  }
 
-    actionMsg("Workspace archieved!", "success");
+  actionMsg("Workspace archieved!", "success");
 
-// Refresh UI
-setTimeout(() => {
-
-  window.location.reload();
-}, 2000);
+  // Refresh UI
+  setTimeout(() => {
+    window.location.reload();
+  }, 2000);
 }
 
 //EDIT WORKSPACE
@@ -583,23 +594,21 @@ export async function editWorkspace(ws, id) {
     }
     actionMsg("Workspace edited!", "success");
 
-    closeModal()
+    closeModal();
 
     // Refresh UI
     setTimeout(() => {
-
       window.location.reload();
-    }, 2000)
+    }, 2000);
   });
 }
 
 function openWorkspace(wsId, wsRole) {
-
-    if (wsRole === "admin" || wsRole === "owner") {
-      window.location.href = `workspace-dashboard-admin?ws=${wsId}`;
-    } else {
-      window.location.href = `workspace-dashboard-member?ws=${wsId}`;
-    }
+  if (wsRole === "admin" || wsRole === "owner") {
+    window.location.href = `workspace-dashboard-admin?ws=${wsId}`;
+  } else {
+    window.location.href = `workspace-dashboard-member?ws=${wsId}`;
+  }
 }
 
 //EXPORT PROMISE WHEN WORKSPACE IS READY

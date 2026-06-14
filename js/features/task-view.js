@@ -1,6 +1,7 @@
 import { supabase } from "../supabase.js";
 import { actionMsg } from "../utils/modals.js";
 import { notifyUser } from "../utils/notifications.js";
+import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
 import { formatDateTime, loadActivities } from "./workspace-admin.js";
 
 let currentTask = null;
@@ -108,12 +109,12 @@ async function initTaskView() {
 function loadSidebar() {
   const workspacePageSidebar = document.getElementById("workspacePageSidebar");
   let isAdmin;
-  if(userRole) {
-
-     isAdmin = userRole.role === "admin" || userRole.role === "owner";
+  if (userRole) {
+    isAdmin = userRole.role === "admin" || userRole.role === "owner";
   }
 
-if(!isAdmin || !userRole || userRole === null) return workspacePageSidebar.innerHTML = `<nav><!-- DASHBOARD -->
+  if (!isAdmin || !userRole || userRole === null)
+    return (workspacePageSidebar.innerHTML = `<nav><!-- DASHBOARD -->
     <a href="index" class="navBtn" data-section="index" id="dashboardLink">
       <span class="navIcon">
         <!-- Back / Dashboard Icon -->
@@ -135,7 +136,7 @@ if(!isAdmin || !userRole || userRole === null) return workspacePageSidebar.inner
       </span>
       <span class="navText">Dashboard</span>
     </a>
-</nav>`
+</nav>`);
 
   workspacePageSidebar.innerHTML = `<!--CLOSE BUTTON -->
   <button type="button" class="menuBtn" id="closeSidebar">
@@ -275,9 +276,9 @@ async function loadTask(taskId) {
   if (error) {
     console.error(error);
     console.log(error.message);
-        document.getElementById("taskViewContent").innerHTML =
-          `<p class="placeholderText">Invalid task link. <a href="index">Go Home</a></p>`;
-          loadSidebar();
+    document.getElementById("taskViewContent").innerHTML =
+      `<p class="placeholderText">Invalid task link. <a href="index">Go Home</a></p>`;
+    loadSidebar();
     actionMsg("Failed to load task.", "error");
     return;
   }
@@ -293,7 +294,7 @@ function renderTaskHeader() {
   const container = document.querySelector(".taskHeader");
   if (!container) return;
 
-   isAdmin = userRole?.role === "admin" || userRole.role === "owner";
+  isAdmin = userRole?.role === "admin" || userRole.role === "owner";
 
   container.innerHTML = `
     <div class="taskHeaderTop">
@@ -448,6 +449,8 @@ function appendLogComments(comments, container) {
 /* ---------------------------------------------
    ADD LOG
 --------------------------------------------- */
+import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
+
 function attachLogSubmitHandler() {
   const btn = document.getElementById("submitLogBtn");
   const input = document.getElementById("logInput");
@@ -455,8 +458,8 @@ function attachLogSubmitHandler() {
   if (!btn || !input) return;
 
   // Only assigned member can write logs
-  if ( !isAdmin &&
-    userRole.userId !== currentTask.assigned_to ||
+  if (
+    (!isAdmin && userRole.userId !== currentTask.assigned_to) ||
     currentTask.status === "completed"
   ) {
     btn.remove();
@@ -466,43 +469,55 @@ function attachLogSubmitHandler() {
   }
 
   btn.addEventListener("click", async () => {
-    btn.disabled = true;
-
     const note = input.value.trim();
+
     if (!note) {
-    btn.disabled = false;
-    actionMsg("Write something before submitting.", "error");
-      return 
+      actionMsg("Write something before submitting.", "error");
+      return;
     }
 
-    const { data: userData } = await supabase.auth.getUser();
+    setButtonLoading(btn, true);
 
-    const { data, error } = await supabase.from("workspace_task_logs").insert({
-      workspace_id: currentWorkspace.id,
-      task_id: currentTask.id,
-      created_by: userData.user.id,
-      log_note: note,
-      task_status: currentTask.status,
-    }).select().single();
+    try {
+      const { data: userData } = await supabase.auth.getUser();
 
-    const createdLog = data;
+      const { data, error } = await supabase
+        .from("workspace_task_logs")
+        .insert({
+          workspace_id: currentWorkspace.id,
+          task_id: currentTask.id,
+          created_by: userData.user.id,
+          log_note: note,
+          task_status: currentTask.status,
+        })
+        .select()
+        .single();
 
-  if (currentTask.created_by && currentTask.created_by !== userData.user.id) {
-    await notifyUser({
-      workspaceId: currentWorkspace.id,
-      receiverUserId: currentTask.created_by,
-      actorId: userData.user.id,
-      type: "task_logged",
-      entityId: currentTask.id,
-      entityType: "log",
-    });
-  }
+      if (error) {
+        actionMsg("Failed to add log entry.", "error");
+        return;
+      }
 
-    input.value = "";
-        btn.disabled = false;
+      if (
+        currentTask.created_by &&
+        currentTask.created_by !== userData.user.id
+      ) {
+        await notifyUser({
+          workspaceId: currentWorkspace.id,
+          receiverUserId: currentTask.created_by,
+          actorId: userData.user.id,
+          type: "task_logged",
+          entityId: currentTask.id,
+          entityType: "log",
+        });
+      }
 
-    await loadTask(currentTask.id);
-    renderLogs();
+      input.value = "";
+      await loadTask(currentTask.id);
+      renderLogs();
+    } finally {
+      setButtonLoading(btn, false);
+    }
   });
 }
 
@@ -513,34 +528,38 @@ function attachMarkDoneHandler(taskId) {
   const btn = document.getElementById("markTaskDoneBtn");
   if (!btn) return;
 
- btn.onclick = async () => {
-  const newStatus =
-    currentTask.status === "completed" ? "in progress" : "completed";
+  btn.onclick = async () => {
+    setButtonLoading(btn, true);
 
-  const { error } = await supabase
-    .from("workspace_tasks")
-    .update({
-      status: newStatus,
-      completed_at:
-        newStatus === "completed" ? new Date().toISOString() : null,
-    })
-    .eq("id", taskId);
+    try {
+      const newStatus =
+        currentTask.status === "completed" ? "in progress" : "completed";
 
-  if (error) {
-    alert(error.message);
-    return;
-  }
+      const { error } = await supabase
+        .from("workspace_tasks")
+        .update({
+          status: newStatus,
+          completed_at:
+            newStatus === "completed" ? new Date().toISOString() : null,
+        })
+        .eq("id", taskId);
 
-  await loadTask(currentTask.id);
-  renderTaskHeader();
-  renderLogs();
+      if (error) {
+        alert(error.message);
+        return;
+      }
 
-  // ⬇️ reattach because renderTaskHeader replaced the button
-  attachMarkDoneHandler(currentTask.id);
+      await loadTask(currentTask.id);
+      renderTaskHeader();
+      renderLogs();
+
+      // ⬇️ reattach because renderTaskHeader replaced the button
+      attachMarkDoneHandler(currentTask.id);
+    } finally {
+      setButtonLoading(btn, false);
+    }
+  };
 }
-}
-
-
 
 /* ---------------------------------------------
    ADD COMMENT (INLINE INSIDE LOG)

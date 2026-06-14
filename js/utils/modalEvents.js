@@ -1,4 +1,5 @@
 import { closeModal } from "../ui.js";
+import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
 import {
   createWorkspaceInvite,
   loadedMembers,
@@ -14,9 +15,8 @@ import {
 import { actionMsg } from "./modals.js";
 import { renderRecentLogs } from "../dashboard.js";
 import { sessionState } from "../session.js";
-import {notifyUser} from "./notifications.js"
+import { notifyUser } from "./notifications.js";
 import bcrypt from "https://esm.sh/bcryptjs@2.4.3";
-
 
 export function attachCreateTaskEvent(workspaceId) {
   const createTaskBtn = document.getElementById("createTaskBtn");
@@ -36,7 +36,7 @@ export function attachCreateTaskEvent(workspaceId) {
 
   // When create task button is clicked to create a new task
   createTaskBtn.addEventListener("click", async () => {
-    createTaskBtn.disabled = true;
+    setButtonLoading(createTaskBtn, true);
 
     const taskTitle = document.getElementById("taskTitle").value.trim();
     const taskDescription = document
@@ -45,7 +45,8 @@ export function attachCreateTaskEvent(workspaceId) {
     const assignedToValue = assignedTo.value;
 
     if (!taskDescription) {
-          actionMsg("Description required!", "error");
+      actionMsg("Description required!", "error");
+      setButtonLoading(createTaskBtn, false);
       return;
     }
 
@@ -70,27 +71,30 @@ export function attachCreateTaskEvent(workspaceId) {
       .select()
       .single();
 
-
     if (error) {
       console.error(error);
-         actionMsg("Failed to create task!", "error");
-             createTaskBtn.disabled = false;
-
+      actionMsg("Failed to create task!", "error");
+      setButtonLoading(createTaskBtn, false);
       return;
     }
 
-    createTaskBtn.disabled = false;
+    setButtonLoading(createTaskBtn, false);
 
     await actionMsg("Task created!", "success");
-    
+
     // Only one task is created, use the first item
     const createdTask = data[0];
 
-if(createdTask.assigned_to != null) {
-  await notifyUser({
-    workspaceId, receiverUserId: createdTask.assigned_to, actorId: user.id, type: "task_assigned", entityId: createdTask.id, entityType: "task",
-  })
-}
+    if (createdTask.assigned_to != null) {
+      await notifyUser({
+        workspaceId,
+        receiverUserId: createdTask.assigned_to,
+        actorId: user.id,
+        type: "task_assigned",
+        entityId: createdTask.id,
+        entityType: "task",
+      });
+    }
 
     // Render the task in the UI
     const taskCard = document.createElement("div");
@@ -160,7 +164,9 @@ export function attachTransferOwnershipEvents(workspace) {
     }
 
     // Find current owner in workspace_members
-    const currentOwner = workspace.workspace_members.find((m) => m.role === "owner");
+    const currentOwner = workspace.workspace_members.find(
+      (m) => m.role === "owner",
+    );
     if (!currentOwner) {
       actionMsg("No current owner found for this workspace.", "error");
       return;
@@ -194,10 +200,9 @@ export function attachTransferOwnershipEvents(workspace) {
     }
 
     actionMsg("Ownership transfer successful!", "success");
-closeModal();
+    closeModal();
   };
 }
-
 
 //CREATE API EVENTS
 export function attachCreateApiKeyEvents(workspaceId) {
@@ -266,7 +271,6 @@ export function attachCreateApiKeyEvents(workspaceId) {
   };
 }
 
-
 //ADD MEMEBR EVENTS
 export async function attachAddMemberEvents(workspaceId) {
   const emailSection = document.getElementById("invite-email-section");
@@ -285,7 +289,7 @@ export async function attachAddMemberEvents(workspaceId) {
   };
 
   //GET WORKSPACE MEMBER COUNT
-   const { count, error } = await supabase
+  const { count, error } = await supabase
     .from("workspace_members")
     .select("*", { count: "exact", head: true })
     .eq("workspace_id", workspaceId);
@@ -297,11 +301,20 @@ export async function attachAddMemberEvents(workspaceId) {
 
   // SEND EMAIL INVITE
   document.getElementById("send-email-invite-btn").onclick = async () => {
+    const inviteBtn = document.getElementById("send-email-invite-btn");
+    setButtonLoading(inviteBtn, true);
+
     const email = document.getElementById("invite-email-input").value;
     const role = document.getElementById("invite-role-email").value;
 
-    if (!email) return actionMsg("Please enter an email.", "error");
-    if (!email.includes("@")) return actionMsg("Please enter a valid email.", "error");
+    if (!email) {
+      setButtonLoading(inviteBtn, false);
+      return actionMsg("Please enter an email.", "error");
+    }
+    if (!email.includes("@")) {
+      setButtonLoading(inviteBtn, false);
+      return actionMsg("Please enter a valid email.", "error");
+    }
 
     if (
       count >= sessionState.plan.max_members &&
@@ -320,8 +333,9 @@ export async function attachAddMemberEvents(workspaceId) {
     });
 
     if (!invite?.token) {
-          actionMsg("Invite creation failed. No token returned.", "error");
+      actionMsg("Invite creation failed. No token returned.", "error");
       console.error("Invite creation failed. No token returned");
+      setButtonLoading(inviteBtn, false);
       return;
     }
 
@@ -340,21 +354,26 @@ export async function attachAddMemberEvents(workspaceId) {
 
     if (error) {
       console.error(error);
-                actionMsg("Failed to send invite.", "error");
+      actionMsg("Failed to send invite.", "error");
+      setButtonLoading(inviteBtn, false);
       return;
     }
 
-              actionMsg("Invite sent!", "success");
-
+    actionMsg("Invite sent!", "success");
+    setButtonLoading(inviteBtn, false);
   };
 
   // GENERATE QR INVITE
   document.getElementById("generate-qr-btn").onclick = async () => {
+    const qrBtn = document.getElementById("generate-qr-btn");
+    setButtonLoading(qrBtn, true);
+
     const role = document.getElementById("invite-role-qr").value;
 
     if (
       count >= sessionState.plan.max_members &&
-      sessionState.plan.max_members !== null) {
+      sessionState.plan.max_members !== null
+    ) {
       actionMsg(
         "You have exceeded the limit for adding members to this workspace on your current plan. Upgrade to a new plan to add more members!",
         "error",
@@ -363,7 +382,8 @@ export async function attachAddMemberEvents(workspaceId) {
     }
     const invite = await createWorkspaceInvite({ workspaceId, role });
     if (!invite || !invite.token) {
-                actionMsg("Error: Invite token was not generated.", "error");
+      actionMsg("Error: Invite token was not generated.", "error");
+      setButtonLoading(qrBtn, false);
       return;
     }
 
@@ -380,48 +400,56 @@ export async function attachAddMemberEvents(workspaceId) {
       width: 180,
       height: 180,
     });
+
+    setButtonLoading(qrBtn, false);
   };
 
   // COPY INVITE LINK
   document.getElementById("copy-invite-link-btn").onclick = async () => {
+    const copyBtn = document.getElementById("copy-invite-link-btn");
+    setButtonLoading(copyBtn, true);
+
     const link = document.getElementById("invite-link-input").value;
 
     try {
       await navigator.clipboard.writeText(link);
-                actionMsg(
-                  "Invite link copied!",
-                  "success",
-                );
-
+      actionMsg("Invite link copied!", "success");
     } catch (err) {
       console.error("Copy failed", err);
-                actionMsg("Failed to copy link.", "error");
-
+      actionMsg("Failed to copy link.", "error");
+    } finally {
+      setButtonLoading(copyBtn, false);
     }
   };
 
   //SHARE INVITE LINK
-  document.getElementById("share-invite-link-btn").addEventListener("click", async () => {
-        const link = document.getElementById("invite-link-input").value;
-   const data = {
-      title: "Special invite to join my workspace",
-      text: "Click this invite link to join my workspace on LogHue:",
-      url: link
-    };
+  document
+    .getElementById("share-invite-link-btn")
+    .addEventListener("click", async () => {
+      const shareBtn = document.getElementById("share-invite-link-btn");
+      setButtonLoading(shareBtn, true);
 
-    if (navigator.share) {
+      const link = document.getElementById("invite-link-input").value;
+      const data = {
+        title: "Special invite to join my workspace",
+        text: "Click this invite link to join my workspace on LogHue:",
+        url: link,
+      };
+
       try {
-        await navigator.share(data);
-        actionMsg("Shared successfully", "success");
+        if (navigator.share) {
+          await navigator.share(data);
+          actionMsg("Shared successfully", "success");
+        } else {
+          actionMsg("Sharing is not supported on this browser.");
+        }
       } catch (err) {
         console.error("Share failed:", err);
-        actionMsg("Failed to share", "error")
+        actionMsg("Failed to share", "error");
+      } finally {
+        setButtonLoading(shareBtn, false);
       }
-    } else {
-      // fallback
-      actionMsg("Sharing is not supported on this browser.");
-    }
-  })
+    });
 }
 
 export async function attachCreateLogEvent() {
@@ -442,13 +470,16 @@ export async function attachCreateLogEvent() {
     e.preventDefault();
     e.stopPropagation();
 
+    setButtonLoading(logTaskBtn, true);
+
     const taskValue = taskEl.value.trim();
     const timeValue = timeEl.value.trim();
     const noteValue = noteEl.value.trim();
 
     if (!taskValue || !timeValue || !noteValue) {
- actionMsg("Input fields must not be empty.", "error");
-       return;
+      actionMsg("Input fields must not be empty.", "error");
+      setButtonLoading(logTaskBtn, false);
+      return;
     }
 
     // Insert into Supabase FIRST (strict UI)
@@ -465,8 +496,9 @@ export async function attachCreateLogEvent() {
 
     if (error) {
       console.error(error);
- actionMsg("Failed to create log.", "error");
-       return;
+      actionMsg("Failed to create log.", "error");
+      setButtonLoading(logTaskBtn, false);
+      return;
     }
 
     // Update in-memory state
@@ -486,11 +518,10 @@ export async function attachCreateLogEvent() {
     // Close modal
     closeModal();
 
-     actionMsg("Log created successfully.", "success");
+    actionMsg("Log created successfully.", "success");
+    setButtonLoading(logTaskBtn, false);
   });
 }
-
-
 
 //POPULATE TASK LIST
 export async function populateTaskList(workspace, userId) {
@@ -499,7 +530,9 @@ export async function populateTaskList(workspace, userId) {
 
   const tasks = workspace?.workspace_tasks || [];
 
-const myTasks = tasks.filter((t) => t.assigned_to === userId && t.status === "in progress");
+  const myTasks = tasks.filter(
+    (t) => t.assigned_to === userId && t.status === "in progress",
+  );
 
   taskLists.innerHTML = "";
 
@@ -516,12 +549,10 @@ const myTasks = tasks.filter((t) => t.assigned_to === userId && t.status === "in
 
     const option = document.createElement("option");
     option.value = task.id;
-    option.textContent = task.title || "Untitled Task" ;
+    option.textContent = task.title || "Untitled Task";
     taskLists.append(option);
   });
 }
-
-
 
 //LOG TASK UPDATE
 export async function insertTaskLogUpdate(supabase, workspaceId) {
@@ -581,4 +612,3 @@ export async function insertTaskLogUpdate(supabase, workspaceId) {
   closeModal();
   console.log("Log inserted:", data);
 }
-

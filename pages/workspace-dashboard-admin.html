@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -28,6 +28,7 @@
       rel="stylesheet"
       href="https://scybud.github.io/scybud-ui/css/typography.css"
     />
+    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/animations.css">
 
 
     <!--APP SPECIFIC CSS-->
@@ -77,13 +78,6 @@
     <!--INFO DISPLAY-->
     <div id="infoDisplay"></div>
 
-    <!--NOTIFICATIONS-->
-    <div id="notificationsContainer">
-      <h2>Notifications</h2>
-      <ul id="notificationsList">
-        <p class="placeholderText">Nothing here yet.</p>
-      </ul>
-    </div>
     
     <main class="main">
       <!-- SIDEBAR -->
@@ -107,18 +101,18 @@
                 </svg>
               </span>
             </button>
-    
+            
             <h2 id="workspaceName"></h2>
           </div>
-    
+          
           <div class="headerRight">
             <button
-              id="notificationToggleBtn"
-              title="Notifications"
-              class="actionBtn"
+            id="notificationToggleBtn"
+            title="Notifications"
+            class="actionBtn"
             >
-              <span id="notifBadge" class="badge">0</span>
-              <svg
+            <span id="notifBadge" class="badge">0</span>
+            <svg
                 width="20"
                 height="20"
                 viewBox="0 0 24 24"
@@ -132,17 +126,25 @@
                 <path d="M18 16v-5a6 6 0 10-12 0v5l-1.5 2h15L18 16z" />
               </svg>
             </button>
-    
+            
             <div class="profileAvatarContainer">
               <img
-                src="https://loghue.com/assets/images/default_profile.png"
-                alt="profile Image"
-                class="profileAvatar"
+              src="https://loghue.com/assets/images/default_profile.png"
+              alt="profile Image"
+              class="profileAvatar"
               />
             </div>
           </div>
         </div>
-
+        
+        <!--NOTIFICATIONS-->
+        <div id="notificationsContainer">
+          <h2>Notifications</h2>
+          <ul id="notificationsList">
+            <p class="placeholderText">Nothing here yet.</p>
+          </ul>
+        </div>
+        
         <section id="adminWorkspaceDashboardContent">
           <!-- Dynamic content will load here -->
         </section>
@@ -202,3 +204,4 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
   </body>
 </html>
+

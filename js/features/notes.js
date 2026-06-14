@@ -1,6 +1,7 @@
 import { supabase } from "../supabase.js";
 import { confirmAction, actionMsg } from "../utils/modals.js";
 import { sanitizeHTML } from "../utils.js";
+import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
 /*
 --------------------------------
 GLOBAL STATE
@@ -308,11 +309,14 @@ SAVE NOTE
 --------------------------------
 */
 async function saveNote() {
+  const saveBtn = document.getElementById("saveNoteBtn");
+  setButtonLoading(saveBtn, true);
   setLoading(true);
 
   const title = document.getElementById("noteTitle").value;
   const content = quill.root.innerHTML;
 
+  try {
   if (!currentNoteId) {
     const {
       data: { user },
@@ -355,7 +359,10 @@ async function saveNote() {
   actionMsg("Note saved successfully!", "success");
 
   await loadNotes();
-  setLoading(false);
+  } finally {
+    setButtonLoading(saveBtn, false);
+    setLoading(false);
+  }
 }
 
 async function deleteNote() {

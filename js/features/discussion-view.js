@@ -1,4 +1,5 @@
 import { supabase } from "../supabase.js";
+import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
 import { formatDateTime, loadActivities } from "./workspace-admin.js";
 
 let currentDiscussion = null;
@@ -407,6 +408,8 @@ function renderReplies(replies, container) {
 /* ---------------------------------------------
    ADD TOP‑LEVEL COMMENT
 --------------------------------------------- */
+import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
+
 function attachCommentSubmitHandler() {
   const btn = document.getElementById("submitCommentBtn");
   const input = document.getElementById("commentInput");
@@ -423,20 +426,35 @@ function attachCommentSubmitHandler() {
 
   btn.addEventListener("click", async () => {
     const note = input.value.trim();
-    if (!note) return;
 
-    const { data: userData } = await supabase.auth.getUser();
+    if (!note) {
+      actionMsg("Write something before submitting.", "error");
+      return;
+    }
 
-    await supabase.from("discussion_comments").insert({
-      workspace_id: currentWorkspace.id,
-      discussion_id: currentDiscussion.id,
-      created_by: userData.user.id,
-      comment: note,
-      discussion_status: currentDiscussion.status,
-    });
+    setButtonLoading(btn, true);
 
-    input.value = "";
-    await refreshDiscussion();
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+
+      const { error } = await supabase.from("discussion_comments").insert({
+        workspace_id: currentWorkspace.id,
+        discussion_id: currentDiscussion.id,
+        created_by: userData.user.id,
+        comment: note,
+        discussion_status: currentDiscussion.status,
+      });
+
+      if (error) {
+        actionMsg("Failed to add comment.", "error");
+        return;
+      }
+
+      input.value = "";
+      await refreshDiscussion();
+    } finally {
+      setButtonLoading(btn, false);
+    }
   });
 }
 
@@ -448,19 +466,26 @@ function attachMarkDoneHandler(discussionId) {
   if (!btn) return;
 
   btn.addEventListener("click", async () => {
-    const newStatus = currentDiscussion.status === "closed" ? "open" : "closed";
+    setButtonLoading(btn, true);
 
-    const { error } = await supabase
-      .from("discussions")
-      .update({ status: newStatus, closed_at: new Date().toISOString() })
-      .eq("id", discussionId);
+    try {
+      const newStatus =
+        currentDiscussion.status === "closed" ? "open" : "closed";
 
-    if (error) {
-      alert(error.message);
-      return;
+      const { error } = await supabase
+        .from("discussions")
+        .update({ status: newStatus, closed_at: new Date().toISOString() })
+        .eq("id", discussionId);
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
+
+      await refreshDiscussion();
+    } finally {
+      setButtonLoading(btn, false);
     }
-
-    await refreshDiscussion();
   });
 }
 
