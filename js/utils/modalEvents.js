@@ -67,7 +67,9 @@ export function attachCreateTaskEvent(workspaceId) {
     const { data, error } = await supabase
       .from("workspace_tasks")
       .insert(taskData)
-      .select();
+      .select()
+      .single();
+
 
     if (error) {
       console.error(error);

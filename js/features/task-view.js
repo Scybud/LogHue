@@ -17,7 +17,7 @@ async function getUserRole(workspaceId) {
     .select("role")
     .eq("workspace_id", workspaceId)
     .eq("user_id", userId)
-    .single();
+    .maybeSingle();
 
   if (error) return null;
   return { userId, role: data.role };
@@ -95,7 +95,7 @@ async function initTaskView() {
   loadTask.remove;
   await loadTask(taskId);
 
-  userRole = await getUserRole(currentWorkspace.id);
+  userRole = await getUserRole(currentWorkspace?.id);
 
   loadSidebar();
   renderTaskHeader();
@@ -270,10 +270,11 @@ async function loadTask(taskId) {
     `,
     )
     .eq("id", taskId)
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error(error);
+    console.log(error.message);
         document.getElementById("taskViewContent").innerHTML =
           `<p class="placeholderText">Invalid task link. <a href="index">Go Home</a></p>`;
           loadSidebar();
@@ -282,7 +283,7 @@ async function loadTask(taskId) {
   }
 
   currentTask = data;
-  currentWorkspace = data.workspace;
+  currentWorkspace = data?.workspace;
 }
 
 /* ---------------------------------------------
@@ -292,7 +293,7 @@ function renderTaskHeader() {
   const container = document.querySelector(".taskHeader");
   if (!container) return;
 
-   isAdmin = userRole.role === "admin" || userRole.role === "owner";
+   isAdmin = userRole?.role === "admin" || userRole.role === "owner";
 
   container.innerHTML = `
     <div class="taskHeaderTop">
