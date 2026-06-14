@@ -3,7 +3,6 @@ import { closeModal } from "../ui.js";
 import { actionMsg } from "../utils/modals.js";
 import { notifyWorkspace } from "../utils/notifications.js";
 import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
-import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
 
 export async function attachStartDiscussionEvent(ws, user) {
   const startDiscussionBtn = document.getElementById("startDiscussion");
