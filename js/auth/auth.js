@@ -1,7 +1,6 @@
 import { supabase } from "../supabase.js";
-import { buttonLoading } from "../ui.js";
 import { actionMsg } from "../utils/modals.js";
-
+import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
 
 //Signup funtion
 async function signup(name, email, password) {
@@ -48,16 +47,13 @@ if (signupForm) {
       return;
     }
 
-    //disable button
     const button = signupForm.querySelector("button");
-    button.disabled = true;
-    buttonLoading(button);
+    setButtonLoading(button, true);
 
     try {
       const success = await signup(name, email, password);
 
       if (success) {
-
         // After successful login/signup:
         const params = new URLSearchParams(window.location.search);
         const redirectTo = params.get("redirect");
@@ -71,8 +67,7 @@ if (signupForm) {
         }
       }
     } finally {
-      button.disabled = false;
-      buttonLoading(button);
+      setButtonLoading(button, false);
     }
   });
 }
@@ -110,8 +105,7 @@ export function loginFuntion() {
       }
 
       const button = document.getElementById("loginBtn");
-      button.disabled = true;
-      buttonLoading(button);
+      setButtonLoading(button, true);
 
       try {
         const success = await login(email, password);
@@ -129,10 +123,8 @@ export function loginFuntion() {
             window.location.href = "../";
           }
         }
-        
       } finally {
-        button.disabled = false;
-        buttonLoading(button);
+        setButtonLoading(button, false);
       }
     });
   }
@@ -150,9 +142,8 @@ async function signout() {
   actionMsg("Logged out successfully!", "success");
 
   setTimeout(() => {
-
     window.location.href = "/auth";
-  }, 3000)
+  }, 3000);
 }
 
 export function attachSignoutEvents() {
@@ -173,7 +164,7 @@ function setupOAuthButton(buttonId, provider) {
   if (!btn) return;
 
   btn.addEventListener("click", async () => {
-        buttonLoading(btn);
+    setButtonLoading(btn, true);
 
     // Read redirect param from current URL
     const params = new URLSearchParams(window.location.search);
@@ -195,14 +186,13 @@ function setupOAuthButton(buttonId, provider) {
 
     if (error) {
       actionMsg(`OAuth error: ${error.message}`);
-          buttonLoading(btn);
+      setButtonLoading(btn, false);
+      return;
     }
 
-        buttonLoading(btn);
-
+    setButtonLoading(btn, false);
   });
 }
-
 
 //Implement OAuths
 

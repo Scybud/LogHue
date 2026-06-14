@@ -1,22 +1,27 @@
 import { supabase } from "../supabase.js";
-import { buttonLoading } from "../ui.js";
+import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
 
 //PASSWORD RESET EMAIL FORM SUBMISSON FUNCTION
 async function sendPasswordResetEmail(email, redirectPage) {
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: redirectPage,
   });
+
   if (error) {
     console.error(error);
     alert(error.message);
-  } else {
-    const successCard = document.querySelector(".success-card");
-    const passwordResetEmailForm = document.getElementById(
-      "passwordResetEmailForm",
-    );
-    passwordResetEmailForm.classList.add("hide");
-    successCard.classList.add("showFlex");
+    return false;
   }
+
+  const successCard = document.querySelector(".success-card");
+  const passwordResetEmailForm = document.getElementById(
+    "passwordResetEmailForm",
+  );
+
+  passwordResetEmailForm.classList.add("hide");
+  successCard.classList.add("showFlex");
+
+  return true;
 }
 
 //PASSWORD RESET EMAIL FORM SUBMISSON
@@ -31,24 +36,19 @@ if (passwordResetEmailForm) {
     const email = document.getElementById("passwordResetEmail").value.trim();
 
     const button = document.getElementById("passwordResetEmailSubmitBtn");
-    button.disabled = true;
-    buttonLoading(button);
+    setButtonLoading(button, true);
 
-    const successCard = document.querySelector(".success-card");
     try {
       const success = await sendPasswordResetEmail(
         email,
         "https://app.loghue.com/auth/passwordChange",
       );
 
-      if (success) {
-        passwordResetEmailForm.classList.add("hide");
-        successCard.classList.add("showFlex");
+      if (!success) {
+        return;
       }
     } finally {
-      button.disabled = false;
-      buttonLoading(button);
-
+      setButtonLoading(button, false);
       document.getElementById("passwordResetEmail").value = "";
     }
   });
@@ -63,10 +63,12 @@ async function sendPasswordResetNewPassword(password) {
   if (error) {
     console.error(error);
     alert(error.message);
-  } else {
-    alert("Password reset Complete!");
-    window.location.href = "https://app.loghue.com";
+    return false;
   }
+
+  alert("Password reset Complete!");
+  window.location.href = "https://app.loghue.com";
+  return true;
 }
 
 //PASSWORD RESET EMAIL FORM SUBMISSON
@@ -80,6 +82,13 @@ if (passwordChangeForm) {
       .getElementById("passwordResetNewPassword")
       .value.trim();
 
-    await sendPasswordResetNewPassword(password);
+    const button = document.getElementById("passwordResetNewPasswordSubmitBtn");
+    setButtonLoading(button, true);
+
+    try {
+      await sendPasswordResetNewPassword(password);
+    } finally {
+      setButtonLoading(button, false);
+    }
   });
 }
