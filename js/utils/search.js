@@ -109,7 +109,7 @@ div.innerHTML = `
     <div class="searchType ${result.type}">
       ${result.type === "workspace" ? "Workspace" : "Task"}
     </div>
-    <h4>${result.name || result.title}</h4>
+    <p>${result.name || result.title}</p>
   </a>
 `;
 
