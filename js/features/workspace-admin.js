@@ -1343,7 +1343,7 @@ export function loadTasks(title, tasks, container) {
     });
 
     taskCard.append(taskTitle, taskMeta, details, viewBtn, pingBtn);
-    divGrid.append(taskCard);
+    divGrid.prepend(taskCard);
   });
 
   container.append(section);

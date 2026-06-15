@@ -124,3 +124,11 @@ a .logo:hover {
   display: block;
   border-radius: var(--radius-sm);
 }
+
+
+
+/*LOGHUE AI AGENT STYLE */
+div#cyces-initial-message-bubble.cyces-initial-message-bubble {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
