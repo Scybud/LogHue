@@ -121,10 +121,10 @@
       }
 
       .feature-card {
-        border: 1px solid var(--border);
+        border: 1px solid var(--border-primary);
         padding: 20px;
         border-radius: 10px;
-        background: var(--background);
+        background: var(--card-bg);
       }
 
       .feature-card h3 {
@@ -135,7 +135,7 @@
         margin-top: 20px;
         padding: 20px;
         border-left: 4px solid var(--accent);
-        background: var(--background-secondary);
+        background: var(--bg-secondary);
         border-radius: 6px;
         transition: all 0.2s ease;
       }
@@ -151,12 +151,11 @@
       .footer {
         background: #050505;
         padding: var(--space-lg) var(--space-xl);
-        color: rgba(255, 255, 255, 0.6);
+        color: #ffffff99;
         font-size: 0.85rem;
       }
 
       .footer-inner {
-        max-width: 1120px;
         margin: 0 auto;
         display: flex;
         flex-wrap: wrap;
@@ -245,6 +244,32 @@
           flex-direction: column;
         }
       }
+
+      .backLinks {
+        width: 100%;
+        overflow: hidden;
+        display: flex;
+        gap: 8px;
+      }
+
+      .backLinks a {
+        display: inline;
+        animation: slide 10s linear alternate infinite;
+      }
+
+      .backLinks:hover a {
+        animation-play-state: paused;
+      }
+
+      @keyframes slide {
+        from {
+          transform: translateX(100px);
+        }
+
+        to {
+          transform: translateX(-1000px);
+        }
+      }
     </style>
   </head>
 
@@ -286,7 +311,7 @@
 
         <div class="feature-grid">
           <div class="feature-card">
-            <h3>Teamâ€‘Ready Workspaces</h3>
+            <h3>Teams Ready Workspaces</h3>
             <p>
               Each workspace is a dedicated environment for your team. Tasks,
               notes, activity, and members all live in one structured space,
@@ -322,7 +347,7 @@
           </div>
 
           <div class="feature-card">
-            <h3>Roleâ€‘Based Access</h3>
+            <h3>Role Based Access</h3>
             <p>
               Admins manage workspace structure and settings. Members update
               tasks and contribute content. Guests can view or participate
@@ -331,11 +356,9 @@
           </div>
 
           <div class="feature-card">
-            <h3>Realâ€‘Time Sync</h3>
+            <h3>Workspace Discussions</h3>
             <p>
-              Powered by Supabaseâ€™s realâ€‘time engine, updates appear instantly
-              across all devices. No refreshes, no delays â€” your team always
-              sees the latest state.
+             Start a discussion to communicate with your team about any issue, development or updates. everything stays in your workspace and you can close discussion after a clear decision between your team.
             </p>
           </div>
         </div>
@@ -345,7 +368,7 @@
       <section>
         <h2 class="text-center">Personal Tools Inside LogHue</h2>
         <p>
-          While LogHue is teamâ€‘first, it includes personal tools that help
+          While LogHue is teams first, it includes personal tools that help
           individuals stay organized and reflect on their work, even outside a
           team environment.
         </p>
@@ -418,9 +441,9 @@
 
         <div class="feature-grid">
           <div class="feature-card">
-            <h3>Supabaseâ€‘Powered Backend</h3>
+            <h3>Supabase Powered Backend</h3>
             <p>
-              Authentication, database, storage, and realâ€‘time sync, all powered
+              Authentication, database, and storage, all powered
               by a modern, scalable backend built for reliability and speed.
             </p>
           </div>
@@ -428,8 +451,8 @@
           <div class="feature-card">
             <h3>Secure by Design</h3>
             <p>
-              Roleâ€‘based permissions, secure storage, and GDPRâ€‘aligned data
-              handling ensure your teamâ€™s work stays safe and compliant.
+              Role based permissions, secure storage, and GDPR aligned data
+              handling ensure your team's work stays safe and compliant.
             </p>
           </div>
 
@@ -446,8 +469,7 @@
             <h3>Lightweight, Predictable Interface</h3>
             <p>
               LogHue is designed to stay fast and consistent. Every workspace
-              loads cleanly, updates instantly, and keeps your structure intact
-              â€” without unnecessary animations, clutter, or distractions.
+              loads cleanly, updates instantly, and keeps your structure intact without unnecessary animations, clutter, or distractions.
             </p>
           </div>
         </div>
@@ -500,84 +522,240 @@
         </div>
       </div>
 
-      <div style="display: block" class="backLinks">
-        <!--FORGE:TO BACKLINK-->
-        <a
-          href="https://forg.to/products/loghue"
-          target="_blank"
-          rel="noopener"
-        >
-          <img
-            src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
-            alt="LogHue - Upvote on Forg on forg."
-            height="54"
-            width="250"
-          />
-        </a>
+     <section class="section backlinksContainer">
+        <div class="backLinks">
+          <!--FORGE:TO BACKLINK-->
+          <a
+            href="https://forg.to/products/loghue"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
+              alt="LogHue - Upvote on Forg on forg."
+              height="54"
+              width="250"
+            />
+          </a>
 
-        <!--NEXTGEN TOOLS BACKLINK-->
-        <a
-          href="https://www.nxgntools.com/tools/loghue?utm_source=loghue"
-          target="_blank"
-          rel="noopener"
-          style="display: inline-block; width: auto"
-        >
-          <img
-            src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON"
-            alt="Featured on NextGen Tools"
-            height="54"
-            width="250"
-          />
-        </a>
+          <!--NEXTGEN TOOLS BACKLINK-->
+          <a
+            href="https://www.nxgntools.com/tools/loghue?utm_source=loghue"
+            target="_blank"
+            rel="noopener"
+            style="display: inline-block; width: auto"
+          >
+            <img
+              src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON"
+              alt="Featured on NextGen Tools"
+              height="54"
+              width="250"
+            />
+          </a>
 
-        <!--MARJETINGDB BACKLIN-->
-        <a href="https://marketingdb.live" target="_blank"
-          ><img
-            src="https://marketingdb.live/badge.svg"
-            alt="Listed on MarketingDB"
-            width="250"
-            height="54"
-        /></a>
+          <!--MARJETINGDB BACKLIN-->
+          <a href="https://marketingdb.live" target="_blank"
+            ><img
+              src="https://marketingdb.live/badge.svg"
+              alt="Listed on MarketingDB"
+              width="250"
+              height="54"
+          /></a>
 
-        <!--PRODUCT HINT BACKLINK-->
-        <a
-          href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
-          target="_blank"
-          rel="noopener noreferrer"
-          ><img
-            alt="LogHue - See what is happening without chasing updates | Product Hunt"
-            width="250"
-            height="54"
-            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"
-        /></a>
+          <!--PRODUCT HINT BACKLINK-->
+          <a
+            href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><img
+              alt="LogHue - See what is happening without chasing updates | Product Hunt"
+              width="250"
+              height="54"
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"
+          /></a>
 
-        <!--LAUNCHIGNITER BACKLINK-->
-        <a
-          href="https://launchigniter.com/product/loghue?ref=badge-loghue"
-          target="_blank"
-        >
-          <img
-            src="https://launchigniter.com/api/badge/loghue?theme=dark"
-            alt="Featured on LaunchIgniter"
-            width="250"
-            height="54"
-          />
-        </a>
+          <!--LAUNCHIGNITER BACKLINK-->
+          <a
+            href="https://launchigniter.com/product/loghue?ref=badge-loghue"
+            target="_blank"
+          >
+            <img
+              src="https://launchigniter.com/api/badge/loghue?theme=dark"
+              alt="Featured on LaunchIgniter"
+              width="250"
+              height="54"
+            />
+          </a>
 
-        <!--PRODUCT HOT BACKLINK-->
-        <a
-          href="https://producthot.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img
-            src="https://producthot.com/badages-awards.svg"
-            alt="Featured on Product Hot"
-            height="54"
-            width="250"
-          />
-        </a>
-      </div>
+          <!--PRODUCT HOT BACKLINK-->
+          <a
+            href="https://producthot.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="https://producthot.com/badages-awards.svg"
+              alt="Featured on Product Hot"
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--FORGE:TO BACKLINK-->
+          <a
+            href="https://forg.to/products/loghue"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
+              alt="LogHue - Upvote on Forg on forg."
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--NEXTGEN TOOLS BACKLINK-->
+          <a
+            href="https://www.nxgntools.com/tools/loghue?utm_source=loghue"
+            target="_blank"
+            rel="noopener"
+            style="display: inline-block; width: auto"
+          >
+            <img
+              src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON"
+              alt="Featured on NextGen Tools"
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--MARJETINGDB BACKLIN-->
+          <a href="https://marketingdb.live" target="_blank"
+            ><img
+              src="https://marketingdb.live/badge.svg"
+              alt="Listed on MarketingDB"
+              width="250"
+              height="54"
+          /></a>
+
+          <!--PRODUCT HINT BACKLINK-->
+          <a
+            href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><img
+              alt="LogHue - See what is happening without chasing updates | Product Hunt"
+              width="250"
+              height="54"
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"
+          /></a>
+
+          <!--LAUNCHIGNITER BACKLINK-->
+          <a
+            href="https://launchigniter.com/product/loghue?ref=badge-loghue"
+            target="_blank"
+          >
+            <img
+              src="https://launchigniter.com/api/badge/loghue?theme=dark"
+              alt="Featured on LaunchIgniter"
+              width="250"
+              height="54"
+            />
+          </a>
+
+          <!--PRODUCT HOT BACKLINK-->
+          <a
+            href="https://producthot.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="https://producthot.com/badages-awards.svg"
+              alt="Featured on Product Hot"
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--FORGE:TO BACKLINK-->
+          <a
+            href="https://forg.to/products/loghue"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
+              alt="LogHue - Upvote on Forg on forg."
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--NEXTGEN TOOLS BACKLINK-->
+          <a
+            href="https://www.nxgntools.com/tools/loghue?utm_source=loghue"
+            target="_blank"
+            rel="noopener"
+            style="display: inline-block; width: auto"
+          >
+            <img
+              src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON"
+              alt="Featured on NextGen Tools"
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--MARJETINGDB BACKLIN-->
+          <a href="https://marketingdb.live" target="_blank"
+            ><img
+              src="https://marketingdb.live/badge.svg"
+              alt="Listed on MarketingDB"
+              width="250"
+              height="54"
+          /></a>
+
+          <!--PRODUCT HINT BACKLINK-->
+          <a
+            href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><img
+              alt="LogHue - See what is happening without chasing updates | Product Hunt"
+              width="250"
+              height="54"
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"
+          /></a>
+
+          <!--LAUNCHIGNITER BACKLINK-->
+          <a
+            href="https://launchigniter.com/product/loghue?ref=badge-loghue"
+            target="_blank"
+          >
+            <img
+              src="https://launchigniter.com/api/badge/loghue?theme=dark"
+              alt="Featured on LaunchIgniter"
+              width="250"
+              height="54"
+            />
+          </a>
+
+          <!--PRODUCT HOT BACKLINK-->
+          <a
+            href="https://producthot.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="https://producthot.com/badages-awards.svg"
+              alt="Featured on Product Hot"
+              height="54"
+              width="250"
+            />
+          </a>
+        </div>
+      </section>
 
       <div class="footer-bottom">
         <p>&copy; 2026 LogHue. A Scybud Product. All rights reserved.</p>

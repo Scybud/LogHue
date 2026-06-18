@@ -34,7 +34,7 @@
 
     <style>
       body {
-        color: var(--color);
+        color: var(--text-primary);
       }
 
       main {
@@ -109,10 +109,10 @@
       }
 
       .plan {
-        border: 1px solid var(--border);
+        border: 1px solid var(--border-primary);
         padding: 24px;
         border-radius: 12px;
-        background: var(--background);
+        background: var(--card-bg);
         transition: scale 0.2s ease;
       }
       .plan:hover {
@@ -166,7 +166,7 @@
       }
 
       .comparison-table thead tr {
-        background: var(--background-secondary);
+        background: var(--bg-secondary);
         border-bottom: 1px solid var(--border);
       }
 
@@ -174,7 +174,7 @@
         text-align: left;
         padding: 14px 12px;
         font-weight: 600;
-        color: var(--color);
+        color: var(--text-primary);
       }
 
       .comparison-table th:not(:first-child) {
@@ -184,7 +184,7 @@
       .comparison-table td {
         padding: 14px 12px;
         border-bottom: 1px solid var(--border);
-        color: var(--color);
+        color: var(--text-primary);
       }
 
       .comparison-table td:not(:first-child) {
@@ -193,12 +193,12 @@
 
       /* Hover highlight */
       .comparison-table tbody tr:hover {
-        background: var(--background-secondary);
+        background: var(--hover-bg);
       }
 
       /* Subtle zebra striping */
       .comparison-table tbody tr:nth-child(even) {
-        background: rgba(0, 0, 0, 0.02);
+        background: var(--bg-secondary);
       }
 
       /* Mobile responsiveness */
@@ -309,6 +309,32 @@
 
         .footer-inner {
           flex-direction: column;
+        }
+      }
+
+      .backLinks {
+        width: 100%;
+        overflow: hidden;
+        display: flex;
+        gap: 8px;
+      }
+
+      .backLinks a {
+        display: inline;
+        animation: slide 10s linear alternate infinite;
+      }
+
+      .backLinks:hover a {
+        animation-play-state: paused;
+      }
+
+      @keyframes slide {
+        from {
+          transform: translateX(100px);
+        }
+
+        to {
+          transform: translateX(-1000px);
         }
       }
     </style>
@@ -433,7 +459,7 @@
   </div>
 
   <div class="plan" style="border: 2px solid var(--primary);">
-    <h2>Grow ðŸ”¥</h2>
+    <h2>Grow</h2>
     <div class="price text-bold">$6.99</div>
     <p>Most popular for active users.</p>
     <ul>
@@ -496,7 +522,7 @@
             </tr>
             <tr>
               <td>Workspace Activity</td>
-              <td>â€”</td>
+              <td>-</td>
               <td>Yes</td>
               <td>Yes</td>
             </tr>
@@ -529,7 +555,7 @@
 
         <p style="margin: 20px 0">
           Pro is built for teams that outgrow the limits of the Free and Team
-          plans. If your workspace is becoming central to your teamâ€™s workflow,
+          plans. If your workspace is becoming central to your team's workflow,
           Pro gives you the flexibility, scale, and control you need.
         </p>
 
@@ -619,7 +645,7 @@
         <p style="margin: 20px 0;">
           LogHue is built for teams that value clarity, structure, and
           simplicity. Our pricing reflects that philosophy, no hidden fees, no
-          confusing addâ€‘ons, and no artificial limitations designed to force
+          confusing addons, and no artificial limitations designed to force
           upgrades.
         </p>
 
@@ -681,84 +707,240 @@
         </div>
       </div>
 
-      <div style="display: block" class="backLinks">
-        <!--FORGE:TO BACKLINK-->
-        <a
-          href="https://forg.to/products/loghue"
-          target="_blank"
-          rel="noopener"
-        >
-          <img
-            src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
-            alt="LogHue - Upvote on Forg on forg."
-            height="54"
-            width="250"
-          />
-        </a>
+       <section class="section backlinksContainer">
+        <div class="backLinks">
+          <!--FORGE:TO BACKLINK-->
+          <a
+            href="https://forg.to/products/loghue"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
+              alt="LogHue - Upvote on Forg on forg."
+              height="54"
+              width="250"
+            />
+          </a>
 
-        <!--NEXTGEN TOOLS BACKLINK-->
-        <a
-          href="https://www.nxgntools.com/tools/loghue?utm_source=loghue"
-          target="_blank"
-          rel="noopener"
-          style="display: inline-block; width: auto"
-        >
-          <img
-            src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON"
-            alt="Featured on NextGen Tools"
-            height="54"
-            width="250"
-          />
-        </a>
+          <!--NEXTGEN TOOLS BACKLINK-->
+          <a
+            href="https://www.nxgntools.com/tools/loghue?utm_source=loghue"
+            target="_blank"
+            rel="noopener"
+            style="display: inline-block; width: auto"
+          >
+            <img
+              src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON"
+              alt="Featured on NextGen Tools"
+              height="54"
+              width="250"
+            />
+          </a>
 
-        <!--MARJETINGDB BACKLIN-->
-        <a href="https://marketingdb.live" target="_blank"
-          ><img
-            src="https://marketingdb.live/badge.svg"
-            alt="Listed on MarketingDB"
-            width="250"
-            height="54"
-        /></a>
+          <!--MARJETINGDB BACKLIN-->
+          <a href="https://marketingdb.live" target="_blank"
+            ><img
+              src="https://marketingdb.live/badge.svg"
+              alt="Listed on MarketingDB"
+              width="250"
+              height="54"
+          /></a>
 
-        <!--PRODUCT HINT BACKLINK-->
-        <a
-          href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
-          target="_blank"
-          rel="noopener noreferrer"
-          ><img
-            alt="LogHue - See what is happening without chasing updates | Product Hunt"
-            width="250"
-            height="54"
-            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"
-        /></a>
+          <!--PRODUCT HINT BACKLINK-->
+          <a
+            href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><img
+              alt="LogHue - See what is happening without chasing updates | Product Hunt"
+              width="250"
+              height="54"
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"
+          /></a>
 
-        <!--LAUNCHIGNITER BACKLINK-->
-        <a
-          href="https://launchigniter.com/product/loghue?ref=badge-loghue"
-          target="_blank"
-        >
-          <img
-            src="https://launchigniter.com/api/badge/loghue?theme=dark"
-            alt="Featured on LaunchIgniter"
-            width="250"
-            height="54"
-          />
-        </a>
+          <!--LAUNCHIGNITER BACKLINK-->
+          <a
+            href="https://launchigniter.com/product/loghue?ref=badge-loghue"
+            target="_blank"
+          >
+            <img
+              src="https://launchigniter.com/api/badge/loghue?theme=dark"
+              alt="Featured on LaunchIgniter"
+              width="250"
+              height="54"
+            />
+          </a>
 
-        <!--PRODUCT HOT BACKLINK-->
-        <a
-          href="https://producthot.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img
-            src="https://producthot.com/badages-awards.svg"
-            alt="Featured on Product Hot"
-            height="54"
-            width="250"
-          />
-        </a>
-      </div>
+          <!--PRODUCT HOT BACKLINK-->
+          <a
+            href="https://producthot.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="https://producthot.com/badages-awards.svg"
+              alt="Featured on Product Hot"
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--FORGE:TO BACKLINK-->
+          <a
+            href="https://forg.to/products/loghue"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
+              alt="LogHue - Upvote on Forg on forg."
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--NEXTGEN TOOLS BACKLINK-->
+          <a
+            href="https://www.nxgntools.com/tools/loghue?utm_source=loghue"
+            target="_blank"
+            rel="noopener"
+            style="display: inline-block; width: auto"
+          >
+            <img
+              src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON"
+              alt="Featured on NextGen Tools"
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--MARJETINGDB BACKLIN-->
+          <a href="https://marketingdb.live" target="_blank"
+            ><img
+              src="https://marketingdb.live/badge.svg"
+              alt="Listed on MarketingDB"
+              width="250"
+              height="54"
+          /></a>
+
+          <!--PRODUCT HINT BACKLINK-->
+          <a
+            href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><img
+              alt="LogHue - See what is happening without chasing updates | Product Hunt"
+              width="250"
+              height="54"
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"
+          /></a>
+
+          <!--LAUNCHIGNITER BACKLINK-->
+          <a
+            href="https://launchigniter.com/product/loghue?ref=badge-loghue"
+            target="_blank"
+          >
+            <img
+              src="https://launchigniter.com/api/badge/loghue?theme=dark"
+              alt="Featured on LaunchIgniter"
+              width="250"
+              height="54"
+            />
+          </a>
+
+          <!--PRODUCT HOT BACKLINK-->
+          <a
+            href="https://producthot.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="https://producthot.com/badages-awards.svg"
+              alt="Featured on Product Hot"
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--FORGE:TO BACKLINK-->
+          <a
+            href="https://forg.to/products/loghue"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
+              alt="LogHue - Upvote on Forg on forg."
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--NEXTGEN TOOLS BACKLINK-->
+          <a
+            href="https://www.nxgntools.com/tools/loghue?utm_source=loghue"
+            target="_blank"
+            rel="noopener"
+            style="display: inline-block; width: auto"
+          >
+            <img
+              src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON"
+              alt="Featured on NextGen Tools"
+              height="54"
+              width="250"
+            />
+          </a>
+
+          <!--MARJETINGDB BACKLIN-->
+          <a href="https://marketingdb.live" target="_blank"
+            ><img
+              src="https://marketingdb.live/badge.svg"
+              alt="Listed on MarketingDB"
+              width="250"
+              height="54"
+          /></a>
+
+          <!--PRODUCT HINT BACKLINK-->
+          <a
+            href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><img
+              alt="LogHue - See what is happening without chasing updates | Product Hunt"
+              width="250"
+              height="54"
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"
+          /></a>
+
+          <!--LAUNCHIGNITER BACKLINK-->
+          <a
+            href="https://launchigniter.com/product/loghue?ref=badge-loghue"
+            target="_blank"
+          >
+            <img
+              src="https://launchigniter.com/api/badge/loghue?theme=dark"
+              alt="Featured on LaunchIgniter"
+              width="250"
+              height="54"
+            />
+          </a>
+
+          <!--PRODUCT HOT BACKLINK-->
+          <a
+            href="https://producthot.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="https://producthot.com/badages-awards.svg"
+              alt="Featured on Product Hot"
+              height="54"
+              width="250"
+            />
+          </a>
+        </div>
+      </section>
 
       <div class="footer-bottom">
         <p>&copy; 2026 LogHue. A Scybud Product. All rights reserved.</p>
