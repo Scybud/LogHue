@@ -1,6 +1,10 @@
 .pageTitle, .greet-user {
 font-size: clamp(1.5rem, 5vw, 2rem);
 }
+.greet-user {
+  margin-bottom: calc(var(--space-xl) * 2);
+
+}
 .workspaceName {
   font-size: var(--text-lg);
   position: relative;

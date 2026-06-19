@@ -632,6 +632,7 @@ button.dropdown-item {
 .consent-banner {
   position: fixed;
   bottom: 5px;
+  left: 20px;
   right: 20px;
   max-width: 360px;
   background: var(--card-bg);
