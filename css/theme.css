@@ -2,7 +2,7 @@
 @media (prefers-color-scheme: light) {
 
   :root {
-    --bg: #ffffff;
+    --bg-primary: #ffffff;
     --text-primary: #000000;
     --text-secondary: #414141;
       --notif-bg-unread: #e6f7ff;
@@ -35,7 +35,7 @@
 
 /*MANUALLY SELECTED LIGHT THEME*/
 :root[data-theme="light"] {
-    --bg: #ffffff;
+    --bg-primary: #ffffff;
     --text-primary: #000000;
     --text-secondary: #414141;
   --muted: #5f5d5d;
