@@ -71,7 +71,7 @@ export async function renderDashboard() {
 
     const user = sessionState.user;
 
-    if(sessionState.profile.onboarded === false) {
+    if(sessionState.profile?.onboarded === false) {
 const warningContainer = document.querySelector(".warningContainer");
 
 if (warningContainer) {

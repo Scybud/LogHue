@@ -12,7 +12,7 @@ const copyBtn = document.getElementById("copyBtn");
 const editInNotesBtn = document.getElementById("editInNotesBtn");
 const fileName = document.getElementById("fileName");
 const ads = document.querySelector(".ads");
-const pageHeader = document.querySelector(".pageHeader");
+const pageHeader = document.querySelector(".contentHeader");
 
 let selectedImage = null;
 let cropBox = null;
@@ -37,7 +37,7 @@ user = sessionState.profile;
   }
 
   if (!user) {
-    pageHeader.remove();
+    pageHeader?.remove();
   }
 }
 loadUi();

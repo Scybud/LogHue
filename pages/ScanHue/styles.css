@@ -129,6 +129,11 @@ font-family: 'Patrick Hand', sans-serif, cursive;
   display: none;
 }
 
+.sectionDescription {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
 #modalContainer {
   background: rgba(0,0,0,0.6);
 }
