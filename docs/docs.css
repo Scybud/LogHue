@@ -312,7 +312,8 @@ strong.logo-docs-text {
 
 /* Warning Box */
 .warning-box {
-  background: #826f20;
+  color: #ffd91a;
+  background: #524201;
   border: 1px solid var(--warning);
   border-radius: var(--radius-sm);
   padding: var(--space-md);
@@ -441,13 +442,14 @@ strong.logo-docs-text {
 }
 
 .status-progress .badge {
-  background: #fef3c7;
-  color: #d97706;
+  background: #3a2f00; /* deep dark gold */
+  color: #ffd84d;      /* bright yellow text */
+  font-weight: 600;
 }
 
 .status-completed .badge {
-  background: #d1fae5;
-  color: #059669;
+  background: #014723;
+  color: #03ffaf;
 }
 
 .status-closed .badge {
