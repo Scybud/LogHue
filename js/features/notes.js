@@ -489,7 +489,7 @@ function exportCurrentNote(type) {
       Packer.toBlob(doc).then((blob) => {
         saveAs(blob, `${safeTitle}.docx`);
       });
-
+didExport = true;
       break;
 
     case "pdf":
@@ -500,17 +500,28 @@ function exportCurrentNote(type) {
       wrapper.style.width = "210mm";
       wrapper.style.padding = "20mm";
       wrapper.style.background = "#fff";
-      wrapper.style.color = "#000";
       wrapper.style.fontFamily = "Arial, sans-serif";
       wrapper.style.fontSize = "12px";
       wrapper.style.lineHeight = "1.6";
 
+      // Injecting local styles forces html2canvas to render text as pure black
       wrapper.innerHTML = `
-    <h1 style="text-align:center; margin-bottom:20px;">
-      ${title}
-    </h1>
-    <div>
-      ${cleanHTML}
+    <style>
+      .pdf-container, .pdf-container *, .pdf-container p, .pdf-container span {
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
+      }
+      .pdf-container h1 {
+        text-align: center; 
+        margin-bottom: 20px;
+        color: #000000 !important;
+      }
+    </style>
+    <div class="pdf-container">
+      <h1>${title}</h1>
+      <div>
+        ${cleanHTML}
+      </div>
     </div>
   `;
 
@@ -522,8 +533,9 @@ function exportCurrentNote(type) {
             margin: 0,
             filename: `${safeTitle}.pdf`,
             html2canvas: {
-              scale: 2,
+              scale: 2, // Keeps text sharp
               useCORS: true,
+              logging: false,
             },
             jsPDF: {
               unit: "mm",
