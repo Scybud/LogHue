@@ -375,13 +375,13 @@ function updateworkspaceCount() {
 }
 
 export function createWorkspaceCardElement(ws) {
-  const formattedTDate = formatDateTime(ws.created_at);
+  const formattedActivity = ws.last_activity ? formatDateTime(ws.last_activity) : "No recent activity";
 
   const workspaceCard = document.createElement("div");
   workspaceCard.classList.add("workspaceCard", "card");
   workspaceCard.dataset.id = ws.id;
 
-  // HEADER
+  // 1. HEADER
   const header = document.createElement("div");
   header.classList.add("workspaceCardHeader");
 
@@ -390,34 +390,24 @@ export function createWorkspaceCardElement(ws) {
 
   const workspaceName = document.createElement("span");
   workspaceName.classList.add("text-bold", "workspaceName");
-  // workspace name (SAFE)
-  workspaceName.textContent = ws.name;
+  workspaceName.textContent = ws.name; // SAFE
 
   const roleSpan = document.createElement("span");
-  const roleClass = ws.role || "unknown";
+  const roleClass = ws.role || "member"; // Default to member cleanly
 
   roleSpan.classList.add("tag", roleClass);
   roleSpan.textContent = roleClass;
 
   workspaceName.append(roleSpan);
+  headerLeft.append(workspaceName);
 
-  const p = document.createElement("p");
-  const metaSpan = document.createElement("span");
-  metaSpan.classList.add("meta");
-  metaSpan.textContent = `Created on: ${formattedTDate}`;
-
-  p.append(metaSpan);
-
-  headerLeft.append(workspaceName, p);
-
-  // HEADER RIGHT (menu button with SVG)
+  // 2. HEADER RIGHT (menu button with SVG)
   const headerRight = document.createElement("div");
   headerRight.classList.add("workspaceCardHeaderRight");
 
   const menuBtn = document.createElement("button");
   menuBtn.classList.add("workspaceMenuBtn");
 
-  // SVG (safe because static)
   const svgNS = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(svgNS, "svg");
   svg.setAttribute("width", "20");
@@ -435,30 +425,49 @@ export function createWorkspaceCardElement(ws) {
 
   menuBtn.append(svg);
   headerRight.append(menuBtn);
-
   header.append(headerLeft, headerRight);
 
-  // DESCRIPTION
-  /*
-  const details = document.createElement("details");
-  const summary = document.createElement("summary");
-  summary.textContent = "Description";
-  details.append(summary, descP);
-*/
+  // 3. DESCRIPTION
   const descP = document.createElement("p");
-  descP.textContent = ws.description; // SAFE
+  descP.classList.add("workspaceCardDesc");
+  descP.textContent = ws.description || "No description provided."; // SAFE
 
-  // OPEN BUTTON
+  // 4. LIVE METRICS CONTAINER (New Collaboration Hub Signals)
+  const statsContainer = document.createElement("div");
+  statsContainer.classList.add("workspaceCardStats");
+
+  // Member Count Badge
+  const membersBadge = document.createElement("span");
+  membersBadge.classList.add("stat-badge");
+  membersBadge.textContent = `👥 ${ws.member_count || 0} members`;
+
+  // Task Progression Badge
+  const tasksBadge = document.createElement("span");
+  tasksBadge.classList.add("stat-badge");
+  const totalTasks = ws.total_tasks || 0;
+  const openTasks = ws.open_tasks || 0;
+  const completedTasks = totalTasks - openTasks;
+  tasksBadge.textContent = `✅ ${completedTasks}/${totalTasks} tasks`;
+
+  // Last Activity Note
+  const activitySpan = document.createElement("span");
+  activitySpan.classList.add("meta", "activity-meta");
+  activitySpan.textContent = `Active: ${formattedActivity}`;
+
+  statsContainer.append(membersBadge, tasksBadge, activitySpan);
+
+  // 5. OPEN BUTTON
   const openBtn = document.createElement("button");
   openBtn.classList.add("btn", "btn-primary", "openWorkspaceBtn");
   openBtn.dataset.id = ws.id;
   openBtn.dataset.role = ws.role;
-  openBtn.textContent = "Open Workspace";
+  openBtn.textContent = "Open →";
 
-  // ASSEMBLE
-  workspaceCard.append(header, descP, openBtn);
+  // ASSEMBLE ALL ELEMENTS
+  workspaceCard.append(header, descP, statsContainer, openBtn);
 
-  if (ws.role === "admin") {
+  // 6. ACTION DROPDOWN FOR OWNERS/ADMINS
+  if (ws.role === "admin" || ws.role === "owner") {
     const dropdown = getWorkspaceDropdown(ws);
     workspaceCard.append(dropdown);
   }

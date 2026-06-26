@@ -36,12 +36,13 @@
   grid-area: mainContent;
   background: var(--mainContent-bg);
   border-left: 1px solid var(--border);
-  padding: 0 var(--space-sm) 0;
+      padding: 0 var(--space-sm) calc(var(--space-xl) * 4);
   overflow-y: auto;
   scroll-behavior: smooth;
   height: 100%;
   width: 100%;
   margin-left: 260px;
+  
 }
 
 /* MOBILE SIDEBAR */
@@ -50,21 +51,20 @@
     grid-template-columns: 1fr;
     grid-template-areas: "mainContent";
   }
- Button.menuBtn {
+  Button.menuBtn {
     display:block;
   }
- .sidebar .navText, .sidebarContainer div.navSectionLabel {
+  .sidebar .navText, .sidebarContainer div.navSectionLabel {
     opacity: 1;
   }
-    .sidebar span.navIcon {
+  .sidebar span.navIcon {
     width: auto;
     display: block;
     
   }
   .mainContent {
-  padding-bottom: 30px;
-  min-height: 100dvh;
-  margin-left: 0;
+    min-height: 100dvh;
+    margin-left: 0;
 }
   .sidebar {
     position: fixed;

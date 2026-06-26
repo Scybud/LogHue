@@ -57,23 +57,122 @@ button.navBtn,
 h3 {
   position: relative;
 }
+/* Role Badges */
 .tag {
-  font-size: 0.8rem;
-  border: 1px solid var(--accent);
-  backdrop-filter: blur(30px);
-  background: var(--tag);
-  color: var(--tag-text);
   position: absolute;
-  top: -5px;
-  border-radius: var(--radius-sm);
-  padding: calc(var(--space-xs) - 2px);
+  top: -8px;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
+
+.tag.owner { background: rgba(107, 183, 255, 0.15); color: #6fb7ff; }
+.tag.admin { background: rgba(255, 221, 122, 0.15); color: #ffdd7a; }
+.tag.member { background: rgba(158, 167, 179, 0.15); color: #9ea7b3; }
+
 .cardHeader {
   position: relative;
 }
 .cardHeader .tag {
   right: 0;
 }
+
+/* Description Text */
+.workspaceCardDesc {
+    font-size: 0.9rem;
+    color: var(--text-secondary, #c5c5d2);
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Live Metrics Hub */
+.workspaceCardStats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.75rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 1.25rem;
+}
+
+.stat-badge {
+    font-size: 0.85rem;
+    color: var(--text-secondary, #c5c5d2);
+    display: flex;
+    align-items: center;
+}
+
+.activity-meta {
+    margin-top: 0.2rem;
+    font-style: italic;
+}
+
+.tasks-section {
+    margin-top: 3rem;
+}
+
+.global-tasks-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.task-item-row {
+    background: var(--card-bg, #18181c);
+    border: 1px solid var(--border-color, #2a2a30);
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.task-item-row:hover {
+    background: #1f1f24;
+    border-color: #3a3a42;
+}
+
+.task-meta-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.task-checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-color, #6CCF7F);
+    cursor: pointer;
+}
+
+.task-title-text {
+    font-size: 0.95rem;
+    color: var(--text-main, #ffffff);
+}
+
+.task-context-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary, #c5c5d2);
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+
 .section {
   display: flex;
   flex-direction: column;

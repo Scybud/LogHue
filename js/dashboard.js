@@ -1,246 +1,199 @@
+// js/dashboard.js - COMPLETE REWRITTEN DASHBOARD CONTROLLER
+
+// 1. SYSTEM & COMPONENT IMPORTS
 import {
-  savedWorkspaceData,
-  getWorkspaceReady,
   createWorkspaceCardElement,
   dropdownClick,
 } from "./features/workspaceData.js";
-import { dataCount } from "./utils.js";
 import {
-  savedLogDetails,
-  createLogElement,
-  attachDeleteLogEvent,
-} from "./features/personalTasks.js";
+  fetchUserWorkspaces,
+  fetchUserGlobalTasks,
+} from "./data/workspaceDb.js";
 import { sessionReady, sessionState } from "./session.js";
 
-
-const recentLogs = document.getElementById("recentLogs");
-const upperDashboardContainer =  document.getElementById("upperDashboardContainer")
+// 2. DOM TARGET CACHING
+const upperDashboardContainer = document.getElementById(
+  "upperDashboardContainer",
+);
+const globalTasksContainer = document.getElementById("globalTasksContainer");
 const closeWarningBtn = document.getElementById("closeWarning");
 
-let createdWorkspaces;
-let closedWorkspaces;
+// 3. CENTRAL LOCAL STATE MANAGEMENT
+let localState = {
+  user: null,
+  workspaces: [],
+  tasks: [],
+};
+
 let isLoading = false;
 
-// -------------------------------
-// Loading State
-// -------------------------------
+/**
+ * Handles toggling visual loading indicator state classes across containers
+ */
 function setLoading(state) {
   isLoading = state;
-  
-    upperDashboardContainer?.classList.toggle("isLoading", state);
-    recentLogs?.classList.toggle("isLoading", state);
+  upperDashboardContainer?.classList.toggle("isLoading", state);
+  globalTasksContainer?.classList.toggle("isLoading", state);
 }
 
+/**
+ * Main Initialization Pipeline - Execution Orchestrator
+ */
 export async function renderDashboard() {
   setLoading(true);
-  
-  await new Promise(requestAnimationFrame);
-    
-  const workspacesReady = getWorkspaceReady();
 
-
-  await workspacesReady;
+  // Await core authentication session resolution
   await sessionReady;
+  localState.user = sessionState.user;
 
+  if (!localState.user) return;
 
-  const openedWorkspaces = savedWorkspaceData.filter(
-      (ws) => ws.status === "active",
-    );
-
-    const createdWorkspacesCount = document.getElementById(
-      "createdWorkspacesCount",
-    );
-
-    const closedWorkspacesCount = document.getElementById(
-      "closedWorkspacesCount",
-    );
-    const activeWorkspaceCount = document.getElementById(
-      "activeWorkspaceCount",
-    );
-    createdWorkspaces = savedWorkspaceData.filter(
-      (ws) => ws.role === "owner",
-    );
-    closedWorkspaces = savedWorkspaceData.filter(
-     (ws) => ws.status === "closed",
-   );
-   
-   dataCount(activeWorkspaceCount, openedWorkspaces);
-    dataCount(createdWorkspacesCount, createdWorkspaces);
-    dataCount(closedWorkspacesCount, closedWorkspaces);
-
-
-    const user = sessionState.user;
-
-    if(sessionState.profile?.onboarded === false) {
-const warningContainer = document.querySelector(".warningContainer");
-
-if (warningContainer) {
-  warningContainer.innerHTML = "";
-
-  warningContainer.innerHTML = `
-          <p class="warningText">
-            Hi! You are recommended to get started by creating a workspace. <a href="create-workspace">Create workspace</a>
-          </p>
-        `;
-
-      console.log("not onboarded");
-    } 
+  // Render the current profile name cleanly into the header greeting text
+  const userNameEl = document.querySelector(".userName");
+  if (userNameEl) {
+    userNameEl.textContent = sessionState.profile?.full_name || "Developer";
   }
 
-  if (!upperDashboardContainer) return;
+  try {
+    // Concurrent parallel background fetch across the workspaceDb pipelines
+    const [workspaces, tasks] = await Promise.all([
+      fetchUserWorkspaces(localState.user.id),
+      fetchUserGlobalTasks(localState.user.id),
+    ]);
 
+    // Mutate state with fresh server values
+    localState.workspaces = workspaces;
+    localState.tasks = tasks;
+
+    // Trigger explicit modular presentation layers
+    renderWorkspaceCards();
+    renderGlobalTasks();
+    handleOnboardingWarning();
+  } catch (err) {
+    console.error("Dashboard engine rendering pipeline failure:", err);
+    if (upperDashboardContainer) {
+      upperDashboardContainer.innerHTML = `<p class="text-error">Failed to build system views.</p>`;
+    }
+  } finally {
+    setLoading(false);
+  }
+}
+
+/**
+ * Renders the Workspaces Section using custom UI components
+ */
+function renderWorkspaceCards() {
+  if (!upperDashboardContainer) return;
   upperDashboardContainer.innerHTML = "";
 
-  const div = document.createElement("div");
-  div.classList.add("recentContainer", "double-grid");
-
-
-  const activeWorkspaces = savedWorkspaceData.filter(
+  const activeWorkspaces = localState.workspaces.filter(
     (ws) => ws.status === "active",
   );
 
-
+  // Modern action-oriented empty state container
   if (activeWorkspaces.length === 0) {
     upperDashboardContainer.innerHTML = `
-     
-    <svg
-    class="emptyStateImg"
-  viewBox="0 0 220 160"
-  fill="none"
-  role="img"
-  xmlns="http://www.w3.org/2000/svg"
-  aria-hidden="true"
->
-  <!-- Background card -->
-"100%" height="100%" fill="currentColor"  <rect x="28" y="40" width="80" height="10" rx="5" fill="#E0E0E6" />
-  <rect x="28" y="58" width="140" height="8" rx="4" fill="#E8E8EE" />
-  <rect x="28" y="72" width="110" height="8" rx="4" fill="#E8E8EE" />
-  <rect x="28" y="86" width="90" height="8" rx="4" fill="#E8E8EE" />
-
-  <!-- Dotted workspace placeholder -->
-  <rect
-    x="130"
-    y="44"
-    width="56"
-    height="40"
-    rx="8"
-    fill="none"y="106" width="60" height="10" rx="5" fill="#E0E0E6" />
-    <rect x="94" y="106" width="40" height="10" rx="5" fill="#E0E0E6" />
-    
-  <!-- Subtle background circles -->
-  <circle cx="40" cy="26" r="4" fill="#FFE4D8" />
-  <circle cx="190" cy="120" r="5" fill="#FFE4D8" />
-  <circle cx="32" cy="118" r="3" fill="#FFE4D8" />
-
-  <!-- Hint text -->
-  <text
-    x="110"
-    y="150"
-    text-anchor="middle"
-    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
-    font-size="9"
-    fill="#8A8A99"
-  >
-    You don't have any active workspaces.
-  </text>
-</svg>
-      `;
+      <div class="empty-state-card">
+        <h3>No workspaces yet</h3>
+        <p>Create your first workspace to start collaborating with your team.</p>
+      </div>
+    `;
+    return;
   }
-  const recentWorkspaces = activeWorkspaces
-    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-    .slice(0, 2);
 
-  recentWorkspaces.forEach((wsData) => {
+  // Restore your original layout double-grid wrapper structure
+  const div = document.createElement("div");
+  div.classList.add("recentContainer", "double-grid");
+
+  // Loop through your full workspace data pool (No more artificial .slice truncation)
+  activeWorkspaces.forEach((wsData) => {
+    // Construct element via your core feature logic block
     const wsCard = createWorkspaceCardElement(wsData);
     div.append(wsCard);
   });
+
+  // Prepend into container view target element
   upperDashboardContainer.prepend(div);
 
+  // Re-bind click handlers, drop menus, and contextual action events safely
   dropdownClick();
-  renderRecentLogs();
-  attachDeleteLogEvent(recentLogs, user.id);
-
-  setLoading(false)
 }
 
-renderDashboard();
+/**
+ * Renders the Cross-Workspace "My Tasks" Aggregator Layout
+ */
+function renderGlobalTasks() {
+  if (!globalTasksContainer) return;
+  globalTasksContainer.innerHTML = "";
 
-warningLogic();
-function warningLogic() {
-  const warningState = localStorage.getItem("removeWarning");
-if (!closeWarningBtn) return;
+  if (localState.tasks.length === 0) {
+    globalTasksContainer.innerHTML = `<p class="placeholderText">No tasks explicitly assigned to you right now.</p>`;
+    return;
+  }
 
-closeWarningBtn.addEventListener("click", () => {
-  localStorage.setItem("removeWarning", "removed");
+  const taskList = document.createElement("ul");
+  taskList.className = "global-tasks-list";
 
-  document.querySelector(".warningContainer").remove();
-});
+  localState.tasks.forEach((task) => {
+    const item = document.createElement("li");
+    item.className = "task-item-row";
 
-if(warningState)  document.querySelector(".warningContainer").remove();
-}
-
-
-export function renderRecentLogs() {
-  if (!recentLogs) return;
-
-  recentLogs.innerHTML = "";
-  recentLogs.classList.add("reordering");
-
-  const allRecents = savedLogDetails.slice(0, 5);
-
-  if (allRecents.length === 0) {
-   return recentLogs.innerHTML = `
- <svg
-  class="emptyStateImg"
-  viewBox="0 0 220 160"
-  fill="none"
-  role="img"
-  xmlns="http://www.w3.org/2000/svg"
-  aria-hidden="true"
->
-
-  <!-- Background card -->
-  <rect x="20" y="32" width="180" height="90" rx="10" fill="var(--card-bg)" />
-
-  <!-- Log lines -->
-  <rect x="36" y="50" width="120" height="8" rx="4" fill="#E0E0E6" />
-  <rect x="36" y="66" width="140" height="8" rx="4" fill="#E8E8EE" />
-  <rect x="36" y="82" width="110" height="8" rx="4" fill="#E8E8EE" />
-  <rect x="36" y="98" width="90" height="8" rx="4" fill="#E8E8EE" />
-
-  <!-- Magnifying glass -->
-  <circle cx="160" cy="88" r="16" stroke="#D0D0D8" stroke-width="3" />
-  <line x1="170" y1="98" x2="178" y2="106" stroke="#D0D0D8" stroke-width="3" stroke-linecap="round" />
-
-  <!-- Decorative circles -->
-  <circle cx="32" cy="28" r="4" fill="#FFE4D8" />
-  <circle cx="188" cy="122" r="5" fill="#FFE4D8" />
-  <circle cx="40" cy="120" r="3" fill="#FFE4D8" />
-
-  <!-- Hint text -->
-  <text
-    x="110"
-    y="138"
-    text-anchor="middle"
-    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
-    font-size="9"
-    fill="#8A8A99"
-  >
-    No recent logs available yet.
-  </text>
-
-</svg>
-      `;
-
-    }
-  allRecents.forEach((log) => {
-    const el = createLogElement(log);
-    recentLogs.append(el);
-
-    requestAnimationFrame(() => el.classList.add("show"));
+    item.innerHTML = `
+      <div class="task-meta-left">
+        <input type="checkbox" data-task-id="${task.id}" class="task-checkbox">
+        <span class="task-title-text">${escapeHTML(task.title)}</span>
+      </div>
+      <span class="task-context-badge">${escapeHTML(task.workspace?.name || "Workspace")}</span>
+    `;
+    taskList.append(item);
   });
 
-  setTimeout(() => {
-    recentLogs.classList.remove("reordering");
-  }, 300);
+  globalTasksContainer.append(taskList);
 }
+
+/**
+ * Handles Onboarding Prompt UI Text Adjustments dynamically
+ */
+function handleOnboardingWarning() {
+  if (sessionState.profile?.onboarded === false) {
+    const warningText = document.querySelector(".warningText");
+    if (warningText) {
+      warningText.innerHTML = `Hi! You are recommended to get started by creating a workspace. <a href="create-workspace">Create workspace</a>`;
+    }
+  }
+}
+
+/**
+ * Sticky dismiss handling for global notification layout alert boxes
+ */
+function warningLogic() {
+  const warningState = localStorage.getItem("removeWarning");
+  const container = document.querySelector(".warningContainer");
+
+  if (!closeWarningBtn || !container) return;
+
+  closeWarningBtn.addEventListener("click", () => {
+    localStorage.setItem("removeWarning", "removed");
+    container.remove();
+  });
+
+  if (warningState) container.remove();
+}
+
+/**
+ * Basic security string sanitizer helper function
+ */
+function escapeHTML(str) {
+  if (!str) return "";
+  return str.replace(
+    /[&<>'"]/g,
+    (tag) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[
+        tag
+      ] || tag,
+  );
+}
+
+// 4. MAIN GLOBAL SYNCHRONOUS RUNTIME INITIALIZATION
+warningLogic();
+renderDashboard();
