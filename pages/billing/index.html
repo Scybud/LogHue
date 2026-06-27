@@ -128,7 +128,7 @@
     .upgrade-section {
       margin: 20px auto;
     }
-     .backLink {
+     .backBtn {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -144,9 +144,10 @@
 </head>
 
 <body>
-   <header class="pageHeader">
+ <div class="contentHeader">
       <div class="headerLeft">
-  <a href="https://app.loghue.com/dashboard" class="backLink"><!-- Back Icon -->
+  <button type="button" class="btn backBtn btn-sm">
+      <!-- Back Icon -->
       <svg
         width="20"
         height="20"
@@ -162,7 +163,8 @@
           stroke-linejoin="round"
         />
       </svg>
-      Dashboard</a>
+      <span>Back</span>
+    </button>
       </div>
 
       <div class="headerRight">
@@ -171,7 +173,7 @@
           <img src="https://loghue.com/assets/images/default_profile.png" alt="profile Image" class="profileAvatar">
         </div>
       </div>
-    </header>
+    </div>
 
   <div class="container">
     <h1>Your Billing</h1>
