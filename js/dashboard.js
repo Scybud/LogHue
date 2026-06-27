@@ -140,7 +140,9 @@ function renderGlobalTasks() {
 
     item.innerHTML = `
       <div class="task-meta-left">
+        <!--
         <input type="checkbox" data-task-id="${task.id}" class="task-checkbox">
+        -->
         <span class="task-title-text">${escapeHTML(task.title)}</span>
       </div>
       <span class="task-context-badge">${escapeHTML(task.workspace?.name || "Workspace")}</span>
