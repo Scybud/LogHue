@@ -134,18 +134,26 @@ function renderGlobalTasks() {
   const taskList = document.createElement("ul");
   taskList.className = "global-tasks-list";
 
+
   localState.tasks.forEach((task) => {
     const item = document.createElement("li");
     item.className = "task-item-row";
 
+const taskStatus = task.status.trim().replace(/\s+/g, "");
+
     item.innerHTML = `
-      <div class="task-meta-left">
-        <!--
-        <input type="checkbox" data-task-id="${task.id}" class="task-checkbox">
-        -->
-        <span class="task-title-text">${escapeHTML(task.title)}</span>
-      </div>
-      <span class="task-context-badge">${escapeHTML(task.workspace?.name || "Workspace")}</span>
+    <a class="global-task-link" href="task-view?task=${task.id}">
+    <div class="task-meta-left">
+    <!--
+    <input type="checkbox" data-task-id="${task.id}" class="task-checkbox">
+    -->
+    <span class="task-title-text">${escapeHTML(task.title)}</span>
+    </div>
+    <div>
+    <span class="task-context-badge ${taskStatus}">${task.status || "active"}</span>
+    <span class="task-context-badge">${escapeHTML(task.workspace?.name || "Workspace")}</span>
+    </div>
+    </a>
     `;
     taskList.append(item);
   });

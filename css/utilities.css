@@ -900,3 +900,8 @@ flex-wrap: wrap;
   font-size: 0.75rem;
   font-weight: 600;
 }
+
+.inprogress {
+  background: #ff6b3520;
+  color: #ff6b35;
+}

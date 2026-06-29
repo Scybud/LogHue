@@ -31,3 +31,139 @@ section {
   max-width: fit-content;
   padding: 0 var(--space-xs);
 }
+
+/*FORMS*/
+.form {
+  background-color: var(--form-bg);
+  border: 1px solid var(--border-primary);
+  background: var(--form-bg);
+  border-radius: var(--radius-lg);
+
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+
+  gap: var(--space-md);
+  margin: auto;
+  padding: calc(var(--space-md) + 4px) calc(var(--space-sm) + 2px);
+  width: 95%;
+  max-width: 500px;
+}
+
+/*FORM LABEL*/
+label {
+  font-size: 0.9rem;
+}
+.permissionsFieldset {
+  border: 1px solid var(--border-primary);
+  padding: 14px 16px;
+  border-radius: 8px;
+  margin-top: 16px;
+}
+
+.permissionsLegend {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 0 6px;
+  color: var(--chevron-color);
+}
+
+.permissionItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin: var(--space-sm) 0;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.workspaceIdContainer {
+  position: relative;
+  height: fit-content;
+}
+.workspaceIdContainer .copyBtn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f2f2f2;
+  border-radius: var(--radius-sm);
+}
+.workspaceInfoCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+.copyBtn svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* LOG LIST */
+.logs {
+  flex-direction: column;
+  gap: calc(var(--space-md) - 2px);
+  margin-top: calc(var(--space-lg) - 4px);
+}
+
+/*META TAGS IN ACTIVITY(ADMIN) SECTION*/
+.loggedActivityContainer .metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.loggedActivityContainer .metaRow span {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.4rem;
+  background: var(--surface-secondary);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  white-space: nowrap;
+}
+
+.loggedActivityContainer .taskName {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.loggedActivityContainer .taskProgress {
+  text-transform: capitalize;
+}
+
+.loggedActivityContainer .taskTime {
+  opacity: 0.8;
+}
+
+/* When a log is added */
+.taskContainer {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+.taskContainer.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* When a log is deleted */
+.taskContainer.removing {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+.taskCard {
+  cursor: pointer;
+}
+
+

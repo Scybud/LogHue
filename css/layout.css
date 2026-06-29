@@ -84,3 +84,16 @@
 }
 
 
+/*SINGLE INPUT FIELD*/
+.singleInput {
+  display: flex;
+  gap: calc(var(--space-xs) + 2px);
+  width: 100%;
+}
+.singleInput .inputField {
+  flex: 1;
+}
+.singleInput .btn {
+  width: auto;
+  min-height: 100%;
+}
