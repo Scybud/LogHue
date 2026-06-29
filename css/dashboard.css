@@ -149,9 +149,11 @@ h3 {
     align-items: center;
     flex-wrap: wrap;
   }
+
 .global-task-link:hover {
     text-decoration: none;
 }
+
 .task-meta-left {
     display: flex;
     align-items: center;
