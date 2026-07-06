@@ -5,9 +5,14 @@
   --header-bg: rgba(0, 0, 0, 0.85);
   --main-bg: #121212;
   --nav-btn-bg: #1f1f1f;
-  --primary: #027ab2;
-  --secondary: #4caf50;
-  --accent: #ff6b35;
+
+  --primary: #1565C0;   
+    --primary-light: #1976D2;
+
+  --secondary: #334155;
+  --accent: #f59e0b;
+
+    --gradient: linear-gradient(to right, #1e88e5, #42a5f5);
   --card-bg: #1c1c1c;
   --border: #333333;
   --form-bg: #1c1c1c;
@@ -26,15 +31,16 @@ body.light {
   --bg: #ebebeb;
   --color: #000000;
   --header-bg: rgba(216, 216, 216, 0.85);
-  --main-bg: #e9e3e3;
+  --main-bg: #f7f7f7;
   --nav-btn-bg: #ffffff;
   --primary: #027ab2;
   --secondary: #4caf50;
   --accent: #ff6b35;
-  --card-bg: #bebebe;
-  --border: #ffffff;
+  
+  --card-bg: #ffffff;
+  --border: #dcdcdc;
   --form-bg: #c3c3c3;
-  --input-bg: #989696;
+  --input-bg: #e1e1e1;
   --input-color: #020202;
   --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   --radius: 12px;
@@ -72,12 +78,15 @@ body {
   backdrop-filter: blur(10px);
   z-index: 20;
 }
+
+a {
+  text-decoration: none;
+
+}
 .logo {
   font-weight: 700;
   font-size: 1.6rem;
-    background: var(--gradient);
-  background-clip: text;
-  color: transparent;
+  color: var(--color);
 }
 .logo span {
   background: var(--gradient);
@@ -450,6 +459,7 @@ padding: 2px;
   margin: 0 auto;
 }
 .section h2 {
+  color: var(--color);
   font-size: 1.9rem;
   margin-bottom: var(--space-md);
 }
@@ -486,6 +496,7 @@ padding: 2px;
   border: 1px solid var(--border);
 }
 h3 {
+  color: var(--text-primary);
   font-size: 1rem;
   margin-bottom: var(--space-sm);
 }

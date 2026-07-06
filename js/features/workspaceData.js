@@ -447,7 +447,7 @@ export function createWorkspaceCardElement(ws) {
   const totalTasks = ws.total_tasks || 0;
   const openTasks = ws.open_tasks || 0;
   const completedTasks = totalTasks - openTasks;
-  tasksBadge.textContent = `✅Tasks: ${completedTasks} completed | ${totalTasks} total`;
+  tasksBadge.textContent = `✅Tasks: ${completedTasks} completed | ${openTasks} incomplete | ${totalTasks} total`;
 
   // Last Activity Note
   const activitySpan = document.createElement("span");
