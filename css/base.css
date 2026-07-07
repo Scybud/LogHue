@@ -43,6 +43,8 @@ body {
 
   --gradient: linear-gradient(to right, #1e88e5, #42a5f5);
 
+    --border: #333;
+
   --notif-bg-unread: #1e3a5f; /* dark blue for unread */
   --notif-bg-read: #2c2c2c; /* dark background for read */
   --notif-text: #eee;
