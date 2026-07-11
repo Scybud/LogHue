@@ -83,13 +83,20 @@ div.settingsCard.danger {
 }
 .btn {
   background: var(--neutral);
+  border: 1px solid var(--border);
 }
 .btn:hover {
   opacity: 1;
-  color: #fff;
+  color: var(--text-primary);
   box-shadow: var(--shadow);
   background-color: var(--bg-hover);
 }
+  .btn-outline {
+      margin: auto !important;
+      background: transparent;
+      border: 1px solid #ccc;
+      color: var(--text-primary) !important;
+    }
 a.btn {
   color: #000000;
   text-decoration: none;
