@@ -26,6 +26,7 @@ section {
 .sectionHeader {
   display: flex;
   justify-content: space-between;
+  margin-bottom: var(--space-md);
 }
 .sectionHeader button {
   max-width: fit-content;
