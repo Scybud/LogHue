@@ -133,14 +133,14 @@ async function loadBilling() {
   if (upgradeToProBtn) {
     upgradeToProBtn.onclick = () => {
       window.location.href =
-        "/billing/upgrade?plan=dee55ec9-ae01-40f3-b297-fe9faa8485d6";
+        "billing/upgrade?plan=dee55ec9-ae01-40f3-b297-fe9faa8485d6";
     };
   }
 
   if (upgradeToTeamBtn) {
     upgradeToTeamBtn.onclick = () => {
       window.location.href =
-        "/billing/upgrade?plan=e06ed82b-037b-4fac-bbec-94d761f1cdd5";
+        "billing/upgrade?plan=e06ed82b-037b-4fac-bbec-94d761f1cdd5";
     };
   }
 

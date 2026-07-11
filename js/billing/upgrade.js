@@ -2,109 +2,106 @@ import { supabase } from "../../js/supabase.js";
 import { actionMsg } from "../utils/modals.js";
 
 let loading = false;
-const msg = document.querySelector(".msg");
 
-async function startUpgrade() {
+const confirmCard = document.getElementById("confirmCard");
+const redirectingState = document.getElementById("redirectingState");
+const consentCheckbox = document.getElementById("consentCheckbox");
+const continueBtn = document.getElementById("continueBtn");
+const msg = redirectingState.querySelector(".msg");
+
+let planId = null;
+
+function showRedirecting() {
+  confirmCard.classList.add("hidden");
+  redirectingState.classList.remove("hidden");
+}
+
+function bail(text, tone, redirectTo = "") {
+  actionMsg(text, tone);
+  showRedirecting();
+  msg.textContent = text;
+  msg.classList.add(
+    tone === "error" ? "error" : tone === "info" ? "warning" : "success",
+  );
+  loading = false;
+  setTimeout(() => {
+    window.location.href = redirectTo;
+  }, 1000);
+}
+
+async function init() {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    window.location.href = "/auth?redirect=/billing";
+    return;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  planId = params.get("plan");
+
+  if (!planId) {
+    bail("Missing plan ID. Redirecting...", "error");
+    return;
+  }
+
+  // Wire up the checkbox → enable button only when checked
+  consentCheckbox.addEventListener("change", () => {
+    continueBtn.classList.toggle("enabled", consentCheckbox.checked);
+  });
+
+  continueBtn.addEventListener("click", () => {
+    if (!consentCheckbox.checked || loading) return;
+    startUpgrade(session);
+  });
+}
+
+async function startUpgrade(session) {
   if (loading) return;
   loading = true;
+  showRedirecting();
 
   try {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    if (!session) {
-      window.location.href = "/auth?redirect=/billing";
-      return;
-    }
-
-    const params = new URLSearchParams(window.location.search);
-    const planId = params.get("plan");
-
-    if (!planId) {
-      actionMsg("Missing plan ID.", "error");
-      msg.textContent = "Missing plan ID. Redirecting...";
-      msg.classList.add("error");
-
-      loading = false;
-
-      // redirect
-      setTimeout(() => {
-        window.location.href = "/billing";
-      }, 1000);
-      return;
-    }
-
     const { data, error } = await supabase.functions.invoke("create-checkout", {
-      body: { id: planId },
+      body: {
+        id: planId,
+        consent: consentCheckbox.checked,
+      },
       headers: {
         Authorization: `Bearer ${session.access_token}`,
       },
     });
 
     if (error?.message.includes("Already purchased")) {
-      actionMsg("You already have this plan", "info");
-      msg.textContent = "You already have this plan";
-      msg.classList.add("warning");
-
-      // redirect
-      setTimeout(() => {
-        window.location.href = "/billing";
-      }, 1000);
+      bail("You already have this plan", "info");
       return;
     }
 
     if (error) {
       console.error(error);
-      actionMsg("Failed to start checkout.", "error");
-      msg.textContent = "Failed to start checkout. Redirecting...";
-      msg.classList.add("error");
-      loading = false;
-
-      // redirect
-      setTimeout(() => {
-        window.location.href = "/billing";
-      }, 1000);
+      bail("Failed to start checkout. Redirecting...", "error");
       return;
     }
 
-    // -----------------------------
     // CASE 1: Stripe checkout
-    // -----------------------------
     if (data?.url) {
       window.location.href = data.url;
       return;
     }
 
-    // -----------------------------
     // CASE 2: instant update (addon/plan modify)
-    // -----------------------------
     if (data?.success) {
-      actionMsg(data.message || "Updated successfully!", "success");
-      msg.textContent = "Updated successfully!";
-      msg.classList.add("success");
-
-      // redirect
-      setTimeout(() => {
-        window.location.href = "/billing";
-      }, 1000);
-
+      bail(data.message || "Updated successfully!", "success");
       return;
     }
 
     console.error("Unexpected response:", data);
-    actionMsg("Unexpected server response.", "error");
-    msg.textContent = "Unexpected server response. Redirecting...";
-    msg.classList.add("error");
-
-    // redirect
-    setTimeout(() => {
-      window.location.href = "/billing";
-    }, 1000);
-
+    bail("Unexpected server response. Redirecting...", "error");
   } finally {
     loading = false;
   }
 }
 
-startUpgrade();
+init();
