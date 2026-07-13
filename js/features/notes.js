@@ -106,7 +106,7 @@ function initNotes() {
   });
 
   loadNotes();
-  loadScanhueNote();
+  loadCreateNote();
   deleteNote();
   /*
   Attach save handler
@@ -128,9 +128,10 @@ function initNotes() {
 
 initNotes();
 
-async function loadScanhueNote() {
-  const savedText = localStorage.getItem("scanhueNote");
+async function loadCreateNote() {
+  const savedText = localStorage.getItem("createNote");
 
+  console.log("true")
   if (savedText) {
     const {
       data: { user },
@@ -150,12 +151,12 @@ async function loadScanhueNote() {
       console.error(error);
       return;
     }
-    actionMsg("Imported from ScanHue", "success");
+    actionMsg("Note created", "success");
 
     await loadNotes();
     openNote(data);
 
-    localStorage.removeItem("scanhueNote");
+    localStorage.removeItem("createNote");
   }
 }
 /*

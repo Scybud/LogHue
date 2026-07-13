@@ -68,7 +68,7 @@
   height: 100%;
   align-items: center;
   justify-content: center;
-  transition: transform 1s ease;
+  transition: transform 1s ease, opacity 0.5s ease;
 }
 
 .dashboard-section.slide-up {
@@ -78,9 +78,15 @@ transform: translateY(-50px);
 
       .dashboardHeader {
         justify-content: center;
+          transition: opacity 0.5s ease;
+
       }
        h1{
         text-align: center;
+      }
+      .dashboard-section.slide-up .dashboardHeader {
+        opacity: 0;
+
       }
       .searchBarContainer {
         width: 100%;
@@ -90,19 +96,21 @@ transform: translateY(-50px);
         gap: var(--space-md);
       }
       .mainSearchInput {
+        background: var(--surface-secondary);
         max-width: 700px;
         margin: var(--space-lg) auto 0;
         border-radius: var(--radius-lg);
         padding: var(--space-md);
-        border: 5px solid var(--border);
+        border: 5px solid var(--border-primary);
       }
       .mainSearchInput:focus {
-        border-width: 1px;
+        border: 1px solid var(--border-primary);
       }
       .quickActionsContainer {
         display: flex;
         justify-content: center;
         gap: var(--space-md);
+        margin-bottom: var(--space-lg);
       }
       .quickActionsContainer .actionBtn {
         width: 170px;

@@ -925,7 +925,7 @@ button.toggleNotesListBtn {
 .searchItem {
   font-size: 1.05rem;
   color: var(--text-primary);
-  padding: var(--space-md) var(--space-sm);
+  padding: var(--space-sm);
   border-bottom: 1px solid var(--border-primary);
   width: 95%;
 border-radius: var(--radius-sm);
@@ -935,4 +935,7 @@ transition: background 0.2s ease;
     color: var(--text-secondary);
 text-decoration: none;
   background: var(--active);
+}
+.searchItem:hover a {
+  text-decoration: none;
 }

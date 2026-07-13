@@ -228,6 +228,16 @@ async function dashboardSearch(user) {
   const searchInput = document.getElementById("mainSearchInput");
 const resultsContainer = document.getElementById("MainSearchResults");
 const dashboardContainer = document.querySelector(".dashboard-section");
+const createNoteBtn = document.querySelector(".createNoteBtn");
+
+//HANDLE CREATE NOTE QUICK ACTION
+createNoteBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  localStorage.setItem("createNote", "Type...");
+
+  window.location.href = "notes";
+});
+
 
 searchInput.addEventListener("input", async (e) => {
   const value = e.target.value.trim();
