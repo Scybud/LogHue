@@ -32,32 +32,89 @@
     />
 
     <!--LOGHUE STYLES-->
-    <link rel="stylesheet" href="https://loghue.com/css/base.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/layout.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/component.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/dashboard.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/theme.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/pages.css" />
-    <link rel="stylesheet" href="https://loghue.com/css/utilities.css" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layout.css" />
+    <link rel="stylesheet" href="../css/component.css" />
+    <link rel="stylesheet" href="../css/dashboard.css" />
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/pages.css" />
+    <link rel="stylesheet" href="../css/utilities.css" />
 
     <link
       rel="apple-touch-icon"
       sizes="180x180"
-      href="https://loghue.com/assets/icons/favicons/apple-touch-icon.png"
+      href="../assets/icons/favicons/apple-touch-icon.png"
     />
     <link
       rel="icon"
       type="image/png"
       sizes="32x32"
-      href="https://loghue.com/assets/icons/favicons/favicon-32x32.png"
+      href="../assets/icons/favicons/favicon-32x32.png"
     />
     <link
       rel="icon"
       type="image/png"
       sizes="16x16"
-      href="https://loghue.com/assets/icons/favicons/favicon-16x16.png"
+      href="../assets/icons/favicons/favicon-16x16.png"
     />
-    <link rel="manifest" href="https://loghue.com/site.webmanifest" />
+    <link rel="manifest" href="../site.webmanifest" />
+
+
+    <style>
+     .dashboard-section {
+  border: none;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  transition: transform 1s ease;
+}
+
+.dashboard-section.slide-up {
+transform: translateY(-50px);
+}
+
+
+      .dashboardHeader {
+        justify-content: center;
+      }
+       h1{
+        text-align: center;
+      }
+      .searchBarContainer {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: var(--space-md);
+      }
+      .mainSearchInput {
+        max-width: 700px;
+        margin: var(--space-lg) auto 0;
+        border-radius: var(--radius-lg);
+        padding: var(--space-md);
+        border: 5px solid var(--border);
+      }
+      .mainSearchInput:focus {
+        border-width: 1px;
+      }
+      .quickActionsContainer {
+        display: flex;
+        justify-content: center;
+        gap: var(--space-md);
+      }
+      .quickActionsContainer .actionBtn {
+        width: 170px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .mainSearchResultContainer {
+        align-self: flex-start;
+        width: 100%;
+      }
+    </style>
   </head>
   <body>
     <!-- GLOBAL SEARCH BAR OVERLAY -->
@@ -101,7 +158,6 @@
                 </svg>
               </span>
             </button>
-            <h1 class="pageTitle">Dashboard</h1>
           </div>
 
           <div class="headerRight">
@@ -148,13 +204,6 @@
               </svg>
             </button>
 
-            <div class="profileAvatarContainer">
-              <img
-                src="https://loghue.com/assets/images/default_profile.png"
-                alt="Profile"
-                class="profileAvatar"
-              />
-            </div>
           </div>
         </div>
 
@@ -208,45 +257,61 @@
           </p>
         </div>
 
-        <!-- SECTION 1: ALL WORKSPACES -->
+        <!-- SECTION 1: SEACRCH WORKSPACES -->
         <section class="dashboard-section">
-          <div class="sectionHeader">
-            <h2>My Workspaces</h2>
+          <div class="sectionHeader dashboardHeader">
+            <h1>What would you like to work on?</h1>
           </div>
 
-          <!-- The JS View Target -->
-          <div id="upperDashboardContainer"></div>
-        </section>
+          <div class="searchBarContainer">
+            <textarea name="mainSearchInput" id="mainSearchInput" class="inputField textArea mainSearchInput" placeholder="Search workspaces, tasks..."></textarea>
 
-        <!-- SECTION 2: CROSS-WORKSPACE MY TASKS AGGREGATION -->
+            <div class="quickActionsContainer">
+              <button class="actionBtn createWorkspaceOpen">+ New Workspace</button>
+              <button type="button" class="actionBtn createNoteBtn">+ Create Note</button>
+            </div>
+          </div>
+
+          
+          <div id="MainSearchResults" class="mainSearchResultContainer">
+            
+          </div>
+        </section>
+          <!-- The JS View Target 
+          <div id="upperDashboardContainer"></div>
+          -->
+
+        <!-- SECTION 2: CROSS-WORKSPACE MY TASKS AGGREGATION 
         <section class="dashboard-section tasks-section">
           <div class="sectionHeader">
             <h2>My Tasks</h2>
           </div>
-
-          <!-- Next Implementation Target -->
+          -->
+          
+          <!-- Next Implementation Target 
           <div id="globalTasksContainer" class="tasks-list-wrapper">
             <p class="placeholderText">Loading your assigned tasks...</p>
           </div>
         </section>
+        -->
       </article>
     </main>
 
     <!-- CORE SCRIPTS -->
     <script
       type="module"
-      src="https://loghue.com/js/utils/noAuthSessionProtect.js"
+      src="../js/utils/noAuthSessionProtect.js"
     ></script>
-    <script type="module" src="https://loghue.com/js/session.js"></script>
-    <script type="module" src="https://loghue.com/js/app.js" defer></script>
+    <script type="module" src="../js/session.js"></script>
+    <script type="module" src="../js/app.js" defer></script>
     <script
       type="module"
-      src="https://loghue.com/js/dashboard.js"
+      src="../js/dashboard.js"
       defer
     ></script>
     <script
       type="module"
-      src="https://loghue.com/js/utils/search.js"
+      src="../js/utils/search.js"
       defer
     ></script>
 

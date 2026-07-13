@@ -1,22 +1,20 @@
-// js/dashboard.js - COMPLETE REWRITTEN DASHBOARD CONTROLLER
 
 // 1. SYSTEM & COMPONENT IMPORTS
-import {
-  createWorkspaceCardElement,
-  dropdownClick,
-} from "./features/workspaceData.js";
+import { supabase } from "./supabase.js";
+
 import {
   fetchUserWorkspaces,
   fetchUserGlobalTasks,
 } from "./data/workspaceDb.js";
 import { sessionReady, sessionState } from "./session.js";
 
+const closeWarningBtn = document.getElementById("closeWarning");
+/*
 // 2. DOM TARGET CACHING
 const upperDashboardContainer = document.getElementById(
   "upperDashboardContainer",
 );
 const globalTasksContainer = document.getElementById("globalTasksContainer");
-const closeWarningBtn = document.getElementById("closeWarning");
 
 // 3. CENTRAL LOCAL STATE MANAGEMENT
 let localState = {
@@ -27,18 +25,16 @@ let localState = {
 
 let isLoading = false;
 
-/**
- * Handles toggling visual loading indicator state classes across containers
- */
+// Handles toggling visual loading indicator state classes across containers
+ 
 function setLoading(state) {
   isLoading = state;
   upperDashboardContainer?.classList.toggle("isLoading", state);
   globalTasksContainer?.classList.toggle("isLoading", state);
 }
 
-/**
- * Main Initialization Pipeline - Execution Orchestrator
- */
+//Main Initialization Pipeline - Execution Orchestrator
+ 
 export async function renderDashboard() {
   setLoading(true);
 
@@ -79,9 +75,8 @@ export async function renderDashboard() {
   }
 }
 
-/**
- * Renders the Workspaces Section using custom UI components
- */
+// Renders the Workspaces Section using custom UI components
+ 
 function renderWorkspaceCards() {
   if (!upperDashboardContainer) return;
   upperDashboardContainer.innerHTML = "";
@@ -119,9 +114,8 @@ function renderWorkspaceCards() {
   dropdownClick();
 }
 
-/**
- * Renders the Cross-Workspace "My Tasks" Aggregator Layout
- */
+//Renders the Cross-Workspace "My Tasks" Aggregator Layout
+ 
 function renderGlobalTasks() {
   if (!globalTasksContainer) return;
   globalTasksContainer.innerHTML = "";
@@ -160,10 +154,10 @@ const taskStatus = task.status.trim().replace(/\s+/g, "");
 
   globalTasksContainer.append(taskList);
 }
+*/
 
-/**
- * Handles Onboarding Prompt UI Text Adjustments dynamically
- */
+//Handles Onboarding Prompt UI Text Adjustments dynamically
+
 function handleOnboardingWarning() {
   if (sessionState.profile?.onboarded === false) {
     const warningText = document.querySelector(".warningText");
@@ -173,9 +167,8 @@ function handleOnboardingWarning() {
   }
 }
 
-/**
- * Sticky dismiss handling for global notification layout alert boxes
- */
+// Sticky dismiss handling for global notification layout alert boxes
+ 
 function warningLogic() {
   const warningState = localStorage.getItem("removeWarning");
   const container = document.querySelector(".warningContainer");
@@ -190,9 +183,8 @@ function warningLogic() {
   if (warningState) container.remove();
 }
 
-/**
- * Basic security string sanitizer helper function
- */
+//Basic security string sanitizer helper function
+ 
 function escapeHTML(str) {
   if (!str) return "";
   return str.replace(
@@ -206,4 +198,144 @@ function escapeHTML(str) {
 
 // 4. MAIN GLOBAL SYNCHRONOUS RUNTIME INITIALIZATION
 warningLogic();
-renderDashboard();
+initDashboard();
+
+
+
+
+
+export async function initDashboard() {
+
+  // Await core authentication session resolution
+  await sessionReady;
+  const user = sessionState.user;
+
+  if (!user) return;
+
+  // Render the current profile name cleanly into the header greeting text
+  const userNameEl = document.querySelector(".userName");
+  if (userNameEl) {
+    userNameEl.textContent = sessionState.profile?.full_name || "Developer";
+  }
+
+await dashboardSearch(user);
+
+    // Trigger explicit modular presentation layers
+    handleOnboardingWarning();
+}
+
+async function dashboardSearch(user) {
+  const searchInput = document.getElementById("mainSearchInput");
+const resultsContainer = document.getElementById("MainSearchResults");
+const dashboardContainer = document.querySelector(".dashboard-section");
+
+searchInput.addEventListener("input", async (e) => {
+  const value = e.target.value.trim();
+
+  
+  // Prevent empty searches
+if (!value || value.length < 3) {
+  resultsContainer.innerHTML = "";
+  dashboardContainer.classList.remove("slide-up");
+  return;
+}
+
+// Force animation restart
+dashboardContainer.classList.remove("slide-up");
+void dashboardContainer.offsetWidth; // reflow hack
+dashboardContainer.classList.add("slide-up");
+  
+  const { data: workspaceSearch, error: workspaceSearchError } = await supabase
+  .from("workspace_members")
+  .select(
+    `
+    role,
+    workspaces: workspace_id (
+      id,
+      name
+    )
+  `,
+    )
+    .eq("user_id", user.id)
+    .ilike("workspaces.name", `%${value}%`)
+    .limit(10);
+    
+    if (workspaceSearchError) {
+      console.error(workspaceSearchError);
+      return;
+    }
+    
+    const { data: tasksSearch, tasksSearchError } = await supabase
+    .from("workspace_tasks")
+    .select("id, title")
+    .ilike("title", `%${value}%`)
+    .limit(10);
+
+  if (workspaceSearchError || tasksSearchError) {
+    console.error(workspaceSearchError || tasksSearchError);
+    return;
+  }
+  
+  const workspaceSearchTagged = workspaceSearch
+    .filter((w) => w.workspaces) // prevent undefined
+    .map((w) => ({
+      id: w.workspaces.id,
+      name: w.workspaces.name,
+      type: "workspace",
+      role: w.role,
+    }));
+
+  const tasksSearchTagged = tasksSearch.map((t) => ({
+    id: t.id,
+    title: t.title,
+    type: "task",
+  }));
+
+  const searchData = [...workspaceSearchTagged, ...tasksSearchTagged];
+
+  if (tasksSearchError) {
+    console.error(tasksSearchError);
+    return;
+  }
+  
+  dashboardContainer.classList.add("slide-up");
+
+  renderResults(searchData);
+});
+
+function renderResults(results) {
+  resultsContainer.innerHTML = "";
+
+  const resultsHeader = document.createElement("h2");
+resultsHeader.textContent = "Results";
+resultsContainer.append(resultsHeader);
+
+  if (results.length === 0) {
+    resultsContainer.innerHTML = `<p class="tunedText">No results found for "${searchInput.value}"</p>`;
+    return;
+  }
+
+  results.forEach((result) => {
+    const link =
+      result.type === "workspace"
+        ? result.role === "admin" || result.role === "owner"
+          ? `workspace-dashboard-admin?ws=${result.id}`
+          : `workspace-dashboard-member?ws=${result.id}`
+        : `task-view?task=${result.id}`;
+
+    const div = document.createElement("div");
+    div.classList.add("searchItem");
+
+    div.innerHTML = `
+  <a href="${link}">
+    <div class="searchType ${result.type}">
+      ${result.type === "workspace" ? "Workspace" : "Task"}
+    </div>
+    <p>${result.name || result.title}</p>
+  </a>
+`;
+
+    resultsContainer.append(div);
+  });
+}
+ }

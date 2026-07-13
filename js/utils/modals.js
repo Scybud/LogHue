@@ -100,9 +100,11 @@ insertTaskLogUpdate(supabase, workspaceId);
 
 
 export function openCreateWorkspaceModal() {
-  const btn = document.getElementById("createWorkspaceOpen");
-  if (btn) {
-    btn.addEventListener("click", async () => {
+  const btns = document.querySelectorAll(".createWorkspaceOpen");
+  btns.forEach((btn) => {
+
+    if (btn) {
+      btn.addEventListener("click", async () => {
 
       await loadComponent(
         "https://loghue.com/components/modals/create-workspace",
@@ -113,6 +115,7 @@ export function openCreateWorkspaceModal() {
     
     });
   }
+});
 }
 
 export function openStartDiscussionModal(currentWorkspace, user) {
