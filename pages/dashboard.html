@@ -32,32 +32,32 @@
     />
 
     <!--LOGHUE STYLES-->
-    <link rel="stylesheet" href="../css/base.css" />
-    <link rel="stylesheet" href="../css/layout.css" />
-    <link rel="stylesheet" href="../css/component.css" />
-    <link rel="stylesheet" href="../css/dashboard.css" />
-    <link rel="stylesheet" href="../css/theme.css" />
-    <link rel="stylesheet" href="../css/pages.css" />
-    <link rel="stylesheet" href="../css/utilities.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/base.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/layout.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/component.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/dashboard.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/theme.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/pages.css" />
+    <link rel="stylesheet" href="https://loghue.com/css/utilities.css" />
 
     <link
       rel="apple-touch-icon"
       sizes="180x180"
-      href="../assets/icons/favicons/apple-touch-icon.png"
+      href="https://loghue.com/assets/icons/favicons/apple-touch-icon.png"
     />
     <link
       rel="icon"
       type="image/png"
       sizes="32x32"
-      href="../assets/icons/favicons/favicon-32x32.png"
+      href="https://loghue.com/assets/icons/favicons/favicon-32x32.png"
     />
     <link
       rel="icon"
       type="image/png"
       sizes="16x16"
-      href="../assets/icons/favicons/favicon-16x16.png"
+      href="https://loghue.com/assets/icons/favicons/favicon-16x16.png"
     />
-    <link rel="manifest" href="../site.webmanifest" />
+    <link rel="manifest" href="https://loghue.com/site.webmanifest" />
 
 
     <style>
@@ -96,15 +96,23 @@ transform: translateY(-50px);
         gap: var(--space-md);
       }
       .mainSearchInput {
+        resize:none;
         background: var(--surface-secondary);
         max-width: 700px;
+        height: 150px;
         margin: var(--space-lg) auto 0;
         border-radius: var(--radius-lg);
         padding: var(--space-md);
         border: 5px solid var(--border-primary);
+        transition: height 0.5s ease, border-width 0.2s ease;
+      }
+      .dashboard-section.slide-up .mainSearchInput {
+        min-height: auto;
+height: 100px;
       }
       .mainSearchInput:focus {
-        border: 1px solid var(--border-primary);
+        border-width: 1px ;
+        border-color: var(--border-primary);
       }
       .quickActionsContainer {
         display: flex;
@@ -133,10 +141,10 @@ transform: translateY(-50px);
           name="searchInput"
           id="searchInput"
           class="inputField searchInput"
-          placeholder="Search your workspaces..."
+          placeholder="Search your workspaceshttps://loghue.com."
         />
         <div id="searchResults" class="searchResults">
-          <p class="placeholderText">Type to search workspace names...</p>
+          <p class="placeholderText">Type to search workspace nameshttps://loghue.com.</p>
         </div>
       </div>
     </div>
@@ -272,7 +280,7 @@ transform: translateY(-50px);
           </div>
 
           <div class="searchBarContainer">
-            <textarea name="mainSearchInput" id="mainSearchInput" class="inputField textArea mainSearchInput" placeholder="Search workspaces, tasks..."></textarea>
+            <textarea name="mainSearchInput" id="mainSearchInput" class="inputField textArea mainSearchInput" placeholder="Search workspaces, taskshttps://loghue.com."></textarea>
 
             <div class="quickActionsContainer">
               <button class="actionBtn createWorkspaceOpen">+ New Workspace</button>
@@ -298,7 +306,7 @@ transform: translateY(-50px);
           
           <!-- Next Implementation Target 
           <div id="globalTasksContainer" class="tasks-list-wrapper">
-            <p class="placeholderText">Loading your assigned tasks...</p>
+            <p class="placeholderText">Loading your assigned taskshttps://loghue.com.</p>
           </div>
         </section>
         -->
@@ -308,18 +316,18 @@ transform: translateY(-50px);
     <!-- CORE SCRIPTS -->
     <script
       type="module"
-      src="../js/utils/noAuthSessionProtect.js"
+      src="https://loghue.com/js/utils/noAuthSessionProtect.js"
     ></script>
-    <script type="module" src="../js/session.js"></script>
-    <script type="module" src="../js/app.js" defer></script>
+    <script type="module" src="https://loghue.com/js/session.js"></script>
+    <script type="module" src="https://loghue.com/js/app.js" defer></script>
     <script
       type="module"
-      src="../js/dashboard.js"
+      src="https://loghue.com/js/dashboard.js"
       defer
     ></script>
     <script
       type="module"
-      src="../js/utils/search.js"
+      src="https://loghue.com/js/utils/search.js"
       defer
     ></script>
 

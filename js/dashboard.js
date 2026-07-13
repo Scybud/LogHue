@@ -233,32 +233,35 @@ const createNoteBtn = document.querySelector(".createNoteBtn");
 //HANDLE CREATE NOTE QUICK ACTION
 createNoteBtn.addEventListener("click", (e) => {
   e.stopPropagation();
-  localStorage.setItem("createNote", "Type...");
+  localStorage.setItem("createNote", "start typing...");
 
   window.location.href = "notes";
 });
 
 
+let isSlideUp = false;
+
 searchInput.addEventListener("input", async (e) => {
   const value = e.target.value.trim();
 
-  
-  // Prevent empty searches
-if (!value || value.length < 3) {
-  resultsContainer.innerHTML = "";
-  dashboardContainer.classList.remove("slide-up");
-  return;
-}
+  if (!value || value.length < 3) {
+    resultsContainer.innerHTML = "";
+    if (isSlideUp) {
+      dashboardContainer.classList.remove("slide-up");
+      isSlideUp = false;
+    }
+    return;
+  }
 
-// Force animation restart
-dashboardContainer.classList.remove("slide-up");
-void dashboardContainer.offsetWidth; // reflow hack
-dashboardContainer.classList.add("slide-up");
-  
+  if (!isSlideUp) {
+    dashboardContainer.classList.add("slide-up");
+    isSlideUp = true;
+  }
+
   const { data: workspaceSearch, error: workspaceSearchError } = await supabase
-  .from("workspace_members")
-  .select(
-    `
+    .from("workspace_members")
+    .select(
+      `
     role,
     workspaces: workspace_id (
       id,
@@ -269,13 +272,13 @@ dashboardContainer.classList.add("slide-up");
     .eq("user_id", user.id)
     .ilike("workspaces.name", `%${value}%`)
     .limit(10);
-    
-    if (workspaceSearchError) {
-      console.error(workspaceSearchError);
-      return;
-    }
-    
-    const { data: tasksSearch, tasksSearchError } = await supabase
+
+  if (workspaceSearchError) {
+    console.error(workspaceSearchError);
+    return;
+  }
+
+  const { data: tasksSearch, tasksSearchError } = await supabase
     .from("workspace_tasks")
     .select("id, title")
     .ilike("title", `%${value}%`)
@@ -285,7 +288,7 @@ dashboardContainer.classList.add("slide-up");
     console.error(workspaceSearchError || tasksSearchError);
     return;
   }
-  
+
   const workspaceSearchTagged = workspaceSearch
     .filter((w) => w.workspaces) // prevent undefined
     .map((w) => ({
@@ -307,8 +310,6 @@ dashboardContainer.classList.add("slide-up");
     console.error(tasksSearchError);
     return;
   }
-  
-  dashboardContainer.classList.add("slide-up");
 
   renderResults(searchData);
 });
