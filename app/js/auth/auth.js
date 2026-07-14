@@ -142,7 +142,7 @@ async function signout() {
   actionMsg("Logged out successfully!", "success");
 
   setTimeout(() => {
-    window.location.href = "/auth";
+    window.location.href = "auth";
   }, 3000);
 }
 
