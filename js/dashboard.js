@@ -1,4 +1,3 @@
-
 // 1. SYSTEM & COMPONENT IMPORTS
 import { supabase } from "./supabase.js";
 
@@ -168,7 +167,7 @@ function handleOnboardingWarning() {
 }
 
 // Sticky dismiss handling for global notification layout alert boxes
- 
+
 function warningLogic() {
   const warningState = localStorage.getItem("removeWarning");
   const container = document.querySelector(".warningContainer");
@@ -184,7 +183,7 @@ function warningLogic() {
 }
 
 //Basic security string sanitizer helper function
- 
+
 function escapeHTML(str) {
   if (!str) return "";
   return str.replace(
@@ -200,12 +199,7 @@ function escapeHTML(str) {
 warningLogic();
 initDashboard();
 
-
-
-
-
 export async function initDashboard() {
-
   // Await core authentication session resolution
   await sessionReady;
   const user = sessionState.user;
@@ -218,135 +212,183 @@ export async function initDashboard() {
     userNameEl.textContent = sessionState.profile?.full_name || "Developer";
   }
 
-await dashboardSearch(user);
+  await dashboardSearch(user);
 
-    // Trigger explicit modular presentation layers
-    handleOnboardingWarning();
+  // Trigger explicit modular presentation layers
+  handleOnboardingWarning();
 }
 
 async function dashboardSearch(user) {
   const searchInput = document.getElementById("mainSearchInput");
-const resultsContainer = document.getElementById("MainSearchResults");
-const dashboardContainer = document.querySelector(".dashboard-section");
-const createNoteBtn = document.querySelector(".createNoteBtn");
+  const resultsContainer = document.getElementById("MainSearchResults");
+  const dashboardContainer = document.querySelector(".dashboard-section");
+  const createNoteBtn = document.querySelector(".createNoteBtn");
 
-//HANDLE CREATE NOTE QUICK ACTION
-createNoteBtn.addEventListener("click", (e) => {
-  e.stopPropagation();
-  localStorage.setItem("createNote", "start typing...");
+  //HANDLE CREATE NOTE QUICK ACTION
+  createNoteBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    localStorage.setItem("createNote", "start typing...");
 
-  window.location.href = "notes";
-});
+    window.location.href = "notes";
+  });
 
+  let isSlideUp = false;
 
-let isSlideUp = false;
+  searchInput.addEventListener("input", async (e) => {
+    const value = e.target.value.trim();
 
-searchInput.addEventListener("input", async (e) => {
-  const value = e.target.value.trim();
-
-  if (!value || value.length < 3) {
-    resultsContainer.innerHTML = "";
-    if (isSlideUp) {
-      dashboardContainer.classList.remove("slide-up");
-      isSlideUp = false;
+    if (!value || value.length < 3) {
+      resultsContainer.innerHTML = "";
+      if (isSlideUp) {
+        dashboardContainer.classList.remove("slide-up");
+        isSlideUp = false;
+      }
+      return;
     }
-    return;
-  }
 
-  if (!isSlideUp) {
-    dashboardContainer.classList.add("slide-up");
-    isSlideUp = true;
-  }
+    if (!isSlideUp) {
+      dashboardContainer.classList.add("slide-up");
+      isSlideUp = true;
+    }
 
-  const { data: workspaceSearch, error: workspaceSearchError } = await supabase
-    .from("workspace_members")
-    .select(
-      `
+    const { data: workspaceSearch, error: workspaceSearchError } =
+      await supabase
+        .from("workspace_members")
+        .select(
+          `
     role,
     workspaces: workspace_id (
       id,
       name
     )
   `,
-    )
-    .eq("user_id", user.id)
-    .ilike("workspaces.name", `%${value}%`)
-    .limit(10);
+        )
+        .eq("user_id", user.id)
+        .ilike("workspaces.name", `%${value}%`)
+        .limit(10);
 
-  if (workspaceSearchError) {
-    console.error(workspaceSearchError);
-    return;
-  }
+    if (workspaceSearchError) {
+      console.error(workspaceSearchError);
+      return;
+    }
 
-  const { data: tasksSearch, tasksSearchError } = await supabase
-    .from("workspace_tasks")
-    .select("id, title")
-    .ilike("title", `%${value}%`)
-    .limit(10);
+    const { data: tasksSearch, tasksSearchError } = await supabase
+      .from("workspace_tasks")
+      .select("id, title")
+      .ilike("title", `%${value}%`)
+      .limit(10);
 
-  if (workspaceSearchError || tasksSearchError) {
-    console.error(workspaceSearchError || tasksSearchError);
-    return;
-  }
+    const { data: notesSearch, notesSearchError } = await supabase
+      .from("personal_notes")
+      .select("id, title")
+      .ilike("title", `%${value}%`)
+      .limit(10);
 
-  const workspaceSearchTagged = workspaceSearch
-    .filter((w) => w.workspaces) // prevent undefined
-    .map((w) => ({
-      id: w.workspaces.id,
-      name: w.workspaces.name,
-      type: "workspace",
-      role: w.role,
+    if (workspaceSearchError || tasksSearchError || notesSearchError) {
+      console.error(
+        workspaceSearchError || tasksSearchError || notesSearchError,
+      );
+      return;
+    }
+
+    const workspaceSearchTagged = workspaceSearch
+      .filter((w) => w.workspaces) // prevent undefined
+      .map((w) => ({
+        id: w.workspaces.id,
+        name: w.workspaces.name,
+        type: "workspace",
+        role: w.role,
+      }));
+
+    const tasksSearchTagged = tasksSearch.map((t) => ({
+      id: t.id,
+      title: t.title,
+      type: "task",
     }));
 
-  const tasksSearchTagged = tasksSearch.map((t) => ({
-    id: t.id,
-    title: t.title,
-    type: "task",
-  }));
+    const notesSearchTagged = notesSearch.map((n) => ({
+      id: n.id,
+      title: n.title,
+      type: "note",
+    }));
 
-  const searchData = [...workspaceSearchTagged, ...tasksSearchTagged];
+    const searchData = [
+      ...workspaceSearchTagged,
+      ...tasksSearchTagged,
+      ...notesSearchTagged,
+    ];
 
-  if (tasksSearchError) {
-    console.error(tasksSearchError);
-    return;
-  }
+    if (tasksSearchError) {
+      console.error(tasksSearchError);
+      return;
+    }
 
-  renderResults(searchData);
-});
+    renderResults(searchData);
+  });
 
-function renderResults(results) {
-  resultsContainer.innerHTML = "";
+  function renderResults(results) {
+    resultsContainer.innerHTML = "";
 
-  const resultsHeader = document.createElement("h2");
-resultsHeader.textContent = "Results";
-resultsContainer.append(resultsHeader);
+    const resultsHeader = document.createElement("h2");
+    resultsHeader.textContent = "Results";
+    resultsContainer.append(resultsHeader);
 
-  if (results.length === 0) {
-    resultsContainer.innerHTML = `<p class="tunedText">No results found for "${searchInput.value}"</p>`;
-    return;
-  }
+    if (results.length === 0) {
+      resultsContainer.innerHTML = `<p class="tunedText">No results found for "${searchInput.value}"</p>`;
+      return;
+    }
 
-  results.forEach((result) => {
-    const link =
-      result.type === "workspace"
-        ? result.role === "admin" || result.role === "owner"
-          ? `workspace-dashboard-admin?ws=${result.id}`
-          : `workspace-dashboard-member?ws=${result.id}`
-        : `task-view?task=${result.id}`;
+    results.forEach((result) => {
+      const link = searchLink(result);
 
-    const div = document.createElement("div");
-    div.classList.add("searchItem");
+      const div = document.createElement("div");
+      div.classList.add("searchItem");
 
-    div.innerHTML = `
+      const searchTypeLabel = searchType(result);
+
+      div.innerHTML = `
   <a href="${link}">
     <div class="searchType ${result.type}">
-      ${result.type === "workspace" ? "Workspace" : "Task"}
+      ${searchTypeLabel}
     </div>
     <p>${result.name || result.title}</p>
   </a>
 `;
 
-    resultsContainer.append(div);
-  });
+      resultsContainer.append(div);
+    });
+  }
 }
- }
+
+function searchType(result) {
+  let type;
+
+  if (result.type === "workspace") {
+    type = "Workspace";
+  } else if (result.type === "task") {
+    type = "Task";
+  } else if (result.type === "note") {
+    type = "Note";
+  }
+
+  return type;
+}
+
+function searchLink(result) {
+  let link;
+
+  if (
+    (result.type === "workspace" && result.role === "admin") ||
+    (result.type === "workspace" && result.role === "owner")
+  ) {
+    link = `workspace-dashboard-admin?ws=${result.id}`;
+  } else if (result.type === "workspace" && result.role === "member") {
+    link = `workspace-dashboard-member?ws=${result.id}`;
+  } else if (result.type === "task") {
+    link = `task-view?task=${result.id}`;
+  } else if (result.type === "note") {
+    link = `notes?note=${result.id}`;
+  }
+
+  return link;
+}
