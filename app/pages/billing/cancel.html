@@ -63,7 +63,7 @@
 }
 
 .btn-primary:hover {
-  background: #e85f2f;
+  background: var(--primary-light);
 }
 
 .btn-secondary {
@@ -93,12 +93,12 @@
 </head>
 <body>
    <div class="billing-status cancel">
-  <div class="icon cancel-icon">âœ–</div>
+  <div class="icon cancel-icon">❌</div>
   <h1>Checkout Canceled</h1>
   <p>No changes were made to your subscription.</p>
 
   <div class="actions">
-    <button class="btn-primary" onclick="window.location.href='/billing'">
+    <button class="btn-primary" onclick="window.location.href='index'">
       Back to Billing
     </button>
     <button class="btn-secondary" onclick="window.history.back()">

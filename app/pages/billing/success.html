@@ -8,7 +8,6 @@
        <!--SCYBUD UI-->
     <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/variables.css">
     <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/typography.css">
-    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/animations.css">
 
     <!--APP SPECIFIC CSS-->
    <link rel="stylesheet" href="/css/base.css">
@@ -53,7 +52,7 @@
 }
 
 .btn-primary {
-  background: var(----primary);
+  background: var(--primary);
   border: none;
   font-weight: 600;
   padding: 12px 22px;
@@ -108,7 +107,7 @@
 </head>
 <body>
    <div class="billing-status success">
-  <div class="icon success-icon">âœ”</div>
+  <div class="icon success-icon">✓</div>
   <h1>Upgrade Successful</h1>
   <p>Your subscription is being activated. This usually takes a few seconds.</p>
 
@@ -120,7 +119,7 @@
 </div>
 
 <script type="module">
-  import { supabase } from "/js/supabase.js";
+  import { supabase } from "../../js/supabase.js";
 
   async function waitForPlanUpdate() {
     for (let i = 0; i < 10; i++) {
@@ -136,7 +135,7 @@
         .single();
 
       if (profile?.plan_id) {
-        window.location.href = "/index";
+        window.location.href = "index";
         return;
       }
 

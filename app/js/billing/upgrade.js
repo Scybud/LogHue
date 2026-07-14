@@ -1,5 +1,5 @@
-import { supabase } from "../../../js/supabase.js";
-import { actionMsg } from "../../../js/utils/modals.js";
+import { supabase } from "../supabase.js";
+import { actionMsg } from "../utils/modals.js";
 
 let loading = false;
 

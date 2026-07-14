@@ -84,7 +84,7 @@ export function attachCreateTaskEvent(workspaceId) {
     // Only one task is created, use the first item
     const createdTask = data[0];
 
-    if (createdTask.assigned_to != null) {
+    if (createdTask?.assigned_to != null) {
       await notifyUser({
         workspaceId,
         receiverUserId: createdTask.assigned_to,

@@ -10,7 +10,6 @@
      <!--SCYBUD UI-->
     <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/variables.css">
     <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/typography.css">
-    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/animations.css">
 
     <!--APP SPECIFIC CSS-->
     <link rel="stylesheet" href="/css/base.css" />
@@ -136,9 +135,9 @@
     
      <!-- JS -->
 <script type="module" defer>
-  import {sessionState, sessionReady} from "/js/session.js";
-  import { actionMsg } from "/js/utils/modals.js"
-  import {supabase} from "/js/supabase.js"
+  import {sessionState, sessionReady} from "../js/session.js";
+  import { actionMsg } from "../js/utils/modals.js"
+  import {supabase} from "../js/supabase.js"
 
   
   async function attachCreateWorkspaceEvent() {
@@ -268,9 +267,9 @@
 attachCreateWorkspaceEvent();
 </script>
 
-<script type="module" src="/js/utils/noAuthSessionProtect.js" defer></script>
-<script type="module" src="/js/session.js" defer></script>
-  <script type="module" src="/js/app.js" defer></script>
+<script type="module" src="../js/utils/noAuthSessionProtect.js" defer></script>
+<script type="module" src="../js/session.js" defer></script>
+  <script type="module" src="../js/app.js" defer></script>
   </body>
 </html>
 

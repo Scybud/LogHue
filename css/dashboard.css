@@ -95,7 +95,7 @@ height: 100px;
 
 .navBtn,
 button.navBtn,
-.actionBtn, .navBtn {
+.actionBtn, .navBtnEx {
   background: none;
   border: none;
   width: 100%;
@@ -110,7 +110,7 @@ button.navBtn,
   align-items: center;
   gap: calc(var(--space-xs) + 1px);
 }
-.navBtn:hover {
+.navBtnEx:hover {
   background: var(--navBtn-bg);
 }
 .actionBtn {

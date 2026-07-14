@@ -1,4 +1,4 @@
-import { supabase } from "../js/supabase.js"; 
+import { supabase } from "../app/js/supabase.js"; 
 
 export default async function handler(req, res) {
   // Set cookie for all subdomains

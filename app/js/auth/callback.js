@@ -1,4 +1,4 @@
-import { supabase } from "../../../js/supabase.js";
+import { supabase } from "..//supabase.js";
 
 async function handleAuth() {
   const { data } = await supabase.auth.getSession();
