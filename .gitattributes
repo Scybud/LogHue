@@ -1,0 +1,42 @@
+# ---------------------------------------------------------
+# LogHue / Scybud — Clean Line Endings & Safe Vendor Files
+# ---------------------------------------------------------
+
+# Force LF for all text-based source files
+*.js     text eol=lf
+*.ts     text eol=lf
+*.jsx    text eol=lf
+*.tsx    text eol=lf
+*.css    text eol=lf
+*.scss   text eol=lf
+*.html   text eol=lf
+*.json   text eol=lf
+*.md     text eol=lf
+*.sql    text eol=lf
+*.yml    text eol=lf
+*.yaml   text eol=lf
+
+# Supabase Edge Functions
+functions/** text eol=lf
+
+# Prevent Git from touching minified vendor libraries
+app/pages/ScanHue/libs/*.min.js   binary
+app/pages/ScanHue/libs/*.js       binary
+
+# Images & binaries — never modify
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.svg    binary
+*.webp   binary
+*.ico    binary
+*.pdf    binary
+*.zip    binary
+*.wasm   binary
+
+# Keep shell scripts LF (important for CI/CD)
+*.sh     text eol=lf
+
+# Windows batch files use CRLF
+*.bat    text eol=crlf
