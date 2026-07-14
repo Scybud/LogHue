@@ -17,7 +17,7 @@ import { initSession } from "./session.js";
 import { initPersonalTasks } from "./pages/personalTasks.js";
 import { initWorkspaces } from "./features/workspaceData.js";
 import { autoExpandTextarea } from "./utils/textarea.js";
-import { handleConcentEvents, loadAnalytics } from "../../analytics.js";
+import { handleConcentEvents, loadAnalytics } from "https://loghue.com/analytics.js";
 import { attachSignoutEvents } from "./auth/auth.js";
 import { toggleNotification } from "./utils/toggle.js";
 import {
