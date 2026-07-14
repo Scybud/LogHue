@@ -2,6 +2,8 @@ import { supabase } from "../supabase.js";
 import { confirmAction, actionMsg } from "../utils/modals.js";
 import { sanitizeHTML } from "../utils.js";
 import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
+import { fetchNoteById } from "../data/notesDb.js";
+
 /*
 --------------------------------
 GLOBAL STATE
@@ -30,6 +32,10 @@ INITIALIZE NOTES UI
 */
 function initNotes() {
   setLoading(true);
+
+  //GET NOTE ID FROM URL
+  const params = new URLSearchParams(window.location.search);
+  const noteId = params.get("note");
 
   const editorContainer = document.getElementById("editorContainer");
 
@@ -105,7 +111,7 @@ function initNotes() {
     }
   });
 
-  loadNotes();
+  loadNotes(noteId);
   loadCreateNote();
   deleteNote();
   /*
@@ -131,7 +137,6 @@ initNotes();
 async function loadCreateNote() {
   const savedText = localStorage.getItem("createNote");
 
-  console.log("true")
   if (savedText) {
     const {
       data: { user },
@@ -164,7 +169,7 @@ async function loadCreateNote() {
 LOAD USER NOTES
 --------------------------------
 */
-async function loadNotes() {
+async function loadNotes(noteId) {
   const {
     data: { user },
     error: authError,
@@ -190,8 +195,10 @@ async function loadNotes() {
 
   renderNotesList(notes);
 
-  // Automatically open the most recent note
-  if (notes.length > 0) {
+  // Automatically open the most recent or note in the url as id note
+  if(noteId) {
+    await openNoteById(noteId, user.id);
+  }else if ((notes.length > 0 && noteId === "") || (notes.length > 0 && !noteId)) {
     openNote(notes[0]);
   } else {
     // No notes left — reset editor
@@ -257,6 +264,13 @@ if(notes.length === 0) {
 OPEN NOTE IN EDITOR
 --------------------------------
 */
+async function openNoteById(noteId, userId) {
+  const noteData = await fetchNoteById(noteId, userId);
+
+  document.getElementById("noteTitle").value = noteData.title || "Untitled";
+
+  quill.root.innerHTML = sanitizeHTML(noteData.content || "");
+}
 function openNote(note) {
   currentNoteId = note.id;
 
