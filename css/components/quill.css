@@ -1,0 +1,53 @@
+.ql-container.ql-snow {
+  font-size: 16px;
+  background-color: var(--input-bg);
+}
+.ql-toolbar.ql-snow {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-primary);
+}
+.ql-toolbar.ql-snow .ql-stroke, .ql-toolbar.ql-snow button{
+  stroke: var(--accent);
+}
+#editorContainer {
+  color: var(--text-primary);
+  padding: 0;
+  margin-bottom: 30px;
+}
+div#editor.ql-container.ql-snow {
+  height: 100%;
+  max-height: 540px;
+}
+.ql-editor.ql-blank::before {
+  color: #888; /* muted placeholder color */
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.95rem;
+}
+
+.ql-picker-options {
+    background-color: var(--input-bg) !important;
+ color: var(--input-color);
+  padding: calc(var(--space-xs) * 3);
+  border-radius: var(--radius-sm);
+  outline: none;
+  border: 1px solid var(--border-primary) !important;
+  transition: all 0.3s ease;
+}
+.ql-font-sans { font-family: sans-serif; }
+.ql-font-serif { font-family: serif; }
+.ql-font-mono { font-family: monospace; }
+
+.ql-font-inter { font-family: 'Inter', sans-serif; }
+.ql-font-poppins { font-family: 'Poppins', sans-serif; }
+.ql-font-roboto { font-family: 'Roboto', sans-serif; }
+.ql-font-lato { font-family: 'Lato', sans-serif; }
+.ql-font-montserrat { font-family: 'Montserrat', sans-serif; }
+.ql-font-opensans { font-family: 'Open Sans', sans-serif; }
+.ql-font-nunito { font-family: 'Nunito', sans-serif; }
+.ql-font-raleway { font-family: 'Raleway', sans-serif; }
+.ql-font-ubuntu { font-family: 'Ubuntu', sans-serif; }
+.ql-font-cabin { font-family: 'Cabin', sans-serif; }
+.ql-font-merriweather { font-family: 'Merriweather', serif; }
+.ql-font-playfair { font-family: 'Playfair Display', serif; }
+.ql-font-inconsolata { font-family: 'Inconsolata', monospace; }
