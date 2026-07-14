@@ -1,0 +1,11 @@
+import { supabase } from "../supabase.js";
+
+document.getElementById("manage-btn").addEventListener("click", async () => {
+  const { data } = await supabase.functions.invoke("create-portal-session");
+
+  if (data?.url) {
+    window.location.href = data.url;
+  } else {
+    alert("Unable to open billing portal.");
+  }
+});
