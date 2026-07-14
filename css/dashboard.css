@@ -1,6 +1,74 @@
-.main {
-  background-color: var(--main-content-bg);
+
+.dashboard-section {
+  border: none;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  transition: transform 1s ease, opacity 0.5s ease;
 }
+
+.dashboard-section.slide-up {
+transform: translateY(-50px);
+}
+
+
+      .dashboardHeader {
+        justify-content: center;
+          transition: opacity 0.5s ease;
+
+      }
+       h1{
+        text-align: center;
+      }
+      .dashboard-section.slide-up .dashboardHeader {
+        opacity: 0;
+
+      }
+      .searchBarContainer {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: var(--space-md);
+      }
+      .mainSearchInput {
+        resize:none;
+        background: var(--surface-secondary);
+        max-width: 700px;
+        height: 150px;
+        margin: var(--space-lg) auto 0;
+        border-radius: var(--radius-lg);
+        padding: var(--space-md);
+        border: 6px solid var(--border-primary);
+        transition: height 0.5s ease, border-width 0.2s ease;
+      }
+      .dashboard-section.slide-up .mainSearchInput {
+        min-height: auto;
+height: 100px;
+      }
+      .mainSearchInput:focus {
+        border-width: 1px ;
+        border-color: var(--border-primary);
+      }
+      .quickActionsContainer {
+        display: flex;
+        justify-content: center;
+        gap: var(--space-md);
+        margin-bottom: var(--space-lg);
+      }
+      .quickActionsContainer .actionBtn {
+        width: 170px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .mainSearchResultContainer {
+        align-self: flex-start;
+        width: 100%;
+      }
+
 #workspaceName {
   position: relative;
   text-align: center;
