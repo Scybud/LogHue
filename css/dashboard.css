@@ -64,6 +64,10 @@ height: 100px;
         justify-content: center;
         align-items: center;
       }
+      .quickActionsContainer .actionBtn:hover {
+        background: var(--surface-primary);
+        color: var(--color);
+      }
       .mainSearchResultContainer {
         align-self: flex-start;
         width: 100%;
@@ -91,7 +95,7 @@ height: 100px;
 
 .navBtn,
 button.navBtn,
-.actionBtn, .navBtnEx {
+.actionBtn, .navBtn {
   background: none;
   border: none;
   width: 100%;
@@ -106,7 +110,7 @@ button.navBtn,
   align-items: center;
   gap: calc(var(--space-xs) + 1px);
 }
-.navBtnEx:hover {
+.navBtn:hover {
   background: var(--navBtn-bg);
 }
 .actionBtn {
