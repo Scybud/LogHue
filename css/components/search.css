@@ -48,14 +48,14 @@
 }
 
 .searchType.workspace {
-  color: #4da3ff;
+  color: #0367d2;
 }
 
 .searchType.task {
-  color: #ffb84d;
+  color: #e38800;
 }
 .searchType.note {
-    color: #88ff4d;
+    color: #49db00;
 }
 .searchItem {
   font-size: 1.05rem;

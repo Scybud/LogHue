@@ -38,6 +38,12 @@
     --bg-primary: #ffffff;
     --text-primary: #000000;
     --text-secondary: #414141;
+
+    --surface-primary: #F4F6F8;
+--surface-secondary: #E7EAED;
+
+--border-primary: #D7D9DD;
+
   --muted: #5f5d5d;
   --notif-bg-unread: #e6f7ff;
   --notif-bg-read: #fff;
@@ -51,7 +57,6 @@
   background-color: #e6f7ff; /* light blue for unread */
 
   --card-bg: #ffffff;
-  --border: #dcdcdc;
 --success: #006239;
 
   --form-bg: #ffffff;

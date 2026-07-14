@@ -64,6 +64,7 @@ if (!searchBarOpen || !searchContainer) return;
 
 searchBarOpen.addEventListener("click", () => {
 searchContainer.classList.add("showFlex");
+document.getElementById("searchInput")?.focus();
 })
 
 searchContainer.addEventListener("click", (e) => {

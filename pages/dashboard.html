@@ -71,10 +71,10 @@
           name="searchInput"
           id="searchInput"
           class="inputField searchInput"
-          placeholder="Search your workspaceshttps://loghue.com."
+          placeholder="Search your workspaces..."
         />
         <div id="searchResults" class="searchResults">
-          <p class="placeholderText">Type to search workspace nameshttps://loghue.com.</p>
+          <p class="placeholderText">Type to search workspace names...</p>
         </div>
       </div>
     </div>
@@ -107,12 +107,13 @@
           </div>
 
           <div class="headerRight">
-            <!-- New Global Workspaces Actions / Search -->
+            <!--  Global Workspaces and tasks Search -->
             <button
               type="button"
               class="actionBtn"
               id="searchBarOpen"
-              title="Search Workspaces"
+              aria-label="Search"
+              title="Search"
             >
               <svg
                 width="18"
@@ -133,6 +134,7 @@
               id="notificationToggleBtn"
               title="Notifications"
               class="actionBtn"
+              aria-label="Notifications"
             >
               <span id="notifBadge" class="badge">0</span>
               <svg
@@ -210,11 +212,11 @@
           </div>
 
           <div class="searchBarContainer">
-            <textarea name="mainSearchInput" id="mainSearchInput" class="inputField textArea mainSearchInput" placeholder="Search workspaces, taskshttps://loghue.com."></textarea>
+            <textarea name="mainSearchInput" id="mainSearchInput" class="inputField textArea mainSearchInput" placeholder="Search workspaces, tasks..."></textarea>
 
             <div class="quickActionsContainer">
-              <button class="actionBtn createWorkspaceOpen">+ New Workspace</button>
-              <button type="button" class="actionBtn createNoteBtn">+ Create Note</button>
+              <button class="actionBtn createWorkspaceOpen" aria-label="New Workspace">+ New Workspace</button>
+              <button type="button" class="actionBtn createNoteBtn" aria-label="Create Note">+ Create Note</button>
             </div>
           </div>
 
@@ -223,23 +225,7 @@
             
           </div>
         </section>
-          <!-- The JS View Target 
-          <div id="upperDashboardContainer"></div>
-          -->
-
-        <!-- SECTION 2: CROSS-WORKSPACE MY TASKS AGGREGATION 
-        <section class="dashboard-section tasks-section">
-          <div class="sectionHeader">
-            <h2>My Tasks</h2>
-          </div>
-          -->
-          
-          <!-- Next Implementation Target 
-          <div id="globalTasksContainer" class="tasks-list-wrapper">
-            <p class="placeholderText">Loading your assigned taskshttps://loghue.com.</p>
-          </div>
-        </section>
-        -->
+         
       </article>
     </main>
 
