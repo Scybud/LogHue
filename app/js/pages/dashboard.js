@@ -62,10 +62,10 @@ const searchInput = document.getElementById("mainSearchInput");
 
 const hints = [
   "Search workspaces...",
-  "Search notes...",
-  "Search tasks...",
   'Try "all workspaces"',
+  "Search notes...",
   'Try "all notes"',
+  "Search tasks...",
   'Try "all tasks"',
 ];
 
@@ -157,10 +157,13 @@ async function dashboardSearch(user) {
 
     const ALL_HANDLERS = {
       "all notes": { fetcher: fetchUserNotes, type: "note" },
+      "notes": { fetcher: fetchUserNotes, type: "note" },
       "all tasks": { fetcher: fetchUserTasks, type: "task" },
+      "tasks": { fetcher: fetchUserTasks, type: "task" },
       "all workspaces": { fetcher: fetchUserWorkspaces, type: "workspace" },
+      "workspaces": { fetcher: fetchUserWorkspaces, type: "workspace" },
     };
-
+ 
     const allHandler = ALL_HANDLERS[value];
     if (allHandler) {
       const items = await allHandler.fetcher(user.id);
