@@ -1,6 +1,6 @@
-import { supabase } from "https://loghue.com/js/supabase.js";
-import { actionMsg } from "https://loghue.com/js/utils/modals.js";
-import { sessionReady, sessionState } from "https://loghue.com/js/session.js";
+import { supabase } from "../../js/supabase.js";
+import { actionMsg } from "../../js/utils/modals.js";
+import { sessionReady, sessionState } from "../../js/session.js";
 
 
 const imageInput = document.getElementById("imageInput");
@@ -68,7 +68,7 @@ function canvasDefault() {
 
   const img = new Image();
   img.crossOrigin = "anonymous"; // important for CORS safety
-  img.src = "https://app.loghue.com/ScanHue/preview-placeholder.png";
+  img.src = "preview-placeholder.png";
 
   img.onload = () => {
     // scale image to fit canvas width
