@@ -51,9 +51,10 @@
         position: sticky;
         top: 30px;
         left: 20px;
-        padding: 0 auto;
+        padding: var(--space-md) auto;
         width: fit-content;
-        background: none;
+        border-radius: var(--radius-sm);
+        background: var(--surface-primary);
         color: var(--link);
         border: none;
         font-weight: 600;
@@ -296,99 +297,71 @@
 
     <main>
       <header>
-        <h1 class="text-center">Features That Keep Teams Organized and Moving</h1>
+        <h1 class="text-center">Everything You Need, Nothing You Don't</h1>
         <p class="text-center">
-          LogHue is built for teams that need clarity, structure, and
-          accountability, without the noise of bloated tools. Whether you're
-          coordinating a project or documenting your work, LogHue keeps
-          everything clean and predictable.
+          LogHue is built to keep your work organized without forcing it into
+          one giant document or scattering it across a dozen apps. Write
+          notes, track tasks, and connect them to a workspace only when it
+          actually helps.
         </p>
       </header>
 
       <!-- CORE FEATURES -->
       <section>
-        <h2 class="text-center">Core Workspace Features</h2>
+        <h2 class="text-center">Core Features</h2>
 
         <div class="feature-grid">
           <div class="feature-card">
-            <h3>Teams Ready Workspaces</h3>
+            <h3>Notes That Stand On Their Own</h3>
             <p>
-              Each workspace is a dedicated environment for your team. Tasks,
-              notes, activity, and members all live in one structured space,
-              making collaboration clear and predictable.
+              Write freely without deciding where something belongs. Notes
+              exist independently until you choose to connect one to a
+              workspace.
             </p>
           </div>
 
           <div class="feature-card">
-            <h3>Task Management</h3>
+            <h3>Tasks You Can Create Solo</h3>
             <p>
-              Create tasks, assign owners, update details, and track progress.
-              Admins manage structure; members update their own work. Every
-              change is logged for transparency.
+              Track your own work directly, no workspace required. Connect a
+              task to a workspace later if it needs to be shared, without
+              losing your personal copy.
             </p>
           </div>
 
           <div class="feature-card">
-            <h3>Activity Timeline</h3>
+            <h3>Workspaces, When You Need Them</h3>
             <p>
-              Every workspace includes a chronological activity feed. See who
-              updated what, when, and why, without digging through messages or
-              guessing what changed.
+              Create a workspace for a project or team, bring in the notes and
+              tasks that belong there, and invite people when the work calls
+              for it.
             </p>
           </div>
 
           <div class="feature-card">
-            <h3>LogHue Notes</h3>
+            <h3>Search Across Everything</h3>
             <p>
-              A clean, minimal writing space for documentation, meeting notes,
-              and internal knowledge. Export support is coming soon, making it
-              easy to share or archive your work.
+              Find anything in seconds, across notes, tasks, and workspaces,
+              or narrowed to exactly one type when you know what you're
+              looking for.
             </p>
           </div>
 
           <div class="feature-card">
-            <h3>Role Based Access</h3>
+            <h3>Activity History</h3>
             <p>
-              Admins manage workspace structure and settings. Members update
-              tasks and contribute content. Guests can view or participate
-              depending on permissions. Simple, predictable, and secure.
+              Every workspace keeps a chronological record of what changed and
+              when, so you're never digging through chats to reconstruct what
+              happened.
             </p>
           </div>
 
           <div class="feature-card">
             <h3>Workspace Discussions</h3>
             <p>
-             Start a discussion to communicate with your team about any issue, development or updates. everything stays in your workspace and you can close discussion after a clear decision between your team.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- PERSONAL TOOLS -->
-      <section>
-        <h2 class="text-center">Personal Tools Inside LogHue</h2>
-        <p>
-          While LogHue is teams first, it includes personal tools that help
-          individuals stay organized and reflect on their work, even outside a
-          team environment.
-        </p>
-
-        <div class="feature-grid">
-          <div class="feature-card">
-            <h3>Personal Task Logger</h3>
-            <p>
-              Log completed tasks, add notes, and track your personal progress
-              over time. Perfect for selfâ€‘review, accountability, and building a
-              history of your work.
-            </p>
-          </div>
-
-          <div class="feature-card">
-            <h3>Personal Notes</h3>
-            <p>
-              Use LogHue Notes as a lightweight personal documentation tool.
-              Draft ideas, write study notes, or keep reference material, all in
-              a clean, distractionâ€‘free editor.
+              Start a discussion tied to the actual work instead of a separate
+              chat app. Close it once a decision's been made, and it stays
+              part of the workspace history.
             </p>
           </div>
         </div>
@@ -399,29 +372,29 @@
         <h2 class="text-center">Built for Real Workflows</h2>
 
         <div class="usecase">
-          <h3>Teams & Organizations</h3>
+          <h3>Solo Builders & Indie Hackers</h3>
           <p>
-            LogHue is designed for teams that need structure. Plan work, track
-            progress, document decisions, and keep everyone aligned. Workspaces
-            provide clarity without unnecessary complexity.
+            Organize your own notes and tasks in one place instead of across
+            scattered apps and accounts. Turn a project into a workspace
+            later, only if and when it needs to be shared.
           </p>
         </div>
 
         <div class="usecase">
-          <h3>Independent Creators</h3>
+          <h3>Small Teams & Growing Projects</h3>
           <p>
-            Even though LogHue is teamâ€‘oriented, solo creators benefit from the
-            personal task logger and notes system. Organize your work, track
-            your progress, and keep your ideas structured.
+            When a project needs more than just you, create a workspace,
+            invite your team, and keep tasks and discussions tied to the
+            actual work instead of scattered across chats and meetings.
           </p>
         </div>
 
         <div class="usecase">
           <h3>Students & Learners</h3>
           <p>
-            Use workspaces for group projects or rely on personal notes and the
-            task logger for individual study. LogHue helps you stay organized
-            without overwhelming you.
+            Use workspaces for group projects, or rely on personal notes and
+            tasks for individual study. Either way, everything stays
+            findable.
           </p>
         </div>
 
@@ -429,8 +402,8 @@
           <h3>Developers & Technical Teams</h3>
           <p>
             Track issues, document architecture, and maintain clarity across
-            technical work. LogHue offers a lightweight, structured alternative
-            to heavy projectâ€‘management tools.
+            technical work, without adopting a heavyweight project-management
+            tool you'll only use half of.
           </p>
         </div>
       </section>
@@ -452,7 +425,7 @@
             <h3>Secure by Design</h3>
             <p>
               Role based permissions, secure storage, and GDPR aligned data
-              handling ensure your team's work stays safe and compliant.
+              handling ensure your work stays safe and compliant.
             </p>
           </div>
 
@@ -482,7 +455,7 @@
         <div class="footer-brand">
           <div class="logo">Log<span>Hue</span></div>
           <p>
-            Calm workspace management for modern teams. <br />
+            Organize your work, your way. <br />
             A Scybud Product
           </p>
         </div>
@@ -773,4 +746,3 @@
     </script>
   </body>
 </html>
-

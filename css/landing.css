@@ -214,12 +214,13 @@ a {
 .cta-btn,
 .secondary-btn {
   border-radius: 999px;
-  padding: 5px 18px;
+  padding: var(--space-xs) var(--space-lg);
   text-decoration: none;
   font-weight: 500;
   transition: 0.2s;
 }
 .cta-btn {
+    padding: var(--space-xs) var(--space-xl);
   background: var(--primary);
   color: #050505;
   font-weight: 700;
@@ -252,6 +253,7 @@ a {
   border: 1px solid rgba(255, 255, 255, 0.08);
 } /* MOCKUP ILLUSTRATION */
 .hero-illustration {
+  position: relative;
   flex: 1;
   display: flex;
   justify-content: center;
@@ -304,147 +306,131 @@ a {
 }
 .mock-main {
   flex: 1;
+  position: relative;
   padding: var(--space-md);
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
 }
- .mock-topbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        padding: 0 8px;
-        background: #232323;
-        border-radius: 12px;
-      }
-      .mock-title::before {
-        content: "Dashboard";
-        font-weight: 700;
-      }
-      .mock-user {
-        width: 20px;
-        height: 20px;
-        background: linear-gradient(120deg, var(--accent), var(--secondary));
-        border-radius: 50%;
-        corner-shape: round;
-      }
-      .mock-stats-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        height: 100px;
-        gap: 8px;
-        margin-bottom: 25px;
-      }
-      .mock-stat-card {
-        padding: 2px;
-        font-size: 0.9rem;
-        background-color: #1f1f1f;
-        overflow-x: hidden;
-        min-height: 67px;
-        border-radius: 6px;
-        border: 1px solid var(--border);
-      }
-      .mock-stat-card:nth-child(1)::before {
-       content: "Active Workspaces";
-       display: block;
-               font-weight: 600;
-     }
-     .mock-stat-card:nth-child(1):after {
-       content: "13";
-       margin: 0 0 0 8px;
-       display: block;
-       font-size: 1.5rem;
-       font-weight: 700;
-     }
-      .mock-stat-card:nth-child(2)::before {
-        content: "Created Workspaces";
-        display: block;
-                font-weight: 600;
-      }
-      .mock-stat-card:nth-child(2):after {
-        content: "24";
-        margin: 0 0 0 8px;
-        display: block;
-        font-size: 1.5rem;
-        font-weight: 700;
-      }
-       .mock-stat-card:nth-child(3)::before {
-        content: "Closed Workspaces";
-        display: block;
-                font-weight: 600;
-      }
-      .mock-stat-card:nth-child(3):after {
-        content: "11";
-        margin: 0 0 0 8px;
-        display: block;
-        font-size: 1.5rem;
-        font-weight: 700;
-      }
-       .mock-stat-card:nth-child(4)::before {
-        content: "Logged Tasks";
-        display: block;
-                font-weight: 600;
-      }
-      .mock-stat-card:nth-child(4):after {
-        content: "131";
-        margin: 0 0 0 8px;
-        display: block;
-        font-size: 1.5rem;
-        font-weight: 700;
-      }
-      .mock-section-title {
-        font-weight: 700;
-      }
-      .mock-section-title::before {
-content: "Recent Workspaces";
-      }
-      .mock-workspace-list {
-        display: flex;
-        flex-direction: column;
-gap: 6px;
-      }
-      .mock-workspace-card {
-        width: 100%;
-        background-color: #0b0b0b;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 0 0 0 10px;
-      }
-       .mock-workspace-name {
-font-size: 1.1rem;
-font-weight: 700;
-      }
-      .mock-workspace-card:nth-child(1) .mock-workspace-name::before {
-        content: "Design Team";
-      }
-      .mock-workspace-card:nth-child(1) .mock-workspace-meta:before {
-        content: "A shared workspace for managing design operations with precision. Track tasks, maintain components, review iterations, and keep cross‑team collaboration effortless.";
-        color: #8d8d8d;
-        font-size: 0.9rem;
-      }
-        .mock-workspace-card:nth-child(2) .mock-workspace-name::before {
-        content: "Marketing Team";
-      }
-      .mock-workspace-card:nth-child(2) .mock-workspace-meta:before {
-        content: "Where the marketing team shapes ideas, builds campaigns, and keeps momentum steady.";
-        color: #8d8d8d;
-        font-size: 0.9rem;
-      }
-      .mock-chip::before {
-content: "Open Workspace";
-background: var(--primary);
-color: #000;
-font-size: 0.8rem;
-font-weight: 600;
-border-radius: 3px;
-padding: 2px;
-      }
-      .mock-chip:hover {
-        transform: translateY(-1px);
-        transition: all 0.4s ease;
-        width: fit-content;
-      }
+.mock-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 8px;
+  background: #232323;
+  border-radius: 12px;
+}
+.mock-title::before {
+  content: "Dashboard";
+  font-weight: 700;
+}
+.mock-user {
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(120deg, var(--accent), var(--secondary));
+  border-radius: 50%;
+}
+
+/* New sidebar elements for search-first dashboard mockup */
+.mock-nav-spacer {
+  height: 10px;
+}
+
+.mock-nav-cta {
+  margin-top: auto;
+  height: 22px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+}
+
+.mock-nav-footer {
+  margin-top: var(--space-md);
+  height: 30px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Recenter main content around the search prompt, like the real dashboard */
+.hero-illustration .mock-main {
+  justify-content: center;
+}
+
+.mock-topbar-icons {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.mock-icon-circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: #1a1a1a;
+  border: 1px solid var(--border);
+}
+
+.mock-hero-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  text-align: center;
+  padding: var(--space-xl) 0;
+}
+
+.mock-hero-question {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+}
+.mock-hero-question::before {
+  content: "What would you like to work on?";
+}
+
+.mock-search-bar {
+  width: 100%;
+  max-width: 420px;
+  height: 64px;
+  border-radius: 12px;
+  background: #141414;
+  border: 1px solid var(--border);
+  padding: var(--space-sm) var(--space-md);
+  color: #6b6b6b;
+  font-size: 0.82rem;
+  text-align: left;
+  font-family: monospace;
+}
+.mock-search-bar::before {
+  content: "Search workspaces, tasks...";
+}
+
+.mock-hero-actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.mock-hero-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: default;
+}
+.mock-hero-btn::before {
+  content: "+ New Workspace";
+}
+
+.mock-hero-btn-primary::before {
+  content: "+ Create Note";
+}
 
 /* ------------------------- */ /* SECTIONS: FEATURES, WHAT, HOW, WHO, EXAMPLE, JOINWAITLIST */ /* ------------------------- */
 .section {
