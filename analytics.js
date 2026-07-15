@@ -1,4 +1,4 @@
-import { loadComponent, closeModal as closeConsentModal } from "./js/ui.js";
+import { loadComponent, closeModal as closeConsentModal } from "./app/js/ui.js";
 
 export function loadAnalytics() {
   if (window.__analyticsLoaded) return;
@@ -12,24 +12,24 @@ export function loadAnalytics() {
   script.onload = () => {
     window.dataLayer = window.dataLayer || [];
     function gtag() {
-       dataLayer.push(arguments);
+      dataLayer.push(arguments);
     }
     window.gtag = gtag;
-    
+
     gtag("js", new Date());
     gtag("config", "G-3VZMDG49GJ");
   };
 }
 
 export function handleConcentEvents() {
-const consentBanner = document.getElementById("consent-banner");
+  const consentBanner = document.getElementById("consent-banner");
 
-// Banner buttons (now guaranteed to exist)
-const acceptBtn = document.getElementById("accept-all");
-const rejectBtn = document.getElementById("reject-all");
-const customizeBtn = document.getElementById("customize");
-const customizeTracking = document.querySelector(".customize-tracking");
-  
+  // Banner buttons (now guaranteed to exist)
+  const acceptBtn = document.getElementById("accept-all");
+  const rejectBtn = document.getElementById("reject-all");
+  const customizeBtn = document.getElementById("customize");
+  const customizeTracking = document.querySelector(".customize-tracking");
+
   //Customize for settings page
   if (customizeTracking) {
     customizeTracking.addEventListener("click", async () => {
@@ -37,79 +37,84 @@ const customizeTracking = document.querySelector(".customize-tracking");
         "https://loghue.com/components/modals/cookies-customize",
         "modalContainer",
       );
-      
+
       const analyticsToggle = document.getElementById("toggle-analytics");
       const marketingToggle = document.getElementById("toggle-marketing");
       const closeBtn = document.getElementById("close-modal");
       const saveBtn = document.getElementById("save-preferences");
-      
+
       closeBtn.addEventListener("click", () => closeConsentModal());
-      
+
       saveBtn.addEventListener("click", () => {
         const prefs = {
           analytics: analyticsToggle.checked,
           marketing: marketingToggle.checked,
         };
-        
+
         localStorage.setItem("consent-preferences", JSON.stringify(prefs));
-        
+
         if (prefs.analytics) loadAnalytics();
-        
+
         closeConsentModal();
         if (consentBanner) consentBanner.remove();
       });
     });
   }
   // Accept All
-  if(!acceptBtn) return;
+  if (!acceptBtn) return;
   acceptBtn.addEventListener("click", () => {
-    localStorage.setItem("consent-preferences", JSON.stringify({
-      analytics: true,
-      marketing: true
-    }));
+    localStorage.setItem(
+      "consent-preferences",
+      JSON.stringify({
+        analytics: true,
+        marketing: true,
+      }),
+    );
 
     loadAnalytics();
-        if (consentBanner) consentBanner.remove();
+    if (consentBanner) consentBanner.remove();
   });
 
   // Reject All
-    if (!rejectBtn) return;
+  if (!rejectBtn) return;
   rejectBtn.addEventListener("click", () => {
-    localStorage.setItem("consent-preferences", JSON.stringify({
-      analytics: false,
-      marketing: false
-    }));
+    localStorage.setItem(
+      "consent-preferences",
+      JSON.stringify({
+        analytics: false,
+        marketing: false,
+      }),
+    );
 
-        if (consentBanner) consentBanner.remove();
+    if (consentBanner) consentBanner.remove();
   });
 
-    // Customize
-    customizeBtn.addEventListener("click", async () => {
-      await loadComponent(
-        "https://loghue.com/components/modals/cookies-customize",
-        "modalContainer",
-      );
+  // Customize
+  customizeBtn.addEventListener("click", async () => {
+    await loadComponent(
+      "https://loghue.com/components/modals/cookies-customize",
+      "modalContainer",
+    );
 
-      const analyticsToggle = document.getElementById("toggle-analytics");
-      const marketingToggle = document.getElementById("toggle-marketing");
-      const closeBtn = document.getElementById("close-modal");
-      const saveBtn = document.getElementById("save-preferences");
+    const analyticsToggle = document.getElementById("toggle-analytics");
+    const marketingToggle = document.getElementById("toggle-marketing");
+    const closeBtn = document.getElementById("close-modal");
+    const saveBtn = document.getElementById("save-preferences");
 
-      closeBtn.addEventListener("click", () => closeConsentModal());
+    closeBtn.addEventListener("click", () => closeConsentModal());
 
-      saveBtn.addEventListener("click", () => {
-        const prefs = {
-          analytics: analyticsToggle.checked,
-          marketing: marketingToggle.checked,
-        };
+    saveBtn.addEventListener("click", () => {
+      const prefs = {
+        analytics: analyticsToggle.checked,
+        marketing: marketingToggle.checked,
+      };
 
-        localStorage.setItem("consent-preferences", JSON.stringify(prefs));
+      localStorage.setItem("consent-preferences", JSON.stringify(prefs));
 
-        if (prefs.analytics) loadAnalytics();
+      if (prefs.analytics) loadAnalytics();
 
-        closeConsentModal();
-        if (consentBanner) consentBanner.remove();
-      });
+      closeConsentModal();
+      if (consentBanner) consentBanner.remove();
     });
+  });
 }
-

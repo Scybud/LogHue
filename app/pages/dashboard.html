@@ -1,0 +1,259 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | LogHue</title>
+
+    <!--SCYBUD UI-->
+    <link
+      rel="stylesheet"
+      href="https://scybud.github.io/scybud-ui/css/variables.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://scybud.github.io/scybud-ui/css/layout.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://scybud.github.io/scybud-ui/components/sidebar/sidebar.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://scybud.github.io/scybud-ui/components/buttons/nav-buttons.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://scybud.github.io/scybud-ui/css/typography.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://scybud.github.io/scybud-ui/css/animations.css"
+    />
+
+    <!--LOGHUE STYLES-->
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layout.css" />
+    <link rel="stylesheet" href="../css/component.css" />
+    <link rel="stylesheet" href="../css/dashboard.css" />
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/pages.css" />
+    <link rel="stylesheet" href="../css/utilities.css" />
+    <link rel="stylesheet" href="../css/components/search.css">
+
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="../assets/icons/favicons/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../assets/icons/favicons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="../assets/icons/favicons/favicon-16x16.png"
+    />
+
+    <link rel="manifest" href="/site.webmanifest" />
+
+  </head>
+  <body>
+    <!-- GLOBAL SEARCH BAR OVERLAY -->
+    <div class="searchContainer">
+      <div class="searchInner">
+        <input
+          type="search"
+          name="searchInput"
+          id="searchInput"
+          class="inputField searchInput"
+          placeholder="Search your workspaces..."
+        />
+        <div id="searchResults" class="searchResults">
+          <p class="placeholderText">Type to search workspace names...</p>
+        </div>
+      </div>
+    </div>
+
+    <main class="main">
+      <!-- SIDEBAR (Injected via JS) -->
+      <aside class="sidebar" id="sidebarContainer"></aside>
+
+      <!-- MAIN CONTENT VIEW -->
+      <article class="mainContent" id="dashboardContent">
+        <!-- HEADER -->
+        <div class="contentHeader">
+          <div class="headerLeft">
+            <button
+              class="menuBtn"
+              id="toggleSidebar"
+              aria-label="Toggle Sidebar"
+            >
+              <span class="menuIcon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M4 6H20M4 12H20M4 18H20"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </span>
+            </button>
+          </div>
+
+          <div class="headerRight">
+            <!--  Global Workspaces and tasks Search -->
+            <button
+              type="button"
+              class="actionBtn"
+              id="searchBarOpen"
+              aria-label="Search"
+              title="Search"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="11" cy="11" r="7"></circle>
+                <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
+              </svg>
+            </button>
+
+            <button
+              id="notificationToggleBtn"
+              title="Notifications"
+              class="actionBtn"
+              aria-label="Notifications"
+            >
+              <span id="notifBadge" class="badge">0</span>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M12 22c1.1 0 2-.9 2-2H10c0 1.1.9 2 2 2z" />
+                <path d="M18 16v-5a6 6 0 10-12 0v5l-1.5 2h15L18 16z" />
+              </svg>
+            </button>
+
+          </div>
+        </div>
+
+        <!-- MESSAGES & NOTIFICATIONS OVERLAYS -->
+        <div id="modalContainer"></div>
+        <div id="actionsMessage"></div>
+        <div id="infoDisplay"></div>
+
+        <div id="notificationsContainer">
+          <h2>Notifications</h2>
+          <ul id="notificationsList">
+            <p class="placeholderText">Nothing here yet.</p>
+          </ul>
+        </div>
+
+        <!-- PUSH NOTIFICATION PROMPT BANNER -->
+        <div class="warningContainer">
+          <button
+            type="button"
+            class="closeWarning"
+            id="closeWarning"
+            aria-label="Close Warning"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="40"
+              height="40"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect
+                x="3.5"
+                y="3.5"
+                width="17"
+                height="17"
+                rx="6"
+                ry="6"
+                fill="currentColor"
+                opacity="0.06"
+              />
+              <path d="M9 9l6 6M15 9l-6 6" />
+            </svg>
+          </button>
+          <p class="warningText">
+            Turn on push notifications in settings to get real-time updates
+            across your workspaces.
+          </p>
+        </div>
+
+        <!-- SECTION 1: SEACRCH WORKSPACES -->
+        <section class="dashboard-section">
+          <div class="sectionHeader dashboardHeader">
+            <h1>What would you like to work on?</h1>
+          </div>
+
+          <div class="searchBarContainer">
+            <textarea name="mainSearchInput" id="mainSearchInput" class="inputField textArea mainSearchInput" placeholder="Search workspaces, tasks..."></textarea>
+
+            <div class="quickActionsContainer">
+              <button class="actionBtn createWorkspaceOpen" aria-label="New Workspace">+ New Workspace</button>
+              <button type="button" class="actionBtn createNoteBtn" aria-label="Create Note">+ Create Note</button>
+            </div>
+          </div>
+
+          
+          <div id="MainSearchResults" class="mainSearchResultContainer">
+            
+          </div>
+        </section>
+         
+      </article>
+    </main>
+
+    <!-- CORE SCRIPTS -->
+    <script
+      type="module"
+      src="../js/utils/noAuthSessionProtect.js"
+    ></script>
+    <script type="module" src="../js/session.js"></script>
+    <script type="module" src="../js/app.js" defer></script>
+    <script
+      type="module"
+      src="../js/pages/dashboard.js"
+      defer
+    ></script>
+    <script
+      type="module"
+      src="../js/utils/search.js"
+      defer
+    ></script>
+
+    <!-- LOGHUE AI AGENT 
+    <script
+    src="https://chat.fwdslash.ai/new-embed"
+    chat-bot-id="mz26cn4umurjbpb"
+    async
+    defer
+    ></script>
+    -->
+  </body>
+</html>
