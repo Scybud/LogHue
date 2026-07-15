@@ -1,162 +1,25 @@
 // 1. SYSTEM & COMPONENT IMPORTS
 import { supabase } from "../supabase.js";
-
 import {
   fetchUserWorkspaces,
   fetchUserGlobalTasks,
 } from "../data/workspaceDb.js";
 import { sessionReady, sessionState } from "../session.js";
+import { fetchUserNotes } from "../data/notesDb.js";
+import { fetchUserTasks } from "../data/tasksDb.js";
 
 const closeWarningBtn = document.getElementById("closeWarning");
-/*
-// 2. DOM TARGET CACHING
-const upperDashboardContainer = document.getElementById(
-  "upperDashboardContainer",
-);
-const globalTasksContainer = document.getElementById("globalTasksContainer");
 
-// 3. CENTRAL LOCAL STATE MANAGEMENT
-let localState = {
-  user: null,
-  workspaces: [],
-  tasks: [],
-};
-
-let isLoading = false;
-
-// Handles toggling visual loading indicator state classes across containers
- 
-function setLoading(state) {
-  isLoading = state;
-  upperDashboardContainer?.classList.toggle("isLoading", state);
-  globalTasksContainer?.classList.toggle("isLoading", state);
+// Simple debounce helper
+function debounce(fn, delay) {
+  let timeoutId;
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn(...args), delay);
+  };
 }
-
-//Main Initialization Pipeline - Execution Orchestrator
- 
-export async function renderDashboard() {
-  setLoading(true);
-
-  // Await core authentication session resolution
-  await sessionReady;
-  localState.user = sessionState.user;
-
-  if (!localState.user) return;
-
-  // Render the current profile name cleanly into the header greeting text
-  const userNameEl = document.querySelector(".userName");
-  if (userNameEl) {
-    userNameEl.textContent = sessionState.profile?.full_name || "Developer";
-  }
-
-  try {
-    // Concurrent parallel background fetch across the workspaceDb pipelines
-    const [workspaces, tasks] = await Promise.all([
-      fetchUserWorkspaces(localState.user.id),
-      fetchUserGlobalTasks(localState.user.id),
-    ]);
-
-    // Mutate state with fresh server values
-    localState.workspaces = workspaces;
-    localState.tasks = tasks;
-
-    // Trigger explicit modular presentation layers
-    renderWorkspaceCards();
-    renderGlobalTasks();
-    handleOnboardingWarning();
-  } catch (err) {
-    console.error("Dashboard engine rendering pipeline failure:", err);
-    if (upperDashboardContainer) {
-      upperDashboardContainer.innerHTML = `<p class="text-error">Failed to build system views.</p>`;
-    }
-  } finally {
-    setLoading(false);
-  }
-}
-
-// Renders the Workspaces Section using custom UI components
- 
-function renderWorkspaceCards() {
-  if (!upperDashboardContainer) return;
-  upperDashboardContainer.innerHTML = "";
-
-  const activeWorkspaces = localState.workspaces.filter(
-    (ws) => ws.status === "active",
-  );
-
-  // Modern action-oriented empty state container
-  if (activeWorkspaces.length === 0) {
-    upperDashboardContainer.innerHTML = `
-      <div class="empty-state-card">
-        <h3>No workspaces yet</h3>
-        <p>Create your first workspace to start collaborating with your team.</p>
-      </div>
-    `;
-    return;
-  }
-
-  // Restore your original layout double-grid wrapper structure
-  const div = document.createElement("div");
-  div.classList.add("recentContainer", "double-grid");
-
-  // Loop through your full workspace data pool (No more artificial .slice truncation)
-  activeWorkspaces.forEach((wsData) => {
-    // Construct element via your core feature logic block
-    const wsCard = createWorkspaceCardElement(wsData);
-    div.append(wsCard);
-  });
-
-  // Prepend into container view target element
-  upperDashboardContainer.prepend(div);
-
-  // Re-bind click handlers, drop menus, and contextual action events safely
-  dropdownClick();
-}
-
-//Renders the Cross-Workspace "My Tasks" Aggregator Layout
- 
-function renderGlobalTasks() {
-  if (!globalTasksContainer) return;
-  globalTasksContainer.innerHTML = "";
-
-  if (localState.tasks.length === 0) {
-    globalTasksContainer.innerHTML = `<p class="placeholderText">No tasks explicitly assigned to you right now.</p>`;
-    return;
-  }
-
-  const taskList = document.createElement("ul");
-  taskList.className = "global-tasks-list";
-
-
-  localState.tasks.forEach((task) => {
-    const item = document.createElement("li");
-    item.className = "task-item-row";
-
-const taskStatus = task.status.trim().replace(/\s+/g, "");
-
-    item.innerHTML = `
-    <a class="global-task-link" href="task-view?task=${task.id}">
-    <div class="task-meta-left">
-    <!--
-    <input type="checkbox" data-task-id="${task.id}" class="task-checkbox">
-    -->
-    <span class="task-title-text">${escapeHTML(task.title)}</span>
-    </div>
-    <div>
-    <span class="task-context-badge ${taskStatus}">${task.status || "active"}</span>
-    <span class="task-context-badge">${escapeHTML(task.workspace?.name || "Workspace")}</span>
-    </div>
-    </a>
-    `;
-    taskList.append(item);
-  });
-
-  globalTasksContainer.append(taskList);
-}
-*/
 
 //Handles Onboarding Prompt UI Text Adjustments dynamically
-
 function handleOnboardingWarning() {
   if (sessionState.profile?.onboarded === false) {
     const warningText = document.querySelector(".warningText");
@@ -167,15 +30,16 @@ function handleOnboardingWarning() {
 }
 
 // Sticky dismiss handling for global notification layout alert boxes
-
-function warningLogic() {
-  const warningState = localStorage.getItem("removeWarning");
+// Scoped per-user so dismissal on a shared/dev browser doesn't leak across accounts
+function warningLogic(userId) {
+  const storageKey = `removeWarning:${userId}`;
+  const warningState = localStorage.getItem(storageKey);
   const container = document.querySelector(".warningContainer");
 
   if (!closeWarningBtn || !container) return;
 
   closeWarningBtn.addEventListener("click", () => {
-    localStorage.setItem("removeWarning", "removed");
+    localStorage.setItem(storageKey, "removed");
     container.remove();
   });
 
@@ -183,7 +47,6 @@ function warningLogic() {
 }
 
 //Basic security string sanitizer helper function
-
 function escapeHTML(str) {
   if (!str) return "";
   return str.replace(
@@ -195,8 +58,44 @@ function escapeHTML(str) {
   );
 }
 
-// 4. MAIN GLOBAL SYNCHRONOUS RUNTIME INITIALIZATION
-warningLogic();
+const searchInput = document.getElementById("mainSearchInput");
+
+const hints = [
+  "Search workspaces...",
+  "Search notes...",
+  "Search tasks...",
+  'Try "all workspaces"',
+  'Try "all notes"',
+  'Try "all tasks"',
+];
+
+let hintIndex = 0;
+let hintInterval;
+
+function changePlaceholder(text) {
+  searchInput.classList.add("searchHintFade");
+
+  setTimeout(() => {
+    searchInput.placeholder = text;
+    searchInput.classList.remove("searchHintFade");
+  }, 250);
+}
+
+function startHintAnimation() {
+  searchInput.placeholder = hints[hintIndex];
+
+  hintInterval = setInterval(() => {
+    if (document.activeElement === searchInput) return;
+    if (searchInput.value.trim() !== "") return;
+
+    hintIndex = (hintIndex + 1) % hints.length;
+    changePlaceholder(hints[hintIndex]);
+  }, 3000);
+}
+
+startHintAnimation();
+
+// MAIN GLOBAL SYNCHRONOUS RUNTIME INITIALIZATION
 initDashboard();
 
 export async function initDashboard() {
@@ -212,6 +111,7 @@ export async function initDashboard() {
     userNameEl.textContent = sessionState.profile?.full_name || "Developer";
   }
 
+  warningLogic(user.id);
   await dashboardSearch(user);
 
   // Trigger explicit modular presentation layers
@@ -225,17 +125,21 @@ async function dashboardSearch(user) {
   const createNoteBtn = document.querySelector(".createNoteBtn");
 
   //HANDLE CREATE NOTE QUICK ACTION
-  createNoteBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    localStorage.setItem("createNote", "start typing...");
-
-    window.location.href = "notes";
-  });
+  if (createNoteBtn) {
+    createNoteBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      localStorage.setItem("createNote", "start typing...");
+      window.location.href = "notes";
+    });
+  }
 
   let isSlideUp = false;
+  // Guards against out-of-order async responses overwriting newer results
+  let searchToken = 0;
 
-  searchInput.addEventListener("input", async (e) => {
-    const value = e.target.value.trim();
+  const runSearch = async (rawValue) => {
+    const value = rawValue.trim();
+    const myToken = ++searchToken;
 
     if (!value || value.length < 3) {
       resultsContainer.innerHTML = "";
@@ -249,6 +153,27 @@ async function dashboardSearch(user) {
     if (!isSlideUp) {
       dashboardContainer.classList.add("slide-up");
       isSlideUp = true;
+    }
+
+    const ALL_HANDLERS = {
+      "all notes": { fetcher: fetchUserNotes, type: "note" },
+      "all tasks": { fetcher: fetchUserTasks, type: "task" },
+      "all workspaces": { fetcher: fetchUserWorkspaces, type: "workspace" },
+    };
+
+    const allHandler = ALL_HANDLERS[value];
+    if (allHandler) {
+      const items = await allHandler.fetcher(user.id);
+      if (myToken !== searchToken) return;
+
+      const tagged = items.map((item) => ({
+        id: item.id,
+        title: item.title || item.name,
+        type: allHandler.type,
+      }));
+
+      renderResults(tagged, value);
+      return;
     }
 
     const { data: workspaceSearch, error: workspaceSearchError } =
@@ -267,22 +192,19 @@ async function dashboardSearch(user) {
         .ilike("workspaces.name", `%${value}%`)
         .limit(10);
 
-    if (workspaceSearchError) {
-      console.error(workspaceSearchError);
-      return;
-    }
-
-    const { data: tasksSearch, tasksSearchError } = await supabase
+    const { data: tasksSearch, error: tasksSearchError } = await supabase
       .from("workspace_tasks")
       .select("id, title")
       .ilike("title", `%${value}%`)
       .limit(10);
 
-    const { data: notesSearch, notesSearchError } = await supabase
+    const { data: notesSearch, error: notesSearchError } = await supabase
       .from("personal_notes")
       .select("id, title")
       .ilike("title", `%${value}%`)
       .limit(10);
+
+    if (myToken !== searchToken) return; // a newer keystroke's search has since started
 
     if (workspaceSearchError || tasksSearchError || notesSearchError) {
       console.error(
@@ -291,7 +213,7 @@ async function dashboardSearch(user) {
       return;
     }
 
-    const workspaceSearchTagged = workspaceSearch
+    const workspaceSearchTagged = (workspaceSearch || [])
       .filter((w) => w.workspaces) // prevent undefined
       .map((w) => ({
         id: w.workspaces.id,
@@ -300,13 +222,13 @@ async function dashboardSearch(user) {
         role: w.role,
       }));
 
-    const tasksSearchTagged = tasksSearch.map((t) => ({
+    const tasksSearchTagged = (tasksSearch || []).map((t) => ({
       id: t.id,
       title: t.title,
       type: "task",
     }));
 
-    const notesSearchTagged = notesSearch.map((n) => ({
+    const notesSearchTagged = (notesSearch || []).map((n) => ({
       id: n.id,
       title: n.title,
       type: "note",
@@ -318,15 +240,16 @@ async function dashboardSearch(user) {
       ...notesSearchTagged,
     ];
 
-    if (tasksSearchError) {
-      console.error(tasksSearchError);
-      return;
-    }
+    renderResults(searchData, value);
+  };
 
-    renderResults(searchData);
+  const debouncedSearch = debounce(runSearch, 200);
+
+  searchInput.addEventListener("input", (e) => {
+    debouncedSearch(e.target.value);
   });
 
-  function renderResults(results) {
+  function renderResults(results, queryValue) {
     resultsContainer.innerHTML = "";
 
     const resultsHeader = document.createElement("h2");
@@ -334,24 +257,27 @@ async function dashboardSearch(user) {
     resultsContainer.append(resultsHeader);
 
     if (results.length === 0) {
-      resultsContainer.innerHTML = `<p class="tunedText">No results found for "${searchInput.value}"</p>`;
+      const noResults = document.createElement("p");
+      noResults.classList.add("tunedText");
+      noResults.textContent = `No results found for "${queryValue}"`;
+      resultsContainer.append(noResults);
       return;
     }
 
     results.forEach((result) => {
       const link = searchLink(result);
+      const label = escapeHTML(result.name || result.title);
+      const searchTypeLabel = searchType(result);
 
       const div = document.createElement("div");
       div.classList.add("searchItem");
 
-      const searchTypeLabel = searchType(result);
-
       div.innerHTML = `
-  <a href="${link}">
+  <a href="${escapeHTML(link)}">
     <div class="searchType ${result.type}">
       ${searchTypeLabel}
     </div>
-    <p>${result.name || result.title}</p>
+    <p>${label}</p>
   </a>
 `;
 

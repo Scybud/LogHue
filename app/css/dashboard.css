@@ -10,9 +10,10 @@
 }
 
 .dashboard-section.slide-up {
-transform: translateY(-50px);
+  justify-content: flex-start; /* stop vertical centering once content grows */
+  transform: translateY(-50px);
+  margin: 0;
 }
-
 
       .dashboardHeader {
         justify-content: center;
@@ -32,6 +33,11 @@ transform: translateY(-50px);
         flex-direction: column;
         justify-content: center;
         gap: var(--space-md);
+
+         position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--bg-primary);
       }
       .mainSearchInput {
         resize:none;
@@ -47,11 +53,16 @@ transform: translateY(-50px);
       .dashboard-section.slide-up .mainSearchInput {
         min-height: auto;
 height: 100px;
+
       }
       .mainSearchInput:focus {
         border-width: 1px ;
         border-color: var(--border-primary);
       }
+      .searchHintFade::placeholder {
+  opacity: 0;
+  transition: opacity .25s ease;
+}
       .quickActionsContainer {
         display: flex;
         justify-content: center;

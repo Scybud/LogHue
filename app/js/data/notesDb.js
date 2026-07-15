@@ -1,6 +1,20 @@
 import { supabase } from "../supabase.js";
 import { actionMsg } from "../utils/modals.js";
 
+export async function fetchUserNotes(userId) {
+  const { data: notes, error } = await supabase
+    .from("personal_notes")
+    .select("id, title")
+    .eq("user_id", userId);
+
+  if (error) {
+    actionMsg("Error loading notes", "error");
+    return;
+  }
+  
+  return notes;
+}
+
 export async function fetchNoteById(noteId, userId) {
     const {data: note, error} = await supabase
     .from("personal_notes")
