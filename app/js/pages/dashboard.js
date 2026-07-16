@@ -3,6 +3,7 @@ import { supabase } from "../supabase.js";
 import {
   fetchUserWorkspaces,
   fetchUserGlobalTasks,
+  fetchWorkspaceFromMember,
 } from "../data/workspaceDb.js";
 import { sessionReady, sessionState } from "../session.js";
 import { fetchUserNotes } from "../data/notesDb.js";
@@ -160,8 +161,8 @@ async function dashboardSearch(user) {
       "notes": { fetcher: fetchUserNotes, type: "note" },
       "all tasks": { fetcher: fetchUserTasks, type: "task" },
       "tasks": { fetcher: fetchUserTasks, type: "task" },
-      "all workspaces": { fetcher: fetchUserWorkspaces, type: "workspace" },
-      "workspaces": { fetcher: fetchUserWorkspaces, type: "workspace" },
+      "all workspaces": { fetcher: fetchWorkspaceFromMember, type: "workspace" },
+      "workspaces": { fetcher: fetchWorkspaceFromMember, type: "workspace" },
     };
  
     const allHandler = ALL_HANDLERS[value];
@@ -169,11 +170,21 @@ async function dashboardSearch(user) {
       const items = await allHandler.fetcher(user.id);
       if (myToken !== searchToken) return;
 
-      const tagged = items.map((item) => ({
-        id: item.id,
-        title: item.title || item.name,
-        type: allHandler.type,
-      }));
+      const tagged = items.map((item) => {
+        if (allHandler.type === "workspace") {
+          return {
+            id: item.workspaces.id,
+            name: item.workspaces.name,
+            role: item.role,
+            type: "workspace",
+          };
+        }
+        return {
+          id: item.id,
+          title: item.title || item.name,
+          type: allHandler.type,
+        };
+      });
 
       renderResults(tagged, value);
       return;

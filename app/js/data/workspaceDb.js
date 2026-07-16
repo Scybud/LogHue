@@ -1,4 +1,5 @@
 import { supabase } from "../supabase.js"; // Adjust the relative path to your client if needed
+import { actionMsg } from "../utils/modals.js";
 
 /**
  * Fetches all workspaces where the logged-in user is a member,
@@ -71,4 +72,26 @@ export async function fetchUserGlobalTasks(userId) {
     console.error("CRITICAL: Error in fetchUserGlobalTasks:", error.message);
     throw error;
   }
+}
+
+export async function fetchWorkspaceFromMember(userId) {
+  const { data: workspaces, error } =
+      await supabase
+        .from("workspace_members")
+        .select(
+          `
+    role,
+    workspaces: workspace_id (
+      id,
+      name
+    )
+  `,)
+        .eq("user_id", userId);
+
+        if(error) {
+          actionMsg("Error loading workspaces", "error");
+          return;
+        }
+
+        return workspaces;
 }
