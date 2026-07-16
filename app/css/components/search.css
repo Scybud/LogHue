@@ -63,6 +63,7 @@
   padding: var(--space-sm);
   border-bottom: 1px solid var(--border-primary);
   width: 95%;
+  margin: 0 auto;
 border-radius: var(--radius-sm);
 transition: background 0.2s ease;
 }

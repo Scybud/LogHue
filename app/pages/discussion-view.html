@@ -327,7 +327,7 @@ button:active {
           </div>
     
           <div class="headerRight">
-           <button id="notificationToggleBtn" title="Notifications" class="actionBtn">
+           <button onclick="notificationsContainer.hidden ^= 1" id="notificationToggleBtn" title="Notifications" class="actionBtn">
                 <span id="notifBadge" class="badge">0</span>
                 <svg 
                 width="20" 
@@ -353,7 +353,7 @@ button:active {
         </div>
         
         <!--NOTIFICATIONS-->
-        <div id="notificationsContainer">
+        <div id="notificationsContainer" hidden>
           <h2>Notifications</h2>
           <ul id="notificationsList">
             <p class="placeholderText">Nothing here yet.</p>

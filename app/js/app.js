@@ -19,7 +19,6 @@ import { initWorkspaces } from "./features/workspaceData.js";
 import { autoExpandTextarea } from "./utils/textarea.js";
 import { handleConcentEvents, loadAnalytics } from "https://loghue.com/analytics.js";
 import { attachSignoutEvents } from "./auth/auth.js";
-import { toggleNotification } from "./utils/toggle.js";
 import {
   renderGlobalNotifications,
   fetchNotificationsForUser,
@@ -76,7 +75,6 @@ window.addEventListener("DOMContentLoaded", async () => {
   // Call on page load
   loadGlobalNotifications();
 
-  toggleNotification();
   toggleSearchBar();
 
   handleConcentEvents();

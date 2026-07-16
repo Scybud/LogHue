@@ -131,6 +131,7 @@
             </button>
 
             <button
+            onclick="notificationsContainer.hidden ^= 1"
               id="notificationToggleBtn"
               title="Notifications"
               class="actionBtn"
@@ -160,7 +161,7 @@
         <div id="actionsMessage"></div>
         <div id="infoDisplay"></div>
 
-        <div id="notificationsContainer">
+        <div id="notificationsContainer" hidden>
           <h2>Notifications</h2>
           <ul id="notificationsList">
             <p class="placeholderText">Nothing here yet.</p>
