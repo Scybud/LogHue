@@ -3,6 +3,7 @@ import { actionMsg } from "../utils/modals.js";
 import { notifyUser } from "../utils/notifications.js";
 import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
 import { formatDateTime, loadActivities } from "./workspace-admin.js";
+import { formatDateTimeRelatively } from "../utils/time.js";
 
 let currentTask = null;
 let currentWorkspace = null;
@@ -328,7 +329,7 @@ function renderTaskHeader() {
 
       <div class="metaItem">
         <span class="metaLabel">Created:</span>
-        <span>${formatDateTime(currentTask.created_at)}</span>
+        <span>${formatDateTimeRelatively(currentTask.created_at)}</span>
       </div>
     </div>
 
@@ -368,7 +369,7 @@ function renderLogs() {
 
     const timestamp = document.createElement("div");
     timestamp.className = "timestamp";
-    timestamp.textContent = formatDateTime(log.created_at);
+    timestamp.textContent = formatDateTimeRelatively(log.created_at);
 
     headerInfo.append(name, timestamp);
     header.append(avatar, headerInfo);

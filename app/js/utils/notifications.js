@@ -1,4 +1,4 @@
-import { formatDateTime } from "../features/workspaceData.js";
+import { formatDateTimeRelatively } from "./time.js";
 import { supabase } from "../supabase.js";
 import { actionMsg } from "./modals.js";
 
@@ -184,7 +184,7 @@ export async function renderGlobalNotifications(notifications) {
       notif.discussion = discussion;
     }
 
-    const time = formatDateTime(notif.created_at);
+    const time = formatDateTimeRelatively(notif.created_at);
 
     const link = document.createElement("a");
     link.className = "notificationLink";
