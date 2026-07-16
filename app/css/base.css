@@ -131,6 +131,9 @@ a .logo:hover {
 
 /*LOGHUE AI AGENT STYLE */
 div#cyces-initial-message-bubble.cyces-initial-message-bubble {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+div#cyces-initial-message-bubble.cyces-initial-message-bubble::after {
+    background: var(--bg-secondary) !important;
 }

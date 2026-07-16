@@ -246,6 +246,7 @@ button.danger {
 /*BUTTONS*/
 .btn {
   background: var(--primary);
+  color: #fff;
   padding: calc(var(--space-xs) * 3);
   border-radius: var(--radius-sm);
   margin: 0 var(--space-xs);

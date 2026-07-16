@@ -117,11 +117,14 @@
 .notesActionBtn:hover {
   opacity: 1;
 }
+#saveNoteBtn {
+  color: #fff;
+}
 #saveNoteBtn:hover {
   background: var(--primary-light);
 }
 #exportNotesBtn {
-  color: #fff;
+  color: var(--text-primary);
   background: var(--card-bg);
 }
 #notesList {
