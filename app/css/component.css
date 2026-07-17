@@ -409,7 +409,7 @@ button.dropdown-item {
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: var(--filter) brightness(90%);
 }
-.modalContainer .card {
+#modalContainer .card {
   align-self: center;
 }
 .modalContainer form {
@@ -533,6 +533,10 @@ button.dropdown-item {
 .pageOpenLink:hover {
   opacity: 1;
   text-decoration: none;
+}
+.consent-modal  {
+  height: fit-content;
+  align-self: center;
 }
 .modal-content {
   padding: var(--space-lg);
