@@ -53,11 +53,12 @@ const searchInput = document.getElementById("mainSearchInput");
 
 const hints = [
   "Search workspaces...",
-  'Try "all workspaces"',
   "Search notes...",
-  'Try "all notes"',
   "Search tasks...",
+  'Try "all workspaces"',
+  'Try "all notes"',
   'Try "all tasks"',
+  "Press Ctrl + K anywhere",
 ];
 
 let hintIndex = 0;
