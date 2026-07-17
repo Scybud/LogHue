@@ -14,7 +14,7 @@ export async function initCommandPalette() {
       e.preventDefault(); // stops browser's default (e.g. address bar focus)
 
       await loadComponent(
-        "../components/modals/command-palette.html",
+        "../components/modals/command-palette",
         "modalContainer",
       );
 
