@@ -367,6 +367,7 @@ button.danger {
 
 /*CARDS*/
 .card {
+  height: fit-content;
   background: var(--card-bg);
   padding: calc(var(--space-md));
   margin: var(--space-sm) 0;
@@ -390,15 +391,13 @@ button.dropdown-item {
   background: rgb(255, 52, 52);
 }
 /*MODAL CONTAINER*/
-#modalContainer {
-  overflow-y: hidden;
-}
+
 .modalContainer {
-  position: fixed;
+  position: absolute;
 
   display: flex;
   justify-content: center;
-  align-items: center;
+  
   overflow-y: auto;
 
   top: 0;

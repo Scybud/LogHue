@@ -1,0 +1,92 @@
+.command-palette-section {
+      border: none;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  align-items: center;
+  justify-content: center;
+  transition: transform 1s ease, opacity 0.5s ease;
+}
+
+.slide-up {
+  justify-content: flex-start; /* stop vertical centering once content grows */
+  transform: translateY(-50px);
+  margin: 0;
+}
+
+      .command-palette-header {
+        justify-content: center;
+          transition: opacity 0.5s ease;
+      }
+
+      .command-palette-header h1{
+        text-align: center;
+      }
+
+      .command-palette-section.slide-up .command-palette-header {
+        opacity: 0;
+      }
+
+      .searchBarContainer {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: var(--space-md);
+
+       
+      }
+
+      .mainSearchInput {
+        resize:none;
+        background: var(--surface-primary);
+        max-width: 700px;
+        height: 150px;
+        margin: var(--space-lg) auto 0;
+        border-radius: var(--radius-lg);
+        padding: var(--space-md);
+        border: 6px solid var(--border-primary);
+        transition: height 0.5s ease, border-width 0.2s ease;
+      }
+
+      .command-palette-section.slide-up .mainSearchInput {
+        min-height: auto;
+height: 100px;
+
+      }
+
+      .mainSearchInput:focus {
+        border-width: 1px ;
+        border-color: var(--border-primary);
+      }
+
+      .searchHintFade::placeholder {
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+
+      .quickActionsContainer {
+        display: flex;
+        justify-content: center;
+        gap: var(--space-md);
+        margin-bottom: var(--space-lg);
+      }
+
+      .quickActionsContainer .actionBtn {
+        width: 170px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .quickActionsContainer .actionBtn:hover {
+        background: var(--surface-primary);
+        color: var(--color);
+      }
+
+      .mainSearchResultContainer {
+        align-self: flex-start;
+        width: 100%;
+        overflow: auto;
+        margin-top: var(--space-lg);
+      }

@@ -381,8 +381,10 @@ input.error {
 }
 
 #confirmActionModal {
+align-self: center;
   width: 100%;
   max-width: 300px;
+  height: fit-content;
 }
 #confirmActionModal p {
   margin: 0;

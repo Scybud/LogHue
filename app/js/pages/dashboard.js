@@ -8,6 +8,7 @@ import {
 import { sessionReady, sessionState } from "../session.js";
 import { fetchUserNotes } from "../data/notesDb.js";
 import { fetchUserTasks } from "../data/tasksDb.js";
+import { escapeHTML } from "../utils/escapeHTML.js";
 
 const closeWarningBtn = document.getElementById("closeWarning");
 
@@ -47,17 +48,6 @@ function warningLogic(userId) {
   if (warningState) container.remove();
 }
 
-//Basic security string sanitizer helper function
-function escapeHTML(str) {
-  if (!str) return "";
-  return str.replace(
-    /[&<>'"]/g,
-    (tag) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[
-        tag
-      ] || tag,
-  );
-}
 
 const searchInput = document.getElementById("mainSearchInput");
 

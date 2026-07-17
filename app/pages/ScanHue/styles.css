@@ -149,6 +149,7 @@ font-family: 'Patrick Hand', sans-serif, cursive;
   border-radius: 12px;
   width: 320px;
   text-align: center;
+  align-self: center;
 }
 
 .usageBox {

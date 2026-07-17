@@ -1,3 +1,4 @@
+import { initCommandPalette } from "./components/commandPalette.js";
 import {
   loadComponent,
   removeLoader,
@@ -26,7 +27,9 @@ import {
 
 window.addEventListener("DOMContentLoaded", async () => {
   const path = window.location.pathname;
-
+  
+  await initCommandPalette();
+  
   // Load correct sidebar based on page
   if (path.includes("workspace-dashboard-admin")) {
     await loadComponent(
