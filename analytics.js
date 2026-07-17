@@ -39,7 +39,6 @@ export function handleConcentEvents() {
       );
 
       const analyticsToggle = document.getElementById("toggle-analytics");
-      const marketingToggle = document.getElementById("toggle-marketing");
       const closeBtn = document.getElementById("close-modal");
       const saveBtn = document.getElementById("save-preferences");
 
@@ -48,7 +47,6 @@ export function handleConcentEvents() {
       saveBtn.addEventListener("click", () => {
         const prefs = {
           analytics: analyticsToggle.checked,
-          marketing: marketingToggle.checked,
         };
 
         localStorage.setItem("consent-preferences", JSON.stringify(prefs));
@@ -67,7 +65,6 @@ export function handleConcentEvents() {
       "consent-preferences",
       JSON.stringify({
         analytics: true,
-        marketing: true,
       }),
     );
 
@@ -82,7 +79,6 @@ export function handleConcentEvents() {
       "consent-preferences",
       JSON.stringify({
         analytics: false,
-        marketing: false,
       }),
     );
 
@@ -97,16 +93,17 @@ export function handleConcentEvents() {
     );
 
     const analyticsToggle = document.getElementById("toggle-analytics");
-    const marketingToggle = document.getElementById("toggle-marketing");
     const closeBtn = document.getElementById("close-modal");
     const saveBtn = document.getElementById("save-preferences");
 
+    const savedPrefs = localStorage.getItem("consent-preferences");
+    if(savedPrefs && savedPrefs.analytics === true) analyticsToggle.checked;
+    
     closeBtn.addEventListener("click", () => closeConsentModal());
 
     saveBtn.addEventListener("click", () => {
       const prefs = {
         analytics: analyticsToggle.checked,
-        marketing: marketingToggle.checked,
       };
 
       localStorage.setItem("consent-preferences", JSON.stringify(prefs));
