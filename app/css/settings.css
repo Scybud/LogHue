@@ -82,6 +82,7 @@ div.settingsCard.danger {
   border-bottom: none;
 }
 .btn {
+  color: #000;
   background: var(--neutral);
   border: 1px solid var(--border);
 }
