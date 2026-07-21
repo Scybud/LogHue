@@ -1,0 +1,64 @@
+
+<div class="modalContainer">
+
+  <div id="consent-modal" class="consent-modal" role="dialog" aria-labelledby="consent-title">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <h3 id="consent-title">Privacy & Cookie Preferences</h3>
+      <p class="modal-subtext">
+        We use cookies to improve your experience, analyze usage, and support our services.
+        You can choose what you allow below.
+      </p>
+
+      <!-- Essential -->
+      <div class="consent-item">
+        <label class="toggle">
+          <div class="consent-text">
+            <span>Essential Cookies</span>
+<small>Required for login, security, saved preferences, and core functionality. Includes both cookies and local browser storage.</small>          </div>
+          <input type="checkbox" checked disabled>
+        </label>
+      </div>
+
+      <!-- Analytics -->
+      <div class="consent-item">
+        <label class="toggle">
+          <div class="consent-text">
+            <span>Analytics</span>
+            <small>Helps us understand how LogHue is used so we can improve it.</small>
+          </div>
+          <input id="toggle-analytics" type="checkbox" data-consent="analytics">
+        </label>
+      </div>
+
+      <!-- Marketing 
+      <div class="consent-item">
+        <label class="toggle">
+          <div class="consent-text">
+            <span>Marketing</span>
+            <small>Used to deliver relevant content and measure campaigns.</small>
+          </div>
+          <input id="toggle-marketing" type="checkbox" data-consent="marketing">
+        </label>
+      </div>
+      -->
+
+      <!-- Actions -->
+      <div class="modal-actions">
+          <button id="save-preferences" class="btn primary" type="button">Save Preferences</button>
+          <button id="close-modal" class="btn secondary" type="button">Close</button>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <a href="https://loghue.com/legal/privacy-policy">Privacy Policy</a>
+        <!--
+          <a href="/cookie-policy">Cookie Policy</a>
+          -->
+      </div>
+
+    </div>
+  </div>
+
+</div>

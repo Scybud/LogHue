@@ -1,0 +1,75 @@
+<div class="modalContainer">
+
+   <div class="invite-modal">
+    <!--CLOSE BUTTON-->
+<svg 
+class="closeModalBtn "
+  xmlns="http://www.w3.org/2000/svg"
+  width="22"
+  height="22"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.7"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <rect
+    x="3.5"
+    y="3.5"
+    width="17"
+    height="17"
+    rx="6"
+    ry="6"
+    fill="currentColor"
+    opacity="0.06"
+  />
+  <path d="M9 9l6 6M15 9l-6 6" />
+</svg>
+
+
+  <h2>Add Member</h2>
+
+  <div class="invite-methods">
+    <button class="btn" id="invite-email-btn">Invite by Email</button>
+    <button class="btn" id="invite-qr-btn">Invite via QR</button>
+  </div>
+
+  <!-- Email Section -->
+  <div id="invite-email-section">
+    <label>Email</label>
+    <input class="inputField" id="invite-email-input" type="email" placeholder="user@example.com" />
+
+    <label>Role</label>
+    <select id="invite-role-email">
+      <option value="member">Member</option>
+      <option value="admin">Admin</option>
+    </select>
+
+    <button class="btn" id="send-email-invite-btn">Send Invite</button>
+  </div>
+
+  <!-- QR Section -->
+  <div id="invite-qr-section" style="display:none;">
+  <label>Role</label>
+  <select id="invite-role-qr">
+    <option value="member">Member</option>
+    <option value="admin">Admin</option>
+  </select>
+
+  <button class="btn" id="generate-qr-btn">Generate QR Invite</button>
+
+  <div id="qr-container" style="margin-top:20px;"></div>
+
+  <input class="inputField" id="invite-link-input" readonly />
+  <p class="placeholderText">This invite link can be used up to 5 times.</p>
+  <div class="btnContainer">
+    <button class="btn" id="copy-invite-link-btn">Copy Link</button>
+      <button class="btn" id="share-invite-link-btn">Share Link</button>
+
+  </div>
+</div>
+
+
+
+</div>
