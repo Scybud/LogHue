@@ -338,7 +338,7 @@ export async function attachAddMemberEvents(workspaceId) {
       return;
     }
 
-    const inviteUrl = `${window.location.origin}/invite?token=${invite.token}`;
+    const inviteUrl = `${window.location.origin}/pages/invite?token=${invite.token}`;
 
     const {
       data: { session },
@@ -387,7 +387,7 @@ export async function attachAddMemberEvents(workspaceId) {
     }
 
     const baseUrl = window.location.origin; // Automatically uses localhost or app.loghue.com
-    const inviteUrl = `${baseUrl}/invite?token=${invite.token}`;
+    const inviteUrl = `${baseUrl}/pages/invite?token=${invite.token}`;
 
     document.getElementById("invite-link-input").value = inviteUrl;
 
