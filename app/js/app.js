@@ -33,21 +33,21 @@ window.addEventListener("DOMContentLoaded", async () => {
   // Load correct sidebar based on page
   if (path.includes("workspace-dashboard-admin")) {
     await loadComponent(
-      "https://loghue.com/components/sidebar-admin",
+      "../components/sidebar-admin",
       "adminSidebarContainer",
     );
   }
 
   if (path.includes("workspace-dashboard-member")) {
     await loadComponent(
-      "https://loghue.com/components/sidebar-member",
+      "../components/sidebar-member",
       "memberSidebarContainer",
     );
   }
 
   // General sidebar is safe everywhere
   await loadComponent(
-    "https://loghue.com/components/sidebar",
+    "../components/sidebar",
     "sidebarContainer",
   );
 
@@ -56,7 +56,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   // Analytics
   await loadComponent(
-    "https://loghue.com/components/modals/cookies-banner",
+    "../components/modals/cookies-banner",
     "infoDisplay",
   );
   const saved = localStorage.getItem("consent-preferences");

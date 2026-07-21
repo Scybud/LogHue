@@ -165,7 +165,7 @@ function assignMemberTask() {
     btn.addEventListener("click", async () => {
       // Load modal
       await loadComponent(
-        "https://loghue.com/components/modals/create-task",
+        "../components/modals/create-task",
         "modalContainer",
       );
 

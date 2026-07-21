@@ -22,7 +22,7 @@ export function openCreateTaskModal(workspaceId) {
 
   btn.addEventListener("click", async () => {
     await loadComponent(
-      "https://loghue.com/components/modals/create-task",
+      "../components/modals/create-task",
       "modalContainer",
     );
 
@@ -37,7 +37,7 @@ export function openLogPersonalTaskModal() {
 
   btn.addEventListener("click", async () => {
     await loadComponent(
-      "https://loghue.com/components/modals/personal-log-entry",
+      "../components/modals/personal-log-entry",
       "modalContainer",
     );
 
@@ -51,7 +51,7 @@ export function openAddMemeberModal(workspaceId) {
 
   btn.onclick = async () => {
     await loadComponent(
-      "https://loghue.com/components/modals/add-member",
+      "../components/modals/add-member",
       "modalContainer",
     );
 
@@ -73,7 +73,7 @@ export function openLogTaskModal(supabase, workspaceId, userId) {
     }
 
     await loadComponent(
-      "https://loghue.com/components/modals/log-entry",
+      "../components/modals/log-entry",
       "modalContainer",
     );
 
@@ -93,7 +93,7 @@ export function openCreateWorkspaceModal() {
     if (btn) {
       btn.addEventListener("click", async () => {
         await loadComponent(
-          "https://loghue.com/components/modals/create-workspace",
+          "../components/modals/create-workspace",
           "modalContainer",
         );
 
@@ -108,7 +108,7 @@ export function openStartDiscussionModal(currentWorkspace, user) {
   if (btn) {
     btn.addEventListener("click", async () => {
       await loadComponent(
-        "https://loghue.com/components/modals/start-discussion",
+        "../components/modals/start-discussion",
         "modalContainer",
       );
 
@@ -122,7 +122,7 @@ function attachLoginModalEvents() {
   if (openSignupModalBtn) {
     openSignupModalBtn.addEventListener("click", async () => {
       await loadComponent(
-        "https://loghue.com/components/modals/signup",
+        "../components/modals/signup",
         "modalContainer",
       );
 
@@ -136,7 +136,7 @@ function attachSignupModalEvents() {
   if (openLoginModal) {
     openLoginModal.addEventListener("click", async () => {
       await loadComponent(
-        "https://loghue.com/components/modals/login",
+        "../components/modals/login",
         "modalContainer",
       );
 
@@ -150,7 +150,7 @@ export function openLoginModal() {
   if (openLoginModalBtn) {
     openLoginModalBtn.addEventListener("click", async () => {
       await loadComponent(
-        "https://loghue.com/components/modals/login",
+        "../components/modals/login",
         "modalContainer",
       );
 
@@ -161,7 +161,7 @@ export function openLoginModal() {
 
 export async function openTransferOwnershipModal(workspace) {
   await loadComponent(
-    "https://loghue.com/components/modals/transfer-ownership",
+    "../components/modals/transfer-ownership",
     "modalContainer",
   );
   attachTransferOwnershipEvents(workspace);
@@ -169,7 +169,7 @@ export async function openTransferOwnershipModal(workspace) {
 
 export async function openApiKeyModal(workspace) {
   await loadComponent(
-    "https://loghue.com/components/modals/create-api-key",
+    "../components/modals/create-api-key",
     "modalContainer",
   );
   attachCreateApiKeyEvents(workspace.id);
@@ -178,7 +178,7 @@ export async function openApiKeyModal(workspace) {
 export async function confirmAction(message, actions = []) {
   // Load modal only when needed
   await loadComponent(
-    "https://loghue.com/components/modals/confirm-action",
+    "../components/modals/confirm-action",
     "modalContainer",
   );
 
@@ -214,7 +214,7 @@ export async function confirmAction(message, actions = []) {
 export async function actionMsg(message, typeClass) {
   // Load modal only when needed
   await loadComponent(
-    "https://loghue.com/components/modals/action-message",
+    "../components/modals/action-message",
     "actionsMessage",
   );
 

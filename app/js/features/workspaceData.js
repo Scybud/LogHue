@@ -570,7 +570,7 @@ async function performWorkspaceArcheive(id) {
 //EDIT WORKSPACE
 export async function editWorkspace(ws, id) {
   await loadComponent(
-    "https://loghue.com/components/modals/create-workspace",
+    "../components/modals/create-workspace",
     "modalContainer",
   );
 
