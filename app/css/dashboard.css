@@ -110,8 +110,7 @@ button.navBtn,
   border: none;
   width: 100%;
   padding: var(--space-sm);
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: var(--text-sm);
   border-radius: var(--radius-sm);
   color: var(--color);
   cursor: pointer;

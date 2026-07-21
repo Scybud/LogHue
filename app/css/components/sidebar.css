@@ -1,0 +1,4 @@
+.navSectionLabel {
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+}
