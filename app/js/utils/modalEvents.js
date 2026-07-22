@@ -6,11 +6,10 @@ import {
 } from "../pages/workspace-admin.js";
 import { supabase } from "../supabase.js";
 import {
-  createLogElement,
-  updateTaskCount,
+  createTaskElement,
   checkIfEmpty,
-  savedLogDetails,
-  renderExistingLogs,
+  savedTaskDetails,
+  renderExistingTasks,
 } from "../pages/personalTasks.js";
 import { actionMsg } from "./modals.js";
 import { sessionState } from "../session.js";
@@ -451,7 +450,7 @@ export async function attachAddMemberEvents(workspaceId) {
     });
 }
 
-export async function attachCreateLogEvent() {
+export async function attachCreatePersonalTaskEvent() {
   const taskEl = document.getElementById("task");
   const timeEl = document.getElementById("taskTime");
   const noteEl = document.getElementById("note");
@@ -501,12 +500,10 @@ export async function attachCreateLogEvent() {
     }
 
     // Update in-memory state
-    savedLogDetails.unshift(data);
+    savedTaskDetails.unshift(data);
 
     // Re-render UI
-    renderExistingLogs();
-    renderRecentLogs();
-    updateTaskCount();
+    renderExistingTasks();
     checkIfEmpty();
 
     // Clear inputs

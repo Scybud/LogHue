@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="../css/base.css" />
     <link rel="stylesheet" href="../css/layout.css" />
     <link rel="stylesheet" href="../css/component.css" />
+    <link rel="stylesheet" href="../css/tasks.css">
     <link rel="stylesheet" href="../css/dashboard.css" />
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/components/sidebar.css">
@@ -80,7 +81,7 @@
                 </svg>
               </span>
             </button>
-            <h1 class="pageTitle">Logs</h1>
+            <h1 class="pageTitle">Tasks</h1>
           </div>
     
           <div class="headerRight">
@@ -158,9 +159,8 @@
 
         <!-- PERSONAL LOG TASKS SECTION -->
         <section class="personalCreatedLogsContainer">
-          <div class="sectionHeader"></div>
-          <p class="text-muted">Your logged tasks.</p>
-          <div id="personalCreatedLogs" class="logs">
+
+          <div id="personalCreatedTasks" class="tasks">
             <!-- Dynamically load 5 most recent logs here -->
           </div>
         </section>
@@ -174,7 +174,7 @@
     ></script>
     <script type="module" src="../js/session.js" defer></script>
     <script type="module" src="../js/app.js" defer></script>
-    <script type="module" src="../js/pages/logs.js" defer></script>
+    <script type="module" src="../js/pages/tasks.js" defer></script>
 
     <!--LOGHUE AI AGENT-->
       <script src="https://chat.fwdslash.ai/new-embed" chat-bot-id="mz26cn4umurjbpb" async defer>

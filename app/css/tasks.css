@@ -1,0 +1,164 @@
+/* ------------------------------- */
+/* Task list container             */
+/* ------------------------------- */
+#personalCreatedTasks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Fades reordering slightly so a re-render doesn't feel like a jump-cut */
+#personalCreatedTasks.reordering {
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+/* ------------------------------- */
+/* Task card                       */
+/* ------------------------------- */
+.taskCard {
+  background: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm, 8px);
+
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.25s ease, transform 0.25s ease, border-color 0.2s ease;
+}
+
+.taskCard.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.taskCard.removing {
+  opacity: 0;
+  transform: translateY(-6px) scale(0.98);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.taskCard:hover {
+  border-color: var(--border-hover, var(--color));
+}
+
+/* Completed state — dim the card, strike through the name */
+.taskCard.completed {
+  opacity: 0.6;
+}
+
+.taskCard.completed .personalTaskName {
+  text-decoration: line-through;
+  color: var(--text-secondary, gray);
+}
+
+/* ------------------------------- */
+/* Top row: checkbox + name + actions */
+/* ------------------------------- */
+.taskTopRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm, 10px);
+}
+
+.taskCheckbox {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: var(--color);
+  cursor: pointer;
+}
+
+.personalTaskName {
+  flex: 1;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ------------------------------- */
+/* Action buttons (duplicate/delete) */
+/* ------------------------------- */
+.taskActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs, 4px);
+  flex-shrink: 0;
+}
+
+.taskActions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-md, 6px);
+  color: var(--text-secondary, gray);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.taskActions button:hover {
+  background: var(--surface-hover, rgba(0, 0, 0, 0.06));
+}
+
+.duplicateBtn:hover {
+  color: var(--color);
+}
+
+.deleteBtn:hover {
+  color: var(--danger);
+}
+/* Simple tooltip using data-title, shown on hover */
+.tooltip {
+  position: relative;
+}
+
+.tooltip::after {
+  content: attr(data-title);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  color: inherit;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  padding: 4px 8px;
+  border-radius: var(--radius-md, 6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 10;
+}
+
+.tooltip:hover::after {
+  opacity: 1;
+}
+
+/* ------------------------------- */
+/* Description (only rendered when present) */
+/* ------------------------------- */
+.taskDescription {
+  color: var(--text-secondary, gray);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0;
+  padding-left: calc(18px + var(--space-sm, 10px)); /* aligns under the name, past the checkbox */
+}
+
+/* ------------------------------- */
+/* Date                             */
+/* ------------------------------- */
+.taskDate {
+  font-size: 0.75rem;
+  color: var(--text-secondary, gray);
+  padding-left: calc(18px + var(--space-sm, 10px));
+}

@@ -4,7 +4,7 @@ import { loginFuntion } from "../auth/auth.js";
 import {
   attachCreateTaskEvent,
   attachAddMemberEvents,
-  attachCreateLogEvent,
+  attachCreatePersonalTaskEvent,
   insertTaskLogUpdate,
   populateTaskList,
   attachCreateApiKeyEvents,
@@ -37,11 +37,11 @@ export function openLogPersonalTaskModal() {
 
   btn.addEventListener("click", async () => {
     await loadComponent(
-      "../components/modals/personal-log-entry",
+      "../components/modals/personal-task-entry",
       "modalContainer",
     );
 
-    attachCreateLogEvent();
+    await attachCreatePersonalTaskEvent();
   });
 }
 
