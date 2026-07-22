@@ -97,27 +97,6 @@ section {
   opacity: 0.8;
 }
 
-/* When a log is added */
-.taskContainer {
-  opacity: 0;
-  transform: translateY(-6px);
-  transition:
-    opacity 0.25s ease,
-    transform 0.25s ease;
-}
 
-.taskContainer.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* When a log is deleted */
-.taskContainer.removing {
-  opacity: 0;
-  transform: translateY(-6px);
-}
-.taskCard {
-  cursor: pointer;
-}
 
 

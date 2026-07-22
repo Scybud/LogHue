@@ -8,6 +8,7 @@ import {
   createEmptyState,
 } from "https://scybud.github.io/scybud-ui/js/ui.js";
 import { attachCreatePersonalTaskEvent } from "../utils/modalEvents.js";
+import { formatDateTimeRelatively } from "../utils/time.js";
 // NOTE: openLogPersonalTaskModal is still imported from modals.js, which
 // hasn't been renamed yet. attachCreatePersonalTaskEvent has since been
 // renamed on your end in modalEvents.js — updated here to match.
@@ -163,6 +164,7 @@ export function createTaskElement(task) {
 
   const checkbox = document.createElement("input");
   checkbox.type = "checkbox";
+  checkbox.id = task.id;
   checkbox.classList.add("taskCheckbox");
   checkbox.checked = Boolean(task.is_completed);
   checkbox.setAttribute("aria-label", "Mark task as done");
@@ -170,9 +172,10 @@ export function createTaskElement(task) {
   // Persisting the toggle to Supabase (is_completed) needs a delegated
   // listener alongside attachDeleteTaskEvent, e.g. attachToggleCompleteEvent.
 
-  const nameSpan = document.createElement("span");
-  nameSpan.classList.add("personalTaskName");
-  nameSpan.textContent = task.name;
+  const nameLabel = document.createElement("label");
+nameLabel.htmlFor = task.id;
+  nameLabel.classList.add("personalTaskName");
+  nameLabel.textContent = task.name;
 
   const actionsGroup = document.createElement("div");
   actionsGroup.classList.add("taskActions");
@@ -193,7 +196,7 @@ export function createTaskElement(task) {
   deleteBtn.appendChild(createSvgIcon(deleteIconPaths));
 
   actionsGroup.append(duplicateBtn, deleteBtn);
-  topRow.append(checkbox, nameSpan, actionsGroup);
+  topRow.append(checkbox, nameLabel, actionsGroup);
   el.append(topRow);
 
   // --- Description: only rendered if present ---
@@ -207,7 +210,7 @@ export function createTaskElement(task) {
   // --- Date ---
   const dateSpan = document.createElement("span");
   dateSpan.classList.add("taskDate");
-  dateSpan.textContent = formatDateTime(task.created_at);
+  dateSpan.textContent = formatDateTimeRelatively(task.created_at);
   el.append(dateSpan);
 
   return el;

@@ -6,16 +6,22 @@
   flex-direction: column;
   gap: var(--space-md);
 }
-
-/* Fades reordering slightly so a re-render doesn't feel like a jump-cut */
-#personalCreatedTasks.reordering {
-  opacity: 0.6;
-  transition: opacity 0.2s ease;
+.taskContainer {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+.taskContainer.show {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ------------------------------- */
 /* Task card                       */
 /* ------------------------------- */
+
 .taskCard {
   background: var(--surface-primary);
   border: 1px solid var(--border-primary);
@@ -35,14 +41,13 @@
   transform: translateY(0);
 }
 
-.taskCard.removing {
+/* When a task is deleted */
+.taskContainer.removing {
   opacity: 0;
-  transform: translateY(-6px) scale(0.98);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: translateY(-6px) scale(0.6);
 }
-
 .taskCard:hover {
-  border-color: var(--border-hover, var(--color));
+  border-color: var(--border-secondary, var(--color));
 }
 
 /* Completed state — dim the card, strike through the name */
@@ -61,23 +66,23 @@
 .taskTopRow {
   display: flex;
   align-items: center;
-  gap: var(--space-sm, 10px);
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
 }
 
 .taskCheckbox {
   width: 18px;
   height: 18px;
   flex-shrink: 0;
-  accent-color: var(--color);
+  accent-color: var(--text-primary);
   cursor: pointer;
 }
 
 .personalTaskName {
+      cursor: pointer;
   flex: 1;
   font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+line-height: var(--space-md);
 }
 
 /* ------------------------------- */
@@ -130,6 +135,7 @@
   border: 1px solid var(--border-primary);
   color: inherit;
   font-size: 0.75rem;
+  font-weight: var(--font-bold);
   white-space: nowrap;
   padding: 4px 8px;
   border-radius: var(--radius-md, 6px);
@@ -147,9 +153,9 @@
 /* Description (only rendered when present) */
 /* ------------------------------- */
 .taskDescription {
-  color: var(--text-secondary, gray);
+  color: var(--text-secondary);
   font-size: 0.9rem;
-  line-height: 1.4;
+  line-height: 1rem;
   margin: 0;
   padding-left: calc(18px + var(--space-sm, 10px)); /* aligns under the name, past the checkbox */
 }
@@ -159,6 +165,6 @@
 /* ------------------------------- */
 .taskDate {
   font-size: 0.75rem;
-  color: var(--text-secondary, gray);
+  color: var(--muted);
   padding-left: calc(18px + var(--space-sm, 10px));
 }
