@@ -261,12 +261,13 @@ button.danger {
   height: 120px;
 }
 div.duplicateTaskContainer {
+  position: relative;
   width: 100%;
+  max-width: 600px;
   margin: 0 var(--space-md);
 }
 div.duplicateTaskContainer:hover {
   transform: translate(0);
-
 }
 .workspaceListContainer {
   margin-top: var(--space-md);
