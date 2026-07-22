@@ -35,14 +35,15 @@
 
 /*MANUALLY SELECTED LIGHT THEME*/
 :root[data-theme="light"] {
-    --bg-primary: #ffffff;
+    --bg-primary: #eddddd;
     --text-primary: #000000;
     --text-secondary: #414141;
 
     --surface-primary: #F4F6F8;
 --surface-secondary: #E7EAED;
 
---border-primary: #D7D9DD;
+--border-primary: #c7c7c7;
+--border: var(--border-primary);
 
   --muted: #5f5d5d;
   --notif-bg-unread: #e6f7ff;
