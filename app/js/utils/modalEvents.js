@@ -42,8 +42,8 @@ export function attachCreateTaskEvent(workspaceId) {
       .value.trim();
     const assignedToValue = assignedTo.value;
 
-    if (!taskDescription) {
-      actionMsg("Description required!", "error");
+    if (!taskTitle) {
+      actionMsg("Title required", "error");
       setButtonLoading(createTaskBtn, false);
       return;
     }
@@ -59,7 +59,7 @@ export function attachCreateTaskEvent(workspaceId) {
       title: taskTitle,
       status: "in progress",
       assigned_to: assignedToValue || null, // Assign to empty if no one is selected
-      description: taskDescription,
+      description: taskDescription || "",
     };
 
     // Insert task into the database
@@ -474,8 +474,8 @@ export async function attachCreatePersonalTaskEvent() {
     const timeValue = timeEl.value.trim();
     const noteValue = noteEl.value.trim();
 
-    if (!taskValue || !timeValue || !noteValue) {
-      actionMsg("Input fields must not be empty.", "error");
+    if (!taskValue || !timeValue) {
+      actionMsg("Task and time are required.", "error");
       setButtonLoading(logTaskBtn, false);
       return;
     }
@@ -485,7 +485,7 @@ export async function attachCreatePersonalTaskEvent() {
       .from("personal_tasks")
       .insert({
         name: taskValue,
-        description: noteValue,
+        description: noteValue || "",
         created_at: timeValue,
         user_id: user.id,
       })
@@ -503,7 +503,7 @@ export async function attachCreatePersonalTaskEvent() {
     savedTaskDetails.unshift(data);
 
     // Re-render UI
-    renderExistingTasks();
+   await renderExistingTasks();
     checkIfEmpty();
 
     // Clear inputs

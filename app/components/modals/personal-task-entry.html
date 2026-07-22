@@ -27,24 +27,30 @@ class="closeModalBtn "
   <path d="M9 9l6 6M15 9l-6 6" />
 </svg>
 
-            <h2>Log Task</h2>
-            <label for="task">Task Completed</label>
-            <input
+            <h2>Create Task</h2>
+            <label for="task">Task
+              
+              <input
               placeholder="e.g. Fixed API bug"
               type="text"
               id="task"
               class="inputField"
               />
+            </label>
 
-            <label for="taskTime">Date Completed</label>
-            <input type="datetime-local" id="taskTime" class="inputField" />
+            <label for="taskTime">Date
 
-            <label for="note">Notes</label>
-            <textarea
+              <input type="datetime-local" id="taskTime" class="inputField" />
+            </label>
+
+            <label for="note">Note (Optional)
+
+              <textarea
               id="note"
               placeholder="Add details about what you finished…"
               class="inputField textArea"
-            ></textarea>
+              ></textarea>
+            </label>
 
             <button type="button" id="logTask" class="btn">Log Task</button>
           </form>

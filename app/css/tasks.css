@@ -4,7 +4,7 @@
 #personalCreatedTasks {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-sm);
 }
 .taskContainer {
   opacity: 0;
@@ -18,12 +18,44 @@
   transform: translateY(0);
 }
 
-/* ------------------------------- */
-/* Task card                       */
-/* ------------------------------- */
+.collapsibleGroup {
+  margin-bottom: 1rem;
+}
 
-.taskCard {
-  background: var(--surface-primary);
+.collapsibleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--surface-2);
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.collapsibleBody {
+  padding-top: var(--space-md);
+     display: flex;
+     flex-direction: column;
+     gap: var(--space-sm);
+     overflow-y: auto;
+     transition: height 0.5s ease;
+     height: 500px;
+     max-height: fit-content; /* large enough to fit content */
+    }
+    
+    .collapsibleBody.collapsed {
+      height: 0;
+      overflow: hidden;
+    }
+    
+    /* ------------------------------- */
+    /* Task card                       */
+    /* ------------------------------- */
+    
+    .taskCard {
+      
+      background: var(--surface-primary);
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-lg);
   padding: var(--space-md);
@@ -129,7 +161,7 @@ line-height: var(--space-md);
   content: attr(data-title);
   position: absolute;
   bottom: calc(100% + 6px);
-  left: 50%;
+  left: 10%;
   transform: translateX(-50%);
   background: var(--surface-primary);
   border: 1px solid var(--border-primary);
@@ -142,7 +174,7 @@ line-height: var(--space-md);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.15s ease;
-  z-index: 10;
+  z-index: 100;
 }
 
 .tooltip:hover::after {
@@ -168,3 +200,4 @@ line-height: var(--space-md);
   color: var(--muted);
   padding-left: calc(18px + var(--space-sm, 10px));
 }
+

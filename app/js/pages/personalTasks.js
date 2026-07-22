@@ -1,7 +1,13 @@
+// ---------------------------------------------------------
+// Imports
+// ---------------------------------------------------------
 import { supabase } from "../supabase.js";
 import { sessionState, sessionReady } from "../session.js";
-import { actionMsg, openLogPersonalTaskModal } from "../utils/modals.js";
-import { confirmAction } from "../utils/modals.js";
+import {
+  actionMsg,
+  openLogPersonalTaskModal,
+  confirmAction,
+} from "../utils/modals.js";
 import { setLoading } from "../ui.js";
 import {
   loadComponent,
@@ -9,41 +15,35 @@ import {
 } from "https://scybud.github.io/scybud-ui/js/ui.js";
 import { attachCreatePersonalTaskEvent } from "../utils/modalEvents.js";
 import { formatDateTimeRelatively } from "../utils/time.js";
-// NOTE: openLogPersonalTaskModal is still imported from modals.js, which
-// hasn't been renamed yet. attachCreatePersonalTaskEvent has since been
-// renamed on your end in modalEvents.js — updated here to match.
 
+// ---------------------------------------------------------
+// State
+// ---------------------------------------------------------
 let personalCreatedTasks = null;
 let loggedTasksCount = null;
 
-export let savedTaskDetails = [];
-// NOTE: renamed from savedLogDetails — this is exported, so any other file
-// importing { savedLogDetails } from this module will break until updated
-// to import { savedTaskDetails } instead.
+export let savedTaskDetails = []; // exported for other modules
 
-// -------------------------------
+// ---------------------------------------------------------
 // Initialization
-// -------------------------------
+// ---------------------------------------------------------
 export async function initPersonalTasks() {
   await sessionReady;
   const user = sessionState.user;
-
   if (!user) return;
 
   personalCreatedTasks = document.getElementById("personalCreatedTasks");
-  // NOTE: getElementById target renamed to match — the actual HTML element's
-  // id attribute needs to be updated to "personalCreatedTasks" too, or this
-  // will resolve to null.
-
   loggedTasksCount = document.getElementById("loggedTasksCount");
 
   setLoading(true, personalCreatedTasks);
 
-  const { data, error } = await supabase
-    .from("personal_tasks")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+ const { data, error } = await supabase
+   .from("personal_tasks")
+   .select("*")
+   .eq("user_id", user.id)
+   .order("is_completed", { ascending: true })
+   .order("created_at", { ascending: false });
+
 
   setLoading(false, personalCreatedTasks);
 
@@ -58,25 +58,13 @@ export async function initPersonalTasks() {
   renderExistingTasks();
   checkIfEmpty();
   attachDeleteTaskEvent(personalCreatedTasks, user.id);
+  attachToggleCompleteEvent(personalCreatedTasks);
   openLogPersonalTaskModal();
 }
 
-// -------------------------------
-// Helpers
-// -------------------------------
-function formatDateTime(iso) {
-  return new Date(iso).toLocaleString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
-
-// -------------------------------
+// ---------------------------------------------------------
 // Empty State
-// -------------------------------
+// ---------------------------------------------------------
 export async function checkIfEmpty() {
   if (!personalCreatedTasks) return;
 
@@ -88,12 +76,10 @@ export async function checkIfEmpty() {
       description: "You have no created tasks yet",
       actionText: "Create Task",
       onAction: async () => {
-        // Open modal
         await loadComponent(
           "../components/modals/personal-task-entry",
           "modalContainer",
         );
-
         await attachCreatePersonalTaskEvent();
       },
     });
@@ -104,9 +90,9 @@ export async function checkIfEmpty() {
   if (placeholder) placeholder.remove();
 }
 
-// -------------------------------
-// Icon helpers
-// -------------------------------
+// ---------------------------------------------------------
+// Icons
+// ---------------------------------------------------------
 function createSvgIcon(paths, { viewBox = "0 0 24 24" } = {}) {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("width", "18");
@@ -137,7 +123,6 @@ const deleteIconPaths = [
   { tag: "path", attrs: { d: "M9 6V4h6v2" } },
 ];
 
-// Two overlapping squares — standard "duplicate/copy" glyph
 const duplicateIconPaths = [
   {
     tag: "rect",
@@ -149,31 +134,27 @@ const duplicateIconPaths = [
   },
 ];
 
-// -------------------------------
+// ---------------------------------------------------------
 // Create Task Element
-// -------------------------------
+// ---------------------------------------------------------
 export function createTaskElement(task) {
   const el = document.createElement("div");
   el.classList.add("taskCard");
   el.dataset.id = task.id;
   if (task.is_completed) el.classList.add("completed");
 
-  // --- Top row: checkbox + name + actions ---
+  // Top row
   const topRow = document.createElement("div");
   topRow.classList.add("taskTopRow");
 
   const checkbox = document.createElement("input");
   checkbox.type = "checkbox";
-  checkbox.id = task.id;
   checkbox.classList.add("taskCheckbox");
+  checkbox.id = `task-${task.id}`;
   checkbox.checked = Boolean(task.is_completed);
-  checkbox.setAttribute("aria-label", "Mark task as done");
-  // NOTE: no click handler wired here — createTaskElement only builds markup.
-  // Persisting the toggle to Supabase (is_completed) needs a delegated
-  // listener alongside attachDeleteTaskEvent, e.g. attachToggleCompleteEvent.
 
   const nameLabel = document.createElement("label");
-nameLabel.htmlFor = task.id;
+  nameLabel.htmlFor = checkbox.id;
   nameLabel.classList.add("personalTaskName");
   nameLabel.textContent = task.name;
 
@@ -181,33 +162,30 @@ nameLabel.htmlFor = task.id;
   actionsGroup.classList.add("taskActions");
 
   const duplicateBtn = document.createElement("button");
-  duplicateBtn.setAttribute("data-title", "Duplicate to Workspace");
-  duplicateBtn.setAttribute("type", "button");
+  duplicateBtn.type = "button";
   duplicateBtn.classList.add("duplicateBtn", "tooltip");
+  duplicateBtn.setAttribute("data-title", "Duplicate to Workspace");
   duplicateBtn.appendChild(createSvgIcon(duplicateIconPaths));
-  // NOTE: same as checkbox — no handler wired here. This needs a delegated
-  // click listener that opens a workspace picker, then inserts a copy of
-  // this task into workspace_tasks for the chosen workspace.
 
   const deleteBtn = document.createElement("button");
-  deleteBtn.setAttribute("data-title", "Delete Task");
-  deleteBtn.setAttribute("type", "button");
+  deleteBtn.type = "button";
   deleteBtn.classList.add("deleteBtn", "tooltip");
+  deleteBtn.setAttribute("data-title", "Delete Task");
   deleteBtn.appendChild(createSvgIcon(deleteIconPaths));
 
   actionsGroup.append(duplicateBtn, deleteBtn);
   topRow.append(checkbox, nameLabel, actionsGroup);
   el.append(topRow);
 
-  // --- Description: only rendered if present ---
-  if (task.description && task.description.trim() !== "") {
+  // Description
+  if (task.description?.trim()) {
     const desc = document.createElement("p");
     desc.classList.add("taskDescription");
     desc.textContent = task.description;
     el.append(desc);
   }
 
-  // --- Date ---
+  // Date
   const dateSpan = document.createElement("span");
   dateSpan.classList.add("taskDate");
   dateSpan.textContent = formatDateTimeRelatively(task.created_at);
@@ -216,40 +194,83 @@ nameLabel.htmlFor = task.id;
   return el;
 }
 
-// -------------------------------
+// ---------------------------------------------------------
 // Render Tasks
-// -------------------------------
+// ---------------------------------------------------------
 export function renderExistingTasks() {
   if (!personalCreatedTasks) return;
 
   personalCreatedTasks.innerHTML = "";
-  personalCreatedTasks.classList.add("reordering");
 
-  savedTaskDetails.forEach((task) => {
+  const incomplete = savedTaskDetails.filter((t) => !t.is_completed);
+  const completed = savedTaskDetails.filter((t) => t.is_completed);
+
+  // Create collapsible groups
+  const incompleteGroup = createCollapsibleGroup(
+    "Incomplete Tasks",
+    incomplete.length,
+    true,
+  );
+  const completedGroup = createCollapsibleGroup(
+    "Completed Tasks",
+    completed.length,
+    false,
+  );
+
+  // Render incomplete tasks
+  incomplete.forEach((task) => {
     const el = createTaskElement(task);
-    personalCreatedTasks.append(el);
-
+    incompleteGroup.body.append(el);
     requestAnimationFrame(() => el.classList.add("show"));
   });
 
-  setTimeout(() => {
-    personalCreatedTasks.classList.remove("reordering");
-  }, 300);
+  // Render completed tasks
+  completed.forEach((task) => {
+    const el = createTaskElement(task);
+    completedGroup.body.append(el);
+    requestAnimationFrame(() => el.classList.add("show"));
+  });
+
+  // Append groups to main container
+  personalCreatedTasks.append(incompleteGroup.wrapper, completedGroup.wrapper);
 }
 
-// -------------------------------
+
+// ---------------------------------------------------------
+// Toggle Complete (Delegated)
+// ---------------------------------------------------------
+export function attachToggleCompleteEvent(container) {
+  container.addEventListener("change", async (e) => {
+    if (!e.target.classList.contains("taskCheckbox")) return;
+
+    const checkbox = e.target;
+    const taskId = checkbox.id.replace("task-", "");
+    const isCompleted = checkbox.checked;
+
+    const { error } = await supabase
+      .from("personal_tasks")
+      .update({ is_completed: isCompleted })
+      .eq("id", taskId);
+
+    if (error) {
+      console.error(error);
+      actionMsg("Failed to update task", "error");
+      return;
+    }
+
+    const card = checkbox.closest(".taskCard");
+    if (isCompleted) card.classList.add("completed");
+    else card.classList.remove("completed");
+  });
+}
+
+// ---------------------------------------------------------
 // Delete Task
-// -------------------------------
-
+// ---------------------------------------------------------
 export function attachDeleteTaskEvent(container, userId) {
-  if (!container) return;
-
-  container.addEventListener("click", async (e) => {
+  container.addEventListener("click", (e) => {
     const btn = e.target.closest(".deleteBtn");
     if (!btn) return;
-
-    e.preventDefault();
-    e.stopPropagation();
 
     confirmAction("Delete this task?", [
       { label: "Cancel", type: "cancel" },
@@ -263,8 +284,8 @@ export function attachDeleteTaskEvent(container, userId) {
 }
 
 async function performTaskDelete(btn, userId) {
-  const taskToDelete = btn.closest(".taskCard");
-  const id = taskToDelete.dataset.id;
+  const card = btn.closest(".taskCard");
+  const id = card.dataset.id;
 
   const { error } = await supabase
     .from("personal_tasks")
@@ -274,22 +295,51 @@ async function performTaskDelete(btn, userId) {
 
   if (error) {
     console.error(error);
-    alert(error.message);
+    actionMsg("Failed to delete task", "error");
     return;
   }
 
-  // Remove from memory
   savedTaskDetails = savedTaskDetails.filter(
-    (task) => String(task.id) !== String(id),
+    (t) => String(t.id) !== String(id),
   );
 
-  // Animate + remove
-  taskToDelete.classList.add("removing");
+  card.classList.add("removing");
+  setTimeout(() => card.remove(), 550);
 
-  setTimeout(() => {
-    taskToDelete.remove();
-  }, 550);
   actionMsg("Task deleted successfully!", "success");
-  updateTaskCount();
   checkIfEmpty();
 }
+
+
+
+function createCollapsibleGroup(title, count, isOpen = true) {
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("collapsibleGroup");
+
+  const header = document.createElement("div");
+  header.classList.add("collapsibleHeader");
+  header.innerHTML = `
+    <span>${title} (${count})</span>
+    <span class="arrow">${isOpen ? "▼" : "▶"}</span>
+  `;
+
+  const body = document.createElement("div");
+  body.classList.add("collapsibleBody");
+  if (!isOpen) body.classList.add("collapsed");
+
+  header.addEventListener("click", () => {
+    const isCollapsed = body.classList.contains("collapsed");
+
+    if (isCollapsed) {
+      body.classList.remove("collapsed");
+      header.querySelector(".arrow").textContent = "▼";
+    } else {
+      body.classList.add("collapsed");
+      header.querySelector(".arrow").textContent = "▶";
+    }
+  });
+
+  wrapper.append(header, body);
+  return { wrapper, body };
+}
+

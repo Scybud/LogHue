@@ -14,6 +14,7 @@ select {
   background-color: var(--input-bg);
   color: var(--input-color);
   width: 100%;
+  margin-bottom: var(--space-md);
   padding: calc(var(--space-xs) * 3);
   border-radius: var(--radius-sm);
   outline: none;
@@ -58,11 +59,9 @@ input[type="number"]::-webkit-inner-spin-button:hover {
   border-radius: var(--radius-lg);
 
   display: flex;
-  justify-content: center;
   flex-direction: column;
   position: relative;
 
-  gap: var(--space-md);
   margin: auto;
   padding: calc(var(--space-md) + 4px) calc(var(--space-sm) + 2px);
   width: 95%;
@@ -72,6 +71,7 @@ input[type="number"]::-webkit-inner-spin-button:hover {
 /*FORM LABEL*/
 label {
   font-size: 0.9rem;
+  margin: 0;
 }
 .permissionsFieldset {
   border: 1px solid var(--border-primary);
