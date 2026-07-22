@@ -16,7 +16,9 @@
   gap: var(--space-md) var(--space-lg);
   min-width: 100%;
 }
-
+.settingsCard .card {
+  min-width: 300px;
+}
 div.settingsCard.danger {
   display: block;
   border-color: var(--danger);

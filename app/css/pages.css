@@ -32,52 +32,6 @@ section {
   padding: 0 var(--space-xs);
 }
 
-/*FORMS*/
-.form {
-  background-color: var(--form-bg);
-  border: 1px solid var(--border-primary);
-  background: var(--form-bg);
-  border-radius: var(--radius-lg);
-
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  position: relative;
-
-  gap: var(--space-md);
-  margin: auto;
-  padding: calc(var(--space-md) + 4px) calc(var(--space-sm) + 2px);
-  width: 95%;
-  max-width: 500px;
-}
-
-/*FORM LABEL*/
-label {
-  font-size: 0.9rem;
-}
-.permissionsFieldset {
-  border: 1px solid var(--border-primary);
-  padding: 14px 16px;
-  border-radius: 8px;
-  margin-top: 16px;
-}
-
-.permissionsLegend {
-  font-size: 14px;
-  font-weight: 600;
-  padding: 0 6px;
-  color: var(--chevron-color);
-}
-
-.permissionItem {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  margin: var(--space-sm) 0;
-  font-size: 14px;
-  cursor: pointer;
-}
-
 .workspaceIdContainer {
   position: relative;
   height: fit-content;
