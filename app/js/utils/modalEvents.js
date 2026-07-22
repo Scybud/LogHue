@@ -81,7 +81,7 @@ export function attachCreateTaskEvent(workspaceId) {
     await actionMsg("Task created!", "success");
 
     // Only one task is created, use the first item
-    const createdTask = data[0];
+    const createdTask = data;
 
     if (createdTask?.assigned_to != null) {
       await notifyUser({
@@ -100,7 +100,7 @@ export function attachCreateTaskEvent(workspaceId) {
 
     const taskTitleElem = document.createElement("h3");
     taskTitleElem.classList.add("taskTitle");
-    taskTitleElem.textContent = createdTask.title;
+    taskTitleElem.textContent = createdTask?.title;
 
     const taskMeta = document.createElement("p");
     taskMeta.classList.add("taskMeta", "meta");

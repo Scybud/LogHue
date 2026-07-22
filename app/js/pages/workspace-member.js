@@ -56,7 +56,7 @@ async function checkMemberAccess(workspaceId) {
     .single();
 
   if (error || membership.role !== "member") {
-    actionMsg("Access Denied: You cannot access this workspace.");
+    actionMsg("Access Denied: You cannot access this workspace.", "error");
     window.location.href = "dashboard";
   }
 }
@@ -69,7 +69,7 @@ export async function initMemberWorkspaceData() {
   const workspaceId = params.get("ws");
 
   if (!workspaceId) {
-    window.location.href = "index";
+    window.location.href = "dashboard";
     return;
   }
 

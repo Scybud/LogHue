@@ -68,7 +68,7 @@ async function checkAdminAccess(workspaceId, user) {
       "Access Denied: You do not have admin permissions for this workspace.",
       "error",
     );
-    window.location.href = "/all-workspaces"; // Send them to their main list
+    window.location.href = "all-workspaces"; // Send them to their main list
   }
 }
 
@@ -86,7 +86,7 @@ export async function initAdminWorkspaceData() {
   user = data.user;
 
   if (!workspaceId) {
-    window.location.href = "index";
+    window.location.href = "dashbaord";
     return;
   }
 
@@ -116,7 +116,10 @@ export async function initAdminWorkspaceData() {
   }
 
   if (!workspace || workspaceId.length < 10 || workspace.status === "closed") {
-    window.location.href = "index";
+    actionMsg("This workspace has been archived", "warning");
+    setTimeout(() => {
+      window.location.href = "archive";
+    }, 1500)
     return;
   }
 

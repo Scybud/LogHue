@@ -14,7 +14,7 @@ async function handleAuth() {
     localStorage.removeItem("post_login_redirect");
     window.location.href = redirectTo;
   } else {
-    window.location.href = "/";
+    window.location.href = "../";
   }
 }
 

@@ -299,7 +299,7 @@ function renderTaskHeader() {
 
   container.innerHTML = `
     <div class="taskHeaderTop">
-      <h2>${currentTask.title}</h2>
+      <h2>${currentTask.title || "Untitled"}</h2>
       <div class="taskActions">
       ${
         isAdmin
@@ -317,7 +317,7 @@ function renderTaskHeader() {
       <div class="metaItem">
         <span class="metaLabel">Assigned To:</span>
         <div class="avatarGroup">
-          <img src="${currentTask.profiles?.avatar_url || "/assets/default-avatar.png"}" class="profileImg" />
+          <img src="${currentTask.profiles?.avatar_url || "../assets/default-avatar.png"}" class="profileImg" />
           <span>${currentTask.profiles?.full_name || "Unassigned"}</span>
         </div>
       </div>
