@@ -26,7 +26,7 @@ function handleOnboardingWarning() {
   if (sessionState.profile?.onboarded === false) {
     const warningText = document.querySelector(".warningText");
     if (warningText) {
-      warningText.innerHTML = `Hi! You are recommended to get started by creating a workspace. <a href="create-workspace">Create workspace</a>`;
+      warningText.innerHTML = `Hi! Get started by creating a workspace. <a href="create-workspace">Create workspace</a>`;
     }
   }
 }
