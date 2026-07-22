@@ -71,7 +71,12 @@
 /*NAVICATION ICON SVG*/
 .navIcon svg,
 .menuIcon svg {
-  width: 25px;
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+}
+.menuIcon svg {
+   width: 25px;
   height: 25px;
   stroke: currentColor;
 }
@@ -93,10 +98,9 @@
   font-weight: 600;
   background: none;
   color: var(--color);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
+  border: none;
   cursor: pointer;
-  transition: 0.2s;
+  transition: opacity 0.2s ease;
   display: flex;
   align-items: center;
   gap: calc(var(--space-xs) + 1px);
@@ -113,7 +117,10 @@
   justify-content: center;
   align-items: center;
 }
-
+#closeSidebar svg {
+  width: 25px;
+  height: 25px;
+}
 .closeModalBtn {
   width: 50px;
   height: 50px;
