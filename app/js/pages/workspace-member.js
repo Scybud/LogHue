@@ -883,7 +883,7 @@ export function loadAssignedTasks(sectionTitle, tasks, container) {
 
     viewBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      window.location.href = `https://app.loghue.com/task-view?task=${tsk.id}`;
+      window.location.href = `task-view?task=${tsk.id}`;
     });
 
     details.addEventListener("click", (e) => {

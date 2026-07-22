@@ -114,7 +114,7 @@ function loadSidebar() {
     isAdmin = userRole.role === "admin" || userRole.role === "owner";
   }
 
-  if (!isAdmin || !userRole || userRole === null)
+  if (!userRole || userRole === null)
     return (workspacePageSidebar.innerHTML = `<nav><!-- DASHBOARD -->
     <a href="dashboard" class="navBtn" data-section="index" id="dashboardLink">
       <span class="navIcon">
