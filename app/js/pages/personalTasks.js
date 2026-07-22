@@ -21,15 +21,17 @@ import { formatDateTimeRelatively } from "../utils/time.js";
 // ---------------------------------------------------------
 let personalCreatedTasks = null;
 let loggedTasksCount = null;
+  let selectedWorkspaceId = null;
+  let taskIdToDuplicate = null; // set when duplicateBtn is clicked, before the modal opens
 
 export let savedTaskDetails = []; // exported for other modules
-
+let user = null;
 // ---------------------------------------------------------
 // Initialization
 // ---------------------------------------------------------
 export async function initPersonalTasks() {
   await sessionReady;
-  const user = sessionState.user;
+   user = sessionState.user;
   if (!user) return;
 
   personalCreatedTasks = document.getElementById("personalCreatedTasks");
@@ -37,13 +39,12 @@ export async function initPersonalTasks() {
 
   setLoading(true, personalCreatedTasks);
 
- const { data, error } = await supabase
-   .from("personal_tasks")
-   .select("*")
-   .eq("user_id", user.id)
-   .order("is_completed", { ascending: true })
-   .order("created_at", { ascending: false });
-
+  const { data, error } = await supabase
+    .from("personal_tasks")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("is_completed", { ascending: true })
+    .order("created_at", { ascending: false });
 
   setLoading(false, personalCreatedTasks);
 
@@ -233,19 +234,35 @@ export function renderExistingTasks() {
 
   // Append groups to main container
   personalCreatedTasks.append(incompleteGroup.wrapper, completedGroup.wrapper);
-}
 
+
+  personalCreatedTasks.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".duplicateBtn");
+    if (!btn) return;
+taskIdToDuplicate = btn.closest(".taskCard").dataset.id;
+
+    await loadComponent("../components/modals/duplicate-task", "modalContainer");
+    const workspaceListContainer = document.getElementById(
+      "workspaceListContainer"
+    );
+
+    await duplicateTask(workspaceListContainer, user.id);
+  });
+}
 
 // ---------------------------------------------------------
 // Toggle Complete (Delegated)
 // ---------------------------------------------------------
 export function attachToggleCompleteEvent(container) {
+  if (!container) return;
+
   container.addEventListener("change", async (e) => {
     if (!e.target.classList.contains("taskCheckbox")) return;
 
     const checkbox = e.target;
     const taskId = checkbox.id.replace("task-", "");
     const isCompleted = checkbox.checked;
+    const previousChecked = !isCompleted; // for rollback on failure
 
     const { error } = await supabase
       .from("personal_tasks")
@@ -255,12 +272,22 @@ export function attachToggleCompleteEvent(container) {
     if (error) {
       console.error(error);
       actionMsg("Failed to update task", "error");
+      // Roll back the checkbox visually since the DB write failed —
+      // otherwise the UI shows a state that was never actually saved.
+      checkbox.checked = previousChecked;
       return;
     }
 
-    const card = checkbox.closest(".taskCard");
-    if (isCompleted) card.classList.add("completed");
-    else card.classList.remove("completed");
+    // Update the in-memory record so renderExistingTasks() sorts this task
+    // into the right group and recomputes both group counts correctly.
+    // Toggling the .completed class directly (as before) left savedTaskDetails
+    // stale, causing the card to snap back to its old group on the next re-render.
+    const taskRecord = savedTaskDetails.find(
+      (t) => String(t.id) === String(taskId),
+    );
+    if (taskRecord) taskRecord.is_completed = isCompleted;
+
+    renderExistingTasks();
   });
 }
 
@@ -268,6 +295,8 @@ export function attachToggleCompleteEvent(container) {
 // Delete Task
 // ---------------------------------------------------------
 export function attachDeleteTaskEvent(container, userId) {
+  if (!container) return;
+
   container.addEventListener("click", (e) => {
     const btn = e.target.closest(".deleteBtn");
     if (!btn) return;
@@ -310,8 +339,6 @@ async function performTaskDelete(btn, userId) {
   checkIfEmpty();
 }
 
-
-
 function createCollapsibleGroup(title, count, isOpen = true) {
   const wrapper = document.createElement("div");
   wrapper.classList.add("collapsibleGroup");
@@ -343,3 +370,46 @@ function createCollapsibleGroup(title, count, isOpen = true) {
   return { wrapper, body };
 }
 
+
+async function duplicateTask(container, userId) {
+
+  async function populateWorkspaceList(container, userId) {
+    const { data, error } = await supabase
+      .from("workspace_members")
+      .select("role, workspaces: workspace_id (id, name)")
+      .eq("user_id", userId);
+
+    if (error) {
+      console.error(error);
+      actionMsg("Failed to load workspaces", "error");
+      return;
+    }
+
+    
+    container.innerHTML = "";
+    selectedWorkspaceId = null; // reset each time the modal opens
+
+    data
+      .filter((m) => m.workspaces) // guard against orphaned membership rows
+      .forEach((m) => {
+        const item = document.createElement("div");
+        item.classList.add("workspaceOption");
+        item.dataset.workspaceId = m.workspaces.id;
+        item.textContent = m.workspaces.name;
+
+        item.addEventListener("click", () => {
+          // Clear previous selection, then mark this one
+          container
+            .querySelectorAll(".workspaceOption.selected")
+            .forEach((el) => el.classList.remove("selected"));
+          item.classList.add("selected");
+          selectedWorkspaceId = m.workspaces.id;
+        });
+
+        container.append(item);
+      });
+  }
+
+  await populateWorkspaceList(container, userId);
+
+}
