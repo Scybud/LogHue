@@ -22,13 +22,16 @@ import {
 import { notifyUser } from "../utils/notifications.js";
 import { showUploadStatus } from "../shared/workspace/utils.js";
 import { formatDateTime } from "../utils/time.js";
-import {loadApiKeys} from "../shared/workspace/api.js";
+import { loadApiKeys } from "../shared/workspace/api.js";
 
 export let currentWorkspace = null;
 export let loadedMembers = [];
 let user = null;
 let isLoading = false;
 let container;
+
+let selectedAssigneeId = null;
+let taskIdToAssign = null; // set when an assignBtn is clicked, before the modal opens
 
 // Loading State
 function setLoading(state, container) {
@@ -121,7 +124,7 @@ export async function initAdminWorkspaceData() {
     actionMsg("This workspace has been archived", "warning");
     setTimeout(() => {
       window.location.href = "archive";
-    }, 1500)
+    }, 1500);
     return;
   }
 
@@ -169,10 +172,7 @@ function assignMemberTask() {
   btns.forEach((btn) => {
     btn.addEventListener("click", async () => {
       // Load modal
-      await loadComponent(
-        "../components/modals/create-task",
-        "modalContainer",
-      );
+      await loadComponent("../components/modals/create-task", "modalContainer");
 
       // Wait for DOM to render
       await new Promise(requestAnimationFrame);
@@ -330,6 +330,127 @@ async function performMemberRemoval(id, workspaceId, user) {
     // Refresh UI
     window.location.reload();
   }, 2000);
+}
+
+// ---------------------------------------------------------
+// Assign Unassigned Task (Delegated)
+// ---------------------------------------------------------
+function attachAssignTaskEvent(container) {
+  if (!container) return;
+
+  container.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".assignBtn");
+    if (!btn) return;
+
+    taskIdToAssign = btn.closest(".taskCard").dataset.id;
+
+    await loadComponent("../components/modals/assign-task", "modalContainer");
+
+    const memberListContainer = document.getElementById(
+      "assignMemberListContainer",
+    );
+
+    populateMemberList(memberListContainer);
+
+    // Fresh DOM node each time loadComponent runs, so no listener-stacking
+    // risk here (same reasoning as the duplicate-task confirm button).
+    const confirmBtn = document.getElementById("confirmAssignBtn");
+    if (confirmBtn) {
+      confirmBtn.addEventListener("click", async (evt) => {
+        evt.preventDefault(); // button sits inside a <form>
+        await performTaskAssign(confirmBtn);
+      });
+    }
+  });
+}
+
+function populateMemberList(container) {
+  if (!container) return;
+
+  container.innerHTML = "";
+  selectedAssigneeId = null; // reset each time the modal opens
+
+  loadedMembers.forEach((m) => {
+    if (!m.profiles) return; // guard against orphaned membership rows
+
+    const item = document.createElement("div");
+    item.classList.add("workspaceOption");
+    item.dataset.memberId = m.profiles.id;
+    item.textContent = m.profiles.full_name;
+
+    item.addEventListener("click", () => {
+      container
+        .querySelectorAll(".workspaceOption.selected")
+        .forEach((el) => el.classList.remove("selected"));
+      item.classList.add("selected");
+      selectedAssigneeId = m.profiles.id;
+    });
+
+    container.append(item);
+  });
+}
+
+async function performTaskAssign(btn) {
+  if (!selectedAssigneeId) {
+    actionMsg("Please select a member.", "error");
+    return;
+  }
+
+  btn.disabled = true;
+
+  const { error } = await supabase
+    .from("workspace_tasks")
+    .update({ assigned_to: selectedAssigneeId })
+    .eq("id", taskIdToAssign);
+
+  btn.disabled = false;
+
+  if (error) {
+    console.error(error);
+    actionMsg("Failed to assign task.", "error");
+    return;
+  }
+
+  notifyUser({
+    workspaceId: currentWorkspace.id,
+    receiverUserId: selectedAssigneeId,
+    actorId: user.id,
+    type: "task_assigned",
+    entityId: taskIdToAssign,
+    entityType: "task",
+  });
+
+  // Keep in-memory workspace data in sync so a re-render (e.g. switching
+  // nav sections and back) shows the new assignee without a full reload.
+  const taskRecord = currentWorkspace.workspace_tasks.find(
+    (t) => String(t.id) === String(taskIdToAssign),
+  );
+  if (taskRecord) {
+    const assignee = loadedMembers.find(
+      (m) => String(m.profiles.id) === String(selectedAssigneeId),
+    );
+    taskRecord.assigned_to = selectedAssigneeId;
+    taskRecord.profiles = assignee?.profiles || null;
+  }
+
+  actionMsg("Task assigned!", "success");
+  closeModal();
+
+  taskIdToAssign = null;
+  selectedAssigneeId = null;
+
+  // Re-render the currently visible task section so the assigned card
+  // updates (Assign button -> Ping button) without needing a page reload.
+  const activeContainer = document.getElementById(
+    "adminWorkspaceDashboardContent",
+  );
+  if (activeContainer) {
+    activeContainer.innerHTML = "";
+    const inProgress = currentWorkspace.workspace_tasks.filter(
+      (ts) => ts.status === "in progress",
+    );
+    loadTasks("Created Tasks", inProgress, activeContainer);
+  }
 }
 
 async function renderSection(section, workspace, container) {
@@ -845,13 +966,13 @@ async function handleDocUpload(uploadBtn, fileInput, workspace, container) {
       const data = await res.json();
 
       if (!res.ok) {
-        showUploadStatus(data.error || "Upload failed", true);
+        showUploadStatus(data.error || "Upload failed", true, container);
         uploadBtn.disabled = false;
         uploadBtn.classList.remove("disabled");
         return;
       }
 
-      showUploadStatus("Upload successful");
+      showUploadStatus("Upload successful", false, container);
       uploadBtn.disabled = false;
       uploadBtn.classList.remove("disabled");
 
@@ -859,7 +980,7 @@ async function handleDocUpload(uploadBtn, fileInput, workspace, container) {
       renderSection("documents", workspace, container);
     } catch (err) {
       console.error(err);
-      showUploadStatus(`Unexpected error: ${err}`, true);
+      showUploadStatus(`Unexpected error: ${err}`, true, container);
       uploadBtn.disabled = false;
       uploadBtn.classList.remove("disabled");
     } finally {
@@ -1247,6 +1368,39 @@ export function loadTasks(title, tasks, container) {
     taskMeta.classList.add("taskMeta");
     taskMeta.append(assignee, assignedOn);
 
+    // --- Menu button: toggles the actions container's hidden attribute ---
+    // Scoped per-card via closest()/querySelector() rather than a global id,
+    // since id-based `elementId.hidden ^= 1` only works for a page-unique id —
+    // every task card needs its own independent toggle.
+    const menuBtn = document.createElement("button");
+    menuBtn.type = "button";
+    menuBtn.classList.add("actionBtn", "taskMenuBtn");
+    menuBtn.title = "Task actions";
+    menuBtn.setAttribute("aria-label", "Task actions");
+    menuBtn.innerHTML = `
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="5" r="1.5" />
+        <circle cx="12" cy="12" r="1.5" />
+        <circle cx="12" cy="19" r="1.5" />
+      </svg>
+    `;
+
+    menuBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      // Close any other open menu first, so only one is visible at a time.
+      divGrid
+        .querySelectorAll(".taskActionsMenu:not([hidden])")
+        .forEach((el) => {
+          if (el !== actionsMenu) el.hidden = true;
+        });
+      actionsMenu.hidden = !actionsMenu.hidden;
+    });
+
+    // --- Actions container: hidden by default, holds View/Assign/Ping ---
+    const actionsMenu = document.createElement("div");
+    actionsMenu.classList.add("taskActionsMenu");
+    actionsMenu.hidden = true;
+
     const viewBtn = document.createElement("button");
     viewBtn.type = "button";
     viewBtn.classList.add("btn", "btn-primary", "btn-sm");
@@ -1257,34 +1411,73 @@ export function loadTasks(title, tasks, container) {
       window.location.href = `task-view?task=${tsk.id}`;
     });
 
-    const pingBtn = document.createElement("button");
-    pingBtn.type = "button";
-    pingBtn.classList.add("btn", "btn-secondary", "btn-sm");
-    pingBtn.textContent = "Ping Assignee";
-    pingBtn.title =
-      "Pinging assignee will send a notification to them asking for update on the task.";
+    actionsMenu.append(viewBtn);
 
-    pingBtn.addEventListener("click", async (e) => {
+    details.addEventListener("click", (e) => {
       e.stopPropagation();
-
-      await notifyUser({
-        workspaceId: currentWorkspace.id,
-        receiverUserId: tsk.profiles.id,
-        actorId: user.id,
-        type: "task_ping",
-        entityId: tsk.id,
-        entityType: "task",
-      });
-
-      actionMsg("Assignee pinged!", "success");
     });
 
+    taskCard.append(taskTitle, taskMeta, menuBtn, details, actionsMenu);
 
-    taskCard.append(taskTitle, taskMeta, details, viewBtn, pingBtn);
+    // Unassigned tasks get an "Assign" button; assigned tasks keep "Ping Assignee".
+    if (!tsk.assigned_to || !tsk.profiles) {
+      const assignBtn = document.createElement("button");
+      assignBtn.type = "button";
+      assignBtn.classList.add("btn", "btn-secondary", "assignBtn", "btn-sm");
+      assignBtn.textContent = "Assign";
+      // No inline listener here — handled via attachAssignTaskEvent's
+      // delegated listener on the grid container.
+
+      actionsMenu.append(assignBtn);
+    } else {
+      const pingBtn = document.createElement("button");
+      pingBtn.type = "button";
+      pingBtn.classList.add("btn", "btn-secondary", "btn-sm");
+      pingBtn.textContent = "Ping Assignee";
+      pingBtn.title =
+        "Pinging assignee will send a notification to them asking for update on the task.";
+
+      pingBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+
+        await notifyUser({
+          workspaceId: currentWorkspace.id,
+          receiverUserId: tsk.profiles.id,
+          actorId: user.id,
+          type: "task_ping",
+          entityId: tsk.id,
+          entityType: "task",
+        });
+
+        actionMsg("Assignee pinged!", "success");
+      });
+
+      actionsMenu.append(pingBtn);
+    }
+
     divGrid.prepend(taskCard);
   });
 
+  // Close any open task menu when clicking anywhere outside it.
+  document.addEventListener("click", (e) => {
+    if (
+      e.target.closest(".taskMenuBtn") ||
+      e.target.closest(".taskActionsMenu")
+    ) {
+      return;
+    }
+    divGrid
+      .querySelectorAll(".taskActionsMenu:not([hidden])")
+      .forEach((el) => (el.hidden = true));
+  });
+
   container.append(section);
+
+  // Registered once per loadTasks() call. loadTasks() is only called from
+  // initAdminWorkspaceData()/renderSection() (section switches), not from a
+  // tight re-render loop, so this doesn't accumulate the way the earlier
+  // personalTasks.js bug did — but revisit if that ever changes.
+  attachAssignTaskEvent(divGrid);
 }
 
 function canRemoveMember(mbr, adminActions, assignTaskBtn, removeMemberBtn) {

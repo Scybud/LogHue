@@ -577,3 +577,30 @@ button.dropdown-item {
      div.showFlex{
         display: flex;
       }
+
+
+      
+.workspaceOption {
+  padding: var(--space-sm, 10px) var(--space-md);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md, 6px);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.workspaceOption:hover {
+  background: var(--surface-primary);
+}
+
+.workspaceOption.selected {
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+  color: var(--surface-primary);
+  font-weight: 600;
+}
+
+/* Optional: a checkmark on the selected item, remove if you don't want it */
+.workspaceOption.selected::after {
+  content: "✓";
+  float: right;
+}

@@ -285,14 +285,26 @@ h3 {
 }
 
 .taskCard {
+  position: relative;
   background: var(--card-bg);
   padding: var(--space-md);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
 }
 
+.taskMenuBtn {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  width: fit-content;
+}
+.taskMenuBtn:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
 .taskTitle {
   font-size: 1.1rem;
+  margin-right: calc(var(--space-lg) + 4px);
   margin-bottom: calc(var(--space-sm) - 2px);
 }
 
@@ -301,7 +313,13 @@ h3 {
   opacity: 0.8;
   margin-bottom: calc(var(--space-sm) + 2px);
 }
-
+.taskActionsMenu {
+  animation: fadeIn 0.4s ease;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 .btn-sm {
   padding: var(--space-sm) calc(var(--space-sm) + 4px);
   font-size: 0.85rem;
