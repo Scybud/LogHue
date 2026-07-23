@@ -8,7 +8,7 @@ import {
   openLogPersonalTaskModal,
   confirmAction,
 } from "../utils/modals.js";
-import { setLoading } from "../ui.js";
+import { setLoading, closeModal } from "../ui.js";
 import {
   loadComponent,
   createEmptyState,
@@ -21,17 +21,18 @@ import { formatDateTimeRelatively } from "../utils/time.js";
 // ---------------------------------------------------------
 let personalCreatedTasks = null;
 let loggedTasksCount = null;
-  let selectedWorkspaceId = null;
-  let taskIdToDuplicate = null; // set when duplicateBtn is clicked, before the modal opens
+let selectedWorkspaceId = null;
+let taskIdToDuplicate = null; // set when duplicateBtn is clicked, before the modal opens
+let user = null;
 
 export let savedTaskDetails = []; // exported for other modules
-let user = null;
+
 // ---------------------------------------------------------
 // Initialization
 // ---------------------------------------------------------
 export async function initPersonalTasks() {
   await sessionReady;
-   user = sessionState.user;
+  user = sessionState.user;
   if (!user) return;
 
   personalCreatedTasks = document.getElementById("personalCreatedTasks");
@@ -60,6 +61,7 @@ export async function initPersonalTasks() {
   checkIfEmpty();
   attachDeleteTaskEvent(personalCreatedTasks, user.id);
   attachToggleCompleteEvent(personalCreatedTasks);
+  attachDuplicateTaskEvent(personalCreatedTasks, user.id);
   openLogPersonalTaskModal();
 }
 
@@ -234,20 +236,11 @@ export function renderExistingTasks() {
 
   // Append groups to main container
   personalCreatedTasks.append(incompleteGroup.wrapper, completedGroup.wrapper);
-
-
-  personalCreatedTasks.addEventListener("click", async (e) => {
-    const btn = e.target.closest(".duplicateBtn");
-    if (!btn) return;
-taskIdToDuplicate = btn.closest(".taskCard").dataset.id;
-
-    await loadComponent("../components/modals/duplicate-task", "modalContainer");
-    const workspaceListContainer = document.getElementById(
-      "workspaceListContainer"
-    );
-
-    await duplicateTask(workspaceListContainer, user.id);
-  });
+  // NOTE: the duplicateBtn click listener used to live here, which meant a
+  // fresh listener stacked on top of every prior one each time this function
+  // ran (e.g. every checkbox toggle calls renderExistingTasks()). Moved to
+  // attachDuplicateTaskEvent(), registered once from initPersonalTasks(),
+  // matching the same pattern as attachDeleteTaskEvent / attachToggleCompleteEvent.
 }
 
 // ---------------------------------------------------------
@@ -272,16 +265,10 @@ export function attachToggleCompleteEvent(container) {
     if (error) {
       console.error(error);
       actionMsg("Failed to update task", "error");
-      // Roll back the checkbox visually since the DB write failed —
-      // otherwise the UI shows a state that was never actually saved.
       checkbox.checked = previousChecked;
       return;
     }
 
-    // Update the in-memory record so renderExistingTasks() sorts this task
-    // into the right group and recomputes both group counts correctly.
-    // Toggling the .completed class directly (as before) left savedTaskDetails
-    // stale, causing the card to snap back to its old group on the next re-render.
     const taskRecord = savedTaskDetails.find(
       (t) => String(t.id) === String(taskId),
     );
@@ -339,6 +326,123 @@ async function performTaskDelete(btn, userId) {
   checkIfEmpty();
 }
 
+// ---------------------------------------------------------
+// Duplicate Task (Delegated)
+// ---------------------------------------------------------
+export function attachDuplicateTaskEvent(container, userId) {
+  if (!container) return;
+
+  // Registered once here instead of inside renderExistingTasks() — see the
+  // NOTE in that function for why that mattered.
+  container.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".duplicateBtn");
+    if (!btn) return;
+
+    taskIdToDuplicate = btn.closest(".taskCard").dataset.id;
+
+    await loadComponent(
+      "../components/modals/duplicate-task",
+      "modalContainer",
+    );
+
+    const workspaceListContainer = document.getElementById(
+      "workspaceListContainer",
+    );
+
+    await populateWorkspaceList(workspaceListContainer, userId);
+
+    // The modal's content is replaced fresh by loadComponent() on every open,
+    // so #duplicateTaskToWorkspaceBtn is a new DOM node each time — safe to
+    // attach a listener here without the stacking issue this file had before.
+    const confirmBtn = document.getElementById("duplicateTaskToWorkspaceBtn");
+    if (confirmBtn) {
+      confirmBtn.addEventListener("click", async (evt) => {
+        evt.preventDefault(); // button is inside a <form>, guard against submit
+        await performTaskDuplicate(confirmBtn, userId);
+      });
+    }
+  });
+}
+
+async function performTaskDuplicate(btn, userId) {
+  if (!selectedWorkspaceId) {
+    actionMsg("Please select a workspace.", "error");
+    return;
+  }
+
+  const task = savedTaskDetails.find(
+    (t) => String(t.id) === String(taskIdToDuplicate),
+  );
+
+  if (!task) {
+    actionMsg("Task not found.", "error");
+    return;
+  }
+
+  btn.disabled = true;
+
+  // Field mapping: personal_tasks (name/description) -> workspace_tasks
+  // (title/description/status/assigned_to/workspace_id/created_by), matching
+  // the shape used in attachCreateTaskEvent for workspace task creation.
+  const { error } = await supabase.from("workspace_tasks").insert({
+    workspace_id: selectedWorkspaceId,
+    created_by: userId,
+    title: task.name,
+    description: task.description || null,
+    status: "in progress",
+    assigned_to: null,
+  });
+
+  btn.disabled = false;
+
+  if (error) {
+    console.error(error);
+    actionMsg("Failed to duplicate task.", "error");
+    return;
+  }
+
+  actionMsg("Task duplicated to workspace!", "success");
+  closeModal();
+
+  taskIdToDuplicate = null;
+  selectedWorkspaceId = null;
+}
+
+async function populateWorkspaceList(container, userId) {
+  const { data, error } = await supabase
+    .from("workspace_members")
+    .select("role, workspaces: workspace_id (id, name)")
+    .eq("user_id", userId);
+
+  if (error) {
+    console.error(error);
+    actionMsg("Failed to load workspaces", "error");
+    return;
+  }
+
+  container.innerHTML = "";
+  selectedWorkspaceId = null; // reset each time the modal opens
+
+  data
+    .filter((m) => m.workspaces) // guard against orphaned membership rows
+    .forEach((m) => {
+      const item = document.createElement("div");
+      item.classList.add("workspaceOption");
+      item.dataset.workspaceId = m.workspaces.id;
+      item.textContent = m.workspaces.name;
+
+      item.addEventListener("click", () => {
+        container
+          .querySelectorAll(".workspaceOption.selected")
+          .forEach((el) => el.classList.remove("selected"));
+        item.classList.add("selected");
+        selectedWorkspaceId = m.workspaces.id;
+      });
+
+      container.append(item);
+    });
+}
+
 function createCollapsibleGroup(title, count, isOpen = true) {
   const wrapper = document.createElement("div");
   wrapper.classList.add("collapsibleGroup");
@@ -368,48 +472,4 @@ function createCollapsibleGroup(title, count, isOpen = true) {
 
   wrapper.append(header, body);
   return { wrapper, body };
-}
-
-
-async function duplicateTask(container, userId) {
-
-  async function populateWorkspaceList(container, userId) {
-    const { data, error } = await supabase
-      .from("workspace_members")
-      .select("role, workspaces: workspace_id (id, name)")
-      .eq("user_id", userId);
-
-    if (error) {
-      console.error(error);
-      actionMsg("Failed to load workspaces", "error");
-      return;
-    }
-
-    
-    container.innerHTML = "";
-    selectedWorkspaceId = null; // reset each time the modal opens
-
-    data
-      .filter((m) => m.workspaces) // guard against orphaned membership rows
-      .forEach((m) => {
-        const item = document.createElement("div");
-        item.classList.add("workspaceOption");
-        item.dataset.workspaceId = m.workspaces.id;
-        item.textContent = m.workspaces.name;
-
-        item.addEventListener("click", () => {
-          // Clear previous selection, then mark this one
-          container
-            .querySelectorAll(".workspaceOption.selected")
-            .forEach((el) => el.classList.remove("selected"));
-          item.classList.add("selected");
-          selectedWorkspaceId = m.workspaces.id;
-        });
-
-        container.append(item);
-      });
-  }
-
-  await populateWorkspaceList(container, userId);
-
 }

@@ -260,32 +260,6 @@ button.danger {
   max-height: fit-content;
   height: 120px;
 }
-div.duplicateTaskContainer {
-  position: relative;
-  width: 100%;
-  max-width: 600px;
-  margin: 0 var(--space-md);
-}
-div.duplicateTaskContainer:hover {
-  transform: translate(0);
-}
-.workspaceListContainer {
-  margin-top: var(--space-md);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-.workspaceOption {
-  cursor: pointer;
-  border: 1px solid var(--border-primary);
-  background: var(--surface-primary);
-  padding: var(--space-sm);
-  border-radius: var(--radius-sm);
-  transition: border-color 0.2s ease;
-}
-.workspaceOption:hover {
-  border-color: var(--border-secondary);
-}
 
 /*CARDS*/
 .card {
