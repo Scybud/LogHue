@@ -67,7 +67,9 @@ input[type="number"]::-webkit-inner-spin-button:hover {
   width: 95%;
   max-width: 500px;
 }
-
+.form h2 {
+  margin-bottom: var(--space-md);
+}
 /*FORM LABEL*/
 label {
   font-size: 0.9rem;
