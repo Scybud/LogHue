@@ -34,7 +34,7 @@ export function handleConcentEvents() {
   if (customizeTracking) {
     customizeTracking.addEventListener("click", async () => {
       await loadComponent(
-        "https://app.loghue.com/pages/components/modals/cookies-customize",
+        "https://app.loghue.com/components/modals/cookies-customize",
         "modalContainer",
       );
 
@@ -93,7 +93,7 @@ export function handleConcentEvents() {
   if (customizeBtn) {
     customizeBtn.addEventListener("click", async () => {
       await loadComponent(
-        "https://app.loghue.com/pages/components/modals/cookies-customize",
+        "https://app.loghue.com/components/modals/cookies-customize",
         "modalContainer",
       );
 
