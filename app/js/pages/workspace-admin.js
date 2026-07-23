@@ -128,7 +128,7 @@ export async function initAdminWorkspaceData() {
   const workspaceName = document.getElementById("workspaceName");
 
   if (workspace) {
-    document.title = workspace.name + "" + "| LogHue";
+    document.title = workspace.name + " " + "| LogHue";
   }
 
   if (workspace && workspaceName) {
@@ -1217,13 +1217,8 @@ export function loadTasks(title, tasks, container) {
 
   tasks.forEach((tsk) => {
     const taskCard = document.createElement("div");
-    taskCard.classList.add("card", "taskCard");
+    taskCard.classList.add("taskCard");
     taskCard.dataset.id = tsk.id; // IMPORTANT
-
-    // Make card clickable
-    taskCard.addEventListener("click", () => {
-      window.location.href = `task-view?task=${tsk.id}`;
-    });
 
     const taskTitle = document.createElement("h3");
     taskTitle.classList.add("taskTitle");
@@ -1254,7 +1249,7 @@ export function loadTasks(title, tasks, container) {
 
     const viewBtn = document.createElement("button");
     viewBtn.type = "button";
-    viewBtn.classList.add("btn", "btn-primary");
+    viewBtn.classList.add("btn", "btn-primary", "btn-sm");
     viewBtn.textContent = "View Task";
 
     viewBtn.addEventListener("click", (e) => {
@@ -1264,7 +1259,7 @@ export function loadTasks(title, tasks, container) {
 
     const pingBtn = document.createElement("button");
     pingBtn.type = "button";
-    pingBtn.classList.add("btn", "btn-secondary");
+    pingBtn.classList.add("btn", "btn-secondary", "btn-sm");
     pingBtn.textContent = "Ping Assignee";
     pingBtn.title =
       "Pinging assignee will send a notification to them asking for update on the task.";
@@ -1284,9 +1279,6 @@ export function loadTasks(title, tasks, container) {
       actionMsg("Assignee pinged!", "success");
     });
 
-    details.addEventListener("click", (e) => {
-      e.stopPropagation();
-    });
 
     taskCard.append(taskTitle, taskMeta, details, viewBtn, pingBtn);
     divGrid.prepend(taskCard);

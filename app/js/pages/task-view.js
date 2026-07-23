@@ -2,7 +2,7 @@ import { supabase } from "../supabase.js";
 import { actionMsg } from "../utils/modals.js";
 import { notifyUser } from "../utils/notifications.js";
 import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
-import { formatDateTime, loadActivities } from "./workspace-admin.js";
+import { loadActivities } from "./workspace-admin.js";
 import { formatDateTimeRelatively } from "../utils/time.js";
 
 let currentTask = null;

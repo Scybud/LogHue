@@ -851,7 +851,7 @@ export function loadAssignedTasks(sectionTitle, tasks, container) {
 
   tasks.forEach((tsk) => {
     const card = document.createElement("div");
-    card.classList.add("card", "taskCard");
+    card.classList.add("taskCard");
 
     const taskTitle = document.createElement("h3");
     taskTitle.textContent = tsk.title;
@@ -920,7 +920,7 @@ export function loadAllTasks(tasks, container) {
 
   tasks.forEach((tsk) => {
     const card = document.createElement("div");
-    card.classList.add("card", "taskCard");
+    card.classList.add("taskCard");
 
     const taskTitle = document.createElement("h3");
     taskTitle.textContent = tsk.title;
