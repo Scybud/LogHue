@@ -10,6 +10,7 @@ import {
 import { sessionState } from "../session.js";
 import { navDropdowns } from "../components/sidebar.js";
 import { showUploadStatus } from "../shared/workspace/utils.js";
+import { formatDateTime } from "../utils/time.js";
 
 export let currentWorkspace = null;
 export let loadedMembers = [];
@@ -1093,16 +1094,3 @@ export function loadActivities(activities, container) {
   container.append(section);
 }
 
-// -----------------------------
-// UTIL
-// -----------------------------
-export function formatDateTime(isoString) {
-  const date = new Date(isoString);
-  return date.toLocaleString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}

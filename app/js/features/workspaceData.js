@@ -5,6 +5,7 @@ import { sessionState, sessionReady } from "../session.js";
 import { confirmAction, actionMsg } from "../../js/utils/modals.js";
 import { createDropdown } from "../ui.js";
 import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
+import { formatDateTime } from "../utils/time.js";
 
 if (window.__workspaceInit) {
   console.warn("workspaceData.js already initialized");
@@ -232,16 +233,6 @@ function checkIfEmpty() {
   }
 }
 
-export function formatDateTime(timestamp) {
-  const date = new Date(timestamp);
-  return date.toLocaleString("en-US", {
-    month: "long", // February
-    day: "numeric", // 11
-    year: "numeric", // 2026
-    hour: "2-digit", // 12
-    minute: "2-digit", // 27
-  });
-}
 
 async function attachCreateWorkspaceEvent(container, workspaces) {
   if (!createWorkspaceBtn) return;

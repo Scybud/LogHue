@@ -18,3 +18,14 @@ export function formatDateTimeRelatively(timestamp) {
   if (months < 12) return `${months} month${months !== 1 ? "s" : ""} ago`;
   return `${years} year${years !== 1 ? "s" : ""} ago`;
 }
+
+export function formatDateTime(isoString) {
+  const date = new Date(isoString);
+  return date.toLocaleString("en-US", {
+    month: "long", // February
+    day: "numeric", // 11
+    year: "numeric", // 2026
+    hour: "2-digit", // 12
+    minute: "2-digit", // 27
+  });
+}

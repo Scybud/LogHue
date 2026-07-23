@@ -21,6 +21,7 @@ import {
 } from "../features/workspaceData.js";
 import { notifyUser } from "../utils/notifications.js";
 import { showUploadStatus } from "../shared/workspace/utils.js";
+import { formatDateTime } from "../utils/time.js";
 
 export let currentWorkspace = null;
 export let loadedMembers = [];
@@ -1478,17 +1479,6 @@ function loadMembers(members, container) {
   assignMemberTask();
   //ATTACH MEMBER REMOVAL LOGIC FOR EACH MEMBER CARD'
   removeMember();
-}
-
-export function formatDateTime(isoString) {
-  const date = new Date(isoString);
-  return date.toLocaleString("en-US", {
-    month: "long", // February
-    day: "numeric", // 11
-    year: "numeric", // 2026
-    hour: "2-digit", // 12
-    minute: "2-digit", // 27
-  });
 }
 
 // -----------------------------
