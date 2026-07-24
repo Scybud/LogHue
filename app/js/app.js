@@ -29,20 +29,12 @@ window.addEventListener("DOMContentLoaded", async () => {
   
   await initCommandPalette();
   
-  // Load correct sidebar based on page
-  if (path.includes("workspace-dashboard-admin")) {
-    await loadComponent(
-      "../components/sidebar-admin",
-      "workspaceSidebarContainer",
-    );
-  }
-
-  if (path.includes("workspace-dashboard-member")) {
-    await loadComponent(
-      "../components/sidebar-member",
-      "memberSidebarContainer",
-    );
-  }
+if (path.includes("workspace")) {
+  await loadComponent(
+    "../components/workspace-sidebar", 
+    "workspaceSidebarContainer",
+  );
+}
 
   // General sidebar is safe everywhere
   await loadComponent(
