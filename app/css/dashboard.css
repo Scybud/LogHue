@@ -1,9 +1,34 @@
-
+.main {
+  position: relative;
+  overflow-x: hidden;
+}
+.orb {
+        position: absolute;
+        width: 800px;
+        height: 800px;
+        border-radius: 50%;
+        background: var(--gradient);
+        filter: blur(140px);
+        opacity: 0.14;
+        top: -150px;
+        pointer-events: none;
+        animation: beam 2s ease;
+      }
+@keyframes beam {
+  from {
+    width: 0;
+    height: 0;
+  } to {
+    width: 800px;
+    height: 800px;
+  }
+}
 .dashboard-section {
   border: none;
   display: flex;
   flex-direction: column;
   min-height: 100%;
+  max-width: 100%;
   align-items: center;
   justify-content: center;
   transition: transform 1s ease, opacity 0.5s ease;
