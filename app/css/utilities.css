@@ -841,9 +841,9 @@ section.isLoading::before,
   display: grid;
 grid-template-columns: 1fr minmax(50px, 50px) minmax(50px, 100px) minmax(50px, 60px);  
 gap: var(--space-md);
-  padding: 14px 16px;
+  padding: var(--space-sm) var(--space-md);
   background: var(--lh-surface-2);
-  border: 1px solid var(--lh-border);
+  border-bottom: 1px solid var(--border-primary);
   border-radius: 8px;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
@@ -853,11 +853,12 @@ display: flex;
 flex-wrap: wrap;
 }
 .docAction {
+    padding: var(--space-sm);
   max-width: fit-content;
 }
 }
 .documentItem:hover {
-  background: var(--active);
+  background: var(--bg-secondary);
   border-color: var(--primary-light);
 }
 
@@ -889,18 +890,25 @@ flex-wrap: wrap;
 }
 
 /* Download Button */
-.docAction {
-  padding: 6px 12px;
+.documentItem .docAction {
+  margin: 0;
+  padding: var(--space-sm);
   border-radius: 6px;
-  background: var(--lh-surface-4);
-  border: 1px solid var(--border);
-  color: var(--lh-text-strong);
+  color: var(--text-primary);
+  background: var(--surface-primary);
+  border: 1px solid var(--border-primary);
   cursor: pointer;
   transition: background 0.2s ease, border 0.2s ease;
 }
-
+.docAction.danger {
+  color: #000;
+  background: var(--danger);
+}
+.docAction.danger:hover {
+  background: rgb(253, 45, 45);
+}
 .docAction:hover {
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--border-secondary);
 }
 
 .disabled {

@@ -33,7 +33,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   if (path.includes("workspace-dashboard-admin")) {
     await loadComponent(
       "../components/sidebar-admin",
-      "adminSidebarContainer",
+      "workspaceSidebarContainer",
     );
   }
 

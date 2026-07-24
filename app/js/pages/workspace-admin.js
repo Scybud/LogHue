@@ -23,6 +23,11 @@ import { notifyUser } from "../utils/notifications.js";
 import { showUploadStatus } from "../shared/workspace/utils.js";
 import { formatDateTime } from "../utils/time.js";
 import { loadApiKeys } from "../shared/workspace/api.js";
+import {
+  checkWorkspaceAccess,
+  canRemoveMember as canRemoveMemberPermission,
+  PERMISSIONS,
+} from "../shared/workspace/permissions.js";
 
 export let currentWorkspace = null;
 export let loadedMembers = [];
@@ -44,7 +49,12 @@ document.addEventListener("click", async (e) => {
   const btn = e.target.closest(".navBtn");
   if (!btn) return;
 
-  container = document.getElementById("adminWorkspaceDashboardContent");
+   if (!window.workspaceReady || !currentWorkspace) {
+     actionMsg("Workspace is still loading...", "warning");
+     return;
+   }
+
+  container = document.getElementById("workspaceDashboardContent");
   const section = btn.dataset.section;
 
   setLoading(true, container);
@@ -60,21 +70,25 @@ document.addEventListener("click", async (e) => {
 });
 
 //CHECK ADMIN ACCESS
+// Thin wrapper around the shared checkWorkspaceAccess() — keeps the message/
+// redirect specific to this page (member's version redirects elsewhere),
+// while the actual role lookup now lives in one shared place.
 async function checkAdminAccess(workspaceId, user) {
-  const { data: membership, error } = await supabase
-    .from("workspace_members")
-    .select("role")
-    .eq("workspace_id", workspaceId)
-    .eq("user_id", user.id)
-    .single();
+  const role = await checkWorkspaceAccess(workspaceId, user, [
+    "admin",
+    "owner",
+  ]);
 
-  if (error || (membership.role !== "admin" && membership.role !== "owner")) {
+  if (!role) {
     actionMsg(
       "Access Denied: You do not have admin permissions for this workspace.",
       "error",
     );
     window.location.href = "all-workspaces"; // Send them to their main list
+    return null;
   }
+
+  return role;
 }
 
 export async function initAdminWorkspaceData() {
@@ -95,10 +109,10 @@ export async function initAdminWorkspaceData() {
     return;
   }
 
-  //SECURE ADMIN WORKSPACE BY CHECKING FOR ADMIN ROLE
+  // SECURE ADMIN WORKSPACE BY CHECKING FOR ADMIN ROLE
   await checkAdminAccess(workspaceId, user);
 
-  const container = document.getElementById("adminWorkspaceDashboardContent");
+  const container = document.getElementById("workspaceDashboardContent");
   setLoading(true, container);
 
   //Load data
@@ -111,6 +125,8 @@ export async function initAdminWorkspaceData() {
     .single();
 
   currentWorkspace = workspace;
+workspace.workspace_tasks = workspace.workspace_tasks || [];
+workspace.workspace_members = workspace.workspace_members || [];
 
   if (error) {
     console.error(error);
@@ -120,6 +136,11 @@ export async function initAdminWorkspaceData() {
     return;
   }
 
+  if (!workspace) {
+    actionMsg("Workspace not found.", "error");
+    return; // <-- REQUIRED
+  }
+
   if (!workspace || workspaceId.length < 10 || workspace.status === "closed") {
     actionMsg("This workspace has been archived", "warning");
     setTimeout(() => {
@@ -127,6 +148,8 @@ export async function initAdminWorkspaceData() {
     }, 1500);
     return;
   }
+
+  window.workspaceReady = true;
 
   const workspaceName = document.getElementById("workspaceName");
 
@@ -441,9 +464,7 @@ async function performTaskAssign(btn) {
 
   // Re-render the currently visible task section so the assigned card
   // updates (Assign button -> Ping button) without needing a page reload.
-  const activeContainer = document.getElementById(
-    "adminWorkspaceDashboardContent",
-  );
+  const activeContainer = document.getElementById("workspaceDashboardContent");
   if (activeContainer) {
     activeContainer.innerHTML = "";
     const inProgress = currentWorkspace.workspace_tasks.filter(
@@ -454,6 +475,12 @@ async function performTaskAssign(btn) {
 }
 
 async function renderSection(section, workspace, container) {
+  if (!workspace) {
+    console.warn("renderSection called before workspace loaded");
+    actionMsg("Workspace is still loading...", "warning");
+    return;
+  }
+
   if (!container) return;
   container.innerHTML = "";
 
@@ -709,13 +736,22 @@ async function loadSettings(container, workspace, currentUserId) {
   dangerContainer.classList.add("danger");
   dangerContainer.append(containerTitle, dangerContainerInner);
 
-  if (me?.role === "owner") {
+  const myPermissions = PERMISSIONS[me?.role] || {};
+
+  if (myPermissions.transferOwnership) {
     transferCard.querySelector("#transferBtn").onclick = async () => {
       await openTransferOwnershipModal(workspace);
     };
+  }
+
+  // Both transferOwnership and deleteWorkspace happen to be owner-only today
+  // (see PERMISSIONS table), so the whole danger zone still shows as one
+  // unit for now — but each card is gated on its own capability rather than
+  // role name, so this keeps working correctly if that ever changes.
+  if (myPermissions.transferOwnership || myPermissions.deleteWorkspace) {
     section.append(sectionHeader, infoCard, apiCard, dangerContainer);
   } else {
-    // no transfer card for non‑owners
+    // no danger zone for members
     section.append(sectionHeader, infoCard, apiCard);
   }
 
@@ -1482,27 +1518,19 @@ export function loadTasks(title, tasks, container) {
 
 function canRemoveMember(mbr, adminActions, assignTaskBtn, removeMemberBtn) {
   const isSelf = mbr.user_id === user.id;
-  const isOwner = mbr.role === "owner";
-  const isAdmin = mbr.role === "admin";
-  const isMember = mbr.role === "member";
 
   const currentUser = loadedMembers.find(
     (m) => String(m.profiles.id) === String(user.id),
   );
   const currentUserRole = currentUser?.role;
 
-  const currentUserIsOwner = currentUserRole === "owner";
-  const currentUserIsAdmin = currentUserRole === "admin";
-
-  let canRemove = false;
-
-  if (!isSelf && !isOwner) {
-    if (currentUserIsOwner) {
-      canRemove = true; // owner removes anyone except owner/self
-    } else if (currentUserIsAdmin && isMember) {
-      canRemove = true; // admin removes members only
-    }
-  }
+  // Logic now lives in shared/workspace/permissions.js so workspace-member.js
+  // can use the exact same rules once member-management UI is added there.
+  const canRemove = canRemoveMemberPermission(
+    currentUserRole,
+    mbr.role,
+    isSelf,
+  );
 
   // UI rendering
   if (canRemove) {
