@@ -5,7 +5,7 @@ import { sessionState, sessionReady } from "../session.js";
 import { confirmAction, actionMsg } from "../../js/utils/modals.js";
 import { createDropdown } from "../ui.js";
 import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
-import { formatDateTime } from "../utils/time.js";
+import { formatDateTime, formatDateTimeRelatively } from "../utils/time.js";
 
 if (window.__workspaceInit) {
   console.warn("workspaceData.js already initialized");
@@ -26,20 +26,20 @@ function getWorkspaceDropdown(ws) {
       { label: "Delete ", action: () => deleteWorkspace(ws.id) },
       { label: "Archive Workspace", action: () => archiveWorkspace(ws.id) },
       { label: "Edit Workspace", action: () => editWorkspace(ws, ws.id) },
-      { label: "Open Workspace", action: () => openWorkspace(ws.id, ws.role) },
+      { label: "Open Workspace", action: () => openWorkspace(ws.id) },
     ]);
   }
   if (ws.role === "admin") {
     return createDropdown([
       { label: "Archive Workspace", action: () => archiveWorkspace(ws.id) },
       { label: "Edit Workspace", action: () => editWorkspace(ws, ws.id) },
-      { label: "Open Workspace", action: () => openWorkspace(ws.id, ws.role) },
+      { label: "Open Workspace", action: () => openWorkspace(ws.id) },
     ]);
   }
   if (ws.role === "member") {
     return createDropdown([
       { label: "Leave Workspace", action: () => leaveWorkspace(ws.id) },
-      { label: "Open Workspace", action: () => openWorkspace(ws.id, ws.role) },
+      { label: "Open Workspace", action: () => openWorkspace(ws.id) },
     ]);
   }
 
@@ -367,7 +367,7 @@ function updateworkspaceCount() {
 
 export function createWorkspaceCardElement(ws) {
   const formattedActivity = ws.last_activity
-    ? formatDateTime(ws.last_activity)
+    ? formatDateTimeRelatively(ws.last_activity)
     : "No recent activity";
 
   const workspaceCard = document.createElement("div");
@@ -476,11 +476,9 @@ function attachOpenWorkspaceClickEvent() {
     const wsId = btn.dataset.id;
     const role = btn.dataset.role;
 
-    if (role === "admin" || role === "owner") {
-      window.location.href = `workspace-dashboard-admin?ws=${wsId}`;
-    } else {
-      window.location.href = `workspace-dashboard-member?ws=${wsId}`;
-    }
+  
+      window.location.href = `workspace?ws=${wsId}`;
+    
   });
 }
 
@@ -606,12 +604,10 @@ export async function editWorkspace(ws, id) {
   });
 }
 
-function openWorkspace(wsId, wsRole) {
-  if (wsRole === "admin" || wsRole === "owner") {
-    window.location.href = `workspace-dashboard-admin?ws=${wsId}`;
-  } else {
-    window.location.href = `workspace-dashboard-member?ws=${wsId}`;
-  }
+function openWorkspace(wsId) {
+  
+    window.location.href = `workspace?ws=${wsId}`;
+  
 }
 
 //EXPORT PROMISE WHEN WORKSPACE IS READY

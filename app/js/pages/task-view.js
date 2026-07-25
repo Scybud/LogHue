@@ -2,7 +2,7 @@ import { supabase } from "../supabase.js";
 import { actionMsg } from "../utils/modals.js";
 import { notifyUser } from "../utils/notifications.js";
 import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
-import { loadActivities } from "./workspace-admin.js";
+import { loadActivities } from "./workspace/activities.js";
 import { formatDateTimeRelatively } from "../utils/time.js";
 
 let currentTask = null;
@@ -169,9 +169,7 @@ function loadSidebar() {
 
  <nav class="sidebarNav">
  <!-- WORKSPACE -->
- ${
-   isAdmin
-     ? `<a href="workspace-dashboard-admin?ws=${currentWorkspace.id}" class="navBtn" data-section="index" id="dashboardLink">
+ <a href="workspace?ws=${currentWorkspace.id}" class="navBtn" data-section="index" id="dashboardLink">
       <span class="navIcon">
         <!-- Back  Icon -->
         <svg
@@ -191,29 +189,7 @@ function loadSidebar() {
         </svg>
       </span>
       <span class="navText">Workspace</span>
-    </a>`
-     : `<a href="workspace-dashboard-member?ws=${currentWorkspace.id}" class="navBtn" data-section="index" id="dashboardLink">
-      <span class="navIcon">
-        <!-- Back  Icon -->
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M11.75 4.25L6 10L11.75 15.75"
-            stroke="currentColor"
-            stroke-width="1.6"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </span>
-      <span class="navText">Workspace</span>
-    </a>`
- }
+    </a>
 
     <!-- DASHBOARD -->
     <a href="dashboard" class="navBtn" data-section="index" id="dashboardLink">

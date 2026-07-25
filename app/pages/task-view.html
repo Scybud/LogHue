@@ -243,12 +243,13 @@
     #logInput {
       width: 100%;
       min-height: 50px;
-      padding: 0.8rem;
+      padding: var(--space-md);
       border-radius: 8px;
       border: 1px solid var(--border-primary);
       background: var(--surface-primary);
       resize: vertical;
       font-family: inherit;
+      margin-bottom: 0;
     }
 
     #logInput:focus {
@@ -377,7 +378,7 @@
       <div class="mainContainer">
 
         <!-- TASK HEADER -->
-        <section class="taskHeader card">
+        <section class="taskHeader">
           <div class="taskHeaderTop">
             <h2 id="taskTitle">Task Title Placeholder</h2>
 
@@ -424,7 +425,7 @@
           </div>
 
           <!-- ADD LOG INPUT -->
-          <div id="addLogContainer" class="addLogContainer card">
+          <div id="addLogContainer" class="addLogContainer">
             <textarea id="logInput" class="inputField" placeholder="Write an update..."></textarea>
             <button id="submitLogBtn" class="primaryBtn btn btn-sm">Submit Log</button>
           </div>

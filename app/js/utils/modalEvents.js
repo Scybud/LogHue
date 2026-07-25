@@ -2,8 +2,8 @@ import { closeModal } from "../ui.js";
 import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
 import {
   createWorkspaceInvite,
-  loadedMembers,
-} from "../pages/workspace-admin.js";
+} from "../pages/workspace/invite.js";
+import { loadedMembers } from "../pages/workspace/state.js";
 import { supabase } from "../supabase.js";
 import {
   createTaskElement,
