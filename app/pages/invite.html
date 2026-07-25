@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="../css/base.css" />
     <link rel="stylesheet" href="../css/component.css" />
     <link rel="stylesheet" href="../css/utilities.css" />
-<link rel="stylesheet" href="../css/components/sidebar.css">
+    <link rel="stylesheet" href="../css/components/sidebar.css" />
 
     <link
       rel="icon"
@@ -70,7 +70,7 @@
 
   <body>
     <div class="card">
-      <h2>Joining Workspaceâ€¦</h2>
+      <h2>Joining Workspace...</h2>
       <p id="status" class="loading">Please wait</p>
       <a class="homeLink" href="http://app.loghue.com">Go Home</a>
     </div>
@@ -188,11 +188,7 @@
         homeLink.classList.remove("show");
 
         setTimeout(() => {
-          if (invite.role === "admin" || invite.role === "owner") {
-            window.location.href = `workspace-dashboard-admin?ws=${invite.workspace_id}`;
-          } else {
-            window.location.href = `workspace-dashboard-member?ws=${invite.workspace_id}`;
-          }
+          window.location.href = `workspace?ws=${invite.workspace_id}`;
         }, 1500);
       }
       // --- EXECUTION ---
