@@ -14,7 +14,7 @@ import {
   createEmptyState,
 } from "https://scybud.github.io/scybud-ui/js/ui.js";
 import { attachCreatePersonalTaskEvent } from "../utils/modalEvents.js";
-import { formatDateTimeRelatively } from "../utils/time.js";
+import { formatDateTime } from "../utils/time.js";
 
 // ---------------------------------------------------------
 // State
@@ -191,7 +191,7 @@ export function createTaskElement(task) {
   // Date
   const dateSpan = document.createElement("span");
   dateSpan.classList.add("taskDate");
-  dateSpan.textContent = formatDateTimeRelatively(task.created_at);
+  dateSpan.textContent = formatDateTime(task.created_at);
   el.append(dateSpan);
 
   return el;
