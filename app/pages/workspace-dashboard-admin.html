@@ -6,14 +6,30 @@
     <title>Workspace Dashboard</title>
 
     <!--CSS LINKS-->
-
-    <!--SCYBUD UI-->
-    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/variables.css" />
-    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/layout.css" />
-    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/components/sidebar/sidebar.css" />
-    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/components/buttons/nav-buttons.css" />
-    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/typography.css" />
+    
+     <!--SCYBUD UI-->
+ <link
+      rel="stylesheet"
+      href="https://scybud.github.io/scybud-ui/css/variables.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://scybud.github.io/scybud-ui/css/layout.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://scybud.github.io/scybud-ui/components/sidebar/sidebar.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://scybud.github.io/scybud-ui/components/buttons/nav-buttons.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://scybud.github.io/scybud-ui/css/typography.css"
+    />
     <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/animations.css">
+
 
     <!--APP SPECIFIC CSS-->
     <link rel="stylesheet" href="../css/base.css" />
@@ -25,81 +41,122 @@
     <link rel="stylesheet" href="../css/utilities.css" />
     <link rel="stylesheet" href="../css/components/forms.css">
     <link rel="stylesheet" href="../css/components/search.css">
-    <link rel="stylesheet" href="../css/components/command-palette.css">
-    <link rel="stylesheet" href="../css/components/sidebar.css">
+            <link rel="stylesheet" href="../css/components/command-palette.css">
+<link rel="stylesheet" href="../css/components/sidebar.css">
 
     <!--FAVICONS-->
-    <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/favicons/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/favicons/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="../assets/icons/favicons/favicon-16x16.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="../assets/icons/favicons/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../assets/icons/favicons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="../assets/icons/favicons/favicon-16x16.png"
+    />
 
     <style>
-      #workspaceDashboardContent {
+      #adminWorkspaceDashboardContent {
         overflow: auto;
         max-width: 100%;
       }
     </style>
   </head>
   <body>
+    <!--PRELOADER
+    <div class="preLoaderContainer">
+      <div class="tt-wave-loader"><span></span><span></span><span></span></div>
+      <div class="label">Log<span>Hue</span></div>
+    </div>
+    -->
+
     <div id="modalContainer"></div>
     <div id="actionsMessage"></div>
     <!--INFO DISPLAY-->
     <div id="infoDisplay"></div>
 
-    <!--NOTIFICATIONS-->
-    <div id="notificationsContainer" hidden>
-      <h2>Notifications</h2>
-      <ul id="notificationsList">
-        <p class="placeholderText">Nothing here yet.</p>
-      </ul>
-    </div>
-
+    
     <main class="main">
-      <!-- SIDEBAR: one shared component for all roles now, role-conditional
-           items handled via data-roles inside sidebar.html + applySidebarRole() -->
-      <aside class="sidebar" id="workspaceSidebarContainer"></aside>
+      <!-- SIDEBAR -->
+      <aside class="sidebar" id="adminSidebarContainer"></aside>
 
       <!-- MAIN CONTENT -->
       <article class="mainContent">
+        
         <div class="contentHeader">
           <div class="headerLeft">
             <button class="menuBtn" id="toggleSidebar">
               <span class="menuIcon">
+                <!-- Menu Icon -->
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  <path
+                    d="M4 6H20M4 12H20M4 18H20"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
                 </svg>
               </span>
             </button>
-
+            
             <h2 id="workspaceName"></h2>
           </div>
-
+          
           <div class="headerRight">
             <button
-              onclick="notificationsContainer.hidden ^= 1"
-              id="notificationToggleBtn"
-              title="Notifications"
-              class="actionBtn"
+            onclick="notificationsContainer.hidden ^= 1"
+            id="notificationToggleBtn"
+            title="Notifications"
+            class="actionBtn"
             >
-              <span id="notifBadge" class="badge">0</span>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <span id="notifBadge" class="badge">0</span>
+            <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <path d="M12 22c1.1 0 2-.9 2-2H10c0 1.1.9 2 2 2z" />
                 <path d="M18 16v-5a6 6 0 10-12 0v5l-1.5 2h15L18 16z" />
               </svg>
             </button>
-
+            
             <div class="profileAvatarContainer">
-              <img src="../assets/images/default_profile.png" alt="profile Image" class="profileAvatar" />
+              <img
+              src="../assets/images/default_profile.png"
+              alt="profile Image"
+              class="profileAvatar"
+              />
             </div>
           </div>
         </div>
-
-        <section id="workspaceDashboardContent">
-          <!-- Dynamic content loads here -->
+        
+        <!--NOTIFICATIONS-->
+        <div id="notificationsContainer" hidden>
+          <h2>Notifications</h2>
+          <ul id="notificationsList">
+            <p class="placeholderText">Nothing here yet.</p>
+          </ul>
+        </div>
+        
+        <section id="adminWorkspaceDashboardContent">
+          <!-- Dynamic content will load here -->
         </section>
       </article>
 
-      <!--TEMPLATE FOR WORKSPACE INVITES LIST (admin/owner only, but harmless to keep in DOM for everyone) -->
+      <!--TEMPLATE FOR WORKSPACE INVITES LIST -->
       <template id="invite-row-template">
         <tr>
           <td class="method"></td>
@@ -108,8 +165,24 @@
               <span class="urlText"></span>
               <button class="copyBtn" title="Copy">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                  <rect x="9" y="9" width="10" height="10" rx="2" stroke="currentColor" stroke-width="2" />
-                  <rect x="5" y="5" width="10" height="10" rx="2" stroke="currentColor" stroke-width="2" />
+                  <rect
+                    x="9"
+                    y="9"
+                    width="10"
+                    height="10"
+                    rx="2"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <rect
+                    x="5"
+                    y="5"
+                    width="10"
+                    height="10"
+                    rx="2"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
                 </svg>
               </button>
             </div>
@@ -123,68 +196,14 @@
     </main>
 
     <script type="module">
-      // Single entry point: figure out the role ONCE, apply it to the shared
-      // sidebar, then hand off to whichever page-logic module matches.
-      //
-      // NOTE: this still branches to two separate JS files
-      // (initAdminWorkspaceData / initMemberWorkspaceData) rather than one
-      // unified function — that's intentional. Merging THOSE (loadTasks,
-      // loadMembers, loadSettings each becoming one shared function gated by
-      // PERMISSIONS) is Phase 4, not this step. This script only merges the
-      // page shell and role detection, per the agreed plan.
-      import { supabase } from "../js/supabase.js";
-      import { loadComponent } from "../js/ui.js";
-      import { checkWorkspaceAccess, applySidebarRole } from "../js/shared/workspace/permissions.js";
-      import { actionMsg } from "../js/utils/modals.js";
-
-      async function init() {
-        const params = new URLSearchParams(window.location.search);
-        const workspaceId = params.get("ws");
-
-        if (!workspaceId) {
-          window.location.href = "dashboard";
-          return;
-        }
-
-        const {
-          data: { user },
-          error: userError,
-        } = await supabase.auth.getUser();
-
-        if (userError || !user) {
-          console.error(userError);
-          return;
-        }
-
-        const role = await checkWorkspaceAccess(workspaceId, user, [
-          "admin",
-          "owner",
-          "member",
-        ]);
-
-        if (!role) {
-          actionMsg("Access Denied: You do not have access to this workspace.", "error");
-          window.location.href = "all-workspaces";
-          return;
-        }
-
-        // Load the merged sidebar once, then show/hide role-specific items.
-        applySidebarRole(role);
-
-        // Temporary branch until Phase 4 merges the page-logic files themselves.
-        if (role === "admin" || role === "owner") {
-          const { initAdminWorkspaceData } = await import("../js/pages/workspace-admin.js");
-          await initAdminWorkspaceData();
-        } else {
-          const { initMemberWorkspaceData } = await import("../js/pages/workspace-member.js");
-          await initMemberWorkspaceData();
-        }
-      }
-
-      init();
+      import { initAdminWorkspaceData } from "../js/pages/workspace-admin.js";
+      initAdminWorkspaceData();
     </script>
 
-    <script type="module" src="../js/utils/noAuthSessionProtect.js"></script>
+    <script
+      type="module"
+      src="../js/utils/noAuthSessionProtect.js"
+    ></script>
     <script type="module" src="../js/app.js" defer></script>
 
     <!--QRCODE LIBRARY-->

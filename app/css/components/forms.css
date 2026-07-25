@@ -28,6 +28,16 @@ select {
   max-width: 100%;
   max-height: 200px;
 }
+input:read-only {
+  cursor: copy;
+background: none;
+border: 1px solid var(--border-primary);
+}
+input:read-only:focus {
+  cursor: copy;
+background: none;
+border: 1px solid var(--border-primary);
+}
 .inputField:focus {
   border-color: var(--accent);
   background-color: var(--bg-primary);

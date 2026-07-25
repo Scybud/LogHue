@@ -401,9 +401,12 @@ align-self: center;
 }
 
 /*NOTIFICATIONS*/
-
+#notificationsContainer h2 {
+  text-align: left;
+  margin-left: var(--space-md);
+}
 #notificationsContainer {
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   position: absolute;
     top: 50px;
     right: 0;
@@ -415,7 +418,6 @@ align-self: center;
   padding: var(--space-md) 0;
   pointer-events: auto;
   background: var(--card-bg);
-  box-shadow: 0 0 15px var(--active-color);
   animation: fadeIn .18s ease-out;
   }
 

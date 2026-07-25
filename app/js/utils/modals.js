@@ -21,10 +21,7 @@ export function openCreateTaskModal(workspaceId) {
   if (!workspaceId) return;
 
   btn.addEventListener("click", async () => {
-    await loadComponent(
-      "../components/modals/create-task",
-      "modalContainer",
-    );
+    await loadComponent("../components/modals/create-task", "modalContainer");
 
     attachCreateTaskEvent(workspaceId);
   });
@@ -50,10 +47,7 @@ export function openAddMemeberModal(workspaceId) {
   if (!btn) return;
 
   btn.onclick = async () => {
-    await loadComponent(
-      "../components/modals/add-member",
-      "modalContainer",
-    );
+    await loadComponent("../components/modals/add-member", "modalContainer");
 
     // Give the DOM a tiny heartbeat to settle, then attach events
     setTimeout(() => {
@@ -72,10 +66,7 @@ export function openLogTaskModal(supabase, workspaceId, userId) {
       return;
     }
 
-    await loadComponent(
-      "../components/modals/log-entry",
-      "modalContainer",
-    );
+    await loadComponent("../components/modals/log-entry", "modalContainer");
 
     // populate using workspace + user.id
     await populateTaskList(currentWorkspace, userId);
@@ -121,10 +112,7 @@ function attachLoginModalEvents() {
   const openSignupModalBtn = document.getElementById("openSignupModal");
   if (openSignupModalBtn) {
     openSignupModalBtn.addEventListener("click", async () => {
-      await loadComponent(
-        "../components/modals/signup",
-        "modalContainer",
-      );
+      await loadComponent("../components/modals/signup", "modalContainer");
 
       attachSignupModalEvents();
       loginFuntion();
@@ -135,10 +123,7 @@ function attachSignupModalEvents() {
   const openLoginModal = document.getElementById("openLoginModal");
   if (openLoginModal) {
     openLoginModal.addEventListener("click", async () => {
-      await loadComponent(
-        "../components/modals/login",
-        "modalContainer",
-      );
+      await loadComponent("../components/modals/login", "modalContainer");
 
       attachLoginModalEvents();
     });
@@ -149,10 +134,7 @@ export function openLoginModal() {
   const openLoginModalBtn = document.getElementById("openLoginModal");
   if (openLoginModalBtn) {
     openLoginModalBtn.addEventListener("click", async () => {
-      await loadComponent(
-        "../components/modals/login",
-        "modalContainer",
-      );
+      await loadComponent("../components/modals/login", "modalContainer");
 
       attachLoginModalEvents();
     });
@@ -168,19 +150,13 @@ export async function openTransferOwnershipModal(workspace) {
 }
 
 export async function openApiKeyModal(workspace) {
-  await loadComponent(
-    "../components/modals/create-api-key",
-    "modalContainer",
-  );
+  await loadComponent("../components/modals/create-api-key", "modalContainer");
   attachCreateApiKeyEvents(workspace.id);
 }
 
 export async function confirmAction(message, actions = []) {
   // Load modal only when needed
-  await loadComponent(
-    "../components/modals/confirm-action",
-    "modalContainer",
-  );
+  await loadComponent("../components/modals/confirm-action", "modalContainer");
 
   const msg = document.querySelector(".modalMessage");
   const actionsBox = document.querySelector(".modalActions");
@@ -213,10 +189,7 @@ export async function confirmAction(message, actions = []) {
 
 export async function actionMsg(message, typeClass) {
   // Load modal only when needed
-  await loadComponent(
-    "../components/modals/action-message",
-    "actionsMessage",
-  );
+  await loadComponent("../components/modals/action-message", "actionsMessage");
 
   const msg = document.querySelector(".modalMessage");
   const actionsMessage = document.getElementById("actionsMessage");

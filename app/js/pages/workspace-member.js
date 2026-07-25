@@ -1035,4 +1035,3 @@ export function loadActivities(activities, container) {
   section.append(title, list);
   container.append(section);
 }
-
