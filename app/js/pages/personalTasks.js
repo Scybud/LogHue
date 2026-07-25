@@ -450,8 +450,8 @@ function createCollapsibleGroup(title, count, isOpen = true) {
   const header = document.createElement("div");
   header.classList.add("collapsibleHeader");
   header.innerHTML = `
+  <span class="arrow">${isOpen ? "▼" : "▶"}</span>
     <span>${title} (${count})</span>
-    <span class="arrow">${isOpen ? "▼" : "▶"}</span>
   `;
 
   const body = document.createElement("div");

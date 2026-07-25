@@ -49,6 +49,8 @@ body {
   --notif-bg-read: #2c2c2c; /* dark background for read */
   --notif-text: #eee;
   --notif-border: #444;
+  
+--active-color: #a4ccff;
 
   --tag: #130404;
 --tag-text: #cfcfcf;
