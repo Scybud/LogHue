@@ -1,6 +1,7 @@
 import { supabase } from "../supabase.js";
 import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
-import { formatDateTime, loadActivities } from "./workspace-admin.js";
+import {loadActivities } from "./workspace/activities.js";
+import { formatDateTime } from "../utils/time.js";
 
 let currentDiscussion = null;
 let currentWorkspace = null;
@@ -167,7 +168,7 @@ function loadSidebar() {
       </span>
       <span class="navText">Workspace</span>
     </a>
- }
+
 
     <!-- DASHBOARD -->
     <a href="dashboard" class="navBtn" data-section="index" id="dashboardLink">

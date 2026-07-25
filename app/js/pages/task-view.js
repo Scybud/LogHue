@@ -2,7 +2,7 @@ import { supabase } from "../supabase.js";
 import { actionMsg } from "../utils/modals.js";
 import { notifyUser } from "../utils/notifications.js";
 import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
-import { loadActivities } from "./workspace-admin.js";
+import { loadActivities } from "./workspace/activities.js";
 import { formatDateTimeRelatively } from "../utils/time.js";
 
 let currentTask = null;
@@ -190,7 +190,6 @@ function loadSidebar() {
       </span>
       <span class="navText">Workspace</span>
     </a>
- }
 
     <!-- DASHBOARD -->
     <a href="dashboard" class="navBtn" data-section="index" id="dashboardLink">
