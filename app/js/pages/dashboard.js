@@ -308,13 +308,8 @@ function searchType(result) {
 function searchLink(result) {
   let link;
 
-  if (
-    (result.type === "workspace" && result.role === "admin") ||
-    (result.type === "workspace" && result.role === "owner")
-  ) {
-    link = `workspace-dashboard-admin?ws=${result.id}`;
-  } else if (result.type === "workspace" && result.role === "member") {
-    link = `workspace-dashboard-member?ws=${result.id}`;
+   if (result.type === "workspace") {
+    link = `workspace?ws=${result.id}`;
   } else if (result.type === "task") {
     link = `task-view?task=${result.id}`;
   } else if (result.type === "note") {

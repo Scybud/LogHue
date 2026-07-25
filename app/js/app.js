@@ -33,33 +33,13 @@ window.addEventListener("DOMContentLoaded", async () => {
   if (path.includes("workspace")) {
     // Prefer a shared container id; fall back to the old ones while migrating
     const target =
-      document.getElementById("workspaceSidebarContainer") ||
-      document.getElementById("adminSidebarContainer") ||
-      document.getElementById("memberSidebarContainer");
+      document.getElementById("workspaceSidebarContainer");
 
     if (target) {
       await loadComponent("../components/workspace-sidebar", target.id);
     }
   }
 
-  // Load correct sidebar based on page
-  if (path.includes("workspace-dashboard-admin")) {
-    await loadComponent("../components/sidebar-admin", "adminSidebarContainer");
-  }
-
-  if (path.includes("workspace-dashboard-member")) {
-    await loadComponent(
-      "../components/sidebar-member",
-      "memberSidebarContainer",
-    );
-  }
-
-  //if (path.includes("workspace")) {
-  //await loadComponent(
-  //"../components/workspace-sidebar",
-  //"workspaceSidebarContainer",
-  //);
-  //}
 
   // General sidebar is safe everywhere
   await loadComponent("../components/sidebar", "sidebarContainer");
