@@ -1,20 +1,24 @@
-import { formatDateTimeRelatively } from "../../utils/time.js";
-import { loadComponent } from "https://scybud.github.io/scybud-ui/js/ui.js";
+import { formatDateTime } from "../../utils/time.js";
+import { loadComponent, closeModal } from "../../ui.js";
 import { actionMsg } from "../../utils/modals.js";
+import { notifyUser } from "../../utils/notifications.js";
+import { supabase } from "../../supabase.js";
+import {
+  currentWorkspace,
+  loadedMembers,
+  user,
+  selectedAssigneeId,
+  taskIdToAssign,
+  setSelectedAssigneeId,
+  setTaskIdToAssign,
+} from "./state.js";
 
-let taskIdToAssign = null;
-let selectedAssigneeId = null;
-
-// Attach the outside-click handler only once so repeated calls to
-// loadOwnerAndAdminTasks do not stack identical document listeners.
 let outsideClickHandlerAttached = false;
 
-export async function loadOwnerAndAdminTasks(
-  title,
-  tasks,
-  container,
-  loadedMembers,
-) {
+/**
+ * Admin / Owner task list with Assign / Ping actions.
+ */
+export function loadTasks(title, tasks, container) {
   const sectionTitle = document.createElement("h2");
   sectionTitle.classList.add("sectionTitle");
   sectionTitle.textContent = "📝" + title;
@@ -38,7 +42,6 @@ export async function loadOwnerAndAdminTasks(
     const placeholderText = document.createElement("p");
     placeholderText.classList.add("placeholderText");
     placeholderText.textContent = "No tasks yet.";
-
     section.appendChild(placeholderText);
     container.append(section);
     return;
@@ -51,7 +54,7 @@ export async function loadOwnerAndAdminTasks(
   tasks.forEach((tsk) => {
     const taskCard = document.createElement("div");
     taskCard.classList.add("taskCard");
-    taskCard.dataset.id = tsk.id; // IMPORTANT
+    taskCard.dataset.id = tsk.id;
 
     const taskTitle = document.createElement("h3");
     taskTitle.classList.add("taskTitle");
@@ -60,10 +63,8 @@ export async function loadOwnerAndAdminTasks(
     const details = document.createElement("details");
     const summary = document.createElement("summary");
     summary.textContent = "Description";
-
     const descriptionText = document.createElement("p");
     descriptionText.textContent = tsk.description;
-
     details.append(summary, descriptionText);
 
     const assignee = document.createElement("p");
@@ -74,16 +75,12 @@ export async function loadOwnerAndAdminTasks(
 
     const assignedOn = document.createElement("p");
     assignedOn.classList.add("meta");
-    assignedOn.textContent = `Assigned on: ${formatDateTimeRelatively(tsk.created_at)}`;
+    assignedOn.textContent = `Assigned on: ${formatDateTime(tsk.created_at)}`;
 
     const taskMeta = document.createElement("div");
     taskMeta.classList.add("taskMeta");
     taskMeta.append(assignee, assignedOn);
 
-    // --- Menu button: toggles the actions container's hidden attribute ---
-    // Scoped per-card via closest()/querySelector() rather than a global id,
-    // since id-based `elementId.hidden ^= 1` only works for a page-unique id —
-    // every task card needs its own independent toggle.
     const menuBtn = document.createElement("button");
     menuBtn.type = "button";
     menuBtn.classList.add("actionBtn", "taskMenuBtn");
@@ -97,14 +94,12 @@ export async function loadOwnerAndAdminTasks(
       </svg>
     `;
 
-    // Actions container must be created before the click listener that references it.
     const actionsMenu = document.createElement("div");
     actionsMenu.classList.add("taskActionsMenu");
     actionsMenu.hidden = true;
 
     menuBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      // Close any other open menu first, so only one is visible at a time.
       divGrid
         .querySelectorAll(".taskActionsMenu:not([hidden])")
         .forEach((el) => {
@@ -117,29 +112,21 @@ export async function loadOwnerAndAdminTasks(
     viewBtn.type = "button";
     viewBtn.classList.add("btn", "btn-primary", "btn-sm");
     viewBtn.textContent = "View Task";
-
     viewBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       window.location.href = `task-view?task=${tsk.id}`;
     });
-
     actionsMenu.append(viewBtn);
 
-    details.addEventListener("click", (e) => {
-      e.stopPropagation();
-    });
+    details.addEventListener("click", (e) => e.stopPropagation());
 
     taskCard.append(taskTitle, taskMeta, menuBtn, details, actionsMenu);
 
-    // Unassigned tasks get an "Assign" button; assigned tasks keep "Ping Assignee".
     if (!tsk.assigned_to || !tsk.profiles) {
       const assignBtn = document.createElement("button");
       assignBtn.type = "button";
       assignBtn.classList.add("btn", "btn-secondary", "assignBtn", "btn-sm");
       assignBtn.textContent = "Assign";
-      // No inline listener here — handled via attachAssignTaskEvent's
-      // delegated listener on the grid container.
-
       actionsMenu.append(assignBtn);
     } else {
       const pingBtn = document.createElement("button");
@@ -148,10 +135,8 @@ export async function loadOwnerAndAdminTasks(
       pingBtn.textContent = "Ping Assignee";
       pingBtn.title =
         "Pinging assignee will send a notification to them asking for update on the task.";
-
       pingBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
-
         await notifyUser({
           workspaceId: currentWorkspace.id,
           receiverUserId: tsk.profiles.id,
@@ -160,18 +145,14 @@ export async function loadOwnerAndAdminTasks(
           entityId: tsk.id,
           entityType: "task",
         });
-
         actionMsg("Assignee pinged!", "success");
       });
-
       actionsMenu.append(pingBtn);
     }
 
     divGrid.prepend(taskCard);
   });
 
-  // Close any open task menu when clicking anywhere outside it.
-  // Guard so the handler is registered only once for the whole module.
   if (!outsideClickHandlerAttached) {
     document.addEventListener("click", (e) => {
       if (
@@ -188,49 +169,167 @@ export async function loadOwnerAndAdminTasks(
   }
 
   container.append(section);
-
-  await attachAssignTaskEvent(divGrid, loadedMembers);
+  attachAssignTaskEvent(divGrid);
 }
 
-// Assign Unassigned Task (Delegated)
-async function attachAssignTaskEvent(container, loadedMembers) {
+/**
+ * Member view – tasks assigned to the current user.
+ */
+export function loadAssignedTasks(sectionTitle, tasks, container) {
+  if (!tasks || tasks.length === 0) {
+    container.innerHTML = `<p class="placeholderText">No tasks assigned yet.</p>`;
+    return;
+  }
+
+  const section = document.createElement("section");
+  section.classList.add("section");
+
+  const title = document.createElement("h2");
+  title.classList.add("sectionTitle");
+  title.textContent = sectionTitle;
+
+  const grid = document.createElement("div");
+  grid.classList.add("container", "double-grid");
+
+  tasks.forEach((tsk) => {
+    const card = document.createElement("div");
+    card.classList.add("taskCard");
+
+    const taskTitle = document.createElement("h3");
+    taskTitle.textContent = tsk.title;
+
+    const details = document.createElement("details");
+    const summary = document.createElement("summary");
+    summary.textContent = "Description";
+    const desc = document.createElement("p");
+    desc.textContent = tsk.description;
+    details.append(summary, desc);
+
+    const meta = document.createElement("div");
+    meta.classList.add("taskMeta");
+
+    const assignee = document.createElement("p");
+    assignee.classList.add("meta");
+    assignee.textContent = tsk.assigned_to ? `Assigned to: Me` : "Unassigned";
+
+    const assignedOn = document.createElement("p");
+    assignedOn.classList.add("meta");
+    assignedOn.textContent = `Assigned on: ${formatDateTime(tsk.created_at)}`;
+
+    meta.append(assignee, assignedOn);
+
+    const viewBtn = document.createElement("button");
+    viewBtn.classList.add("btn", "btn-sm", "btn-primary");
+    viewBtn.textContent = "View Task";
+    viewBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      window.location.href = `task-view?task=${tsk.id}`;
+    });
+
+    details.addEventListener("click", (e) => e.stopPropagation());
+
+    card.append(taskTitle, meta, details, viewBtn);
+    grid.append(card);
+  });
+
+  section.append(title, grid);
+  container.append(section);
+}
+
+/**
+ * Member view – all workspace tasks (read-only).
+ */
+export function loadAllTasks(tasks, container) {
+  if (!tasks || tasks.length === 0) {
+    container.innerHTML = `<p class="placeholderText">No tasks created yet.</p>`;
+    return;
+  }
+
+  const section = document.createElement("section");
+  section.classList.add("section");
+
+  const title = document.createElement("h2");
+  title.classList.add("sectionTitle");
+  title.textContent = "All Tasks";
+
+  const grid = document.createElement("div");
+  grid.classList.add("container", "double-grid");
+
+  tasks.forEach((tsk) => {
+    const card = document.createElement("div");
+    card.classList.add("taskCard");
+
+    const taskTitle = document.createElement("h3");
+    taskTitle.textContent = tsk.title;
+
+    const details = document.createElement("details");
+    const summary = document.createElement("summary");
+    summary.textContent = "Description";
+    const desc = document.createElement("p");
+    desc.textContent = tsk.description;
+    details.append(summary, desc);
+
+    const meta = document.createElement("div");
+    meta.classList.add("taskMeta");
+
+    const assignee = document.createElement("p");
+    assignee.classList.add("meta");
+    assignee.textContent = tsk.profiles
+      ? `Assigned to: ${tsk.profiles.full_name}`
+      : "Unassigned";
+
+    const assignedOn = document.createElement("p");
+    assignedOn.classList.add("meta");
+    assignedOn.textContent = `Assigned on: ${formatDateTime(tsk.created_at)}`;
+
+    meta.append(assignee, assignedOn);
+
+    card.append(taskTitle, meta, details);
+    grid.append(card);
+  });
+
+  section.append(title, grid);
+  container.append(section);
+}
+
+// ---------------------------------------------------------------------------
+// Assign-task flow (admin / owner only)
+// ---------------------------------------------------------------------------
+
+function attachAssignTaskEvent(container) {
   if (!container) return;
 
   container.addEventListener("click", async (e) => {
     const btn = e.target.closest(".assignBtn");
     if (!btn) return;
 
-    taskIdToAssign = btn.closest(".taskCard").dataset.id;
+    setTaskIdToAssign(btn.closest(".taskCard").dataset.id);
 
     await loadComponent("../components/modals/assign-task", "modalContainer");
 
     const memberListContainer = document.getElementById(
       "assignMemberListContainer",
     );
+    populateMemberList(memberListContainer);
 
-    populateMemberList(memberListContainer, loadedMembers);
-
-    // Fresh DOM node each time loadComponent runs, so no listener-stacking
-    // risk here (same reasoning as the duplicate-task confirm button).
     const confirmBtn = document.getElementById("confirmAssignBtn");
     if (confirmBtn) {
       confirmBtn.addEventListener("click", async (evt) => {
-        evt.preventDefault(); // button sits inside a <form>
-        await performTaskAssign(confirmBtn, loadedMembers);
+        evt.preventDefault();
+        await performTaskAssign(confirmBtn);
       });
     }
   });
 }
 
-// POPULATE MEMBER LIST FOR TASK ASSIGN MODAL
-function populateMemberList(container, loadedMembers) {
+function populateMemberList(container) {
   if (!container) return;
 
   container.innerHTML = "";
-  selectedAssigneeId = null; // reset each time the modal opens
+  setSelectedAssigneeId(null);
 
   loadedMembers.forEach((m) => {
-    if (!m.profiles) return; // guard against orphaned membership rows
+    if (!m.profiles) return;
 
     const item = document.createElement("div");
     item.classList.add("workspaceOption");
@@ -242,14 +341,14 @@ function populateMemberList(container, loadedMembers) {
         .querySelectorAll(".workspaceOption.selected")
         .forEach((el) => el.classList.remove("selected"));
       item.classList.add("selected");
-      selectedAssigneeId = m.profiles.id;
+      setSelectedAssigneeId(m.profiles.id);
     });
 
     container.append(item);
   });
 }
 
-async function performTaskAssign(btn, loadedMembers) {
+async function performTaskAssign(btn) {
   if (!selectedAssigneeId) {
     actionMsg("Please select a member.", "error");
     return;
@@ -279,8 +378,6 @@ async function performTaskAssign(btn, loadedMembers) {
     entityType: "task",
   });
 
-  // Keep in-memory workspace data in sync so a re-render (e.g. switching
-  // nav sections and back) shows the new assignee without a full reload.
   const taskRecord = currentWorkspace.workspace_tasks.find(
     (t) => String(t.id) === String(taskIdToAssign),
   );
@@ -295,24 +392,18 @@ async function performTaskAssign(btn, loadedMembers) {
   actionMsg("Task assigned!", "success");
   closeModal();
 
-  taskIdToAssign = null;
-  selectedAssigneeId = null;
+  setTaskIdToAssign(null);
+  setSelectedAssigneeId(null);
 
-  // Re-render the currently visible task section so the assigned card
-  // updates (Assign button -> Ping button) without needing a page reload.
-  const activeContainer = document.getElementById(
-    "adminWorkspaceDashboardContent",
-  );
+  // Re-render the current "in progress" list
+  const activeContainer =
+    document.getElementById("workspaceDashboardContent");
+
   if (activeContainer) {
     activeContainer.innerHTML = "";
     const inProgress = currentWorkspace.workspace_tasks.filter(
       (ts) => ts.status === "in progress",
     );
-    loadOwnerAndAdminTasks(
-      "Created Tasks",
-      inProgress,
-      activeContainer,
-      loadedMembers,
-    );
+    loadTasks("Created Tasks", inProgress, activeContainer);
   }
 }

@@ -11,7 +11,7 @@ import {
   attachTransferOwnershipEvents,
 } from "./modalEvents.js";
 import { supabase } from "../supabase.js";
-import { currentWorkspace } from "../pages/workspace-member.js";
+import { workspace } from "../pages/workspace/index.js";
 import { attachStartDiscussionEvent } from "../features/discussions.js";
 
 export function openCreateTaskModal(workspaceId) {
@@ -61,7 +61,7 @@ export function openLogTaskModal(supabase, workspaceId, userId) {
   if (!btn) return;
 
   btn.addEventListener("click", async () => {
-    if (!currentWorkspace || !currentWorkspace.workspace_tasks) {
+    if (!workspace || !workspace.workspace_tasks) {
       console.error("Workspace not loaded yet");
       return;
     }
@@ -69,7 +69,7 @@ export function openLogTaskModal(supabase, workspaceId, userId) {
     await loadComponent("../components/modals/log-entry", "modalContainer");
 
     // populate using workspace + user.id
-    await populateTaskList(currentWorkspace, userId);
+    await populateTaskList(workspace, userId);
 
     const submitBtn = document.getElementById("logTaskUpdate");
     submitBtn.addEventListener("click", () => {
@@ -94,7 +94,7 @@ export function openCreateWorkspaceModal() {
   });
 }
 
-export function openStartDiscussionModal(currentWorkspace, user) {
+export function openStartDiscussionModal(workspace, user) {
   const btn = document.getElementById("startDiscussionOpen");
   if (btn) {
     btn.addEventListener("click", async () => {
@@ -103,7 +103,7 @@ export function openStartDiscussionModal(currentWorkspace, user) {
         "modalContainer",
       );
 
-      attachStartDiscussionEvent(currentWorkspace, user);
+      attachStartDiscussionEvent(workspace, user);
     });
   }
 }

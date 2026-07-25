@@ -113,7 +113,11 @@
       src="../js/utils/noAuthSessionProtect.js"
     ></script>
     <script type="module" src="../js/app.js" defer></script>
-    <script type="module" src="../js/pages/workspace/index.js"></script>
+<script type="module">
+  import { initWorkspaceDashboard } from "../js/pages/workspace/index.js";
+  initWorkspaceDashboard();
+</script>
+    
     <!-- QR Code library (used in invite flow) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
 

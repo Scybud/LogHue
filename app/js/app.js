@@ -26,46 +26,49 @@ import {
 
 window.addEventListener("DOMContentLoaded", async () => {
   const path = window.location.pathname;
-  
+
   await initCommandPalette();
-  
-  
+
+  // Load correct sidebar based on page
+  if (path.includes("workspace")) {
+    // Prefer a shared container id; fall back to the old ones while migrating
+    const target =
+      document.getElementById("workspaceSidebarContainer") ||
+      document.getElementById("adminSidebarContainer") ||
+      document.getElementById("memberSidebarContainer");
+
+    if (target) {
+      await loadComponent("../components/workspace-sidebar", target.id);
+    }
+  }
+
   // Load correct sidebar based on page
   if (path.includes("workspace-dashboard-admin")) {
-    await loadComponent(
-      "../components/sidebar-admin",
-      "adminSidebarContainer",
-    );
+    await loadComponent("../components/sidebar-admin", "adminSidebarContainer");
   }
-  
+
   if (path.includes("workspace-dashboard-member")) {
     await loadComponent(
       "../components/sidebar-member",
       "memberSidebarContainer",
     );
   }
-  
+
   //if (path.includes("workspace")) {
-    //await loadComponent(
-      //"../components/workspace-sidebar", 
-      //"workspaceSidebarContainer",
-    //);
+  //await loadComponent(
+  //"../components/workspace-sidebar",
+  //"workspaceSidebarContainer",
+  //);
   //}
 
   // General sidebar is safe everywhere
-  await loadComponent(
-    "../components/sidebar",
-    "sidebarContainer",
-  );
+  await loadComponent("../components/sidebar", "sidebarContainer");
 
   // SESSION FUNCTION
   initSession();
 
   // Analytics
-  await loadComponent(
-    "../components/modals/cookies-banner",
-    "infoDisplay",
-  );
+  await loadComponent("../components/modals/cookies-banner", "infoDisplay");
   const saved = localStorage.getItem("consent-preferences");
   if (saved) {
     const prefs = JSON.parse(saved);
@@ -94,9 +97,12 @@ window.addEventListener("DOMContentLoaded", async () => {
   attachSidebarToggle();
   attachSidebarEvents();
 
-  // Modals (safe globally)
+  // Modals (safe globally) — skip log-task on workspace pages;
+  // initWorkspaceDashboard wires it with a real workspaceId.
+  if (!path.includes("workspace")) {
+    openLogTaskModal();
+  }
   openCreateTaskModal();
-  openLogTaskModal();
   openCreateWorkspaceModal();
   openLoginModal();
 

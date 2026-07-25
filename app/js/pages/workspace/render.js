@@ -1,49 +1,82 @@
 import { supabase } from "../../supabase.js";
-import { PERMISSIONS } from "../../shared/workspace/permissions.js";
-import { getCurrentUserRole, getUser, setLoadedMembers } from "./state.js";
+import { actionMsg } from "../../utils/modals.js";
+import {
+  currentWorkspace,
+  loadedMembers,
+  user,
+  currentRole,
+  setLoadedMembers,
+} from "./state.js";
 import { loadTasks, loadAssignedTasks, loadAllTasks } from "./tasks.js";
-import { loadMembers } from "./members.js";
-import { loadDocuments } from "./documents.js";
-import { loadActivities } from "./activities.js";
+import { loadMembersAdmin, loadMembersMember } from "./members.js";
 import { loadDiscussions } from "./discussions.js";
-import { loadInviteHistory } from "./invites.js";
-import { loadSettings } from "./settings.js";
+import { loadActivities } from "./activities.js";
+import { loadDocuments } from "./documents.js";
+import { loadSettingsAdmin, loadSettingsMember } from "./settings.js";
+import { loadInviteHistory } from "./invite.js";
 
-// -------------------------------------------------------------------
-// renderSection: handles every section, gated by permissions
-// -------------------------------------------------------------------
+/**
+ * Central section renderer. Behaviour depends on currentRole.
+ */
 export async function renderSection(section, workspace, container) {
-  if (!workspace || !container) return;
+  if (!container) return;
   container.innerHTML = "";
 
-  // Safely get tasks array, never null
   const allTasks = Array.isArray(workspace.workspace_tasks)
     ? workspace.workspace_tasks
-    : [];
+    : workspace.workspace_tasks
+      ? [workspace.workspace_tasks]
+      : [];
 
-  // Fetch discussions (shared by many sections)
-  const { data: allDiscussions } = await supabase
-    .from("discussions")
-    .select(`*, profiles:created_by (full_name, avatar_url)`)
-    .eq("workspace_id", workspace.id);
-
-  const currentUserRole = getCurrentUserRole();
-  const user = getUser();
-  const myPermissions = PERMISSIONS[currentUserRole] || {};
+  // Discussions are fetched on demand for sections that need them
+  const fetchDiscussions = async () => {
+    const { data, error } = await supabase
+      .from("discussions")
+      .select(`*, profiles:created_by (full_name, avatar_url)`)
+      .eq("workspace_id", workspace.id);
+    if (error) {
+      actionMsg("Error loading discussions.", "error");
+      return [];
+    }
+    return data || [];
+  };
 
   switch (section) {
-    // ----- Admin / owner sections -----
-    case "createdTasks":
-      loadTasks(
-        "Created Tasks",
-        allTasks.filter((t) => t.status === "in progress"),
-        container,
-      );
+    // ---------- ADMIN / OWNER ----------
+    case "createdTasks": {
+      if (currentRole === "member") break;
+      const tasks = allTasks.filter((ts) => ts.status === "in progress");
+      loadTasks("Created Tasks", tasks, container);
       break;
+    }
+
+    case "taskHistory": {
+      if (currentRole === "member") {
+        // Member sees only their completed tasks
+        const myCompleted = allTasks.filter(
+          (t) =>
+            String(t.assigned_to) === String(user.id) &&
+            t.status === "completed",
+        );
+        loadAssignedTasks("Tasks History", myCompleted, container);
+      } else {
+        const history = allTasks.filter((ts) => ts.status === "completed");
+        loadTasks("Tasks History", history, container);
+      }
+      break;
+    }
 
     case "members": {
-      setLoadedMembers(workspace.workspace_members);
-      loadMembers(workspace.workspace_members, container);
+      const members = Array.isArray(workspace.workspace_members)
+        ? workspace.workspace_members
+        : [workspace.workspace_members];
+      setLoadedMembers(members);
+
+      if (currentRole === "member") {
+        loadMembersMember(members, container);
+      } else {
+        loadMembersAdmin(members, container);
+      }
       break;
     }
 
@@ -53,7 +86,7 @@ export async function renderSection(section, workspace, container) {
         .select("*")
         .eq("workspace_id", workspace.id)
         .order("created_at", { ascending: false });
-      await loadDocuments(docs || [], container, workspace);
+      await loadDocuments(docs || [], container);
       break;
     }
 
@@ -65,6 +98,7 @@ export async function renderSection(section, workspace, container) {
         )
         .eq("workspace_id", workspace.id)
         .order("created_at", { ascending: false });
+
       const { data: actDcns } = await supabase
         .from("discussions")
         .select(`*, profiles:created_by (full_name, avatar_url)`)
@@ -81,6 +115,7 @@ export async function renderSection(section, workspace, container) {
         status: log.task_status,
         created_at: log.created_at,
       }));
+
       const normalizedDiscussions = (actDcns || []).map((d) => ({
         id: d.id,
         type: "discussion",
@@ -90,68 +125,77 @@ export async function renderSection(section, workspace, container) {
         status: null,
         created_at: d.created_at,
       }));
+
       const activities = [...normalizedLogs, ...normalizedDiscussions].sort(
         (a, b) => new Date(b.created_at) - new Date(a.created_at),
       );
+
       loadActivities(activities, container);
       break;
     }
 
-    case "discussions":
-      await loadDiscussions(
+    case "discussions": {
+      const allDiscussions = await fetchDiscussions();
+      const open = allDiscussions.filter((d) => d.status === "open");
+      loadDiscussions(
         "Discussions",
-        allDiscussions?.filter((d) => d.status === "open") || [],
+        open,
         container,
+        "No discussion started yet.",
       );
       break;
+    }
+
+    case "discussionHistory": {
+      const allDiscussions = await fetchDiscussions();
+      const closed = allDiscussions.filter((d) => d.status === "closed");
+      loadDiscussions(
+        "Discussions History",
+        closed,
+        container,
+        "No discussion histories yet.",
+      );
+      break;
+    }
 
     case "inviteHistory": {
-      if (myPermissions.inviteMembers) {
-        const { data: inviteHistory } = await supabase
-          .from("workspace_invites")
-          .select("*")
-          .eq("workspace_id", workspace.id);
-        loadInviteHistory(inviteHistory || [], container);
+      if (currentRole === "member") break;
+      const { data: inviteHistory } = await supabase
+        .from("workspace_invites")
+        .select("*")
+        .eq("workspace_id", workspace.id);
+      loadInviteHistory(inviteHistory || [], container);
+      break;
+    }
+
+    case "settings": {
+      if (currentRole === "member") {
+        await loadSettingsMember(container, workspace);
       } else {
-        container.innerHTML = `<p class="placeholderText">You don't have permission to view invite history.</p>`;
+        await loadSettingsAdmin(container, workspace, user.id);
       }
       break;
     }
 
-    case "taskHistory":
-      loadTasks(
-        "Tasks History",
-        allTasks.filter((t) => t.status === "completed"),
-        container,
-      );
-      break;
-
-    case "discussionHistory":
-      await loadDiscussions(
-        "Discussions History",
-        allDiscussions?.filter((d) => d.status === "closed") || [],
-        container,
-      );
-      break;
-
-    case "settings":
-      await loadSettings(container, workspace, user.id);
-      break;
-
-    // ----- Member specific sections -----
+    // ---------- MEMBER-ONLY ----------
     case "myTasks": {
-      const myTasks = allTasks
-        .filter((t) => String(t.assigned_to) === String(user.id))
-        .filter((t) => t.status === "in progress");
+      if (currentRole !== "member") break;
+      const myTasks = allTasks.filter(
+        (t) =>
+          String(t.assigned_to) === String(user.id) &&
+          t.status === "in progress",
+      );
       loadAssignedTasks("My Tasks", myTasks, container);
       break;
     }
 
-    case "allTasks":
+    case "allTasks": {
+      if (currentRole !== "member") break;
       loadAllTasks(allTasks, container);
       break;
+    }
 
     default:
-      container.innerHTML = `<p class="placeholderText">Section not found.</p>`;
+      console.warn("Unknown section:", section);
   }
 }

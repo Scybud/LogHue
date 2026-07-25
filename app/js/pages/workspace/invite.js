@@ -1,35 +1,43 @@
 import { formatDateTime } from "../../utils/time.js";
 import { actionMsg } from "../../utils/modals.js";
 import { supabase } from "../../supabase.js";
-import { getUser } from "./state.js";
+import { user } from "./state.js";
 
-// -------------------------------------------------------------------
-// INVITE HISTORY (admin/owner only)
-// -------------------------------------------------------------------
+/**
+ * Admin / Owner – invite history table.
+ */
 export function loadInviteHistory(invites, container) {
   const table = document.createElement("table");
   table.classList.add("inviteTable");
+
   const thead = document.createElement("thead");
   const trHead = document.createElement("tr");
-  [
+
+  const headers = [
     "Invite Method",
     "Invite Target",
     "Created",
     "Uses",
     "Status",
     "Actions",
-  ].forEach((h) => {
+  ];
+
+  headers.forEach((h) => {
     const th = document.createElement("th");
     th.textContent = h;
     trHead.append(th);
   });
   thead.append(trHead);
+
   const tbody = document.createElement("tbody");
   tbody.id = "invite-body";
   table.append(thead, tbody);
 
   const inviteTemplate = document.getElementById("invite-row-template");
-  if (!inviteTemplate) return;
+  if (!inviteTemplate) {
+    container.append(table);
+    return;
+  }
 
   invites.forEach((inv) => {
     const row = inviteTemplate.content.cloneNode(true);
@@ -39,8 +47,10 @@ export function loadInviteHistory(invites, container) {
     const target = inv.email
       ? inv.email
       : `https://app.loghue.com/invite?token=${inv.token}`;
+
     const created = inv.created_at;
     const count = inv.accepted_count ?? 0;
+
     let status = "Active";
     let statusClass = "active";
     if (count >= inv.max_invite_count) {
@@ -52,12 +62,15 @@ export function loadInviteHistory(invites, container) {
     }
 
     row.querySelector(".method").textContent = method;
+
     const urlText = row.querySelector(".urlText");
     urlText.textContent = target;
     urlText.title = target;
+
     row.querySelector(".created").textContent = formatDateTime(created);
     row.querySelector(".uses").textContent =
       `${count} / ${inv.max_invite_count}`;
+
     const statusCell = row.querySelector(".status");
     statusCell.textContent = status;
     statusCell.classList.add(statusClass);
@@ -89,16 +102,19 @@ export function loadInviteHistory(invites, container) {
       e.stopPropagation();
       e.preventDefault();
       const id = e.currentTarget.id;
+
       const { error } = await supabase
         .from("workspace_invites")
         .delete()
         .eq("id", id)
-        .eq("created_by", getUser().id);
+        .eq("created_by", user.id);
+
       if (error) {
         console.error(error);
         actionMsg("Failed to revoke invite.", "error");
         return;
       }
+
       tr.remove();
       actionMsg("Invite revoked!", "success");
     });
@@ -107,22 +123,19 @@ export function loadInviteHistory(invites, container) {
   container.append(table);
 }
 
-// -------------------------------------------------------------------
-// CREATE WORKSPACE INVITE (used by modals)
-// -------------------------------------------------------------------
-export async function createWorkspaceInvite({
-  workspaceId,
-  role,
-  email = null,
-}) {
+/**
+ * Create a new workspace invite (admin / owner).
+ */
+export async function createWorkspaceInvite({ workspaceId, role, email = null }) {
   const {
-    data: { user },
+    data: { user: authUser },
     error: authError,
   } = await supabase.auth.getUser();
-  if (authError || !user)
+  if (authError || !authUser)
     throw new Error("Authentication required to create invites");
 
   const token = crypto.randomUUID();
+
   const { data, error } = await supabase
     .from("workspace_invites")
     .insert({
@@ -130,11 +143,14 @@ export async function createWorkspaceInvite({
       role,
       email,
       token,
-      created_by: user.id,
+      created_by: authUser.id,
     })
     .select()
     .single();
 
-  if (error) throw error;
+  if (error) {
+    console.error("Supabase Insert Error:", error);
+    throw error;
+  }
   return data;
 }

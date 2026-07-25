@@ -1,180 +1,196 @@
 import { attachSidebarEvents, navDropdowns } from "../../components/sidebar.js";
+import { supabase } from "../../supabase.js";
 import {
   openCreateTaskModal,
   openAddMemeberModal,
-  actionMsg,
   openStartDiscussionModal,
   openLogTaskModal,
+  actionMsg,
 } from "../../utils/modals.js";
-import { supabase } from "../../supabase.js";
-import {
-  checkWorkspaceAccess,
-  PERMISSIONS,
-  applySidebarRole,
-} from "../../shared/workspace/permissions.js";
 import {
   setCurrentWorkspace,
   setLoadedMembers,
   setUser,
-  setCurrentUserRole,
-  getCurrentWorkspace,
+  setCurrentRole,
+  setLoading,
+  fetchMembershipRole,
+  getContentContainer,
+  currentWorkspace,
 } from "./state.js";
 import { renderSection } from "./render.js";
 import { loadTasks, loadAssignedTasks } from "./tasks.js";
 
-let isLoading = false;
+/**
+ * Wait until the sidebar partial has been injected into the DOM.
+ * app.js loads it asynchronously via loadComponent, so we must not
+ * call navDropdowns() / attachSidebarEvents() before the nodes exist.
+ */
+export let workspace = null;
 
-function setLoading(state, container) {
-  isLoading = state;
-  container?.classList.toggle("isLoading", state);
+function waitForSidebar(timeoutMs = 4000) {
+  return new Promise((resolve) => {
+    if (document.getElementById("navBtnDropdown") || document.getElementById("sidebar")) {
+      resolve();
+      return;
+    }
+    const start = Date.now();
+    const id = setInterval(() => {
+      if (
+        document.getElementById("navBtnDropdown") ||
+        document.getElementById("sidebar") ||
+        Date.now() - start > timeoutMs
+      ) {
+        clearInterval(id);
+        resolve();
+      }
+    }, 50);
+  });
 }
 
-// -------------------------------------------------------------------
-// Role based access, checks membership, sets currentUserRole
-// -------------------------------------------------------------------
-async function ensureWorkspaceAccess(workspaceId, user) {
-  const role = await checkWorkspaceAccess(workspaceId, user, [
-    "owner",
-    "admin",
-    "member",
-  ]);
-  if (!role) {
-    actionMsg("You are not a member of this workspace.", "error");
-    window.location.href = "all-workspaces";
-    return null;
-  }
-  return role;
-}
-
-await initWorkspaceData()
-// -------------------------------------------------------------------
-// INITIALISATION, single entry point for all roles
-// -------------------------------------------------------------------
-export async function initWorkspaceData() {
+/**
+ * Single entry point for both admin/owner and member workspace dashboards.
+ * Detects the caller's role and initialises the appropriate UI.
+ */
+export async function initWorkspaceDashboard() {
   const params = new URLSearchParams(window.location.search);
   const workspaceId = params.get("ws");
-
-  const { data, userError } = await supabase.auth.getUser();
-  if (userError || !data.user) {
-    console.error(userError);
-    return;
-  }
-  setUser(data.user);
-  const user = data.user;
 
   if (!workspaceId) {
     window.location.href = "dashboard";
     return;
   }
 
-  // 1. Determine role and stop if not a member
-  const currentUserRole = await ensureWorkspaceAccess(workspaceId, user);
-  if (!currentUserRole) return; // already redirected
-  setCurrentUserRole(currentUserRole);
+  // Auth
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+  if (authError || !authData?.user) {
+    console.error(authError);
+    return;
+  }
+  setUser(authData.user);
 
-  const container = document.getElementById("workspaceDashboardContent");
+  // Role
+  const role = await fetchMembershipRole(workspaceId, authData.user.id);
+  if (!role) {
+    actionMsg("Access Denied: You are not a member of this workspace.", "error");
+    window.location.href = "all-workspaces";
+    return;
+  }
+  setCurrentRole(role);
+  // Drives CSS visibility for .adminOnly / .memberOnly in the unified sidebar
+  document.body.dataset.role = role;
+
+  if (role !== "member" && role !== "owner" && role !== "admin") {
+    actionMsg("Access Denied.", "error");
+    window.location.href = "all-workspaces";
+    return;
+  }
+
+  const container = getContentContainer();
   setLoading(true, container);
 
-  // 2. Now that sidebar DOM is present, apply role based visibility
-  applySidebarRole(currentUserRole);
-
-  // 3. Attach sidebar events (dropdowns, etc.)
-  attachSidebarEvents();
-  navDropdowns();
-
-  // 4. Fetch workspace data
-  const { data: workspace, error } = await supabase
+  // Load workspace + related data
+  const { data: currentWorkspace, error } = await supabase
     .from("workspaces")
     .select(
-      `*, workspace_tasks(*, profiles:assigned_to (id, full_name, avatar_url)), workspace_members(role, profiles (id, full_name, avatar_url, plan:plan_id (name)))`,
+      `*,
+       workspace_tasks(*, profiles:assigned_to (id, full_name, avatar_url)),
+       workspace_members(role, profiles (id, full_name, avatar_url, plan:plan_id (name)))`,
     )
     .eq("id", workspaceId)
     .single();
 
-  if (error || !workspace) {
+  if (error) {
     console.error(error);
-    actionMsg(workspace ? error.message : "Workspace not found.", "error");
+    actionMsg(error.message || "Failed to load workspace", "error");
     setLoading(false, container);
     return;
   }
 
-  if (workspace.status === "closed") {
-    actionMsg("This workspace has been archived.", "warning");
-    setTimeout(() => (window.location.href = "archive"), 1500);
+  workspace = currentWorkspace;
+
+  if (!workspace || workspaceId.length < 10 || workspace.status === "closed") {
+    actionMsg("This workspace has been archived", "warning");
+    setTimeout(() => {
+      window.location.href = "archive";
+    }, 1500);
     return;
   }
 
-  workspace.workspace_tasks = workspace.workspace_tasks || [];
-  workspace.workspace_members = workspace.workspace_members || [];
+  // Must be set BEFORE any modal wiring that reads currentWorkspace
   setCurrentWorkspace(workspace);
-  setLoadedMembers(workspace.workspace_members);
+  workspace.workspace_tasks = workspace.workspace_tasks || [];
 
-  // Page title & name
-  document.title = workspace.name + " | LogHue";
+  const members = Array.isArray(workspace.workspace_members)
+    ? workspace.workspace_members
+    : [workspace.workspace_members];
+  setLoadedMembers(members);
+
+  // Header
   const workspaceNameEl = document.getElementById("workspaceName");
   if (workspaceNameEl) workspaceNameEl.textContent = workspace.name;
+  document.title = `${workspace.name} | LogHue`;
 
-  // 5. Initial section content
   if (container) container.innerHTML = "";
-  const myPermissions = PERMISSIONS[currentUserRole] || {};
-  if (currentUserRole === "member") {
-    const myTasks = workspace.workspace_tasks
-      .filter((t) => String(t.assigned_to) === String(user.id))
-      .filter((t) => t.status === "in progress");
+
+  // Default section
+  if (role === "member") {
+    const myTasks = workspace.workspace_tasks.filter(
+      (t) =>
+        String(t.assigned_to) === String(authData.user.id) &&
+        t.status === "in progress",
+    );
     loadAssignedTasks("My Tasks", myTasks, container);
   } else {
-    const tasks = workspace.workspace_tasks.filter(
-      (t) => t.status === "in progress",
+    const openTasks = workspace.workspace_tasks.filter(
+      (ts) => ts.status === "in progress",
     );
-    loadTasks("Created Tasks", tasks, container);
+    loadTasks("Created Tasks", openTasks, container);
   }
 
   setLoading(false, container);
 
-  // 6. Open modals based on permissions
-  openStartDiscussionModal(getCurrentWorkspace(), user);
+  // Sidebar is loaded async by app.js — wait for it, then wire events
+  await waitForSidebar();
+  attachSidebarEvents();
+  navDropdowns(); // needs #navBtnDropdown to already exist
 
-  if (myPermissions.createTask) {
-    openCreateTaskModal(getCurrentWorkspace().id);
+  // Modals that need workspace context — call AFTER setCurrentWorkspace
+  openStartDiscussionModal(currentWorkspace, authData.user);
+
+  if (role === "member") {
+    // Pass workspace id + user so the modal does not rely on a global that
+    // may still be null if app.js called openLogTaskModal() with no args.
+    openLogTaskModal(supabase, workspaceId, authData.user.id);
+  } else {
+    openCreateTaskModal(currentWorkspace.id);
+    openAddMemeberModal(currentWorkspace.id);
   }
-  if (myPermissions.inviteMembers || myPermissions.manageMembers) {
-    openAddMemeberModal(getCurrentWorkspace().id);
-  }
-  if (currentUserRole === "member") {
-    openLogTaskModal(supabase, workspaceId, user.id);
-  }
+
+  // Nav click handler (shared). Ignore the Histories dropdown toggle itself.
+  document.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".navBtn");
+    if (!btn) return;
+    // Don't treat the dropdown toggle as a section navigation
+    if (btn.classList.contains("navBtnDropdown") || btn.id === "navBtnDropdown") {
+      return;
+    }
+
+    const content = getContentContainer();
+    const section = btn.dataset.section;
+    if (!section) return;
+
+    setLoading(true, content);
+    try {
+      await new Promise(requestAnimationFrame);
+      await renderSection(section, currentWorkspace, content);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false, content);
+    }
+  });
 }
 
-// -------------------------------------------------------------------
-// Navigation handler, renderSection covers all roles
-// -------------------------------------------------------------------
-document.addEventListener("click", async (e) => {
-  const btn = e.target.closest(".navBtn");
-  if (!btn) return;
-
-  const container = document.getElementById("workspaceDashboardContent");
-  const section = btn.dataset.section;
-  setLoading(true, container);
-  try {
-    await new Promise(requestAnimationFrame);
-    await renderSection(section, getCurrentWorkspace(), container);
-  } catch (err) {
-    console.error(err);
-  } finally {
-    setLoading(false, container);
-  }
-});
-
-// -------------------------------------------------------------------
-// Backward compatible re-exports
-// -------------------------------------------------------------------
-// Anything elsewhere in the app that used to do
-//   import { loadTasks, loadDiscussions, currentWorkspace } from "../pages/workspace.js"
-// needs to be found and updated. Function re-exports below work as is.
-// currentWorkspace and loadedMembers do NOT work as drop in replacements,
-// since they used to be live `export let` bindings and are now functions.
-// Grep the codebase for these two names imported from the old path.
-export { loadTasks, loadAssignedTasks, loadAllTasks } from "./tasks.js";
-export { loadDiscussions } from "./discussions.js";
-export { loadActivities } from "./activities.js";
-export { createWorkspaceInvite } from "./invites.js";
+// Backwards-compatible aliases so existing HTML can keep working while you migrate
+export const initAdminWorkspaceData = initWorkspaceDashboard;
+export const initMemberWorkspaceData = initWorkspaceDashboard;
