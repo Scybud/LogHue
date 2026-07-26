@@ -149,7 +149,7 @@ async function loadBilling() {
   const manageBtn = document.getElementById("manage-btn");
   if (manageBtn) {
     manageBtn.onclick = () => {
-      window.location.href = "manage";
+      window.location.href = "billing/manage";
     };
   }
 }

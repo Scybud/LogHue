@@ -2,11 +2,24 @@
 @media (prefers-color-scheme: light) {
 
   :root {
-    --bg-primary: #eddddd;
-        --bg-secondary: #d4d4d4;
+--bg-primary: #eddddd;
+    --bg-secondary: #d4d4d4;
     --text-primary: #000000;
     --text-secondary: #414141;
-      --notif-bg-unread: #e6f7ff;
+
+    --active-color: #358cff;
+
+    --hover-bg: #d9d9d9;
+
+    --surface-primary: #e8eaeb;
+--surface-secondary: #E7EAED;
+
+--border-primary: #c7c7c7;
+--border-secondary: #b4b4b4;
+--border: var(--border-primary);
+
+  --muted: #5f5d5d;
+  --notif-bg-unread: #e6f7ff;
   --notif-bg-read: #fff;
   --notif-text: #000;
   --notif-border: #ddd;
@@ -15,16 +28,14 @@
 
   --navBtn-bg: #f0f0f0;
   --active: #e6e6e6;
-
-  --link: #0366d6;
+  background-color: #e6f7ff; /* light blue for unread */
 
   --card-bg: #ffffff;
-  --border: #dcdcdc;
+--success: #006239;
 
   --form-bg: #ffffff;
   --input-bg: #f2f2f2;
   --input-color: #000000;
-  --text-muted: #545454;
 
   --chevron-color: #555555;
   
@@ -41,10 +52,15 @@
     --text-primary: #000000;
     --text-secondary: #414141;
 
-    --surface-primary: #F4F6F8;
+    --active-color: #358cff;
+
+    --hover-bg: #d9d9d9;
+
+    --surface-primary: #e8eaeb;
 --surface-secondary: #E7EAED;
 
 --border-primary: #c7c7c7;
+--border-secondary: #b4b4b4;
 --border: var(--border-primary);
 
   --muted: #5f5d5d;
