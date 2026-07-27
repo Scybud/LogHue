@@ -471,7 +471,9 @@ export async function attachCreatePersonalTaskEvent() {
     setButtonLoading(logTaskBtn, true);
 
     const taskValue = taskEl.value.trim();
-    const timeValue = timeEl.value.trim();
+    const timeValue = timeEl.value
+      ? new Date(timeEl.value).toISOString()
+      : null;
     const noteValue = noteEl.value.trim();
 
     if (!taskValue || !timeValue) {
@@ -486,7 +488,7 @@ export async function attachCreatePersonalTaskEvent() {
       .insert({
         name: taskValue,
         description: noteValue || "",
-        created_at: timeValue,
+        task_deadline: timeValue,
         user_id: user.id,
       })
       .select()
@@ -494,7 +496,7 @@ export async function attachCreatePersonalTaskEvent() {
 
     if (error) {
       console.error(error);
-      actionMsg("Failed to create log.", "error");
+      actionMsg("Failed to create Task.", "error");
       setButtonLoading(logTaskBtn, false);
       return;
     }
@@ -514,7 +516,7 @@ export async function attachCreatePersonalTaskEvent() {
     // Close modal
     closeModal();
 
-    actionMsg("Log created successfully.", "success");
+    actionMsg("Task created successfully.", "success");
     setButtonLoading(logTaskBtn, false);
   });
 }

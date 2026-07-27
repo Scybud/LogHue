@@ -1,6 +1,4 @@
-// ---------------------------------------------------------
 // Imports
-// ---------------------------------------------------------
 import { supabase } from "../supabase.js";
 import { sessionState, sessionReady } from "../session.js";
 import {
@@ -16,9 +14,7 @@ import {
 import { attachCreatePersonalTaskEvent } from "../utils/modalEvents.js";
 import { formatDateTime } from "../utils/time.js";
 
-// ---------------------------------------------------------
 // State
-// ---------------------------------------------------------
 let personalCreatedTasks = null;
 let loggedTasksCount = null;
 let selectedWorkspaceId = null;
@@ -27,9 +23,7 @@ let user = null;
 
 export let savedTaskDetails = []; // exported for other modules
 
-// ---------------------------------------------------------
 // Initialization
-// ---------------------------------------------------------
 export async function initPersonalTasks() {
   await sessionReady;
   user = sessionState.user;
@@ -65,9 +59,7 @@ export async function initPersonalTasks() {
   openLogPersonalTaskModal();
 }
 
-// ---------------------------------------------------------
 // Empty State
-// ---------------------------------------------------------
 export async function checkIfEmpty() {
   if (!personalCreatedTasks) return;
 
@@ -93,9 +85,7 @@ export async function checkIfEmpty() {
   if (placeholder) placeholder.remove();
 }
 
-// ---------------------------------------------------------
 // Icons
-// ---------------------------------------------------------
 function createSvgIcon(paths, { viewBox = "0 0 24 24" } = {}) {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("width", "18");
@@ -137,9 +127,7 @@ const duplicateIconPaths = [
   },
 ];
 
-// ---------------------------------------------------------
 // Create Task Element
-// ---------------------------------------------------------
 export function createTaskElement(task) {
   const el = document.createElement("div");
   el.classList.add("taskCard");
@@ -191,15 +179,13 @@ export function createTaskElement(task) {
   // Date
   const dateSpan = document.createElement("span");
   dateSpan.classList.add("taskDate");
-  dateSpan.textContent = formatDateTime(task.created_at);
+  dateSpan.textContent = task.task_deadline !== null ? formatDateTime(task.task_deadline) : formatDateTime(task.created_at);
   el.append(dateSpan);
 
   return el;
 }
 
-// ---------------------------------------------------------
 // Render Tasks
-// ---------------------------------------------------------
 export function renderExistingTasks() {
   if (!personalCreatedTasks) return;
 
@@ -236,16 +222,10 @@ export function renderExistingTasks() {
 
   // Append groups to main container
   personalCreatedTasks.append(incompleteGroup.wrapper, completedGroup.wrapper);
-  // NOTE: the duplicateBtn click listener used to live here, which meant a
-  // fresh listener stacked on top of every prior one each time this function
-  // ran (e.g. every checkbox toggle calls renderExistingTasks()). Moved to
-  // attachDuplicateTaskEvent(), registered once from initPersonalTasks(),
-  // matching the same pattern as attachDeleteTaskEvent / attachToggleCompleteEvent.
+
 }
 
-// ---------------------------------------------------------
 // Toggle Complete (Delegated)
-// ---------------------------------------------------------
 export function attachToggleCompleteEvent(container) {
   if (!container) return;
 
@@ -278,9 +258,7 @@ export function attachToggleCompleteEvent(container) {
   });
 }
 
-// ---------------------------------------------------------
 // Delete Task
-// ---------------------------------------------------------
 export function attachDeleteTaskEvent(container, userId) {
   if (!container) return;
 
@@ -326,9 +304,7 @@ async function performTaskDelete(btn, userId) {
   checkIfEmpty();
 }
 
-// ---------------------------------------------------------
 // Duplicate Task (Delegated)
-// ---------------------------------------------------------
 export function attachDuplicateTaskEvent(container, userId) {
   if (!container) return;
 
