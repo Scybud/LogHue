@@ -5,6 +5,7 @@ self.addEventListener("push", function (event) {
     self.registration.showNotification(data.title || "LogHue", {
       body: data.body || "",
       icon: "https://loghue.com/images/loghue-logo.png",
+      badge: "https://loghue.com/images/loghue-logo.png",
       data: { url: data.url || "/" },
     }),
   );
@@ -12,5 +13,21 @@ self.addEventListener("push", function (event) {
 
 self.addEventListener("notificationclick", function (event) {
   event.notification.close();
-  event.waitUntil(clients.openWindow(event.notification.data.url));
+
+  const targetUrl = event.notification.data.url;
+
+  event.waitUntil(
+    clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((clientList) => {
+        for (const client of clientList) {
+          if (client.url === targetUrl && "focus" in client) {
+            return client.focus();
+          }
+        }
+        if (clients.openWindow) {
+          return clients.openWindow(targetUrl);
+        }
+      }),
+  );
 });

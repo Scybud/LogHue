@@ -1,4 +1,5 @@
-export const PUBLIC_VAPID_KEY = "BMs5I6ibazvhjbLJzf122TCMuS-AHENdYH8nwDWiNyAVR9GvApZxfBDC8Fp8dSaFNPSbcAjmDE1eqv_0NSFitoo"
+export const PUBLIC_VAPID_KEY =
+  "BMs5I6ibazvhjbLJzf122TCMuS-AHENdYH8nwDWiNyAVR9GvApZxfBDC8Fp8dSaFNPSbcAjmDE1eqv_0NSFitoo";
 
 function urlBase64ToUint8Array(base64) {
   const padding = "=".repeat((4 - (base64.length % 4)) % 4);
@@ -9,6 +10,12 @@ function urlBase64ToUint8Array(base64) {
     output[i] = raw.charCodeAt(i);
   }
   return output;
+}
+
+function sameApplicationServerKey(existingKeyBuffer, newKeyUint8Array) {
+  const existingKeyArray = new Uint8Array(existingKeyBuffer);
+  if (existingKeyArray.length !== newKeyUint8Array.length) return false;
+  return existingKeyArray.every((byte, i) => byte === newKeyUint8Array[i]);
 }
 
 export async function registerPush() {
@@ -24,12 +31,37 @@ export async function registerPush() {
     return { error: "Notification permission denied" };
   }
 
-  const registration = await navigator.serviceWorker.register("/sw.js");
+  try {
+    const registration = await navigator.serviceWorker.register("/sw.js");
+    await navigator.serviceWorker.ready;
 
-  const subscription = await registration.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(PUBLIC_VAPID_KEY),
-  });
+    const newKey = urlBase64ToUint8Array(PUBLIC_VAPID_KEY);
+    const existing = await registration.pushManager.getSubscription();
 
-  return subscription.toJSON();
+    if (existing) {
+      const keysMatch = existing.options?.applicationServerKey
+        ? sameApplicationServerKey(
+            existing.options.applicationServerKey,
+            newKey,
+          )
+        : false;
+
+      if (keysMatch) {
+        return existing.toJSON();
+      }
+
+      // Subscription exists under an old or mismatched key, replace it
+      await existing.unsubscribe();
+    }
+
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: newKey,
+    });
+
+    return subscription.toJSON();
+  } catch (err) {
+    console.error("Push subscription failed:", err);
+    return { error: "Could not enable push notifications" };
+  }
 }
