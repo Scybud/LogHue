@@ -171,7 +171,7 @@ function setupOAuthButton(buttonId, provider) {
     const redirectTo = params.get("redirect");
 
     // Build callback URL with redirect param included
-    const callbackUrl = "https://app.loghue.com/auth/callback";
+    const callbackUrl = "https://app.loghue.com/pages/auth/callback";
 
     if (redirectTo) {
       localStorage.setItem("post_login_redirect", redirectTo);
