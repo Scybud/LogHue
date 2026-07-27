@@ -415,7 +415,7 @@ function appendLogComments(comments, container) {
 
     const time = document.createElement("div");
     time.className = "timestamp";
-    time.textContent = formatDateTime(c.created_at);
+    time.textContent = formatDateTimeRelatively(c.created_at);
 
     body.append(text, time);
     commentEl.append(avatar, body);
