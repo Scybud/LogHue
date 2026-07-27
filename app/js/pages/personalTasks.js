@@ -66,9 +66,9 @@ export async function checkIfEmpty() {
   if (savedTaskDetails.length === 0) {
     await createEmptyState({
       container: personalCreatedTasks,
-      icon: "📭",
-      title: "Nothing here yet",
-      description: "You have no created tasks yet",
+      icon: "🎯",
+      title: "No tasks created",
+      description: "Start by creating your first task",
       actionText: "Create Task",
       onAction: async () => {
         await loadComponent(

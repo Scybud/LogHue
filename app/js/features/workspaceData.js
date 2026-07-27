@@ -1,5 +1,9 @@
 import { dataCount } from "../utils.js";
-import { closeModal, loadComponent } from "../ui.js";
+import {
+  loadComponent,
+  createEmptyState,
+  closeModal,
+} from "https://scybud.github.io/scybud-ui/js/ui.js";
 import { supabase } from "../supabase.js";
 import { sessionState, sessionReady } from "../session.js";
 import { confirmAction, actionMsg } from "../../js/utils/modals.js";
@@ -16,7 +20,7 @@ if (window.__workspaceInit) {
 let workspaceNameEl;
 let workspaceDescriptionEl;
 let createWorkspaceBtn;
-let upperDashboardContainer;
+let allWorkspacesContainer;
 let user = null;
 export let savedWorkspaceData = [];
 
@@ -108,131 +112,114 @@ export async function initWorkspaces() {
   workspaceNameEl = document.getElementById("workspacename");
   workspaceDescriptionEl = document.getElementById("workspaceDescription");
   createWorkspaceBtn = document.getElementById("createWorkspace");
-  upperDashboardContainer = document.getElementById("upperDashboardContainer");
+  allWorkspacesContainer = document.getElementById("allWorkspacesContainer");
 
-  savedWorkspaceData = normalizedCreated || [];
+  savedWorkspaceData = await attachWorkspaceStats(normalizedCreated || []);
 
-  updateworkspaceCount();
-  checkIfEmpty();
-  attachCreateWorkspaceEvent(upperDashboardContainer, createdWorkspaces);
+  checkIfEmpty(createdWorkspaces);
+  attachCreateWorkspaceEvent(allWorkspacesContainer, createdWorkspaces);
   attachOpenWorkspaceClickEvent();
 }
 
-function checkIfEmpty() {
-  if (!upperDashboardContainer) return;
+//MERGE MEMBER COUNT, TASK COUNTS AND LAST ACTIVITY ONTO EACH WORKSPACE
+async function attachWorkspaceStats(workspaces) {
+  if (!workspaces.length) return workspaces;
 
-  if (savedWorkspaceData.length === 0) {
-    upperDashboardContainer.textContent = "";
+  const workspaceIds = workspaces.map((w) => w.id);
 
-    const svgNS = "http://www.w3.org/2000/svg";
+  const { data: allMembers, error: membersError } = await supabase
+    .from("workspace_members")
+    .select("workspace_id")
+    .in("workspace_id", workspaceIds);
 
-    const svg = document.createElementNS(svgNS, "svg");
-    svg.classList.add("emptyStateImg");
-    svg.setAttribute("viewBox", "0 0 220 160");
-    svg.setAttribute("fill", "none");
-    svg.setAttribute("role", "img");
-    svg.setAttribute("aria-hidden", "true");
-
-    const rect1 = document.createElementNS(svgNS, "rect");
-    rect1.setAttribute("x", "28");
-    rect1.setAttribute("y", "40");
-    rect1.setAttribute("width", "80");
-    rect1.setAttribute("height", "10");
-    rect1.setAttribute("rx", "5");
-    rect1.setAttribute("fill", "#E0E0E6");
-
-    const rect2 = document.createElementNS(svgNS, "rect");
-    rect2.setAttribute("x", "28");
-    rect2.setAttribute("y", "58");
-    rect2.setAttribute("width", "140");
-    rect2.setAttribute("height", "8");
-    rect2.setAttribute("rx", "4");
-    rect2.setAttribute("fill", "#E8E8EE");
-
-    const rect3 = document.createElementNS(svgNS, "rect");
-    rect3.setAttribute("x", "28");
-    rect3.setAttribute("y", "72");
-    rect3.setAttribute("width", "110");
-    rect3.setAttribute("height", "8");
-    rect3.setAttribute("rx", "4");
-    rect3.setAttribute("fill", "#E8E8EE");
-
-    const rect4 = document.createElementNS(svgNS, "rect");
-    rect4.setAttribute("x", "28");
-    rect4.setAttribute("y", "86");
-    rect4.setAttribute("width", "90");
-    rect4.setAttribute("height", "8");
-    rect4.setAttribute("rx", "4");
-    rect4.setAttribute("fill", "#E8E8EE");
-
-    const rect5 = document.createElementNS(svgNS, "rect");
-    rect5.setAttribute("x", "130");
-    rect5.setAttribute("y", "44");
-    rect5.setAttribute("width", "56");
-    rect5.setAttribute("height", "40");
-    rect5.setAttribute("rx", "8");
-    rect5.setAttribute("fill", "none");
-    rect5.setAttribute("stroke", "#D3D3E0");
-    rect5.setAttribute("stroke-dasharray", "4 4");
-
-    const circle = document.createElementNS(svgNS, "circle");
-    circle.setAttribute("cx", "158");
-    circle.setAttribute("cy", "64");
-    circle.setAttribute("r", "10");
-    circle.setAttribute("fill", "#FF6B35");
-    circle.setAttribute("opacity", "0.12");
-
-    const path = document.createElementNS(svgNS, "path");
-    path.setAttribute("d", "M158 58V70M152 64H164");
-    path.setAttribute("stroke", "#FF6B35");
-    path.setAttribute("stroke-width", "2");
-    path.setAttribute("stroke-linecap", "round");
-
-    const bottom1 = document.createElementNS(svgNS, "rect");
-    bottom1.setAttribute("x", "28");
-    bottom1.setAttribute("y", "106");
-    bottom1.setAttribute("width", "60");
-    bottom1.setAttribute("height", "10");
-    bottom1.setAttribute("rx", "5");
-    bottom1.setAttribute("fill", "#E0E0E6");
-
-    const bottom2 = document.createElementNS(svgNS, "rect");
-    bottom2.setAttribute("x", "94");
-    bottom2.setAttribute("y", "106");
-    bottom2.setAttribute("width", "40");
-    bottom2.setAttribute("height", "10");
-    bottom2.setAttribute("rx", "5");
-    bottom2.setAttribute("fill", "#E0E0E6");
-
-    const t1 = document.createElementNS(svgNS, "text");
-    t1.setAttribute("x", "110");
-    t1.setAttribute("y", "130");
-    t1.setAttribute("text-anchor", "middle");
-    t1.setAttribute("font-size", "9");
-    t1.setAttribute("fill", "#8A8A99");
-    t1.textContent = "No workspaces yet — create your first one";
-
-    svg.append(
-      rect1,
-      rect2,
-      rect3,
-      rect4,
-      rect5,
-      circle,
-      path,
-      bottom1,
-      bottom2,
-      t1,
-    );
-
-    upperDashboardContainer.appendChild(svg);
-  } else {
-    const placeholder =
-      upperDashboardContainer.querySelector(".placeholderText");
-    if (placeholder) placeholder.remove();
+  if (membersError) {
+    console.error(membersError);
   }
+
+  const membersCountMap = (allMembers || []).reduce((acc, m) => {
+    acc[m.workspace_id] = (acc[m.workspace_id] || 0) + 1;
+    return acc;
+  }, {});
+
+  const { data: allTasks, error: tasksError } = await supabase
+    .from("workspace_tasks")
+    .select("workspace_id, status, updated_at, created_at")
+    .in("workspace_id", workspaceIds);
+
+  if (tasksError) {
+    console.error(tasksError);
+  }
+
+  const taskStatsMap = (allTasks || []).reduce((acc, t) => {
+    if (!acc[t.workspace_id]) {
+      acc[t.workspace_id] = { total: 0, open: 0, lastActivity: null };
+    }
+    const entry = acc[t.workspace_id];
+    entry.total += 1;
+    if (t.status !== "completed") entry.open += 1;
+
+    const activityTime = t.updated_at || t.created_at;
+    if (
+      activityTime &&
+      (!entry.lastActivity ||
+        new Date(activityTime) > new Date(entry.lastActivity))
+    ) {
+      entry.lastActivity = activityTime;
+    }
+    return acc;
+  }, {});
+
+  return workspaces.map((ws) => {
+    const taskStats = taskStatsMap[ws.id] || {
+      total: 0,
+      open: 0,
+      lastActivity: null,
+    };
+    return {
+      ...ws,
+      member_count: membersCountMap[ws.id] || 0,
+      total_tasks: taskStats.total,
+      open_tasks: taskStats.open,
+      last_activity: taskStats.lastActivity || ws.created_at,
+    };
+  });
 }
 
+async function checkIfEmpty(createdWorkspaces) {
+  if(!allWorkspacesContainer) return;
+  
+  if (savedWorkspaceData.length === 0) {
+
+    allWorkspacesContainer.textContent = "";
+
+    await createEmptyState({
+      container: allWorkspacesContainer,
+      icon: "🗂️",
+      title: "No workspaces yet",
+      description: "Create a workspace to start organizing your work",
+      actionText: "Create Workspace",
+      onAction: async () => {
+        await loadComponent(
+          "../components/modals/create-workspace",
+          "modalContainer",
+        );
+
+        // Re-query the modal's elements now that they exist in the DOM
+        workspaceNameEl = document.getElementById("workspacename");
+        workspaceDescriptionEl = document.getElementById(
+          "workspaceDescription",
+        );
+        createWorkspaceBtn = document.getElementById("createWorkspace");
+
+        await attachCreateWorkspaceEvent(
+          allWorkspacesContainer,
+          createdWorkspaces,
+        );
+      },
+    });
+    return;
+  }
+}
 
 async function attachCreateWorkspaceEvent(container, workspaces) {
   if (!createWorkspaceBtn) return;
@@ -297,6 +284,12 @@ async function attachCreateWorkspaceEvent(container, workspaces) {
     // Assign role manually for UI consistency
     newWorkspace.role = "owner";
 
+    // Seed stats fields so the card doesn't render zeros until reload
+    newWorkspace.member_count = 1;
+    newWorkspace.total_tasks = 0;
+    newWorkspace.open_tasks = 0;
+    newWorkspace.last_activity = newWorkspace.created_at;
+
     //ADD WORKSPACE ADMIN AS MEMBER
     const { data: existing } = await supabase
       .from("workspace_members")
@@ -330,8 +323,7 @@ async function attachCreateWorkspaceEvent(container, workspaces) {
     if (container) {
       container.prepend(wsCard);
     }
-    updateworkspaceCount();
-    checkIfEmpty();
+    checkIfEmpty(workspaces);
 
     //RESET FORM
     workspaceNameEl.value = "";
@@ -342,27 +334,6 @@ async function attachCreateWorkspaceEvent(container, workspaces) {
     actionMsg("Workspace created successfully!", "success");
     setButtonLoading(createWorkspaceBtn, false);
   });
-}
-
-function updateworkspaceCount() {
-  const membership = savedWorkspaceData.filter((ws) => ws.role === "owner");
-  const openedWorkspaces = savedWorkspaceData.filter(
-    (ws) => ws.status === "active",
-  );
-  const closedWorkspaces = savedWorkspaceData.filter(
-    (ws) => ws.status === "closed",
-  );
-
-  const createdWorkspacesCount = document.getElementById(
-    "createdWorkspacesCount",
-  );
-  const closedWorkspacesCount = document.getElementById(
-    "closedWorkspacesCount",
-  );
-  const activeWorkspaceCount = document.getElementById("activeWorkspaceCount");
-  dataCount(activeWorkspaceCount, openedWorkspaces);
-  dataCount(createdWorkspacesCount, membership);
-  dataCount(closedWorkspacesCount, closedWorkspaces);
 }
 
 export function createWorkspaceCardElement(ws) {
@@ -476,9 +447,7 @@ function attachOpenWorkspaceClickEvent() {
     const wsId = btn.dataset.id;
     const role = btn.dataset.role;
 
-  
-      window.location.href = `workspace?ws=${wsId}`;
-    
+    window.location.href = `workspace?ws=${wsId}`;
   });
 }
 
@@ -564,21 +533,21 @@ export async function editWorkspace(ws, id) {
   );
 
   const pageTitle = modalContainer.querySelector(".pageTitle");
-  const workspaceNameEl = document.getElementById("workspacename");
-  const workspaceDescriptionEl = document.getElementById(
+  const editWorkspaceNameEl = document.getElementById("workspacename");
+  const editWorkspaceDescriptionEl = document.getElementById(
     "workspaceDescription",
   );
   const updateWorkspaceBtn = document.getElementById("createWorkspace");
 
   pageTitle.textContent = "Update Workspace";
-  workspaceNameEl.value = ws.name;
-  workspaceDescriptionEl.value = ws.description;
+  editWorkspaceNameEl.value = ws.name;
+  editWorkspaceDescriptionEl.value = ws.description;
   updateWorkspaceBtn.textContent = "Update Workspace";
 
   updateWorkspaceBtn.addEventListener("click", async () => {
-    const updatedWorkspaceNameValue = workspaceNameEl.value.trim();
+    const updatedWorkspaceNameValue = editWorkspaceNameEl.value.trim();
     const updatedWorkspaceDescriptionValue =
-      workspaceDescriptionEl.value.trim();
+      editWorkspaceDescriptionEl.value.trim();
 
     const { error } = await supabase
       .from("workspaces")
@@ -605,9 +574,7 @@ export async function editWorkspace(ws, id) {
 }
 
 function openWorkspace(wsId) {
-  
-    window.location.href = `workspace?ws=${wsId}`;
-  
+  window.location.href = `workspace?ws=${wsId}`;
 }
 
 //EXPORT PROMISE WHEN WORKSPACE IS READY

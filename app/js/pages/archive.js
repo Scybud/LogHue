@@ -1,91 +1,95 @@
 import {
   savedWorkspaceData,
   getWorkspaceReady,
-  formatDateTime,
 } from "../features/workspaceData.js";
 import { supabase } from "../supabase.js";
 import { confirmAction, actionMsg } from "../utils/modals.js";
 import { setLoading } from "../ui.js";
+import { formatDateTime } from "../utils/time.js";
 
-
-function checkIfEmpty() {
+function checkIfEmpty(historyContainer) {
   const closedWorkspaces = savedWorkspaceData.filter(
     (ws) => ws.status === "closed",
   );
 
   if (!historyContainer) return;
+
   if (closedWorkspaces.length === 0) {
-    historyContainer.innerHTML = `<svg
-    class="emptyStateImg"
+    historyContainer.innerHTML = `
+<svg
+  class="emptyStateImg"
   viewBox="0 0 220 160"
   fill="none"
   role="img"
   xmlns="http://www.w3.org/2000/svg"
   aria-hidden="true"
 >
-  <!-- Background card -->
-"100%" height="100%" fill="currentColor"  <rect x="28" y="40" width="80" height="10" rx="5" fill="#E0E0E6" />
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#6b6b6b" />
+
+  <!-- Content -->
+  <rect x="28" y="40" width="80" height="10" rx="5" fill="#E0E0E6" />
   <rect x="28" y="58" width="140" height="8" rx="4" fill="#E8E8EE" />
   <rect x="28" y="72" width="110" height="8" rx="4" fill="#E8E8EE" />
   <rect x="28" y="86" width="90" height="8" rx="4" fill="#E8E8EE" />
 
-
-  <!-- Bottom bar -->
+  <!-- Bottom -->
   <rect x="28" y="106" width="60" height="10" rx="5" fill="#E0E0E6" />
   <rect x="94" y="106" width="40" height="10" rx="5" fill="#E0E0E6" />
 
-  <!-- Subtle background circles -->
+  <!-- Decorations -->
   <circle cx="40" cy="26" r="4" fill="#FFE4D8" />
   <circle cx="190" cy="120" r="5" fill="#FFE4D8" />
   <circle cx="32" cy="118" r="3" fill="#FFE4D8" />
 
-  <!-- Hint text -->
   <text
     x="110"
     y="130"
     text-anchor="middle"
     font-family="system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
     font-size="9"
-    fill="#8A8A99"
+    fill="#303030"
   >
-    Nothing in your archeive
+    Nothing in your archive
   </text>
 </svg>
 `;
-  } else {
-    const placeholder = historyContainer.querySelector(".placeholderText");
-    if (placeholder) placeholder.remove();
   }
 }
 
 export async function renderArchive() {
   const historyContainer = document.querySelector("#historyContainer");
 
-  setLoading(true, historyContainer)
+  setLoading(true, historyContainer);
 
-    const workspacesReady = getWorkspaceReady();
-  
-  await workspacesReady;
+  await getWorkspaceReady();
 
-  historyContainer.innerHTML = ""; // clear existing content
+  historyContainer.innerHTML = "";
 
   const closedWorkspaces = savedWorkspaceData.filter(
     (ws) => ws.status === "closed",
   );
 
-    const div = document.createElement("div");
-    div.classList.add("double-grid");
+  setLoading(false, historyContainer);
+
+  if (closedWorkspaces.length === 0) {
+    checkIfEmpty(historyContainer);
+    return;
+  }
+
+  const div = document.createElement("div");
+  div.classList.add("double-grid");
 
   closedWorkspaces.forEach((ws) => {
-    const formattedTDate = formatDateTime(ws.closed_at);
+    const formattedDate = formatDateTime(ws.closed_at);
 
-    // --- Card wrapper ---
+    // Card
     const card = document.createElement("div");
-    card.classList.add("workspaceCard", "card", `${ws.status}`);
+    card.classList.add("workspaceCard", "card", ws.status);
     card.dataset.id = ws.id;
-    card.title = "Workspace can only be accessed after restore";
+    card.title = "Workspace can only be accessed after restore.";
 
-    // --- Header ---
+    // Header
     const header = document.createElement("div");
     header.className = "workspaceCardHeader";
 
@@ -101,90 +105,78 @@ export async function renderArchive() {
 
     title.appendChild(roleTag);
 
-    const metaP = document.createElement("p");
+    const meta = document.createElement("p");
     const metaSpan = document.createElement("span");
     metaSpan.className = "meta";
-    metaSpan.textContent = `Archived on: ${formattedTDate}`;
-    metaP.appendChild(metaSpan);
+    metaSpan.textContent = `Archived on: ${formattedDate}`;
 
-    headerLeft.appendChild(title);
-    headerLeft.appendChild(metaP);
+    meta.appendChild(metaSpan);
+
+    headerLeft.append(title, meta);
     header.appendChild(headerLeft);
 
-    // --- Description section ---
+    // Description
     const details = document.createElement("details");
+
     const summary = document.createElement("summary");
     summary.textContent = "Description";
 
     const desc = document.createElement("p");
-    desc.textContent = ws.description;
+    desc.textContent = ws.description || "No description.";
 
-    details.appendChild(summary);
-    details.appendChild(desc);
+    details.append(summary, desc);
 
-    // --- Restore section ---
+    // Restore section
     let restoreSection;
 
-    if (ws.role === "admin" || ws.role === "owner") {
+    if (ws.role === "owner" || ws.role === "admin") {
       const btn = document.createElement("button");
       btn.className = "btn btn-secondary restoreWorkspaceBtn";
       btn.textContent = "Restore";
+
       restoreSection = btn;
     } else {
-      const placeholder = document.createElement("p");
-      placeholder.className = "";
-      placeholder.textContent =
-        "Only admin(s) of this workspace can restore it.";
-      restoreSection = placeholder;
+      const info = document.createElement("p");
+      info.textContent =
+        "Only admins or owners of this workspace can restore it.";
+
+      restoreSection = info;
     }
 
-    // --- Assemble card ---
-    card.appendChild(header);
-    card.appendChild(details);
-    card.appendChild(restoreSection);
-
-    // --- Add to container ---
+    card.append(header, details, restoreSection);
     div.appendChild(card);
-    historyContainer.append(div)
   });
 
-  setLoading(false, historyContainer)
-  restoreWorkspaceEvent();
+  historyContainer.appendChild(div);
 }
 
-renderArchive();
-checkIfEmpty();
-
-//RESTORE WORKSPACE
+// Restore button event
 function restoreWorkspaceEvent() {
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest(".restoreWorkspaceBtn");
-
     if (!btn) return;
 
-    const workspaceToRestore = btn.closest(".workspaceCard");
-    const id = workspaceToRestore.dataset.id;
-    
-    restoreWorkspace(id)
+    const workspace = btn.closest(".workspaceCard");
+    if (!workspace) return;
+
+    await restoreWorkspace(workspace.dataset.id);
   });
-  checkIfEmpty();
 }
 
-
-//RESTORE WORKSPACE
 async function restoreWorkspace(id) {
-  confirmAction("Restore this workspace? Restoring workspace will allow access to the workspace, both for the admin(s) and member(s).", [
-    { label: "Cancel", type: "cancel" },
-    {
-      label: "Restore",
-      type: "confirm",
-      onClick: () => performWorkspaceRestore(id),
-    },
-  ]);
-  
+  confirmAction(
+    "Restore this workspace? Restoring the workspace will allow all members to access it again.",
+    [
+      { label: "Cancel", type: "cancel" },
+      {
+        label: "Restore",
+        type: "confirm",
+        onClick: () => performWorkspaceRestore(id),
+      },
+    ],
+  );
 }
 
-//PERFORM WORKSPACE ARCHEIVE IF CONFIRMED
 async function performWorkspaceRestore(id) {
   const { error } = await supabase
     .from("workspaces")
@@ -199,9 +191,14 @@ async function performWorkspaceRestore(id) {
     return;
   }
 
+  actionMsg(
+    "Workspace restored! Open it in the 'All Workspaces' page.",
+    "success",
+  );
 
-    actionMsg("Workspace restored! Open it in the 'All Worksoace' page", "success");
-
-// Refresh UI
-renderArchive();
+  renderArchive();
 }
+
+// Initialise
+restoreWorkspaceEvent();
+renderArchive();
