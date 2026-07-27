@@ -330,6 +330,7 @@ function renderLogs() {
   currentTask.logs.forEach((log) => {
     const logCard = document.createElement("div");
     logCard.classList.add("logCard");
+    log.id ? logCard.id = log.id : "";
 
     const header = document.createElement("div");
     header.classList.add("logHeader");

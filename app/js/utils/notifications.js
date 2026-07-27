@@ -148,21 +148,35 @@ export async function renderGlobalNotifications(notifications) {
 
       notif.task = task;
     }
-    if (notif.type === "task_logged" || notif.type === "task_ping") {
+    if (notif.type === "task_ping") {
       let task = null;
-
       try {
         const { data } = await supabase
           .from("workspace_tasks")
           .select("title")
           .eq("id", notif.entity_id)
           .maybeSingle();
-
         task = data;
       } catch (e) {
         task = null;
       }
+      notif.task = task;
+    }
 
+    if (notif.type === "task_logged") {
+      let task = null;
+      try {
+        const { data: log } = await supabase
+          .from("workspace_task_logs")
+          .select("task_id, workspace_tasks:task_id (title)")
+          .eq("id", notif.entity_id)
+          .maybeSingle();
+        task = log?.workspace_tasks
+          ? { id: log.task_id, title: log.workspace_tasks.title }
+          : null;
+      } catch (e) {
+        task = null;
+      }
       notif.task = task;
     }
 
@@ -193,8 +207,12 @@ export async function renderGlobalNotifications(notifications) {
     } else if (notif.type === "discussion_started") {
       link.href = `discussion-view?dcn=${encodeURIComponent(notif.entity_id)}`;
     } else if (notif.type === "task_logged") {
-      link.href = `task-view?task=${encodeURIComponent(notif.entity_id)}`;
-    }
+  if (notif.task?.id) {
+    link.href = `task-view?task=${encodeURIComponent(notif.task.id)}#${encodeURIComponent(notif.entity_id)}`;
+  } else {
+    link.href = "#"; // deleted log or task, nothing to link to
+  }
+}
 
     const actorAvatar = document.createElement("img");
     actorAvatar.classList.add("profileAvatar");
