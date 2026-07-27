@@ -478,12 +478,13 @@ function attachLogSubmitHandler() {
         currentTask.created_by &&
         currentTask.created_by !== userData.user.id
       ) {
+        
         await notifyUser({
           workspaceId: currentWorkspace.id,
           receiverUserId: currentTask.created_by,
           actorId: userData.user.id,
           type: "task_logged",
-          entityId: currentTask.id,
+          entityId: data.id,
           entityType: "log",
         });
       }
