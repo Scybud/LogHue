@@ -176,8 +176,8 @@ export async function confirmAction(header, message, actions = []) {
     btn.classList.add(
       "btn",
       "btn-sm",
-      a.type === "confirm" ? "primary" : "secondary",
-      a.label === "Delete" || "Remove" ? "danger" : "primary",
+      a.type === "confirm" ? "btn-primary" : "secondary",
+      a.label === "Delete" || "Remove" ? "danger" : "btn-primary",
     );
 
     btn.onclick = () => {

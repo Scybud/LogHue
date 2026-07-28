@@ -289,7 +289,21 @@ button.danger {
 .confirmActionModal p::before {
   content: "⚠️ ";
 }
-
+.confirmActionModal .btn:hover {
+  opacity: 0.8;
+}
+#cancel {
+  color: #000;
+  background: #f2f2f2;
+}
+.confirmActionModal #confirm {
+  color: #fff;
+  background: var(--primary);
+}
+.confirmActionModal #confirm.danger {
+  color: #000;
+  background-color: var(--danger);
+}
 .warning-box {
     color: #ffd91a;
   background: #524201;
