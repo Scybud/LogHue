@@ -261,6 +261,47 @@ button.danger {
   height: 120px;
 }
 
+.confirmActionModal {
+    height: fit-content;
+  background: var(--card-bg);
+  padding: calc(var(--space-md));
+  margin: var(--space-sm) 0;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  align-self: center;
+
+    width: 100%;
+  max-width: 400px;
+}
+.confirmActionModal h2 {
+    font-size: var(--text-xl);
+  margin: var(--space-md) 0;
+}
+.confirmActionModal p {
+  display: block;
+  font-size: var(--text-sm);
+  padding: var(--space-md) var(--space-sm);
+  border-top: 1px solid var(--warning);
+  border-bottom: 1px solid var(--warning);
+  color: #ffdc2e;
+  background: #352a01ca;
+}
+.confirmActionModal p::before {
+  content: "⚠️ ";
+}
+
+.warning-box {
+    color: #ffd91a;
+  background: #524201;
+  border: 1px solid var(--warning);
+  border-radius: var(--radius-sm);
+  padding: var(--space-md);
+  margin: var(--space-md) 0;
+}
+
+.warning-box::before {
+  content: "⚠️ ";
+}
 /*CARDS*/
 .card {
   height: fit-content;
@@ -289,7 +330,7 @@ button.dropdown-item {
 /*MODAL CONTAINER*/
 
 .modalContainer {
-  position: absolute;
+  position: fixed;
 
   display: flex;
   justify-content: center;

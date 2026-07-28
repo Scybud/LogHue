@@ -394,7 +394,7 @@ async function deleteNote() {
     const noteToDelete = btn.closest(".noteItem");
     const id = noteToDelete.dataset.id;
 
-    confirmAction("Delete this note?", [
+    confirmAction("Delete Note", "Delete this note?", [
       { label: "Cancel", type: "cancel" },
       {
         label: "Delete",

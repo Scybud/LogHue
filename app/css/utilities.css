@@ -389,17 +389,6 @@ input.error {
   color: var(--success);
 }
 
-#confirmActionModal {
-align-self: center;
-  width: 100%;
-  max-width: 300px;
-  height: fit-content;
-}
-#confirmActionModal p {
-  margin: 0;
-  padding: 0;
-}
-
 /*NOTIFICATIONS*/
 #notificationsContainer h2 {
   text-align: left;

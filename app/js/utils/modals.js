@@ -154,14 +154,16 @@ export async function openApiKeyModal(workspace) {
   attachCreateApiKeyEvents(workspace.id);
 }
 
-export async function confirmAction(message, actions = []) {
+export async function confirmAction(header, message, actions = []) {
   // Load modal only when needed
   await loadComponent("../components/modals/confirm-action", "modalContainer");
 
   const msg = document.querySelector(".modalMessage");
+  const msgHeader = document.querySelector(".modalHeader");
   const actionsBox = document.querySelector(".modalActions");
 
-  msg.textContent = message;
+  msgHeader.textContent = header || "";
+  msg.textContent = message || "";
   actionsBox.innerHTML = "";
 
   // Normalize single action into array

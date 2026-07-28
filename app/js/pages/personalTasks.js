@@ -266,7 +266,7 @@ export function attachDeleteTaskEvent(container, userId) {
     const btn = e.target.closest(".deleteBtn");
     if (!btn) return;
 
-    confirmAction("Delete this task?", [
+    confirmAction("Delete Task", "Delete this task?", [
       { label: "Cancel", type: "cancel" },
       {
         label: "Delete",

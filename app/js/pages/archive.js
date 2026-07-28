@@ -165,6 +165,7 @@ function restoreWorkspaceEvent() {
 
 async function restoreWorkspace(id) {
   confirmAction(
+    "Restore Workspace",
     "Restore this workspace? Restoring the workspace will allow all members to access it again.",
     [
       { label: "Cancel", type: "cancel" },

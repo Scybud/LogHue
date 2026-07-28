@@ -155,7 +155,7 @@ function deleteWorkspaceDoc() {
       const path = btn.dataset.path;
       if (!path) return;
 
-      confirmAction("Are you sure you want to delete this document?", [
+      confirmAction("Delete Doc", "Are you sure you want to delete this document?", [
         { label: "Cancel", type: "cancel" },
         {
           label: "Delete",

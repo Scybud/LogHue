@@ -161,7 +161,7 @@ export function loadTasks(title, tasks, container) {
       deleteBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
        
-        confirmAction(`Delete "${tsk.title}"? This cannot be undone.`, [
+        confirmAction("Delete Task", `Delete "${tsk.title}"? This cannot be undone.`, [
                 { label: "Cancel", type: "cancel" },
                 {
                   label: "Delete",
@@ -267,7 +267,7 @@ export function loadAssignedTasks(sectionTitle, tasks, container) {
       deleteBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
 
-        confirmAction(`Delete "${tsk.title}"? This cannot be undone.`, [
+        confirmAction("Delete Task", `Delete "${tsk.title}"? This cannot be undone.`, [
           { label: "Cancel", type: "cancel" },
           {
             label: "Delete",

@@ -454,6 +454,7 @@ function attachOpenWorkspaceClickEvent() {
 //DELETE WORKSPACE
 export async function deleteWorkspace(id) {
   confirmAction(
+    "Delete Workspace",
     "Are you sure you want to delete this? All activites(Tasks, logs and discussions) related to this workspace will be deleted and members will be removed from the workspace permanently. It cannot be reversed",
     [
       { label: "Cancel", type: "cancel" },
@@ -489,7 +490,7 @@ async function performWorkspaceDelete(id) {
 
 //ARCHEIVE WORKSPACE
 export async function archiveWorkspace(id) {
-  confirmAction("Are you sure you want to Archeive this?", [
+  confirmAction("Archive Workspace", "Are you sure you want to Archeive this?", [
     { label: "Cancel", type: "cancel" },
     {
       label: "Archeive",
