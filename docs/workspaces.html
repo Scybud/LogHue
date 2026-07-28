@@ -26,7 +26,7 @@
   </head>
 
   <body>
-    <main class="docs-layout">
+    <div class="docs-layout">
       <aside id="docs-sidebar" class="docs-sidebar"></aside>
       <main class="docs-main">
         <header id="docs-navbar" class="docs-navbar"></header>
@@ -40,22 +40,31 @@
           <div class="doc-section">
             <h2>What is a Workspace?</h2>
             <p>
-              A workspace is a dedicated area for your team to collaborate. It's
-              like a digital office where everything related to a project lives
-              together:
+              A workspace is an optional area for collaborating with a team.
+              Your tasks and notes start out personal, and nothing requires
+              a workspace to use. When you want to share something, you
+              duplicate a task or import a note into a workspace, where it
+              becomes part of a shared space that includes:
             </p>
             <ul>
-              <li><strong>Tasks</strong> - Work items that need to be done</li>
+              <li><strong>Tasks</strong> - work items shared with the team</li>
               <li>
-                <strong>Logs</strong> - Records of what team members have worked
-                on
+                <strong>Logs</strong> - progress updates team members post
+                on shared tasks
               </li>
-              <li><strong>Discussions</strong> - Conversations and comments</li>
-              <li><strong>Activites</strong> - Overview of what happened in the workspace</li>
+              <li><strong>Discussions</strong> - conversations and comments</li>
+              <li><strong>Activites</strong> - overview of what happened in the workspace</li>
               <li>
-                <strong>Members</strong> - People who work in the workspace
+                <strong>Members</strong> - people who work in the workspace
               </li>
             </ul>
+            <p>
+              Duplicating a task or importing a note into a workspace never
+              removes it from your personal list. You end up with two
+              independent copies that you can manage separately. See
+              <a href="tasks-and-notes">Tasks & Notes</a> for how that
+              works from the personal side.
+            </p>
             <div class="info-box">
               <p>
                 <strong>Tip:</strong> Create separate workspaces for different
@@ -133,17 +142,15 @@ Workspace creation limits vary by plan. The Team plan offers unlimited workspace
 
           <div class="doc-page-nav">
             <div class="page-nav">
-              <a href="getting-started" class="nav-prev"
-                >← Getting Started</a
-              >
+              <a href="search" class="nav-prev">← Search & Command Palette</a>
               <a href="roles" class="nav-next">Roles & Permissions →</a>
             </div>
           </div>
         </div>
       </main>
-    </main>
-   <script src="https://loghue.com/docs/components/sidebar.js"></script>
-    <script src="https://loghue.com/docs/components/navbar.js"></script>
+    </div>
+   <script src="/components/sidebar.js"></script>
+    <script src="/components/navbar.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         if (window.docsNavbar) window.docsNavbar.setPageTitle("Workspaces");
@@ -151,4 +158,3 @@ Workspace creation limits vary by plan. The Team plan offers unlimited workspace
     </script>
   </body>
 </html>
-

@@ -32,14 +32,17 @@
         <header id="docs-navbar" class="docs-navbar"></header>
         <div id="doc-content" class="docs-content">
           <div class="doc-page-header">
-            <h1>📋 Tasks & Logs</h1>
-            <p>How to track work and log progress in your workspace</p>
+            <h1>📋 Team Tasks & Logs</h1>
+            <p>How tasks behave once they're shared in a workspace</p>
           </div>
 
           <div class="doc-section">
-            <h2>Creating Tasks</h2>
+            <h2>Creating Tasks in a Workspace</h2>
             <p>
-              Tasks are the building blocks of work in LogHue. To create a task:
+              A workspace task can start two ways: created directly in the
+              workspace, or duplicated in from your personal task list. See
+              <a href="tasks-and-notes">Tasks & Notes</a> for how duplication
+              works from the personal side. To create one directly:
             </p>
             <ul>
               <li>Go to your <strong>workspace</strong></li>
@@ -57,7 +60,7 @@
           </div>
 
           <div class="doc-section">
-            <h2>Task States</h2>
+            <h2>Task States and Logging Progress</h2>
             <p>For simplicity, tasks move through two states as work progresses:</p>
             <div class="status-grid">
               <div class="status-item status-progress">
@@ -70,21 +73,22 @@
               </div>
             </div>
             <p>
-              Owner and Admins can change task states. Members can only log task updates based on current state.
-            </p>
-          </div>
-
-          <div class="doc-section">
-            <h2>Logging Work</h2>
-            <p>
-              Logs are records of what you've done. They keep the team informed
-              about progress:
+              Anyone working on a task can post a log: a short update about
+              progress made, or anything worth sharing about the task.
             </p>
             <ul>
               <li>Click <strong>View Task</strong> in the workspace task</li>
-              <li>Below the <strong>Task view</strong> page, what you accomplished in the input field</li>
+              <li>Below the <strong>Task view</strong> page, enter what you accomplished in the input field</li>
               <li>Click <strong>"Submit Log"</strong></li>
             </ul>
+            <p>
+              A log can include your own sense of whether the task is done,
+              but that's informational only, meant to help whoever's
+              reviewing know where things stand. It doesn't change the
+              task's actual state. Only an Owner or Admin can mark a task
+              Completed; Members can log updates but not close the task
+              themselves.
+            </p>
             <p>
               Logs are timestamped automatically and visible to all workspace
               members.
@@ -111,18 +115,14 @@
           </div>
 
           <div class="doc-section">
-            <h2>Notes</h2>
-            <p>Keep important information handy:</p>
-            <ul>
-              <li>Create <strong>personal notes</strong> for yourself</li>
-              <li>
-                Use notes for <strong>meeting summaries</strong>,
-                <strong>ideas</strong>, or <strong>references</strong>
-              </li>
-              <li><strong>Export</strong> notes in 5 different formats</li>
-              <li>Access notes quickly from the sidebar</li>
-            </ul>
-            <p>This can be done in the notes page in the main app.</p>
+            <h2>Notes in a Workspace</h2>
+            <p>
+              Notes start out personal, but any note can be imported into a
+              workspace to share it with the team. The original stays in
+              your personal notes untouched. See
+              <a href="tasks-and-notes">Tasks & Notes</a> for creating and
+              exporting notes.
+            </p>
           </div>
 
           <div class="doc-section">
@@ -151,8 +151,8 @@
         </div>
       </main>
     </div>
-   <script src="https://loghue.com/docs/components/sidebar.js"></script>
-    <script src="https://loghue.com/docs/components/navbar.js"></script>
+   <script src="/components/sidebar.js"></script>
+    <script src="/components/navbar.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         if (window.docsNavbar) window.docsNavbar.setPageTitle("Tasks & Logs");
@@ -160,4 +160,3 @@
     </script>
   </body>
 </html>
-

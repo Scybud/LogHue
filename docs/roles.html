@@ -131,8 +131,9 @@
                 <td class="check">✓</td>
                 <td class="cross">✗</td>
               </tr>
-              <td>Workspace settings</td>
-              <td class="check">✓</td>
+              <tr>
+                <td>Workspace settings</td>
+                <td class="check">✓</td>
                 <td class="check">✓</td>
                 <td class="cross">✗</td>
               </tr>
@@ -149,7 +150,6 @@
                 <td class="cross">✗</td>
               </tr>
               <tr>
-              <tr>
                 <td>Delete workspace</td>
                                 <td class="check">✓</td>
                 <td class="cross">✗</td>
@@ -162,6 +162,15 @@
                 <td class="cross">✗</td>
               </tr>
             </table>
+            <div class="info-box">
+              <p>
+                <strong>Note:</strong> The table above covers role-level
+                permissions. Deleting a specific task or discussion works
+                differently: it's allowed for whoever created it, or the
+                workspace owner, regardless of role. An admin can't delete
+                a member's task just for being an admin.
+              </p>
+            </div>
           </div>
 
           <div class="doc-section">
@@ -200,8 +209,8 @@
         </div>
       </main>
     </div>
-   <script src="https://loghue.com/docs/components/sidebar.js"></script>
-    <script src="https://loghue.com/docs/components/navbar.js"></script>
+   <script src="/components/sidebar.js"></script>
+    <script src="/components/navbar.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         if (window.docsNavbar)
@@ -210,4 +219,3 @@
     </script>
   </body>
 </html>
-

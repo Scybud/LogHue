@@ -88,109 +88,92 @@
               </li>
             </ul>
             <p>
-              After verification, you'll be taken to your personal dashboard
-              where you can create your first workspace.
+              After verification, you'll land on your personal dashboard,
+              ready to add your first task or note. Nothing needs to be
+              set up before you can start using it.
             </p>
           </div>
 
           <div class="doc-section">
-            <h2>Create a Workspace</h2>
+            <h2>Add Your First Task or Note</h2>
             <p>
-              Workspaces are the heart of LogHue - they're where your team
-              collaborates. Here's how to create one:
+              LogHue starts personal by default. Your tasks and notes belong
+              to you until you decide to share them, so there's no setup
+              step between signing up and getting your first thing down.
             </p>
             <div class="step-box">
-              <h3><span class="step-number">1</span> Click "New Workspace"</h3>
+              <h3><span class="step-number">1</span> Create a Task or a Note</h3>
               <p>
-                On your dashboard sidebar, click the "+ New Workspace" button.
+                From your dashboard, click <strong>New Task</strong> or
+                <strong>New Note</strong>. Give it a title and, if you like,
+                a description.
               </p>
             </div>
             <div class="step-box">
-              <h3><span class="step-number">2</span> Name Your Workspace</h3>
+              <h3><span class="step-number">2</span> Mark It Done When You're Done</h3>
               <p>
-                Give your workspace a clear, descriptive name that identifies
-                the project or team.
-              </p>
-            </div>
-            <div class="step-box">
-              <h3>
-                <span class="step-number">3</span> Add a Description (Optional)
-              </h3>
-              <p>
-                Write a brief description to help team members understand the
-                workspace purpose.
+                Tasks can be checked off at any time. Completed tasks move
+                into a separate section, and can be unmarked, deleted, or
+                kept as a record.
               </p>
             </div>
             <p>
-              That's it! You can create workspaces for different projects,
-              teams, or departments. Workspace creation limits vary by plan. The
-              Team plan offers unlimited workspaces.
+              That's the whole loop. No workspace, no invite, no setup
+              required to start using LogHue for your own work.
             </p>
           </div>
 
           <div class="doc-section">
-            <h2>Invite Team Members</h2>
+            <h2>Find Anything with Search</h2>
             <p>
-              Collaboration is better with others. To invite members to your
-              workspace:
+              Press <strong>Ctrl+K</strong> (or <strong>Cmd+K</strong> on Mac)
+              from anywhere in LogHue to open the command palette. It searches
+              your tasks, notes, and workspaces at once, and understands
+              shortcuts like typing <strong>"all tasks"</strong> or
+              <strong>"all notes"</strong> to list everything of that type.
             </p>
-            <ul>
-              <li>Go to your workspace</li>
-              <li>In the sidebar, click <strong>Add Member</strong></li>
-              <li>
-                Enter the member's email address or invite through QRCode and
-                link share
-              </li>
-              <li>Choose their role (Admin or Member)</li>
-              <li>Click "Send Invite"</li>
-            </ul>
             <p>
-              Invited members will receive an email and can join the workspace
-              right away.
-            </p>
-          </div>
-
-          <div class="doc-section">
-            <h2>Start Working</h2>
-            <p>
-              Now you're ready to go! Here's a quick overview of what you can
-              do:
-            </p>
-            <ul>
-              <li>
-                <strong>Create Tasks</strong> - Break down work into
-                manageable tasks
-              </li>
-              <li>
-                <strong>Log Progress</strong> - Record what you've done each
-                day
-              </li>
-              <li>
-                <strong>Discuss</strong> - Start conversations with your team
-              </li>
-              <li>
-                <strong>Take Notes</strong> - Keep important information handy
-              </li>
-              <li>
-                <strong>Histories</strong> - Keep completed work organized
-              </li>
-            </ul>
-            <p>
-              Use the sidebar to navigate between different sections of your
+              This is the fastest way to get around LogHue, and it works the
+              same whether you're using it alone or inside a shared
               workspace.
+            </p>
+          </div>
+
+          <div class="doc-section">
+            <h2>Share with a Workspace (Optional)</h2>
+            <p>
+              When you want to collaborate, you can create a workspace and
+              duplicate a task or import a note into it. The original stays
+              in your personal list, untouched, so sharing something never
+              means giving it up.
+            </p>
+            <ul>
+              <li>Click <strong>"+ New Workspace"</strong> from the sidebar</li>
+              <li>Give it a name and description</li>
+              <li>
+                Invite members by email, or by sharing a link or QR code
+              </li>
+              <li>Choose their role: Admin or Member</li>
+            </ul>
+            <p>
+              Workspace creation limits vary by plan. The Team plan offers
+              unlimited workspaces. See the
+              <a href="workspaces">Workspaces</a> and
+              <a href="roles">Roles & Permissions</a> pages for the full
+              picture of what happens once you're collaborating.
             </p>
           </div>
 
           <div class="doc-page-nav">
             <div class="page-nav">
-              <a href="workspaces" class="nav-next">Workspaces →</a>
+              <a href="tasks-and-notes" class="nav-next">Tasks & Notes →</a>
             </div>
           </div>
         </div>
       </main>
     </div>
-    <script src="https://loghue.com/docs/components/sidebar.js"></script>
-    <script src="https://loghue.com/docs/components/navbar.js"></script>
+    <script src="/components/sidebar.js"></script>
+    <script src="/components/navbar.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         if (window.docsNavbar)

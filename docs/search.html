@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search & Command Palette | LogHue Help</title>
+
+    <!--SCYBUD UI-->
+    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/variables.css">
+    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/typography.css">
+    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/animations.css">
+
+    <!--APP SPECIFIC CSS-->
+    <link rel="stylesheet" href="https://app.loghue.com/css/base.css" />
+    <link rel="stylesheet" href="https://app.loghue.com/css/theme.css" />
+    <link rel="stylesheet" href="https://app.loghue.com/css/component.css" />
+    <link rel="stylesheet" href="https://app.loghue.com/css/utilities.css" />
+    <link rel="stylesheet" href="https://app.loghue.com/css/dashboard.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="https://app.loghue.com/assets/icons/favicons/favicon-32x32.png"
+    />
+  </head>
+
+  <body>
+    <div class="docs-layout">
+      <aside id="docs-sidebar" class="docs-sidebar"></aside>
+      <main class="docs-main">
+        <header id="docs-navbar" class="docs-navbar"></header>
+        <div id="doc-content" class="docs-content">
+          <div class="doc-page-header">
+            <h1>🔎 Search & Command Palette</h1>
+            <p>Find anything instantly with Ctrl+K</p>
+          </div>
+
+          <div class="doc-section">
+            <h2>Opening the Command Palette</h2>
+            <p>
+              Press <strong>Ctrl+K</strong> on Windows or Linux, or
+              <strong>Cmd+K</strong> on Mac, from anywhere in LogHue. It
+              opens a search box over whatever you're doing, so you never
+              have to navigate through menus to find something.
+            </p>
+          </div>
+
+          <div class="doc-section">
+            <h2>What It Searches</h2>
+            <p>
+              A single search covers everything at once, across your
+              personal items and anything you're part of in a workspace:
+            </p>
+            <ul>
+              <li><strong>Tasks</strong> - personal and workspace tasks</li>
+              <li><strong>Notes</strong> - personal and imported notes</li>
+              <li><strong>Workspaces</strong> - any workspace you belong to</li>
+            </ul>
+            <p>
+              Typing a name jumps straight to that item. There's no need to
+              know which section it lives in first.
+            </p>
+          </div>
+
+          <div class="doc-section">
+            <h2>Shortcuts</h2>
+            <p>
+              A few typed phrases act as shortcuts to list everything of a
+              given type at once:
+            </p>
+            <div class="status-grid">
+              <div class="status-item">
+                <div class="badge">all tasks</div>
+                <p>Every task, personal and shared</p>
+              </div>
+              <div class="status-item">
+                <div class="badge">all notes</div>
+                <p>Every note, personal and shared</p>
+              </div>
+              <div class="status-item">
+                <div class="badge">all workspaces</div>
+                <p>Every workspace you're in</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="doc-page-nav">
+            <div class="page-nav">
+              <a href="tasks-and-notes" class="nav-prev">← Tasks & Notes</a>
+              <a href="workspaces" class="nav-next">Workspaces →</a>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script src="/components/sidebar.js"></script>
+    <script src="/components/navbar.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        if (window.docsNavbar)
+          window.docsNavbar.setPageTitle("Search & Command Palette");
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tasks & Notes | LogHue Help</title>
+
+    <!--SCYBUD UI-->
+    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/variables.css">
+    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/typography.css">
+    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/animations.css">
+
+    <!--APP SPECIFIC CSS-->
+    <link rel="stylesheet" href="https://app.loghue.com/css/base.css" />
+    <link rel="stylesheet" href="https://app.loghue.com/css/theme.css" />
+    <link rel="stylesheet" href="https://app.loghue.com/css/component.css" />
+    <link rel="stylesheet" href="https://app.loghue.com/css/utilities.css" />
+    <link rel="stylesheet" href="https://app.loghue.com/css/dashboard.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="https://app.loghue.com/assets/icons/favicons/favicon-32x32.png"
+    />
+  </head>
+
+  <body>
+    <div class="docs-layout">
+      <aside id="docs-sidebar" class="docs-sidebar"></aside>
+      <main class="docs-main">
+        <header id="docs-navbar" class="docs-navbar"></header>
+        <div id="doc-content" class="docs-content">
+          <div class="doc-page-header">
+            <h1>📝 Tasks & Notes</h1>
+            <p>Your personal tasks and notes, before anyone else sees them</p>
+          </div>
+
+          <div class="doc-section">
+            <h2>Personal by Default</h2>
+            <p>
+              Every task and every note you create in LogHue belongs to you
+              first. Nothing is shared automatically, and there's no
+              workspace required to use either. Think of your personal list
+              as your own working space, separate from any team.
+            </p>
+          </div>
+
+          <div class="doc-section">
+            <h2>Tasks</h2>
+            <p>
+              Tasks are simple, checkable items you create for yourself.
+            </p>
+            <div class="step-box">
+              <h3><span class="step-number">1</span> Create a Task</h3>
+              <p>
+                Click <strong>"+"</strong> at the top of the task page. Give
+                it a title and, optionally, a description.
+              </p>
+            </div>
+            <div class="step-box">
+              <h3><span class="step-number">2</span> Mark It Done</h3>
+              <p>
+                Check a task off whenever you finish it. Done tasks move
+                into a separate, collapsible section, so your active list
+                stays focused on what's left.
+              </p>
+            </div>
+            <div class="step-box">
+              <h3><span class="step-number">3</span> Undo, Delete, or Keep It</h3>
+              <p>
+                A done task can be unmarked back to active, deleted
+                entirely, or simply left as a record. There's no time limit
+                on any of these.
+              </p>
+            </div>
+            <p>
+              Personal tasks are yours to manage entirely on your own terms.
+              There's no reviewer, no approval step, and no one else who can
+              see them unless you choose to share one.
+            </p>
+          </div>
+
+          <div class="doc-section">
+            <h2>Sharing a Task to a Workspace</h2>
+            <p>
+              If a task becomes something a team needs to see, you can
+              duplicate it into a workspace. The original stays in your
+              personal list exactly as it was, untouched. You end up with
+              two independent copies, so you can delete either one without
+              affecting the other.
+            </p>
+            <div class="info-box">
+              <p>
+                <strong>Note:</strong> Once a task is duplicated into a
+                workspace, it follows workspace rules there, including who
+                can mark it complete. See
+                <a href="tasks">Team Tasks & Logs</a> for how that works.
+              </p>
+            </div>
+          </div>
+
+          <div class="doc-section">
+            <h2>Notes</h2>
+            <p>
+              Notes are standalone by default, separate from tasks, and
+              built for anything you want to keep handy: meeting summaries,
+              ideas, references, or anything in between.
+            </p>
+            <ul>
+              <li>Create a note from the sidebar at any time</li>
+              <li>
+                Export a note as <strong>PDF, DOCX, TXT, HTML, or MD</strong>
+              </li>
+              <li>
+                Import a note into a workspace when you want to share it
+                with a team
+              </li>
+            </ul>
+            <p>
+              Like tasks, importing a note into a workspace doesn't remove
+              it from your personal notes. It becomes visible in both
+              places independently.
+            </p>
+          </div>
+
+          <div class="doc-page-nav">
+            <div class="page-nav">
+              <a href="getting-started" class="nav-prev">← Getting Started</a>
+              <a href="search" class="nav-next">Search & Command Palette →</a>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script src="/components/sidebar.js"></script>
+    <script src="/components/navbar.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        if (window.docsNavbar)
+          window.docsNavbar.setPageTitle("Tasks & Notes");
+      });
+    </script>
+  </body>
+</html>
