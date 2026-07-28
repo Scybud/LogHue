@@ -335,10 +335,21 @@ h3 {
   margin-bottom: calc(var(--space-sm) - 2px);
 }
 
+.taskMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin: var(--space-md) 0;
+}
+
 .meta {
+  background: var(--surface-primary);
+  margin: 0;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-primary);
+  padding: var(--space-sm);
   font-size: 0.85rem;
   opacity: 0.8;
-  margin-bottom: calc(var(--space-sm) + 2px);
 }
 .taskActionsMenu {
   animation: fadeIn 0.4s ease;

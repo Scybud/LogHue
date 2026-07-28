@@ -158,8 +158,7 @@ export async function initWorkspaceDashboard() {
   openStartDiscussionModal(currentWorkspace, authData.user);
 
   if (role === "member") {
-    // Pass workspace id + user so the modal does not rely on a global that
-    // may still be null if app.js called openLogTaskModal() with no args.
+     openCreateTaskModal(currentWorkspace.id);
     openLogTaskModal(supabase, workspaceId, authData.user.id);
   } else {
     openCreateTaskModal(currentWorkspace.id);

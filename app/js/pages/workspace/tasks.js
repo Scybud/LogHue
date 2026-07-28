@@ -1,6 +1,6 @@
 import { formatDateTime } from "../../utils/time.js";
 import { loadComponent, closeModal } from "../../ui.js";
-import { actionMsg } from "../../utils/modals.js";
+import { actionMsg, confirmAction } from "../../utils/modals.js";
 import { notifyUser } from "../../utils/notifications.js";
 import { supabase } from "../../supabase.js";
 import {
@@ -16,7 +16,19 @@ import {
 let outsideClickHandlerAttached = false;
 
 /**
- * Admin / Owner task list with Assign / Ping actions.
+ * Creator of the task, or the workspace owner, may delete a task.
+ * Assumed columns: workspace_tasks.created_by, workspace.owner_id.
+ * Adjust here if either name differs.
+ */
+function canDeleteTask(tsk) {
+  if (!user) return false;
+  const isCreator = String(tsk.created_by) === String(user.id);
+  const isOwner = String(currentWorkspace?.owner_id) === String(user.id);
+  return isCreator || isOwner;
+}
+
+/**
+ * Admin / Owner task list with Assign / Ping / Delete actions.
  */
 export function loadTasks(title, tasks, container) {
   const sectionTitle = document.createElement("h2");
@@ -59,13 +71,6 @@ export function loadTasks(title, tasks, container) {
     const taskTitle = document.createElement("h3");
     taskTitle.classList.add("taskTitle");
     taskTitle.textContent = tsk.title;
-
-    const details = document.createElement("details");
-    const summary = document.createElement("summary");
-    summary.textContent = "Description";
-    const descriptionText = document.createElement("p");
-    descriptionText.textContent = tsk.description;
-    details.append(summary, descriptionText);
 
     const assignee = document.createElement("p");
     assignee.classList.add("meta");
@@ -118,9 +123,7 @@ export function loadTasks(title, tasks, container) {
     });
     actionsMenu.append(viewBtn);
 
-    details.addEventListener("click", (e) => e.stopPropagation());
-
-    taskCard.append(taskTitle, taskMeta, menuBtn, details, actionsMenu);
+    taskCard.append(taskTitle, taskMeta, menuBtn, actionsMenu);
 
     if (!tsk.assigned_to || !tsk.profiles) {
       const assignBtn = document.createElement("button");
@@ -150,6 +153,27 @@ export function loadTasks(title, tasks, container) {
       actionsMenu.append(pingBtn);
     }
 
+    if (canDeleteTask(tsk)) {
+      const deleteBtn = document.createElement("button");
+      deleteBtn.type = "button";
+      deleteBtn.classList.add("btn", "danger", "btn-sm");
+      deleteBtn.textContent = "Delete";
+      deleteBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+       
+        confirmAction(`Delete "${tsk.title}"? This cannot be undone.`, [
+                { label: "Cancel", type: "cancel" },
+                {
+                  label: "Delete",
+                  type: "confirm",
+                  onClick: async () => await handleTaskDelete(tsk, taskCard),
+                },
+              ]);
+
+      });
+      actionsMenu.append(deleteBtn);
+    }
+
     divGrid.prepend(taskCard);
   });
 
@@ -172,8 +196,22 @@ export function loadTasks(title, tasks, container) {
   attachAssignTaskEvent(divGrid);
 }
 
+
+async function handleTaskDelete(tsk, taskCard) {
+   const { error } = await supabase
+     .from("workspace_tasks")
+     .delete()
+     .eq("id", tsk.id);
+   if (error) {
+     actionMsg(error.message || "Failed to delete task", "error");
+     return;
+   }
+   taskCard.remove();
+   actionMsg("Task deleted.", "success");
+}
 /**
- * Member view – tasks assigned to the current user.
+ * Member view – tasks assigned to the current user, with Delete
+ * available if the current user created the task or is the workspace owner.
  */
 export function loadAssignedTasks(sectionTitle, tasks, container) {
   if (!tasks || tasks.length === 0) {
@@ -198,13 +236,6 @@ export function loadAssignedTasks(sectionTitle, tasks, container) {
     const taskTitle = document.createElement("h3");
     taskTitle.textContent = tsk.title;
 
-    const details = document.createElement("details");
-    const summary = document.createElement("summary");
-    summary.textContent = "Description";
-    const desc = document.createElement("p");
-    desc.textContent = tsk.description;
-    details.append(summary, desc);
-
     const meta = document.createElement("div");
     meta.classList.add("taskMeta");
 
@@ -226,10 +257,30 @@ export function loadAssignedTasks(sectionTitle, tasks, container) {
       window.location.href = `task-view?task=${tsk.id}`;
     });
 
-    details.addEventListener("click", (e) => e.stopPropagation());
+    card.append(taskTitle, meta, viewBtn);
 
-    card.append(taskTitle, meta, details, viewBtn);
-    grid.append(card);
+    if (canDeleteTask(tsk)) {
+      const deleteBtn = document.createElement("button");
+      deleteBtn.type = "button";
+      deleteBtn.classList.add("btn", "danger", "btn-sm");
+      deleteBtn.textContent = "Delete";
+      deleteBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+
+        confirmAction(`Delete "${tsk.title}"? This cannot be undone.`, [
+          { label: "Cancel", type: "cancel" },
+          {
+            label: "Delete",
+            type: "confirm",
+            onClick: async () => await handleTaskDelete(tsk, card),
+          },
+        ]);
+
+      });
+      card.append(deleteBtn);
+    }
+
+    grid.prepend(card);
   });
 
   section.append(title, grid);
@@ -237,7 +288,7 @@ export function loadAssignedTasks(sectionTitle, tasks, container) {
 }
 
 /**
- * Member view – all workspace tasks (read-only).
+ * Member view – all workspace tasks (read-only, no delete here by design).
  */
 export function loadAllTasks(tasks, container) {
   if (!tasks || tasks.length === 0) {
@@ -262,13 +313,6 @@ export function loadAllTasks(tasks, container) {
     const taskTitle = document.createElement("h3");
     taskTitle.textContent = tsk.title;
 
-    const details = document.createElement("details");
-    const summary = document.createElement("summary");
-    summary.textContent = "Description";
-    const desc = document.createElement("p");
-    desc.textContent = tsk.description;
-    details.append(summary, desc);
-
     const meta = document.createElement("div");
     meta.classList.add("taskMeta");
 
@@ -284,7 +328,7 @@ export function loadAllTasks(tasks, container) {
 
     meta.append(assignee, assignedOn);
 
-    card.append(taskTitle, meta, details);
+    card.append(taskTitle, meta);
     grid.append(card);
   });
 
@@ -396,8 +440,7 @@ async function performTaskAssign(btn) {
   setSelectedAssigneeId(null);
 
   // Re-render the current "in progress" list
-  const activeContainer =
-    document.getElementById("workspaceDashboardContent");
+  const activeContainer = document.getElementById("workspaceDashboardContent");
 
   if (activeContainer) {
     activeContainer.innerHTML = "";
