@@ -135,7 +135,7 @@ async function dashboardSearch(user) {
       "workspaces": { fetcher: fetchWorkspaceFromMember, type: "workspace" },
     };
  
-    const allHandler = ALL_HANDLERS[value];
+    const allHandler = ALL_HANDLERS[value.toLowerCase()];
     if (allHandler) {
       const items = await allHandler.fetcher(user.id);
       if (myToken !== searchToken) return;
