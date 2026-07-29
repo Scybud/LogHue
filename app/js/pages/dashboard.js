@@ -31,24 +31,6 @@ function handleOnboardingWarning() {
   }
 }
 
-// Sticky dismiss handling for global notification layout alert boxes
-// Scoped per-user so dismissal on a shared/dev browser doesn't leak across accounts
-function warningLogic(userId) {
-  const storageKey = `removeWarning:${userId}`;
-  const warningState = localStorage.getItem(storageKey);
-  const container = document.querySelector(".warningContainer");
-
-  if (!closeWarningBtn || !container) return;
-
-  closeWarningBtn.addEventListener("click", () => {
-    localStorage.setItem(storageKey, "removed");
-    container.remove();
-  });
-
-  if (warningState) container.remove();
-}
-
-
 const searchInput = document.getElementById("mainSearchInput");
 
 const hints = [
@@ -103,11 +85,8 @@ export async function initDashboard() {
     userNameEl.textContent = sessionState.profile?.full_name || "Developer";
   }
 
-  warningLogic(user.id);
   await dashboardSearch(user);
 
-  // Trigger explicit modular presentation layers
-  handleOnboardingWarning();
 }
 
 async function dashboardSearch(user) {

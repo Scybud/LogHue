@@ -324,10 +324,10 @@ button.danger {
   margin: var(--space-sm) 0;
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow);
-  transition: transform 0.2s ease;
+  transition: background 0.2s ease;
 }
 .card:hover {
-  transform: translateY(-2px);
+  background: var(--surface-primary);
 }
 .dropdown-list button.dropdown-item,
 button.dropdown-item {
@@ -583,52 +583,11 @@ button.dropdown-item {
   color: var(--muted);
 }
 
-.warningContainer {
-    background: #826f20;
-  border: 1px solid var(--warning);
-  color: #ffffff;
-  padding: var(--space-md);
-  border-radius: var(--radius-sm);
-  margin: var(--space-sm);
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 600;
-  position: relative;
-}
+
 .warning {
   color: var(--warning);
 }
-.warningContainer .warningText {
-  margin: 0;
-  padding: 0;
-  font-size: 0.9rem;
-}
-.warningContainer .warningText a {
-  color: #ffffff;
-  text-decoration: underline;
-}
-.closeWarning {
-  border-radius: var(--space-sm);
-  background: none;
-  border: none;
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 25px;
-  height: 25px;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: var(--accent);
-}
-.closeWarning:hover {
-  opacity: 0.8;
-  cursor: pointer;
-}
+
      div.showFlex{
         display: flex;
       }

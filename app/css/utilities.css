@@ -349,41 +349,50 @@ input.error {
   z-index: 9999;
   display: flex;
   align-items: center;
-  left: 50%;
-  top: -100%;
-  transform: translateX(-50%);
+  top: 10px;
+  right: -100%;
   max-width: 300px ;
   width: 100% ;
   padding: var(--space-xs);
   height: fit-content;
-  transition: top 0.5s ease;
+  transition: top 0.5s ease, right 0.5s ease;
+}
+#actionsMessage.slideIn {
+  right: 10px;
 }
 .actionMessageContainer {
   width: 100%;
   text-align: center;
 }
-#actionsMessage .card {
+#actionsMessage .actionMessageModal {
     display: flex;
   justify-content: center;   
   align-items: center;   
   background: var(--bg-primary);
   margin: 0;
-  min-height: 40px;
+  min-height: fit-content;
   width: 100%;
   border-radius: var(--radius-sm);
-  padding: var(--space-xs);
+  padding: var(--space-sm) var(--space-xs);
 }
-#actionsMessage.slideIn {
-  top: 30px;
-}
-#actionsMessage.error .card {
+#actionsMessage.error .actionMessageModal {
   border: 0.5px solid var(--danger);
+  background: rgba(255, 0, 0, 0.162);
+  backdrop-filter: var(--filter) brightness(20%);
+    color: var(--danger);
+
+}
+#actionsMessage .modalMessage {
+line-height: 0.9;
+margin: 0;
 }
 .error {
   color: var(--danger);
 }
-#actionsMessage.success .card {
+#actionsMessage.success .actionMessageModal {
   border: 1px solid var(--success);
+  background: rgba(0, 128, 0, 0.162);
+  backdrop-filter: var(--filter) brightness(20%);
 }
 .success {
   color: var(--success);

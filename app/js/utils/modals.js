@@ -12,7 +12,7 @@ import {
 } from "./modalEvents.js";
 import { supabase } from "../supabase.js";
 import { workspace } from "../pages/workspace/index.js";
-import { attachStartDiscussionEvent } from "../features/discussions.js";
+import { attachStartDiscussionEvent } from "../pages/workspace/discussions.js";
 
 export function openCreateTaskModal(workspaceId) {
   const btn = document.getElementById("createTaskOpen");

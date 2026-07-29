@@ -227,6 +227,13 @@ async function attachCreateWorkspaceEvent(container, workspaces) {
   if (createWorkspaceBtn.__listenerAttached) return;
   createWorkspaceBtn.__listenerAttached = true;
 
+workspaceNameEl.addEventListener("input", () => {
+    workspaceNameEl.classList.remove("error");
+});
+workspaceDescriptionEl.addEventListener("input", () => {
+    workspaceDescriptionEl.classList.remove("error");
+
+})
   //When log task button is clicked to create new log
   createWorkspaceBtn.addEventListener("click", async (e) => {
     e.preventDefault();
@@ -242,7 +249,9 @@ async function attachCreateWorkspaceEvent(container, workspaces) {
     }
 
     if (!workspaceNameValue || !workspaceDescriptionValue) {
-      actionMsg("All field must not be empty", "error");
+      actionMsg("Workspace name and description required", "error");
+      workspaceNameEl.classList.add("error");
+      workspaceDescriptionEl.classList.add("error");
       setButtonLoading(createWorkspaceBtn, false);
       return;
     }
@@ -370,7 +379,7 @@ export function createWorkspaceCardElement(ws) {
   headerRight.classList.add("workspaceCardHeaderRight");
 
   const menuBtn = document.createElement("button");
-  menuBtn.classList.add("workspaceMenuBtn");
+  menuBtn.classList.add("workspaceMenuBtn", "actionBtn");
 
   const svgNS = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(svgNS, "svg");

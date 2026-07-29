@@ -454,12 +454,8 @@ max-width: 200px;
   justify-content: space-between;
 }
 .workspaceCardHeader .workspaceMenuBtn {
-  background: none;
   border: none;
   cursor: pointer;
-}
-.workspaceMenuBtn svg {
-  fill: var(--primary);
 }
 
 .dropdown {

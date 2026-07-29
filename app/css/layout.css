@@ -9,7 +9,7 @@
   grid-area: mainContent;
   background: var(--mainContent-bg);
   border-left: 1px solid var(--border);
-      padding: 0 var(--space-sm) calc(var(--space-xl) * 4);
+      padding: 0 var(--space-sm) var(--space-sm);
   overflow-y: auto;
   scroll-behavior: smooth;
   height: 100%;
