@@ -23,7 +23,7 @@ let outsideClickHandlerAttached = false;
 function canDeleteTask(tsk) {
   if (!user) return false;
   const isCreator = String(tsk.created_by) === String(user.id);
-  const isOwner = String(currentWorkspace?.owner_id) === String(user.id);
+  const isOwner = String(currentWorkspace?.created_by) === String(user.id);
   return isCreator || isOwner;
 }
 

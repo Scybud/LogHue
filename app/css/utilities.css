@@ -919,15 +919,18 @@ flex-wrap: wrap;
   display: inline-block;
   padding: 0.25rem 0.6rem;
   border-radius: 6px;
-  background: #ffe13520;
-  color: #ffee35;
+
   font-size: 0.75rem;
   font-weight: 600;
 }
 
-.inprogress {
+.in.progress, .in-progress {
   background: #ffe13520;
   color: #fffc35;
+}
+.completed {
+    background: hsla(124, 100%, 60%, 0.125);
+  color: #35ff43;
 }
 
 /*EMPTY STATE*/

@@ -91,7 +91,7 @@ async function initTaskView() {
 
   if (!taskId) {
     document.getElementById("taskViewContent").innerHTML =
-      `<p class="placeholderText">Invalid task link. <a href="index">Go Home</a></p>`;
+      `<p class="placeholderText">Invalid task link. <a href="dashboard">Go to dashboard</a></p>`;
     return;
   }
   loadTask.remove;
@@ -281,7 +281,10 @@ function renderTaskHeader() {
         isAdmin
           ? `
            <button id="markTaskDoneBtn" class="primaryBtn btn btn-sm">
-          ${currentTask.status === "completed" ? "Reopen Task" : "Mark as completed"}
+          ${currentTask.status === "completed" ? "Reopen Task" : "Mark completed"}
+        </button>
+        <button id="editTaskBtn" class="secondaryBtn btn btn-sm">
+          Edit
         </button>
          `
           : ""
@@ -300,7 +303,7 @@ function renderTaskHeader() {
 
       <div class="metaItem">
         <span class="metaLabel">Status:</span>
-        <span class="statusBadge">${currentTask.status}</span>
+        <span class="statusBadge ${currentTask.status}">${currentTask.status}</span>
       </div>
 
       <div class="metaItem">
@@ -355,10 +358,12 @@ function renderLogs() {
     content.classList.add("logContent");
     content.textContent = log.log_note;
 
+    const statusClass = log.task_status === "in progress" ? "in-progress" : "completed";
+
     const meta = document.createElement("div");
     meta.classList.add("logMeta");
     const status = document.createElement("span");
-    status.classList.add("statusBadge");
+    status.classList.add("statusBadge", statusClass);
     status.textContent = log.task_status;
     meta.appendChild(status);
 
@@ -537,6 +542,10 @@ function attachMarkDoneHandler(taskId) {
       setButtonLoading(btn, false);
     }
   };
+}
+
+async function attachEditTaskHandler() {
+
 }
 
 /* ---------------------------------------------
