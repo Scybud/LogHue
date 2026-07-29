@@ -327,9 +327,41 @@ export function loadAllTasks(tasks, container) {
     assignedOn.textContent = `Assigned on: ${formatDateTime(tsk.created_at)}`;
 
     meta.append(assignee, assignedOn);
+const viewBtn = document.createElement("button");
+viewBtn.classList.add("btn", "btn-sm", "btn-primary");
+viewBtn.textContent = "View Task";
+viewBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  window.location.href = `task-view?task=${tsk.id}`;
+});
 
-    card.append(taskTitle, meta);
-    grid.append(card);
+card.append(taskTitle, meta, viewBtn);
+
+if (canDeleteTask(tsk)) {
+  const deleteBtn = document.createElement("button");
+  deleteBtn.type = "button";
+  deleteBtn.classList.add("btn", "danger", "btn-sm");
+  deleteBtn.textContent = "Delete";
+  deleteBtn.addEventListener("click", async (e) => {
+    e.stopPropagation();
+
+    confirmAction(
+      "Delete Task",
+      `Delete "${tsk.title}"? This cannot be undone.`,
+      [
+        { label: "Cancel", type: "cancel" },
+        {
+          label: "Delete",
+          type: "confirm",
+          onClick: async () => await handleTaskDelete(tsk, card),
+        },
+      ],
+    );
+  });
+  card.append(deleteBtn);
+}
+
+grid.prepend(card);
   });
 
   section.append(title, grid);
@@ -366,7 +398,7 @@ function attachAssignTaskEvent(container) {
   });
 }
 
-function populateMemberList(container) {
+export function populateMemberList(container) {
   if (!container) return;
 
   container.innerHTML = "";

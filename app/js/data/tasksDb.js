@@ -1,15 +1,36 @@
+import { setLoadedMembers } from "../pages/workspace/state.js";
 import { supabase } from "../supabase.js";
 import { actionMsg } from "../utils/modals.js";
 
 export async function fetchUserTasks(userId) {
-    const { data: tasks, error } = await supabase
-      .from("workspace_tasks")
-      .select("id, title")
-      .eq("assigned_to", userId)
+  const { data: tasks, error } = await supabase
+    .from("workspace_tasks")
+    .select("id, title")
+    .eq("assigned_to", userId);
 
-      if(error) {
-        actionMsg("Error loading tasks", "error");
-        return
-      }
-      return tasks;
+  if (error) {
+    actionMsg("Error loading tasks", "error");
+    return;
+  }
+  return tasks;
+}
+
+export async function loadWorkspaceMembersForTaskView(workspaceId) {
+  const { data, error } = await supabase
+    .from("workspace_members")
+    .select(
+      `
+      role,
+      user_id,
+      profiles:user_id (id, full_name, avatar_url)
+    `,
+    )
+    .eq("workspace_id", workspaceId);
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  setLoadedMembers(data);
 }

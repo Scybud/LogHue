@@ -21,16 +21,7 @@ export function attachCreateTaskEvent(workspaceId) {
   if (!createTaskBtn) return;
 
   const assignedTo = document.getElementById("assignToDropdown");
-  if (loadedMembers && Array.isArray(loadedMembers)) {
-    loadedMembers.forEach((lm) => {
-      if (lm.profiles) {
-        const option = document.createElement("option");
-        option.value = lm.profiles.id;
-        option.textContent = lm.profiles.full_name;
-        assignedTo.append(option);
-      }
-    });
-  }
+  populateAssignDropdown(assignedTo)
 
   // When create task button is clicked to create a new task
   createTaskBtn.addEventListener("click", async () => {
@@ -132,6 +123,20 @@ export function attachCreateTaskEvent(workspaceId) {
 
     // Close the modal after task creation
     closeModal();
+  });
+}
+
+export function populateAssignDropdown(selectEl) {
+  if (!selectEl || !loadedMembers || !Array.isArray(loadedMembers)) return;
+
+  selectEl.innerHTML = `<option value="">Unassigned</option>`;
+
+  loadedMembers.forEach((lm) => {
+    if (!lm.profiles) return;
+    const option = document.createElement("option");
+    option.value = lm.profiles.id;
+    option.textContent = lm.profiles.full_name;
+    selectEl.append(option);
   });
 }
 

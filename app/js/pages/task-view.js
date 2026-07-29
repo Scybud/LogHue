@@ -1,18 +1,24 @@
 import { supabase } from "../supabase.js";
 import { actionMsg } from "../utils/modals.js";
 import { notifyUser } from "../utils/notifications.js";
-import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
+import { setButtonLoading, loadComponent, closeModal } from "https://scybud.github.io/scybud-ui/js/ui.js";
 import { loadActivities } from "./workspace/activities.js";
 import { formatDateTimeRelatively } from "../utils/time.js";
+import { populateAssignDropdown } from "../utils/modalEvents.js";
+import { loadedMembers, setLoadedMembers } from "./workspace/state.js"; 
+import { loadWorkspaceMembersForTaskView } from "../data/tasksDb.js";
 
 let currentTask = null;
 let currentWorkspace = null;
 let userRole = null;
 let isAdmin;
+let userId = null;
+let isCreator;
+
 //GET USER ROLE
 async function getUserRole(workspaceId) {
   const { data: userData } = await supabase.auth.getUser();
-  const userId = userData.user.id;
+   userId = userData.user.id;
 
   const { data, error } = await supabase
     .from("workspace_members")
@@ -96,7 +102,7 @@ async function initTaskView() {
   }
   loadTask.remove;
   await loadTask(taskId);
-
+await loadWorkspaceMembersForTaskView(currentWorkspace.id)
   userRole = await getUserRole(currentWorkspace?.id);
 
   loadSidebar();
@@ -105,6 +111,7 @@ async function initTaskView() {
   loadWorkspaceActivities();
   attachLogSubmitHandler();
   attachMarkDoneHandler(taskId);
+  await attachEditTaskHandler(taskId)
 }
 
 function loadSidebar() {
@@ -169,7 +176,7 @@ function loadSidebar() {
 
  <nav class="sidebarNav">
  <!-- WORKSPACE -->
- <a href="workspace?ws=${currentWorkspace.id}" class="navBtn" data-section="index" id="dashboardLink">
+ <a href="workspace?ts=${currentWorkspace.id}" class="navBtn" data-section="index" id="dashboardLink">
       <span class="navIcon">
         <!-- Back  Icon -->
         <svg
@@ -272,13 +279,14 @@ function renderTaskHeader() {
   if (!container) return;
 
   isAdmin = userRole?.role === "admin" || userRole.role === "owner";
+ isCreator = currentTask?.created_by === userId;
 
   container.innerHTML = `
     <div class="taskHeaderTop">
       <h2>${currentTask.title || "Untitled"}</h2>
       <div class="taskActions">
       ${
-        isAdmin
+        isAdmin || isCreator
           ? `
            <button id="markTaskDoneBtn" class="primaryBtn btn btn-sm">
           ${currentTask.status === "completed" ? "Reopen Task" : "Mark completed"}
@@ -296,7 +304,7 @@ function renderTaskHeader() {
       <div class="metaItem">
         <span class="metaLabel">Assigned To:</span>
         <div class="avatarGroup">
-          <img src="${currentTask.profiles?.avatar_url || "../assets/default-avatar.png"}" class="profileImg" />
+          <img src="${currentTask.profiles?.avatar_url || "../../assets/images/default_profile.png"}" class="profileImg" />
           <span>${currentTask.profiles?.full_name || "Unassigned"}</span>
         </div>
       </div>
@@ -314,6 +322,7 @@ function renderTaskHeader() {
 
     <p class="taskDescription">${currentTask.description || "No description provided."}</p>
   `;
+
 }
 
 /* ---------------------------------------------
@@ -323,7 +332,7 @@ function renderLogs() {
   const feed = document.getElementById("logsFeed");
   feed.innerHTML = "";
 
-  const isAdmin = userRole.role === "admin" || userRole.role === "owner";
+   isAdmin = userRole.role === "admin" || userRole.role === "owner";
 
   if (!currentTask.logs || currentTask.logs.length === 0) {
     feed.innerHTML = `<p class="placeholderText">No logs yet.</p>`;
@@ -373,7 +382,7 @@ function renderLogs() {
 
     logCard.append(header, content, meta, thread);
 
-    if (isAdmin) {
+    if (isAdmin || isCreator) {
       const replyButton = document.createElement("button");
       replyButton.className = "iconBtn addCommentBtn";
       replyButton.dataset.log = log.id;
@@ -440,15 +449,14 @@ function attachLogSubmitHandler() {
   if (!btn || !input) return;
 
   // Only assigned member can write logs
-  if (
-    (!isAdmin && userRole.userId !== currentTask.assigned_to) ||
-    currentTask.status === "completed"
-  ) {
-    btn.remove();
-    input.remove();
+   const isAssignee = userId === currentTask.assigned_to;
+   const canLog = isAdmin || isAssignee || isCreator;
 
-    return;
-  }
+   if (!canLog || currentTask.status === "completed") {
+     btn.remove();
+     input.remove();
+     return;
+   }
 
   btn.addEventListener("click", async () => {
     const note = input.value.trim();
@@ -544,8 +552,74 @@ function attachMarkDoneHandler(taskId) {
   };
 }
 
-async function attachEditTaskHandler() {
+async function attachEditTaskHandler(taskId) {
+  const btn = document.getElementById("editTaskBtn");
+  if (!btn) return;
 
+  btn.onclick = async () => {
+    await loadComponent("../components/modals/create-task", "modalContainer");
+
+    const modalContainer = document.getElementById("modalContainer");
+    const title = modalContainer.querySelector("h2");
+    const editTaskTitleEl = document.getElementById("taskTitle");
+    const editTaskDescriptionEl = document.getElementById("taskDescription");
+    const assignToDropdown = document.getElementById("assignToDropdown");
+    const updateTaskBtn = document.getElementById("createTaskBtn");
+
+    populateAssignDropdown(assignToDropdown);
+
+    const { data: ts, error } = await supabase
+      .from("workspace_tasks")
+      .select(
+        `
+        id,
+        title,
+        description,
+        assigned_to
+      `,
+      )
+      .eq("id", taskId)
+      .maybeSingle();
+
+    if (error || !ts) {
+      console.error(error);
+      actionMsg("Failed to load task for editing.", "error");
+      return;
+    }
+
+    title.textContent = "Edit Task";
+    editTaskTitleEl.value = ts.title;
+    editTaskDescriptionEl.value = ts.description || "";
+    assignToDropdown.value = ts.assigned_to || "";
+    updateTaskBtn.textContent = "Update Task";
+
+    updateTaskBtn.addEventListener("click", async () => {
+      const updatedTaskTitleValue = editTaskTitleEl.value.trim();
+      const updatedTaskDescriptionValue = editTaskDescriptionEl.value.trim();
+      const updatedAssignedTo = assignToDropdown.value || null;
+
+      const { error } = await supabase
+        .from("workspace_tasks")
+        .update({
+          title: updatedTaskTitleValue,
+          description: updatedTaskDescriptionValue,
+          assigned_to: updatedAssignedTo,
+        })
+        .eq("id", taskId);
+
+      if (error) {
+        console.error(error);
+        alert("Failed to update task");
+        return;
+      }
+      actionMsg("Task edited!", "success");
+      closeModal();
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    });
+  };
 }
 
 /* ---------------------------------------------
