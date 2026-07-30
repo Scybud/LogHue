@@ -118,10 +118,12 @@ function renderSimpleResults(results) {
 }
 // --- End simple search ---
 
-export async function initSmartSearch() {
+export async function initSmartSearch(container = document) {
   // Support the palette's textarea and the dashboard's input — both use .mainSearchInput
-  const searchInputs = document.querySelectorAll(".mainSearchInput");
-  const resultsContainer = document.getElementById("MainSearchResults");
+  const searchInputs = container.querySelectorAll(".mainSearchInput");
+  const resultsContainer =
+    container.querySelector("#MainSearchResults") ??
+    container.querySelector(".mainSearchResultContainer");
   const dashboardContainer = document.querySelector(".dashboard-section"); // null on the palette — guarded below
   const createNoteBtn = document.querySelector(".createNoteBtn");
 
@@ -136,7 +138,7 @@ export async function initSmartSearch() {
   if (createNoteBtn) {
     createNoteBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      localStorage.setItem("createNote", "start typing...");
+      localStorage.setItem("createNote", ".");
       window.location.href = "notes";
     });
   }
