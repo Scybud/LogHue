@@ -176,7 +176,7 @@ function loadSidebar() {
 
  <nav class="sidebarNav">
  <!-- WORKSPACE -->
- <a href="workspace?ts=${currentWorkspace.id}" class="navBtn" data-section="index" id="dashboardLink">
+ <a href="workspace?ws=${currentWorkspace.id}" class="navBtn" data-section="index" id="dashboardLink">
       <span class="navIcon">
         <!-- Back  Icon -->
         <svg
