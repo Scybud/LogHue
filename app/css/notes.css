@@ -282,7 +282,6 @@
   width: 100%;
   max-width: 420px;
   margin: 0;
-  background: transparent;
   font-size: 1.15rem;
   font-weight: 600;
   padding: 6px 10px;
@@ -294,13 +293,13 @@
 #noteTitle:focus {
   outline: none;
   border-color: var(--border-primary);
-  background: var(--input-bg);
 }
 
 .actionBtnsContainer {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
+  background: var(--card-bg);
 }
 
 .saveStatus {
