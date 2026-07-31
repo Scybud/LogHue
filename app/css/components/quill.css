@@ -1,43 +1,67 @@
 .ql-container.ql-snow {
-  font-size: 16px;
-  background-color: var(--input-bg);
+  font-size: 15.5px;
+  background-color: var(--mainContent-bg);
+  border: none !important;
+  height: 100%;
 }
+
 .ql-toolbar.ql-snow {
   background-color: var(--card-bg);
-  border: 1px solid var(--border-primary);
+  border: none !important;
+  border-bottom: 1px solid var(--border-primary) !important;
+  padding: 8px 12px;
 }
-.ql-toolbar.ql-snow .ql-stroke, .ql-toolbar.ql-snow button{
-  stroke: var(--accent);
+
+.ql-toolbar.ql-snow .ql-stroke {
+  stroke: var(--text-secondary);
 }
-#editorContainer {
-  color: var(--text-primary);
-  padding: 0;
-  margin-bottom: 30px;
+
+.ql-toolbar.ql-snow button {
+  color: var(--text-secondary);
 }
+
+.ql-toolbar.ql-snow button:hover,
+.ql-toolbar.ql-snow button.ql-active {
+  color: var(--primary);
+}
+
+.ql-toolbar.ql-snow button:hover .ql-stroke,
+.ql-toolbar.ql-snow button.ql-active .ql-stroke {
+  stroke: var(--primary);
+}
+
 div#editor.ql-container.ql-snow {
   height: 100%;
-  max-height: 540px;
+  max-height: none;
 }
+
+.ql-editor {
+  padding: var(--space-lg) var(--space-xl);
+  line-height: 1.65;
+}
+
 .ql-editor.ql-blank::before {
-  color: #888; /* muted placeholder color */
+  color: var(--text-secondary);
   font-style: italic;
   font-weight: 400;
   font-size: 0.95rem;
+  left: var(--space-xl);
+  right: var(--space-xl);
 }
 
 .ql-picker-options {
-    background-color: var(--input-bg) !important;
- color: var(--input-color);
-  padding: calc(var(--space-xs) * 3);
+  background-color: var(--input-bg) !important;
+  color: var(--input-color);
+  padding: calc(var(--space-xs) * 2);
   border-radius: var(--radius-sm);
-  outline: none;
   border: 1px solid var(--border-primary) !important;
-  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
 }
+
+/* Fonts */
 .ql-font-sans { font-family: sans-serif; }
 .ql-font-serif { font-family: serif; }
 .ql-font-mono { font-family: monospace; }
-
 .ql-font-inter { font-family: 'Inter', sans-serif; }
 .ql-font-poppins { font-family: 'Poppins', sans-serif; }
 .ql-font-roboto { font-family: 'Roboto', sans-serif; }
