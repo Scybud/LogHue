@@ -105,7 +105,7 @@
         if (!user || authError) {
           // Save current URL so we can come back after login
           const redirectUrl = encodeURIComponent(window.location.href);
-          window.location.href = `https://app.loghue.com/auth?redirect=${redirectUrl}`;
+          window.location.href = `https://app.loghue.com/pages/auth?redirect=${redirectUrl}`;
           return;
         }
 
