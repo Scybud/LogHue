@@ -367,9 +367,10 @@ function renderNotesList(notes) {
 
     const deleteBtn = document.createElement("button");
     deleteBtn.type = "button";
-    deleteBtn.classList.add("deleteBtn");
-    deleteBtn.title = "Delete note";
+    deleteBtn.classList.add("deleteBtn", "tooltip");
+    deleteBtn.setAttribute("data-title", "Delete Task");
     deleteBtn.setAttribute("aria-label", "Delete note");
+    deleteBtn.title = "Delete note";
     deleteBtn.innerHTML = `
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
