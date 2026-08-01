@@ -114,7 +114,7 @@ summary {
 button.danger {
   background: var(--danger);
   font-weight: 700;
-  color: var(--bg-primary);
+  color: var(--text-primary);
   margin-top: var(--space-sm);
 }
 
