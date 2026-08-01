@@ -416,7 +416,7 @@ export function requestAccountDeletion() {
   if (!deleteAccountBtn) return;
 
   deleteAccountBtn.addEventListener("click", () => {
-    confirmAction(
+    confirmAction("Delete Account",
       "Are you sure you want to delete this account? We will send a confirmation email.",
       [
         {
