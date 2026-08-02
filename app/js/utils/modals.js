@@ -14,46 +14,68 @@ import { supabase } from "../supabase.js";
 import { workspace } from "../pages/workspace/index.js";
 import { attachStartDiscussionEvent } from "../pages/workspace/discussions.js";
 
+// ---------------------------------------------------------------------------
+// Direct-invoke versions — load the component and attach its events
+// immediately, without requiring a pre-existing DOM trigger button.
+// Used by onboarding CTAs, and reused internally by the button-bound
+// open* functions below so there's one source of truth per modal.
+// ---------------------------------------------------------------------------
+
+export async function openCreateTaskModalDirect(workspaceId) {
+  if (!workspaceId) return;
+  await loadComponent("../components/modals/create-task", "modalContainer");
+  attachCreateTaskEvent(workspaceId);
+}
+
+export async function openPersonalTaskModalDirect() {
+  await loadComponent(
+    "../components/modals/personal-task-entry",
+    "modalContainer",
+  );
+  await attachCreatePersonalTaskEvent();
+}
+
+export async function openAddMemberModalDirect(workspaceId) {
+  if (!workspaceId) return;
+  await loadComponent("../components/modals/add-member", "modalContainer");
+  setTimeout(() => {
+    attachAddMemberEvents(workspaceId);
+  }, 10);
+}
+
+export async function openCreateWorkspaceModalDirect() {
+  await loadComponent(
+    "../components/modals/create-workspace",
+    "modalContainer",
+  );
+  await initWorkspaces();
+}
+
+// ---------------------------------------------------------------------------
+// Button-bound versions — unchanged behavior, now delegating to the
+// Direct versions above instead of duplicating the load+attach logic.
+// ---------------------------------------------------------------------------
+
 export function openCreateTaskModal(workspaceId) {
   const btn = document.getElementById("createTaskOpen");
   if (!btn) return;
-
   if (!workspaceId) return;
 
-  btn.addEventListener("click", async () => {
-    await loadComponent("../components/modals/create-task", "modalContainer");
-
-    attachCreateTaskEvent(workspaceId);
-  });
+  btn.addEventListener("click", () => openCreateTaskModalDirect(workspaceId));
 }
 
 export function openLogPersonalTaskModal() {
   const btn = document.getElementById("personalLogTaskOpen");
-
   if (!btn) return;
 
-  btn.addEventListener("click", async () => {
-    await loadComponent(
-      "../components/modals/personal-task-entry",
-      "modalContainer",
-    );
-
-    await attachCreatePersonalTaskEvent();
-  });
+  btn.addEventListener("click", () => openPersonalTaskModalDirect());
 }
 
 export function openAddMemeberModal(workspaceId) {
   const btn = document.getElementById("addMemberOpen");
   if (!btn) return;
 
-  btn.onclick = async () => {
-    await loadComponent("../components/modals/add-member", "modalContainer");
-
-    // Give the DOM a tiny heartbeat to settle, then attach events
-    setTimeout(() => {
-      attachAddMemberEvents(workspaceId);
-    }, 10);
-  };
+  btn.onclick = () => openAddMemberModalDirect(workspaceId);
 }
 
 export function openLogTaskModal(supabase, workspaceId, userId) {
@@ -82,14 +104,7 @@ export function openCreateWorkspaceModal() {
   const btns = document.querySelectorAll(".createWorkspaceOpen");
   btns.forEach((btn) => {
     if (btn) {
-      btn.addEventListener("click", async () => {
-        await loadComponent(
-          "../components/modals/create-workspace",
-          "modalContainer",
-        );
-
-        initWorkspaces();
-      });
+      btn.addEventListener("click", () => openCreateWorkspaceModalDirect());
     }
   });
 }

@@ -177,3 +177,38 @@
     padding-bottom: 16px;
   }
 }
+
+
+/* Persistent "not finished" indicator, shown after skip.
+   Default placement: fixed bottom-left. Move into your sidebar/nav
+   markup instead once you decide where it should live. */
+.onboarding-indicator {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 500;
+  background: #131b2a;
+  border: 1px solid #2a3444;
+  color: #e2e8f0;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+ 
+.onboarding-indicator::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4d7fff;
+  flex-shrink: 0;
+}
+ 
+.onboarding-indicator:hover {
+  border-color: #4d7fff;
+}

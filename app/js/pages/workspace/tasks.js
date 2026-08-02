@@ -160,16 +160,19 @@ export function loadTasks(title, tasks, container) {
       deleteBtn.textContent = "Delete";
       deleteBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
-       
-        confirmAction("Delete Task", `Delete "${tsk.title}"? This cannot be undone.`, [
-                { label: "Cancel", type: "cancel" },
-                {
-                  label: "Delete",
-                  type: "confirm",
-                  onClick: async () => await handleTaskDelete(tsk, taskCard),
-                },
-              ]);
 
+        confirmAction(
+          "Delete Task",
+          `Delete "${tsk.title}"? This cannot be undone.`,
+          [
+            { label: "Cancel", type: "cancel" },
+            {
+              label: "Delete",
+              type: "confirm",
+              onClick: async () => await handleTaskDelete(tsk, taskCard),
+            },
+          ],
+        );
       });
       actionsMenu.append(deleteBtn);
     }
@@ -196,18 +199,17 @@ export function loadTasks(title, tasks, container) {
   attachAssignTaskEvent(divGrid);
 }
 
-
 async function handleTaskDelete(tsk, taskCard) {
-   const { error } = await supabase
-     .from("workspace_tasks")
-     .delete()
-     .eq("id", tsk.id);
-   if (error) {
-     actionMsg(error.message || "Failed to delete task", "error");
-     return;
-   }
-   taskCard.remove();
-   actionMsg("Task deleted.", "success");
+  const { error } = await supabase
+    .from("workspace_tasks")
+    .delete()
+    .eq("id", tsk.id);
+  if (error) {
+    actionMsg(error.message || "Failed to delete task", "error");
+    return;
+  }
+  taskCard.remove();
+  actionMsg("Task deleted.", "success");
 }
 /**
  * Member view – tasks assigned to the current user, with Delete
@@ -267,15 +269,18 @@ export function loadAssignedTasks(sectionTitle, tasks, container) {
       deleteBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
 
-        confirmAction("Delete Task", `Delete "${tsk.title}"? This cannot be undone.`, [
-          { label: "Cancel", type: "cancel" },
-          {
-            label: "Delete",
-            type: "confirm",
-            onClick: async () => await handleTaskDelete(tsk, card),
-          },
-        ]);
-
+        confirmAction(
+          "Delete Task",
+          `Delete "${tsk.title}"? This cannot be undone.`,
+          [
+            { label: "Cancel", type: "cancel" },
+            {
+              label: "Delete",
+              type: "confirm",
+              onClick: async () => await handleTaskDelete(tsk, card),
+            },
+          ],
+        );
       });
       card.append(deleteBtn);
     }
@@ -327,41 +332,41 @@ export function loadAllTasks(tasks, container) {
     assignedOn.textContent = `Assigned on: ${formatDateTime(tsk.created_at)}`;
 
     meta.append(assignee, assignedOn);
-const viewBtn = document.createElement("button");
-viewBtn.classList.add("btn", "btn-sm", "btn-primary");
-viewBtn.textContent = "View Task";
-viewBtn.addEventListener("click", (e) => {
-  e.stopPropagation();
-  window.location.href = `task-view?task=${tsk.id}`;
-});
+    const viewBtn = document.createElement("button");
+    viewBtn.classList.add("btn", "btn-sm", "btn-primary");
+    viewBtn.textContent = "View Task";
+    viewBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      window.location.href = `task-view?task=${tsk.id}`;
+    });
 
-card.append(taskTitle, meta, viewBtn);
+    card.append(taskTitle, meta, viewBtn);
 
-if (canDeleteTask(tsk)) {
-  const deleteBtn = document.createElement("button");
-  deleteBtn.type = "button";
-  deleteBtn.classList.add("btn", "danger", "btn-sm");
-  deleteBtn.textContent = "Delete";
-  deleteBtn.addEventListener("click", async (e) => {
-    e.stopPropagation();
+    if (canDeleteTask(tsk)) {
+      const deleteBtn = document.createElement("button");
+      deleteBtn.type = "button";
+      deleteBtn.classList.add("btn", "danger", "btn-sm");
+      deleteBtn.textContent = "Delete";
+      deleteBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
 
-    confirmAction(
-      "Delete Task",
-      `Delete "${tsk.title}"? This cannot be undone.`,
-      [
-        { label: "Cancel", type: "cancel" },
-        {
-          label: "Delete",
-          type: "confirm",
-          onClick: async () => await handleTaskDelete(tsk, card),
-        },
-      ],
-    );
-  });
-  card.append(deleteBtn);
-}
+        confirmAction(
+          "Delete Task",
+          `Delete "${tsk.title}"? This cannot be undone.`,
+          [
+            { label: "Cancel", type: "cancel" },
+            {
+              label: "Delete",
+              type: "confirm",
+              onClick: async () => await handleTaskDelete(tsk, card),
+            },
+          ],
+        );
+      });
+      card.append(deleteBtn);
+    }
 
-grid.prepend(card);
+    grid.prepend(card);
   });
 
   section.append(title, grid);
@@ -466,6 +471,16 @@ async function performTaskAssign(btn) {
   }
 
   actionMsg("Task assigned!", "success");
+
+  // Onboarding: reassigning an existing task also satisfies the
+  // "assign a task" step (same event dispatched at creation time
+  // in modalEvents.js's attachCreateTaskEvent).
+  document.dispatchEvent(
+    new CustomEvent("onboarding:task_assigned", {
+      detail: { taskId: taskIdToAssign, workspaceId: currentWorkspace.id },
+    }),
+  );
+
   closeModal();
 
   setTaskIdToAssign(null);

@@ -186,10 +186,9 @@ async function attachWorkspaceStats(workspaces) {
 }
 
 async function checkIfEmpty(createdWorkspaces) {
-  if(!allWorkspacesContainer) return;
-  
-  if (savedWorkspaceData.length === 0) {
+  if (!allWorkspacesContainer) return;
 
+  if (savedWorkspaceData.length === 0) {
     allWorkspacesContainer.textContent = "";
 
     await createEmptyState({
@@ -227,13 +226,12 @@ async function attachCreateWorkspaceEvent(container, workspaces) {
   if (createWorkspaceBtn.__listenerAttached) return;
   createWorkspaceBtn.__listenerAttached = true;
 
-workspaceNameEl.addEventListener("input", () => {
+  workspaceNameEl.addEventListener("input", () => {
     workspaceNameEl.classList.remove("error");
-});
-workspaceDescriptionEl.addEventListener("input", () => {
+  });
+  workspaceDescriptionEl.addEventListener("input", () => {
     workspaceDescriptionEl.classList.remove("error");
-
-})
+  });
   //When log task button is clicked to create new log
   createWorkspaceBtn.addEventListener("click", async (e) => {
     e.preventDefault();
@@ -333,6 +331,12 @@ workspaceDescriptionEl.addEventListener("input", () => {
       container.prepend(wsCard);
     }
     checkIfEmpty(workspaces);
+
+    document.dispatchEvent(
+      new CustomEvent("onboarding:workspace_created", {
+        detail: { workspaceId: newWorkspace.id },
+      }),
+    );
 
     //RESET FORM
     workspaceNameEl.value = "";
@@ -499,14 +503,18 @@ async function performWorkspaceDelete(id) {
 
 //ARCHEIVE WORKSPACE
 export async function archiveWorkspace(id) {
-  confirmAction("Archive Workspace", "Are you sure you want to Archeive this?", [
-    { label: "Cancel", type: "cancel" },
-    {
-      label: "Archeive",
-      type: "confirm",
-      onClick: () => performWorkspaceArcheive(id),
-    },
-  ]);
+  confirmAction(
+    "Archive Workspace",
+    "Are you sure you want to Archeive this?",
+    [
+      { label: "Cancel", type: "cancel" },
+      {
+        label: "Archeive",
+        type: "confirm",
+        onClick: () => performWorkspaceArcheive(id),
+      },
+    ],
+  );
 }
 
 //PERFORM WORKSPACE ARCHEIVE IF CONFIRMED

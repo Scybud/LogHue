@@ -230,6 +230,11 @@ async function loadCreateNote() {
   }
 
   actionMsg("Note created", "success");
+  document.dispatchEvent(
+    new CustomEvent("onboarding:note_created", {
+      detail: { noteId: data.id },
+    }),
+  );
   localStorage.removeItem("createNote");
 
   await loadNotes();
@@ -504,6 +509,16 @@ async function persistNote(title, content) {
     if (error) return { error };
 
     currentNoteId = data.id;
+
+    // Covers both the explicit Save button and the very first
+    // autosave — this is the single point where a note first
+    // actually exists in the database.
+    document.dispatchEvent(
+      new CustomEvent("onboarding:note_created", {
+        detail: { noteId: data.id },
+      }),
+    );
+
     return { data, created: true };
   }
 

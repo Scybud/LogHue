@@ -1,8 +1,6 @@
 import { closeModal } from "../ui.js";
 import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
-import {
-  createWorkspaceInvite,
-} from "../pages/workspace/invite.js";
+import { createWorkspaceInvite } from "../pages/workspace/invite.js";
 import { loadedMembers } from "../pages/workspace/state.js";
 import { supabase } from "../supabase.js";
 import {
@@ -21,7 +19,7 @@ export function attachCreateTaskEvent(workspaceId) {
   if (!createTaskBtn) return;
 
   const assignedTo = document.getElementById("assignToDropdown");
-  populateAssignDropdown(assignedTo)
+  populateAssignDropdown(assignedTo);
 
   // When create task button is clicked to create a new task
   createTaskBtn.addEventListener("click", async () => {
@@ -83,6 +81,15 @@ export function attachCreateTaskEvent(workspaceId) {
         entityId: createdTask.id,
         entityType: "task",
       });
+
+      // Onboarding: assigning at creation time satisfies the
+      // "assign a task" step, same event as reassigning an
+      // existing task later (see performTaskAssign in tasks.js).
+      document.dispatchEvent(
+        new CustomEvent("onboarding:task_assigned", {
+          detail: { taskId: createdTask.id, workspaceId },
+        }),
+      );
     }
 
     // Render the task in the UI
@@ -364,6 +371,12 @@ export async function attachAddMemberEvents(workspaceId) {
 
     actionMsg("Invite sent!", "success");
     setButtonLoading(inviteBtn, false);
+
+    document.dispatchEvent(
+      new CustomEvent("onboarding:member_invited", {
+        detail: { workspaceId },
+      }),
+    );
   };
 
   // GENERATE QR INVITE
@@ -405,6 +418,12 @@ export async function attachAddMemberEvents(workspaceId) {
     });
 
     setButtonLoading(qrBtn, false);
+
+    document.dispatchEvent(
+      new CustomEvent("onboarding:member_invited", {
+        detail: { workspaceId },
+      }),
+    );
   };
 
   // COPY INVITE LINK
@@ -509,8 +528,14 @@ export async function attachCreatePersonalTaskEvent() {
     // Update in-memory state
     savedTaskDetails.unshift(data);
 
+    document.dispatchEvent(
+      new CustomEvent("onboarding:task_created", {
+        detail: { taskId: data.id },
+      }),
+    );
+
     // Re-render UI
-   await renderExistingTasks();
+    await renderExistingTasks();
     checkIfEmpty();
 
     // Clear inputs

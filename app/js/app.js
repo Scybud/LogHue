@@ -23,8 +23,15 @@ import {
   renderGlobalNotifications,
   fetchNotificationsForUser,
 } from "./utils/notifications.js";
+import {sessionState, sessionReady} from "./session.js"
+import {initOnboarding} from "./components/onboardingModal.js"
 
 window.addEventListener("DOMContentLoaded", async () => {
+  await sessionReady;
+
+  const userId = await sessionState.user.id;
+
+
   const path = window.location.pathname;
 
   await initCommandPalette();
@@ -69,6 +76,8 @@ window.addEventListener("DOMContentLoaded", async () => {
   loadGlobalNotifications();
 
   toggleSearchBar();
+
+  await initOnboarding(userId);
 
   handleConcentEvents();
   setTheme();
