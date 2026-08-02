@@ -1,6 +1,6 @@
 import { supabase } from "../supabase.js";
 import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
-import {loadActivities } from "./workspace/activities.js";
+import { loadActivities } from "./workspace/activities.js";
 import { formatDateTime } from "../utils/time.js";
 
 let currentDiscussion = null;
@@ -199,6 +199,7 @@ function loadSidebar() {
     workspacePageSidebar.classList.toggle("show");
   });
 }
+
 /* ---------------------------------------------
    LOAD DISCUSSION + COMMENTS
 --------------------------------------------- */
@@ -215,12 +216,14 @@ async function loadDiscussion(discussionId) {
         comment,
         created_at,
         discussion_status,
-        profiles:created_by (full_name, avatar_url),
+        created_by,
+        profiles:created_by (id, full_name, avatar_url),
         replies:discussion_comment_comments (
           id,
           comment,
           created_at,
-          profiles:created_by (full_name, avatar_url)
+          created_by,
+          profiles:created_by (id, full_name, avatar_url)
         )
       )
     `,
@@ -280,7 +283,9 @@ function renderDiscussionHeader() {
 
       <div class="metaItem">
         <span class="metaLabel">Status:</span>
-        <span class="statusBadge">${currentDiscussion.status}</span>
+        <span class="statusBadge" data-status="${currentDiscussion.status}">
+          ${currentDiscussion.status}
+        </span>
       </div>
 
       <div class="metaItem">
@@ -305,10 +310,16 @@ function renderComments() {
     return;
   }
 
+  const myId = currentUser?.user?.id;
+
   currentDiscussion.comments.forEach((comment) => {
+    const isOwn = comment.created_by === myId;
+
     const card = document.createElement("div");
     card.classList.add("commentCard");
+    if (isOwn) card.classList.add("is-own");
 
+    // Header
     const header = document.createElement("div");
     header.classList.add("commentHeader");
 
@@ -329,10 +340,12 @@ function renderComments() {
     headerInfo.appendChild(timestamp);
     header.append(avatar, headerInfo);
 
+    // Content bubble
     const content = document.createElement("div");
     content.classList.add("commentContent");
     content.textContent = comment.comment;
 
+    // Meta (status)
     const meta = document.createElement("div");
     meta.classList.add("commentMeta");
     const status = document.createElement("span");
@@ -340,10 +353,12 @@ function renderComments() {
     status.textContent = comment.discussion_status;
     meta.appendChild(status);
 
+    // Replies thread
     const thread = document.createElement("div");
     thread.classList.add("commentsThread");
-    renderReplies(comment.replies, thread);
+    renderReplies(comment.replies, thread, myId);
 
+    // Reply button
     const replyButton = document.createElement("button");
     replyButton.className = "iconBtn addCommentBtn";
     replyButton.dataset.comment = comment.id;
@@ -353,15 +368,22 @@ function renderComments() {
     feed.appendChild(card);
   });
 
+  if (feed) {
+    feed.scrollTop = feed.scrollHeight;
+  }
+
   attachInlineReplyHandlers();
 }
 
-function renderReplies(replies, container) {
+function renderReplies(replies, container, myId) {
   if (!replies?.length) return;
 
   replies.forEach((reply) => {
+    const isOwnReply = reply.created_by === myId;
+
     const replyElement = document.createElement("div");
     replyElement.classList.add("comment", "reply");
+    if (isOwnReply) replyElement.classList.add("is-own");
 
     const avatar = document.createElement("img");
     avatar.src = reply.profiles?.avatar_url || "/assets/default-avatar.png";
@@ -386,7 +408,6 @@ function renderReplies(replies, container) {
 /* ---------------------------------------------
    ADD TOP‑LEVEL COMMENT
 --------------------------------------------- */
-
 function attachCommentSubmitHandler() {
   const btn = document.getElementById("submitCommentBtn");
   const input = document.getElementById("commentInput");
@@ -479,6 +500,7 @@ function attachInlineReplyHandlers() {
 
 const err = document.createElement("p");
 err.classList.add("error");
+
 function openInlineReplyBox(commentId) {
   document.querySelectorAll(".inlineCommentBox").forEach((el) => el.remove());
 
