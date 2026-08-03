@@ -351,23 +351,26 @@ input.error {
   align-items: center;
   top: 10px;
   right: -100%;
-  max-width: 300px ;
-  width: 100% ;
+  max-width: 300px;
+  width: 100%;
   padding: var(--space-xs);
   height: fit-content;
   transition: top 0.5s ease, right 0.5s ease;
 }
+
 #actionsMessage.slideIn {
   right: 10px;
 }
+
 .actionMessageContainer {
   width: 100%;
   text-align: center;
 }
+
 #actionsMessage .actionMessageModal {
-    display: flex;
-  justify-content: center;   
-  align-items: center;   
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background: var(--bg-primary);
   margin: 0;
   min-height: fit-content;
@@ -375,26 +378,34 @@ input.error {
   border-radius: var(--radius-sm);
   padding: var(--space-sm) var(--space-xs);
 }
+
+#actionsMessage .modalMessage {
+  line-height: 0.9;
+  margin: 0;
+}
+
+/* ---- state variants ---- */
+
 #actionsMessage.error .actionMessageModal {
   border: 0.5px solid var(--danger);
-  background: rgba(255, 0, 0, 0.162);
+  background: rgba(255, 25, 25, 0.16);
   backdrop-filter: var(--filter) brightness(20%);
-    color: var(--danger);
+  color: #f5f5f5;
+}
 
-}
-#actionsMessage .modalMessage {
-line-height: 0.9;
-margin: 0;
-}
-.error {
-  color: var(--danger);
-}
 #actionsMessage.success .actionMessageModal {
   border: 1px solid var(--success);
-  background: rgba(0, 128, 0, 0.162);
+  background: rgba(16, 185, 129, 0.16);
   backdrop-filter: var(--filter) brightness(20%);
+  color: #f5f5f5;
 }
-.success {
+
+/* generic text-color utility classes, kept separate from the modal state above */
+.am-text-error {
+  color: var(--danger);
+}
+
+.am-text-success {
   color: var(--success);
 }
 
