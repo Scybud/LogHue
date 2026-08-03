@@ -60,7 +60,7 @@ editInNotesBtn.addEventListener("click", (e) => {
   e.stopPropagation();
   localStorage.setItem("createNote", output.value);
 
-  window.location.href = "../notes";
+  window.location.href = "notes";
 });
 
 function canvasDefault() {
@@ -152,35 +152,55 @@ async function runOCRViaEdgeFunction(canvas) {
   return data;
 }
 
-// --- Process button ---
+function formatStructured(structured) {
+  if (!Array.isArray(structured) || structured.length === 0) return null;
+  try {
+    const formatted = structured
+      .map((page) =>
+        (page.blocks || [])
+          .map((block) =>
+            (block.paragraphs || []).map((p) => p.text || "").join("\n\n"),
+          )
+          .join("\n\n"),
+      )
+      .join("\n\n\n")
+      .trim();
+    return formatted.length ? formatted : null;
+  } catch {
+    return null;
+  }
+}
+
 processBtn.addEventListener("click", async () => {
   if (!selectedImage) return actionMsg("Please select an image", "error");
 
   processBtn.disabled = true;
   output.value = "";
   output.placeholder = "Extracting text...";
-  
-  try {
-    const result = await runOCRViaEdgeFunction(canvas); // Your existing function
 
-    if (result.structured) {
-      // Reconstruct the text using the structured hierarchy
-      // This is much cleaner than regex-based "fixing"
-      const formatted = result.structured
-        .map(page => page.blocks
-          .map(block => block.paragraphs.map(p => p.text).join('\n\n'))
-          .join('\n\n')
-        ).join('\n\n\n');
-      
-      output.value = formatted;
+  try {
+    const result = await runOCRViaEdgeFunction(canvas);
+
+    const formatted = formatStructured(result.structured);
+    output.value = formatted ?? result.text ?? "";
+
+    if (result.cached) {
+      loadUsage();
     } else {
-      output.value = result.text;
+      updateUsageUI(result.used, result.limit);
     }
 
-    updateUsageUI(result.used, result.limit);
     outputLower.classList.add("show");
   } catch (err) {
-    // ... (Keep existing error modal logic) ...
+    console.error("OCR failed:", err);
+
+    if (err?.used != null && err?.limit != null) {
+      showLimitModal(err.used, err.limit);
+    } else {
+      actionMsg(err?.message || "Extraction failed, please try again", "error");
+    }
+
+    output.placeholder = "Extraction failed";
   } finally {
     processBtn.disabled = false;
   }
@@ -226,7 +246,7 @@ document.getElementById("closeModal").onclick = () => {
 
 document.getElementById("upgradeBtn").onclick = () => {
   window.location.href =
-    "https://app.loghue.com/billing/upgrade?plan=77c12c94-25a4-4567-91a7-7bbddb335001"; // adjust route
+    "https://app.loghue.com/pages/billing/upgrade?plan=77c12c94-25a4-4567-91a7-7bbddb335001"; // adjust route
 };
 
 const usageText = document.getElementById("usageText");
