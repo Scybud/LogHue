@@ -204,6 +204,11 @@ function loadSidebar() {
    LOAD DISCUSSION + COMMENTS
 --------------------------------------------- */
 async function loadDiscussion(discussionId) {
+    if (!discussionId) {
+      console.warn("No discussion ID provided — skipping Supabase fetch.");
+      return null;
+    }
+    
   const { data, error } = await supabase
     .from("discussions")
     .select(

@@ -157,7 +157,7 @@ export async function attachStartDiscussionEvent(ws, user) {
       return;
     }
 
-    const createdDiscussion = data[0];
+    const createdDiscussion = data;
 
     await notifyWorkspace({
       workspaceId: ws.id,
