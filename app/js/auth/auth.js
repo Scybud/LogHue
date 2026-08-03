@@ -63,7 +63,7 @@ if (signupForm) {
           window.location.href = decodeURIComponent(redirectTo);
         } else {
           // Default behavior
-          window.location.href = "/pages/create-workspace";
+          window.location.href = "/pages/";
         }
       }
     } finally {
