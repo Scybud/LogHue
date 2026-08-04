@@ -183,7 +183,24 @@ export function attachTransferOwnershipEvents(workspace) {
     }
     const currentOwnerId = currentOwner.user_id || currentOwner.profiles?.id;
 
-    // 1. Assign owner role to the selected user
+    const { data: ownerUpdateData, error: ownerColumnError } = await supabase
+  .from("workspaces")
+  .update({ created_by: newOwnerId })
+  .eq("id", workspace.id)
+  .select();
+
+if (ownerColumnError) {
+  console.error(ownerColumnError);
+  actionMsg("Ownership transfer failed.", "error");
+  return;
+}
+if (!ownerUpdateData || ownerUpdateData.length === 0) {
+  actionMsg("Ownership transfer failed: permission denied.", "error");
+  console.error("created_by update affected 0 rows, likely blocked by RLS");
+  return;
+}
+
+    // 2. Assign owner role to the selected user
     const { error: assignError } = await supabase
       .from("workspace_members")
       .update({ role: "owner" })
@@ -196,7 +213,7 @@ export function attachTransferOwnershipEvents(workspace) {
       return;
     }
 
-    // 2. Demote previous owner to admin (target by user_id, not role)
+    // 3. Demote previous owner to admin (target by user_id, not role)
     const { error: removeError } = await supabase
       .from("workspace_members")
       .update({ role: "admin" })
