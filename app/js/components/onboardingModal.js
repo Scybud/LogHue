@@ -3,8 +3,9 @@ import {
   shouldShowOnboarding,
   setUserType,
   dismissOnboarding,
-  getOnboardingState,
   reopenOnboarding,
+  markStepAttempted,
+  getOnboardingState,
 } from "./onboarding.js";
 import { getStepsForUserType } from "./onboardingSteps.js";
 import {
@@ -18,7 +19,7 @@ import {
 const MODAL_ID = "onboarding-modal";
 // NOTE: confirm this route. Guessed to match the app's other query-param
 // style routes (workspace?ws=, task-view?task=). Adjust if wrong.
-const NOTES_PAGE_ROUTE = "notes";
+const NOTES_PAGE_ROUTE = "notes?new=1";
 
 let overlayHiddenForInnerModal = false;
 let modalContainerObserver = null;
@@ -33,8 +34,7 @@ export async function initOnboarding(userId) {
   // A CTA that navigates (e.g. "write a note") sets this right before
   // leaving the page, so the destination page doesn't immediately show
   // the full-screen modal on top of what the user is trying to do.
-  const suppressed =
-    sessionStorage.getItem("onboarding:suppress_next_mount") === "true";
+  const suppressed = sessionStorage.getItem("onboarding:suppress_next_mount") === "true";
   sessionStorage.removeItem("onboarding:suppress_next_mount");
 
   if (shouldShowOnboarding() && !suppressed) {
@@ -53,6 +53,7 @@ export async function initOnboarding(userId) {
     if (e.detail?.allDone) {
       removeIncompleteIndicator();
       unmountModal();
+      actionMsg("You're all set! Onboarding complete.", "success");
       return;
     }
 
@@ -61,9 +62,9 @@ export async function initOnboarding(userId) {
       return;
     }
     // No overlay mounted — most likely we're on a page (like notes.js)
-    // that a CTA navigated to. Surface completion without blocking
+    // that a CTA navigated to. Surface progress without blocking
     // whatever the user is actively doing on this page.
-    handleStepCompletedWithoutOverlay(e.detail);
+    actionMsg("Nice, that's done. Reopen onboarding anytime from settings.", "success");
   });
 }
 
@@ -94,17 +95,6 @@ function renderIncompleteIndicator() {
 function removeIncompleteIndicator() {
   const pill = document.getElementById(INDICATOR_ID);
   if (pill) pill.remove();
-}
-
-function handleStepCompletedWithoutOverlay({ allDone } = {}) {
-  if (allDone) {
-    actionMsg("You're all set! Onboarding complete.", "success");
-    return;
-  }
-  actionMsg(
-    "Nice, that's done. Reopen onboarding anytime from settings.",
-    "success",
-  );
 }
 
 function mountModal() {
@@ -165,19 +155,14 @@ function renderStepsView() {
   const { userType, steps } = getOnboardingState();
   const stepDefs = getStepsForUserType(userType);
   const doneCount = stepDefs.filter((s) => steps[s.id]).length;
-  const current =
-    stepDefs.find((s) => !steps[s.id]) || stepDefs[stepDefs.length - 1];
+  const current = stepDefs.find((s) => !steps[s.id]) || stepDefs[stepDefs.length - 1];
 
-  const asideItems = stepDefs
-    .map(
-      (step) => `
+  const asideItems = stepDefs.map((step) => `
     <li class="onboarding-aside-item ${steps[step.id] ? "is-done" : ""} ${step.id === current.id ? "is-current" : ""}">
       <span class="onboarding-aside-check">${steps[step.id] ? "&#10003;" : ""}</span>
       <span>${step.label}</span>
     </li>
-  `,
-    )
-    .join("");
+  `).join("");
 
   return `
     <div class="onboarding-panel">
@@ -189,7 +174,7 @@ function renderStepsView() {
       <div class="onboarding-main">
         <h1>${current.label}</h1>
         <p class="onboarding-subtitle">${current.description}</p>
-        <button class="onboarding-cta" data-action="${current.cta.action}">${current.cta.label}</button>
+        <button class="onboarding-cta" data-action="${current.cta.action}" data-step-id="${current.id}">${current.cta.label}</button>
       </div>
     </div>
   `;
@@ -217,6 +202,18 @@ function bindOverlayEvents(overlay) {
         await setUserType("team");
         renderContent();
         return;
+      }
+
+      const stepId = e.currentTarget.dataset.stepId;
+      if (stepId) {
+        const { userType } = getOnboardingState();
+        const stepDef = getStepsForUserType(userType).find((s) => s.id === stepId);
+        // Optional steps finish onboarding on the first attempt, even
+        // before (or regardless of) the underlying action actually
+        // succeeding — see markStepAttempted for why.
+        if (stepDef?.optional) {
+          await markStepAttempted(stepId);
+        }
       }
 
       await runCta(action);
@@ -255,9 +252,7 @@ async function runCta(action) {
   if (action === "open_invite_modal") {
     if (!activeWorkspaceId) {
       showOverlayAfterInnerModal();
-      console.error(
-        "No active workspace id — create a workspace before inviting a member.",
-      );
+      console.error("No active workspace id — create a workspace before inviting a member.");
       return;
     }
     await openAddMemberModalDirect(activeWorkspaceId);
@@ -267,9 +262,7 @@ async function runCta(action) {
   if (action === "open_task_modal") {
     if (!activeWorkspaceId) {
       showOverlayAfterInnerModal();
-      console.error(
-        "No active workspace id — create a workspace before assigning a task.",
-      );
+      console.error("No active workspace id — create a workspace before assigning a task.");
       return;
     }
     await openCreateTaskModalDirect(activeWorkspaceId);

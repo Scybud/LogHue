@@ -98,6 +98,7 @@ async function initNotes() {
 
   const params = new URLSearchParams(window.location.search);
   const noteId = params.get("note");
+  const forceNew = params.get("new") === "1";
 
   const editorContainer = document.getElementById("editorContainer");
 
@@ -195,7 +196,11 @@ async function initNotes() {
   try {
     const createdFromDraft = await loadCreateNote();
     if (!createdFromDraft) {
-      await loadNotes(noteId);
+      if (forceNew) {
+        await createNote();
+      } else {
+        await loadNotes(noteId);
+      }
     }
   } finally {
     setLoading(false);
@@ -230,11 +235,9 @@ async function loadCreateNote() {
   }
 
   actionMsg("Note created", "success");
-  document.dispatchEvent(
-    new CustomEvent("onboarding:note_created", {
-      detail: { noteId: data.id },
-    }),
-  );
+  document.dispatchEvent(new CustomEvent("onboarding:note_created", {
+    detail: { noteId: data.id },
+  }));
   localStorage.removeItem("createNote");
 
   await loadNotes();
@@ -471,6 +474,10 @@ async function createNote() {
     await loadNotes();
     openNote(data);
 
+    document.dispatchEvent(new CustomEvent("onboarding:note_created", {
+      detail: { noteId: data.id },
+    }));
+
     actionMsg("Note created. Start typing!", "success");
   } finally {
     setLoading(false);
@@ -513,11 +520,9 @@ async function persistNote(title, content) {
     // Covers both the explicit Save button and the very first
     // autosave — this is the single point where a note first
     // actually exists in the database.
-    document.dispatchEvent(
-      new CustomEvent("onboarding:note_created", {
-        detail: { noteId: data.id },
-      }),
-    );
+    document.dispatchEvent(new CustomEvent("onboarding:note_created", {
+      detail: { noteId: data.id },
+    }));
 
     return { data, created: true };
   }

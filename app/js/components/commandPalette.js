@@ -1,11 +1,4 @@
 import { loadComponent } from "../ui.js";
-/*
- NOTE: intentionally NOT statically importing initSmartSearch from "../utils/search.js" here.
- search.js has a top-level `await sessionReady;`, and a static import would make THIS module
- (and therefore app.js, which imports this) wait on that too — delaying when the keydown
- listener gets registered, and even delaying DOMContentLoaded itself. Dynamic import below
- keeps initCommandPalette() free of that dependency until the palette is actually opened.
-*/
 
 export async function initCommandPalette() {
   document.addEventListener("keydown", async (e) => {

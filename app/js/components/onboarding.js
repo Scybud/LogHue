@@ -7,6 +7,7 @@ const state = {
   userId: null,
   userType: null,
   steps: {},
+  attempted: {},
   dismissed: false,
   onboarded: false,
   activeWorkspaceId: null,
@@ -34,12 +35,24 @@ export async function loadOnboardingState(userId) {
   state.onboarded = data.onboarded;
   state.userType = data.onboarding_progress?.user_type ?? null;
   state.steps = data.onboarding_progress?.steps ?? {};
+  state.attempted = data.onboarding_progress?.attempted ?? {};
   state.dismissed = data.onboarding_progress?.dismissed ?? false;
-  state.activeWorkspaceId =
-    data.onboarding_progress?.active_workspace_id ?? null;
+  state.activeWorkspaceId = data.onboarding_progress?.active_workspace_id ?? null;
 
   bindStepListeners();
   return state;
+}
+
+/**
+ * A required step needs `steps[id]` true. An optional step counts as
+ * satisfied by either actually completing it OR having attempted it
+ * once (clicked its CTA) — see markStepAttempted.
+ */
+function computeAllDone() {
+  return getStepsForUserType(state.userType).every((step) => {
+    if (step.optional) return state.steps[step.id] || state.attempted[step.id];
+    return state.steps[step.id];
+  });
 }
 
 /** Whether the modal should render right now. */
@@ -51,6 +64,7 @@ export function shouldShowOnboarding() {
 export async function setUserType(userType) {
   state.userType = userType;
   state.steps = {};
+  state.attempted = {};
   getStepsForUserType(userType).forEach((step) => {
     state.steps[step.id] = false;
   });
@@ -71,18 +85,36 @@ async function markStepComplete(stepId, detail = {}) {
     state.activeWorkspaceId = detail.workspaceId;
   }
 
-  const allDone = getStepsForUserType(state.userType)
-    .filter((step) => !step.optional)
-    .every((step) => state.steps[step.id]);
-
+  const allDone = computeAllDone();
   if (allDone) state.onboarded = true;
 
   await persist();
-  document.dispatchEvent(
-    new CustomEvent("onboarding:step_completed", {
-      detail: { stepId, allDone },
-    }),
-  );
+  document.dispatchEvent(new CustomEvent("onboarding:step_completed", {
+    detail: { stepId, allDone },
+  }));
+}
+
+/**
+ * For optional steps only: marks that the user clicked the CTA and
+ * went through the flow, even if the underlying action (e.g. an
+ * actual task assignment) hasn't happened yet or never does. This is
+ * what lets onboarding finish after one attempt instead of waiting
+ * indefinitely on something outside the user's control.
+ */
+export async function markStepAttempted(stepId) {
+  if (state.attempted[stepId]) return; // already attempted, no-op
+  state.attempted[stepId] = true;
+
+  const allDone = computeAllDone();
+  if (allDone) state.onboarded = true;
+
+  await persist();
+
+  if (allDone) {
+    document.dispatchEvent(new CustomEvent("onboarding:step_completed", {
+      detail: { stepId, allDone: true, viaAttempt: true },
+    }));
+  }
 }
 
 /** Skip — hides the modal without marking anything complete. Resumable. */
@@ -107,9 +139,7 @@ function bindStepListeners() {
   if (state.listenersBound || !state.userType) return;
 
   getStepsForUserType(state.userType).forEach((step) => {
-    document.addEventListener(step.event, (e) =>
-      markStepComplete(step.id, e.detail || {}),
-    );
+    document.addEventListener(step.event, (e) => markStepComplete(step.id, e.detail || {}));
   });
 
   state.listenersBound = true;
@@ -123,6 +153,7 @@ async function persist() {
       onboarding_progress: {
         user_type: state.userType,
         steps: state.steps,
+        attempted: state.attempted,
         dismissed: state.dismissed,
         active_workspace_id: state.activeWorkspaceId,
       },
