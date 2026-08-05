@@ -416,10 +416,11 @@ input.error {
 }
 #notificationsContainer {
   border-radius: var(--radius-md);
-  position: absolute;
+  position: fixed;
     top: 50px;
     right: 0;
   z-index: 2;
+  margin: 0 var(--space-xs);
   width: 100%;
   max-width: 600px;
   max-height: 600px;
@@ -493,6 +494,24 @@ flex-direction: column;
   color: #ffffff;
   background-color: red;
   border: 1px solid var(--border);
+}
+.notificationsLoadMoreWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.notificationsLoadMoreBtn {
+background: var(--surface-primary);
+margin: 0 auto;
+padding: var(--space-sm) var(--space-md);
+color: var(--text-primary);
+border: none;
+border-radius: var(--radius-sm);
+cursor: pointer;
+transition: background 0.3s ease;
+}
+.notificationsLoadMoreBtn:hover {
+ background: var(--surface-secondary);
 }
 .profileAvatar {
   width: 40px;

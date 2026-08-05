@@ -31,7 +31,6 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   const userId = await sessionState.user.id;
 
-
   const path = window.location.pathname;
 
   await initCommandPalette();
@@ -39,14 +38,12 @@ window.addEventListener("DOMContentLoaded", async () => {
   // Load correct sidebar based on page
   if (path.includes("workspace")) {
     // Prefer a shared container id; fall back to the old ones while migrating
-    const target =
-      document.getElementById("workspaceSidebarContainer");
+    const target = document.getElementById("workspaceSidebarContainer");
 
     if (target) {
       await loadComponent("../components/workspace-sidebar", target.id);
     }
   }
-
 
   // General sidebar is safe everywhere
   await loadComponent("../components/sidebar", "sidebarContainer");
@@ -67,9 +64,9 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   //JOIN NOTIFICATIONS GLOBALLY
   async function loadGlobalNotifications() {
-    const notifications = await fetchNotificationsForUser();
+    const { notifications, hasMore } = await fetchNotificationsForUser();
 
-    renderGlobalNotifications(notifications);
+    await renderGlobalNotifications(notifications, hasMore);
   }
 
   // Call on page load

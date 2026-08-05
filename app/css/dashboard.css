@@ -68,7 +68,7 @@ transform: translate(-50%, -50%);
         resize:none;
         background: var(--surface-primary);
         max-width: 700px;
-        height: 150px;
+        height: 100px;
         margin: var(--space-lg) auto 0;
         border-radius: var(--radius-lg);
         padding: var(--space-md);
