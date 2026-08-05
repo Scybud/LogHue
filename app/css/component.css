@@ -618,3 +618,143 @@ button.dropdown-item {
   content: "✓";
   float: right;
 }
+
+.activityLog {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.activityGroupLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.activityRail {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.activityRail::before {
+  content: "";
+  position: absolute;
+  left: 15px;
+  top: 4px;
+  bottom: 4px;
+  width: 1px;
+  background: var(--border-subtle);
+}
+
+.logEntry {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+}
+
+.logMarker {
+  position: relative;
+  width: 32px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.logDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 6px;
+  background: var(--accent-task, #5b8def);
+  z-index: 1;
+}
+
+.logEntry-discussion .logDot {
+  background: var(--accent-discussion, #d97757);
+}
+
+.logMain {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.logHeadline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logAvatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.logText {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  flex: 1;
+  min-width: 0;
+}
+
+.logTime {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.logDetail {
+  margin-top: 4px;
+  margin-right: var(--space-lg);
+  padding-left: 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.logNote {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.logOpenLink {
+  position: relative;
+  border: none;
+  background: var(--surface-secondary);
+  color: var(--accent-primary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: var(--space-sm);
+  border-radius: var(--radius-sm);
+  transition: background 0.3s ease;
+}
+
+/* The animated underline */
+.logOpenLink::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0%;
+  background: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.logOpenLink:hover {
+  background: var(--surface-primary);
+}
+
+.logOpenLink:hover::after {
+  width: 100%;
+}
