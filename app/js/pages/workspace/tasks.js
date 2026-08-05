@@ -33,7 +33,7 @@ function canDeleteTask(tsk) {
 export function loadTasks(title, tasks, container) {
   const sectionTitle = document.createElement("h2");
   sectionTitle.classList.add("sectionTitle");
-  sectionTitle.textContent = "📝" + title;
+  sectionTitle.textContent = title;
 
   const docLink = document.createElement("a");
   docLink.classList.add("docLink");

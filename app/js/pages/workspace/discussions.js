@@ -33,7 +33,7 @@ export function loadDiscussions(
 
   const sectionTitle = document.createElement("h2");
   sectionTitle.classList.add("sectionTitle");
-  sectionTitle.textContent = "💬" + title;
+  sectionTitle.textContent = title;
 
   const sectionHeader = document.createElement("div");
   sectionHeader.classList.add("sectionHeader");

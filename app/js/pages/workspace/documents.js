@@ -14,7 +14,7 @@ export async function loadDocuments(documents, container) {
 
   const title = document.createElement("h2");
   title.className = "sectionTitle";
-  title.textContent = "📂Documents";
+  title.textContent = "Documents";
 
   const uploadBtn = document.createElement("button");
   uploadBtn.classList.add("actionBtn", "btn-sm", "btn");
