@@ -71,7 +71,10 @@ export async function initWorkspaceDashboard() {
   // Role
   const role = await fetchMembershipRole(workspaceId, authData.user.id);
   if (!role) {
-    actionMsg("Access Denied: You are not a member of this workspace.", "error");
+    actionMsg(
+      "Access Denied: You are not a member of this workspace.",
+      "error",
+    );
     window.location.href = "all-workspaces";
     return;
   }
@@ -132,19 +135,11 @@ export async function initWorkspaceDashboard() {
 
   if (container) container.innerHTML = "";
 
-  // Default section
-  if (role === "member") {
-    const myTasks = workspace.workspace_tasks.filter(
-      (t) =>
-        String(t.assigned_to) === String(authData.user.id) &&
-        t.status === "in progress",
-    );
-    loadAssignedTasks("My Tasks", myTasks, container);
-  } else {
-    const openTasks = workspace.workspace_tasks.filter(
-      (ts) => ts.status === "in progress",
-    );
-    loadTasks("Created Tasks", openTasks, container);
+  // Default section: activity logs
+  try {
+    await renderSection("activities", currentWorkspace, container);
+  } catch (err) {
+    console.error(err);
   }
 
   setLoading(false, container);
@@ -158,7 +153,7 @@ export async function initWorkspaceDashboard() {
   openStartDiscussionModal(currentWorkspace, authData.user);
 
   if (role === "member") {
-     openCreateTaskModal(currentWorkspace.id);
+    openCreateTaskModal(currentWorkspace.id);
     openLogTaskModal(supabase, workspaceId, authData.user.id);
   } else {
     openCreateTaskModal(currentWorkspace.id);
@@ -170,7 +165,10 @@ export async function initWorkspaceDashboard() {
     const btn = e.target.closest(".navBtn");
     if (!btn) return;
     // Don't treat the dropdown toggle as a section navigation
-    if (btn.classList.contains("navBtnDropdown") || btn.id === "navBtnDropdown") {
+    if (
+      btn.classList.contains("navBtnDropdown") ||
+      btn.id === "navBtnDropdown"
+    ) {
       return;
     }
 
