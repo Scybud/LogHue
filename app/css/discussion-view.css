@@ -4,7 +4,7 @@
 
   #discussionViewContent {
     display: grid;
-    grid-template-columns: 1fr minmax(220px, 260px);
+    grid-template-columns: 1fr minmax(260px, 300px);
     height: calc(100vh - 0px); /* fill available height */
   }
 
