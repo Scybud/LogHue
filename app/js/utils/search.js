@@ -153,6 +153,13 @@ export async function initSmartSearch(container = document) {
       .ilike("title", `%${value}%`)
       .limit(10);
 
+      const { data: discussionSearch, error: discussionSearchError } =
+        await supabase
+          .from("discussions")
+          .select("id, title")
+          .ilike("title", `%${value}%`)
+          .limit(10);
+
     const { data: notesSearch, error: notesSearchError } = await supabase
       .from("personal_notes")
       .select("id, title")
@@ -183,6 +190,12 @@ export async function initSmartSearch(container = document) {
       type: "task",
     }));
 
+    const discussionSearchTagged = (discussionSearch || []).map((t) => ({
+      id: t.id,
+      title: t.title,
+      type: "discussion",
+    }));
+
     const notesSearchTagged = (notesSearch || []).map((n) => ({
       id: n.id,
       title: n.title,
@@ -190,7 +203,12 @@ export async function initSmartSearch(container = document) {
     }));
 
     renderResults(
-      [...workspaceSearchTagged, ...tasksSearchTagged, ...notesSearchTagged],
+      [
+        ...workspaceSearchTagged,
+        ...tasksSearchTagged,
+        ...discussionSearchTagged,
+        ...notesSearchTagged,
+      ],
       value,
     );
   };
@@ -261,11 +279,13 @@ export async function initSmartSearch(container = document) {
 function searchType(result) {
   if (result.type === "workspace") return "Workspace";
   if (result.type === "task") return "Task";
+    if (result.type === "discussion") return "Discussion";
   if (result.type === "note") return "Note";
 }
 
 function searchLink(result) {
   if (result.type === "workspace") return `workspace?ws=${result.id}`;
   if (result.type === "task") return `task-view?task=${result.id}`;
+    if (result.type === "discussion") return `discussion-view?dcn=${result.id}`;
   if (result.type === "note") return `notes?note=${result.id}`;
 }

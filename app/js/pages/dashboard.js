@@ -19,10 +19,14 @@ const hints = [
   "Search workspaces...",
   "Search notes...",
   "Search tasks...",
+  "Search discussions...",
   'Try "all workspaces"',
   'Try "all notes"',
   'Try "all tasks"',
+  'Try "/notes"',
   "Press Ctrl + K anywhere",
+  'Try "/workspaces"',
+  'Try "/tasks"',
 ];
 
 let hintIndex = 0;
