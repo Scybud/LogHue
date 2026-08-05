@@ -78,13 +78,13 @@ export function loadTasks(title, tasks, container) {
       ? `Assigned to: ${tsk.profiles.full_name}`
       : "Unassigned";
 
-    const assignedOn = document.createElement("p");
-    assignedOn.classList.add("meta");
-    assignedOn.textContent = `Assigned on: ${formatDateTime(tsk.created_at)}`;
+    const deadline = document.createElement("p");
+    deadline.classList.add("meta");
+    deadline.textContent = `Deadline: ${tsk.task_deadline ? formatDateTime(tsk.task_deadline) : "No deadline"}`;
 
     const taskMeta = document.createElement("div");
     taskMeta.classList.add("taskMeta");
-    taskMeta.append(assignee, assignedOn);
+    taskMeta.append(assignee, deadline);
 
     const menuBtn = document.createElement("button");
     menuBtn.type = "button";

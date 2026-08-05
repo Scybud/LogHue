@@ -8,12 +8,16 @@
     </svg>
     
     <h2>Create Task</h2>
-    <label for="taskTitle">Task Title </label>
+    <label for="taskTitle">Task Title<span style="color: var(--danger);">*</span></label>
     <input type="text" class="inputField" id="taskTitle" placeholder="e.g. Write a project brief" />
-    <label for="taskDescription">Task Description </label>
+              <label for="taskDueDate">Due Date (Optional)
+
+              <input type="datetime-local" id="taskDueDate" class="inputField" />
+            </label>
+    <label for="taskDescription">Task Description (Optional)</label>
     <textarea name="taskDescription" id="taskDescription" class="inputField textArea"
       placeholder="e.g. Write a project brief for..." required></textarea>
-    <label for="assignToDropdown">Assign To</label>
+    <label for="assignToDropdown">Assign To<span style="color: var(--danger);">*</span></label>
     <select name="assignTo" id="assignToDropdown">
       <!--CONTENT LOADED DINAMICALLY-->>
     </select>

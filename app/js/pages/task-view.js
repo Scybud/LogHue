@@ -3,7 +3,7 @@ import { actionMsg } from "../utils/modals.js";
 import { notifyUser } from "../utils/notifications.js";
 import { setButtonLoading, loadComponent, closeModal } from "https://scybud.github.io/scybud-ui/js/ui.js";
 import { loadActivities } from "./workspace/activities.js";
-import { formatDateTimeRelatively } from "../utils/time.js";
+import { formatDateTime, formatDateTimeRelatively } from "../utils/time.js";
 import { populateAssignDropdown } from "../utils/modalEvents.js";
 import { loadedMembers, setLoadedMembers } from "./workspace/state.js"; 
 import { loadWorkspaceMembersForTaskView } from "../data/tasksDb.js";
@@ -318,6 +318,11 @@ function renderTaskHeader() {
         <span class="metaLabel">Created:</span>
         <span>${formatDateTimeRelatively(currentTask.created_at)}</span>
       </div>
+
+      <div class="metaItem">
+              <span class="metaLabel">Due Date:</span>
+              <span id="taskDueDate">${currentTask.task_deadline ? formatDateTime(currentTask.task_deadline) : "No deadline"}</span>
+            </div>
     </div>
 
     <p class="taskDescription">${currentTask.description || "No description provided."}</p>
@@ -562,6 +567,7 @@ async function attachEditTaskHandler(taskId) {
     const modalContainer = document.getElementById("modalContainer");
     const title = modalContainer.querySelector("h2");
     const editTaskTitleEl = document.getElementById("taskTitle");
+    const editTaskDeadline = document.getElementById("taskDueDate");
     const editTaskDescriptionEl = document.getElementById("taskDescription");
     const assignToDropdown = document.getElementById("assignToDropdown");
     const updateTaskBtn = document.getElementById("createTaskBtn");
@@ -574,6 +580,7 @@ async function attachEditTaskHandler(taskId) {
         `
         id,
         title,
+        task_deadline,
         description,
         assigned_to
       `,
@@ -589,12 +596,18 @@ async function attachEditTaskHandler(taskId) {
 
     title.textContent = "Edit Task";
     editTaskTitleEl.value = ts.title;
+    editTaskDeadline.value = ts.task_deadline
+    ? new Date(ts.task_deadline).toISOString().slice(0, 16)
+    : "";
     editTaskDescriptionEl.value = ts.description || "";
     assignToDropdown.value = ts.assigned_to || "";
     updateTaskBtn.textContent = "Update Task";
 
     updateTaskBtn.addEventListener("click", async () => {
       const updatedTaskTitleValue = editTaskTitleEl.value.trim();
+      const updateTaskDeadlineValue = editTaskDeadline.value
+        ? new Date(editTaskDeadline.value).toISOString()
+        : null;
       const updatedTaskDescriptionValue = editTaskDescriptionEl.value.trim();
       const updatedAssignedTo = assignToDropdown.value || null;
 
@@ -602,6 +615,7 @@ async function attachEditTaskHandler(taskId) {
         .from("workspace_tasks")
         .update({
           title: updatedTaskTitleValue,
+          task_deadline: updateTaskDeadlineValue,
           description: updatedTaskDescriptionValue,
           assigned_to: updatedAssignedTo,
         })

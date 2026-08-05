@@ -26,6 +26,9 @@ export function attachCreateTaskEvent(workspaceId) {
     setButtonLoading(createTaskBtn, true);
 
     const taskTitle = document.getElementById("taskTitle").value.trim();
+     const taskDueDate = document.getElementById("taskDueDate").value
+       ? new Date(document.getElementById("taskDueDate").value).toISOString()
+       : null;
     const taskDescription = document
       .getElementById("taskDescription")
       .value.trim();
@@ -46,6 +49,7 @@ export function attachCreateTaskEvent(workspaceId) {
       workspace_id: workspaceId,
       created_by: user.id,
       title: taskTitle,
+      task_deadline: taskDueDate,
       status: "in progress",
       assigned_to: assignedToValue || null, // Assign to empty if no one is selected
       description: taskDescription || "",

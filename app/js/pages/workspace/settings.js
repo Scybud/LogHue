@@ -101,7 +101,39 @@ export async function loadSettingsAdmin(container, workspace, currentUserId) {
   const deleteCard = document.createElement("div");
   deleteCard.classList.add("card", "deleteCard");
   deleteCard.innerHTML = `
-    <h3>⚠️Delete Workspace</h3>
+    <h3><svg
+  width="24"
+  height="24"
+  viewBox="0 0 64 64"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- Triangle background -->
+  <polygon
+    points="32,4 4,60 60,60"
+    fill="#FFC107"
+    stroke="#000000"
+    stroke-width="3"
+  />
+
+  <!-- Exclamation mark body -->
+  <rect
+    x="29"
+    y="22"
+    width="6"
+    height="20"
+    fill="#000000"
+    rx="2"
+  />
+
+  <!-- Exclamation mark dot -->
+  <circle
+    cx="32"
+    cy="48"
+    r="3"
+    fill="#000000"
+  />
+</svg>
+Delete Workspace</h3>
     <p class="tunedText">Deleting this workspace means all content: tasks, discussions, histories and everything related to this workspace will be erased. Members will be removed from this workspace as well.</p>
     <p class="text-muted text-center">This action <b>CANNOT</b> be undone. Please be sure of your intentions before performing this action.</p>
     <button type="button" class="btn danger" id="deleteWorkspace">Delete Workspace</button>
