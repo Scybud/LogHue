@@ -237,7 +237,7 @@ export async function initSmartSearch(container = document) {
 
       resultsContainer.innerHTML = "";
       const errorMsg = document.createElement("p");
-      errorMsg.classList.add("error", "text-center");
+      errorMsg.classList.add("am-text-error", "text-center");
       errorMsg.textContent = `No page named "${value.slice(1)}"`;
       resultsContainer.append(errorMsg);
     });

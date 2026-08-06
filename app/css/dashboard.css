@@ -2,29 +2,33 @@
   position: relative;
   overflow-x: hidden;
 }
-.orb {
-position: absolute;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-        width: 800px;
-        height: 800px;
-        border-radius: 50%;
-        background: var(--gradient);
-        filter: blur(140px);
-        opacity: 0.14;
-        pointer-events: none;
-        animation: beam 2s ease;
-      }
-@keyframes beam {
-  from {
-    width: 0;
-    height: 0;
-  } to {
-    width: 800px;
-    height: 800px;
-  }
+.dashboardStats {
+  display: flex;
+  gap: var(--space-sm);
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  justify-content: center;
 }
+
+.dashboardStat {
+  background: var(--card-bg);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-md);
+  font-size: 0.85rem;
+  color: var(--text-secondary, #c5c5d2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dashboardStat strong {
+  color: var(--text-main, #ffffff);
+  font-weight: 600;
+}
+
 .dashboard-section {
   border: none;
   display: flex;
@@ -32,7 +36,6 @@ transform: translate(-50%, -50%);
   min-height: 100%;
   max-width: 100%;
   align-items: center;
-  justify-content: center;
   transition: transform 1s ease, opacity 0.5s ease;
 }
 
@@ -64,51 +67,17 @@ transform: translate(-50%, -50%);
          position: sticky;
   top: 0;
       }
-      .mainSearchInput {
-        resize:none;
-        background: var(--surface-primary);
-        max-width: 700px;
-        height: 100px;
-        margin: var(--space-lg) auto 0;
-        border-radius: var(--radius-lg);
-        padding: var(--space-md);
-        border: 6px solid var(--border-primary);
-        transition: height 0.5s ease, border-width 0.2s ease;
-      }
+      
       .dashboard-section.slide-up .mainSearchInput {
         min-height: auto;
 height: 100px;
-
       }
-      .mainSearchInput:focus {
-        border-width: 1px ;
-        border-color: var(--border-primary);
-      }
+     
       .searchHintFade::placeholder {
   opacity: 0;
   transition: opacity .25s ease;
 }
-      .quickActionsContainer {
-        display: flex;
-        justify-content: center;
-        gap: var(--space-md);
-        margin-bottom: var(--space-lg);
-      }
-      .quickActionsContainer .actionBtn {
-        width: 170px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      .quickActionsContainer .actionBtn:hover {
-        background: var(--surface-primary);
-        color: var(--color);
-      }
-      .mainSearchResultContainer {
-        align-self: flex-start;
-        width: 100%;
-        margin-top: var(--space-lg);
-      }
+      
 
 #workspaceName {
   position: relative;

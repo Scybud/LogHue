@@ -76,7 +76,6 @@
       
       <!-- MAIN CONTENT VIEW -->
       <article class="mainContent" id="dashboardContent">
-        <div class="orb"></div>
         
         <!-- HEADER -->
         <div class="contentHeader">
@@ -143,22 +142,20 @@
         <section class="dashboard-section">
 
           <div class="sectionHeader dashboardHeader">
-            <h1>What would you like to work on?</h1>
-          </div>
+  <h1 id="dashboardGreeting">What would you like to work on?</h1>
+</div>
 
-          <div class="searchBarContainer">
-            <textarea name="mainSearchInput" id="mainSearchInput" class="inputField mainSearchInput" placeholder="Search workspaces, tasks..."></textarea>
+<div class="dashboardStats" id="dashboardStats"></div>
+<div class="searchBarContainer">
+  <textarea name="mainSearchInput" id="mainSearchInput" class="inputField mainSearchInput" placeholder="Search workspaces, tasks..."></textarea>
+  <div class="quickActionsContainer">
+    <button class="actionBtn createWorkspaceOpen" aria-label="New Workspace">+ New Workspace</button>
+    <button type="button" class="actionBtn createNoteBtn" aria-label="Create Note">+ Create Note</button>
+  </div>
+</div>
 
-            <div class="quickActionsContainer">
-              <button class="actionBtn createWorkspaceOpen" aria-label="New Workspace">+ New Workspace</button>
-              <button type="button" class="actionBtn createNoteBtn" aria-label="Create Note">+ Create Note</button>
-            </div>
-          </div>
 
-          
-          <div id="MainSearchResults" class="mainSearchResultContainer">
-            
-          </div>
+<div id="MainSearchResults" class="mainSearchResultContainer"></div>
         </section>
          
       </article>

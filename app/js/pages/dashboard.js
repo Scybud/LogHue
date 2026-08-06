@@ -1,5 +1,6 @@
 import { sessionReady, sessionState } from "../session.js";
 import { initSmartSearch } from "../utils/search.js";
+import { supabase } from "../supabase.js";
 
 const closeWarningBtn = document.getElementById("closeWarning");
 
@@ -68,6 +69,48 @@ export async function initDashboard() {
     userNameEl.textContent = sessionState.profile?.full_name || "Developer";
   }
 
+  renderGreeting(user);
+  renderDashboardStats(user);
+
   const dashboardSection = document.querySelector(".dashboard-section");
   await initSmartSearch(dashboardSection);
+}
+
+function renderGreeting(user) {
+  const greetingEl = document.getElementById("dashboardGreeting");
+  if (!greetingEl) return;
+
+  const name = sessionState.profile?.full_name?.split(" ")[0];
+  greetingEl.textContent = name ? `Welcome back, ${name}` : "Welcome back";
+}
+
+async function renderDashboardStats(user) {
+  const statsEl = document.getElementById("dashboardStats");
+  if (!statsEl) return;
+
+  const [tasksRes, notesRes, membershipRes] = await Promise.all([
+    supabase
+      .from("personal_tasks")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("is_completed", false),
+    supabase
+      .from("personal_notes")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id),
+    supabase
+      .from("workspace_members")
+      .select("workspace_id", { count: "exact", head: true })
+      .eq("user_id", user.id),
+  ]);
+
+  const openTasks = tasksRes.count ?? 0;
+  const notes = notesRes.count ?? 0;
+  const workspaces = membershipRes.count ?? 0;
+
+  statsEl.innerHTML = `
+    <span class="dashboardStat"><strong>${openTasks}</strong> open task${openTasks === 1 ? "" : "s"}</span>
+    <span class="dashboardStat"><strong>${notes}</strong> note${notes === 1 ? "" : "s"}</span>
+    <span class="dashboardStat"><strong>${workspaces}</strong> workspace${workspaces === 1 ? "" : "s"}</span>
+  `;
 }
