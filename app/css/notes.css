@@ -243,11 +243,17 @@
   transition: all 0.4s ease;
 }
 
+.noteActions {
+display: flex;
+gap: var(--space-sm);
+}
+
 /* Create button */
 #createNote {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  height: 30px;
 }
 
 /* =====================
