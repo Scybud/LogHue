@@ -70,6 +70,9 @@
   transform: translateY(6px);
   transition: opacity 0.25s ease, transform 0.25s ease, border-color 0.2s ease;
 }
+.taskCard.completed {
+        background: var(--surface-primary);
+}
 
 .taskCard.show {
   opacity: 1;
