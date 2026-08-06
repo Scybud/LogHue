@@ -102,7 +102,7 @@ async function initTaskView() {
   }
   loadTask.remove;
   await loadTask(taskId);
-await loadWorkspaceMembersForTaskView(currentWorkspace.id)
+await loadWorkspaceMembersForTaskView(currentWorkspace?.id)
   userRole = await getUserRole(currentWorkspace?.id);
 
   loadSidebar();
