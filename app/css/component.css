@@ -357,7 +357,7 @@ button.dropdown-item {
   width: 100%;
   height: 100%;
 
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
   backdrop-filter: var(--filter) brightness(90%);
 }
 #modalContainer .card {
