@@ -376,7 +376,7 @@ function renderNotesList(notes) {
     const deleteBtn = document.createElement("button");
     deleteBtn.type = "button";
     deleteBtn.classList.add("deleteBtn", "tooltip");
-    deleteBtn.setAttribute("data-title", "Delete Task");
+    deleteBtn.setAttribute("data-title", "Delete note");
     deleteBtn.setAttribute("aria-label", "Delete note");
     deleteBtn.title = "Delete note";
     deleteBtn.innerHTML = `
