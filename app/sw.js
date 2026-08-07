@@ -4,8 +4,8 @@ self.addEventListener("push", function (event) {
   event.waitUntil(
     self.registration.showNotification(data.title || "LogHue", {
       body: data.body || "",
-      icon: "https://loghue.com/images/loghue-logo.png",
-      badge: "https://loghue.com/images/loghue-logo.png",
+      icon: "https://loghue.com/assets/images/loghue-logo.png",
+      badge: "https://loghue.com/assets/images/loghue-logo.png",
       data: { url: data.url || "/" },
     }),
   );
