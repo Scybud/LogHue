@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.scybud.loghue",
+      "sha256_cert_fingerprints": [
+        "AB:1E:CE:D4:DC:68:17:82:85:59:9A:00:23:A7:00:ED:BA:8D:45:04:22:11:7C:80:6B:DC:B8:4B:93:42:C8:2E"
+      ]
+    }
+  }
+]
