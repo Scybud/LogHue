@@ -85,7 +85,7 @@ async function startUpgrade(session) {
 
     if (error) {
       console.error(error);
-      await bail("Failed to start checkout. Redirecting...", "error");
+      await bail("Failed to start checkout. Redirecting...", "error", "index");
       return;
     }
 
