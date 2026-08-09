@@ -16,17 +16,21 @@ function showRedirecting() {
   redirectingState.classList.remove("hidden");
 }
 
-function bail(text, tone, redirectTo = "") {
-  actionMsg(text, tone);
+async function bail(text, tone, redirectTo = "") {
+  await actionMsg(text, tone);
   showRedirecting();
   msg.textContent = text;
   msg.classList.add(
     tone === "error" ? "error" : tone === "info" ? "warning" : "success",
   );
   loading = false;
-  setTimeout(() => {
-    window.location.href = redirectTo;
-  }, 1000);
+
+  if(redirectTo) {
+
+    setTimeout(() => {
+      window.location.href = redirectTo;
+    }, 1000);
+  }
 }
 
 async function init() {
@@ -43,7 +47,7 @@ async function init() {
   planId = params.get("plan");
 
   if (!planId) {
-    bail("Missing plan ID. Redirecting...", "error");
+    await bail("Missing plan ID. Redirecting...", "error", "index");
     return;
   }
 
@@ -75,13 +79,13 @@ async function startUpgrade(session) {
     });
 
     if (error?.message.includes("Already purchased")) {
-      bail("You already have this plan", "info");
+      await bail("You already have this plan", "info");
       return;
     }
 
     if (error) {
       console.error(error);
-      bail("Failed to start checkout. Redirecting...", "error");
+      await bail("Failed to start checkout. Redirecting...", "error");
       return;
     }
 
@@ -93,12 +97,12 @@ async function startUpgrade(session) {
 
     // CASE 2: instant update (addon/plan modify)
     if (data?.success) {
-      bail(data.message || "Updated successfully!", "success");
+     await bail(data.message || "Updated successfully!", "success");
       return;
     }
 
     console.error("Unexpected response:", data);
-    bail("Unexpected server response. Redirecting...", "error");
+    await bail("Unexpected server response. Redirecting...", "error");
   } finally {
     loading = false;
   }

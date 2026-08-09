@@ -1,9 +1,10 @@
 import { supabase } from "../supabase.js";
-import { confirmAction, actionMsg } from "../utils/modals.js";
+import { confirmAction, actionMsg, openUpgradeModal } from "../utils/modals.js";
 import { sanitizeHTML } from "../utils.js";
 import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
 import { fetchNoteById } from "../data/notesDb.js";
 import { formatDateTimeRelatively } from "../utils/time.js";
+import { sessionState } from "../session.js";
 
 /*
 --------------------------------
@@ -116,10 +117,10 @@ async function initNotes() {
         <select id="exportNotesBtn" class="btn-sm btn btn-secondary notesActionBtn">
           <option value="">Export As</option>
           <option value="pdf">PDF</option>
-          <option value="txt">TXT</option>
           <option value="docx">DOCX</option>
-          <option value="md">Markdown</option>
           <option value="html">HTML</option>
+          <option value="txt">TXT</option>
+          <option value="md">Markdown</option>
         </select>
       </div>
     </div>
@@ -628,6 +629,119 @@ function attachDeleteNoteListener() {
 EXPORT
 --------------------------------
 */
+/*
+--------------------------------
+HTML TO MARKDOWN
+--------------------------------
+*/
+function htmlToMarkdown(html) {
+  const container = document.createElement("div");
+  container.innerHTML = html;
+
+  function walk(node) {
+    let out = "";
+
+    node.childNodes.forEach((child) => {
+      if (child.nodeType === Node.TEXT_NODE) {
+        out += child.textContent;
+        return;
+      }
+
+      if (child.nodeType !== Node.ELEMENT_NODE) return;
+
+      const tag = child.tagName.toLowerCase();
+      const inner = walk(child);
+
+      switch (tag) {
+        case "h1":
+          out += `\n# ${inner.trim()}\n\n`;
+          break;
+        case "h2":
+          out += `\n## ${inner.trim()}\n\n`;
+          break;
+        case "h3":
+          out += `\n### ${inner.trim()}\n\n`;
+          break;
+        case "h4":
+          out += `\n#### ${inner.trim()}\n\n`;
+          break;
+        case "h5":
+          out += `\n##### ${inner.trim()}\n\n`;
+          break;
+        case "h6":
+          out += `\n###### ${inner.trim()}\n\n`;
+          break;
+        case "strong":
+        case "b":
+          out += `**${inner}**`;
+          break;
+        case "em":
+        case "i":
+          out += `*${inner}*`;
+          break;
+        case "u":
+          out += `_${inner}_`;
+          break;
+        case "s":
+        case "strike":
+          out += `~~${inner}~~`;
+          break;
+        case "a":
+          out += `[${inner}](${child.getAttribute("href") || ""})`;
+          break;
+        case "code":
+          out += `\`${inner}\``;
+          break;
+        case "pre":
+          out += `\n\`\`\`\n${inner.trim()}\n\`\`\`\n\n`;
+          break;
+        case "blockquote":
+          out += `\n> ${inner.trim()}\n\n`;
+          break;
+        case "li": {
+          const isChecklist = child.classList.contains("ql-indent-0") && child.dataset.list;
+          const parent = child.parentElement;
+          const isOrdered = parent && parent.tagName.toLowerCase() === "ol";
+
+          if (child.dataset.list === "checked") {
+            out += `- [x] ${inner.trim()}\n`;
+          } else if (child.dataset.list === "unchecked") {
+            out += `- [ ] ${inner.trim()}\n`;
+          } else if (isOrdered) {
+            out += `1. ${inner.trim()}\n`;
+          } else {
+            out += `- ${inner.trim()}\n`;
+          }
+          break;
+        }
+        case "ol":
+        case "ul":
+          out += `\n${inner}\n`;
+          break;
+        case "p":
+          out += `${inner.trim()}\n\n`;
+          break;
+        case "br":
+          out += `\n`;
+          break;
+        case "img":
+          out += `![](${child.getAttribute("src") || ""})`;
+          break;
+        default:
+          out += inner;
+      }
+    });
+
+    return out;
+  }
+
+  return walk(container)
+    .replace(/&nbsp;/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+
 function exportFile(filename, content, type = "text/plain") {
   const blob = new Blob([content], { type });
   const url = URL.createObjectURL(blob);
@@ -640,7 +754,7 @@ function exportFile(filename, content, type = "text/plain") {
   URL.revokeObjectURL(url);
 }
 
-function exportCurrentNote(type) {
+async function exportCurrentNote(type) {
   setLoading(true);
 
   if (!currentNoteId) {
@@ -654,10 +768,18 @@ function exportCurrentNote(type) {
   const htmlContent = quill.root.innerHTML;
   const plainText = quill.getText();
 
-  let didExport = false;
+ const planName = (sessionState?.plan?.name || "").toLowerCase();
+
+ let didExport = false;
 
   switch (type) {
     case "html": {
+      if (planName === "free") {
+        await openUpgradeModal("exportHtml");
+        setLoading(false);
+        return;
+      }
+
       const fullHTML = `
 <!DOCTYPE html>
 <html>
@@ -686,15 +808,18 @@ function exportCurrentNote(type) {
       break;
 
     case "md": {
-      const markdown = htmlContent
-        .replace(/<[^>]+>/g, "")
-        .replace(/&nbsp;/g, " ");
+      const markdown = htmlToMarkdown(htmlContent);
       exportFile(`${safeTitle}.md`, markdown, "text/markdown");
       didExport = true;
       break;
     }
 
     case "docx": {
+      if (planName === "free") {
+        await openUpgradeModal("exportDocx");
+        setLoading(false);
+        return;
+      }
       const { Document, Packer, Paragraph } = window.docx;
       const doc = new Document({
         sections: [
@@ -712,6 +837,12 @@ function exportCurrentNote(type) {
     }
 
     case "pdf": {
+      if (planName === "free") {
+        await openUpgradeModal("exportPdf");
+        setLoading(false);
+        return;
+      }
+
       const cleanHTML = htmlContent.replace(/&nbsp;/g, " ");
       const wrapper = document.createElement("div");
       wrapper.style.width = "210mm";

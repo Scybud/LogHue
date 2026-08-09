@@ -13,6 +13,7 @@ import {
 import { supabase } from "../supabase.js";
 import { workspace } from "../pages/workspace/index.js";
 import { attachStartDiscussionEvent } from "../pages/workspace/discussions.js";
+import { sessionState } from "../session.js";
 
 // ---------------------------------------------------------------------------
 // Direct-invoke versions — load the component and attach its events
@@ -113,6 +114,13 @@ export function openStartDiscussionModal(workspace, user) {
   const btn = document.getElementById("startDiscussionOpen");
   if (btn) {
     btn.addEventListener("click", async () => {
+
+        const planName = (sessionState?.plan?.name || "").toLowerCase();
+        if (planName === "free") {
+          openUpgradeModal("discussions");
+          return;
+        }
+
       await loadComponent(
         "../components/modals/start-discussion",
         "modalContainer",
@@ -206,7 +214,7 @@ export async function confirmAction(header, message, actions = []) {
 
 export async function actionMsg(message, typeClass) {
   // Load modal only when needed
-  await loadComponent("../components/modals/action-message", "actionsMessage");
+  await loadComponent("/components/modals/action-message", "actionsMessage");
 
   const msg = document.querySelector(".modalMessage");
   const actionsMessage = document.getElementById("actionsMessage");
@@ -229,4 +237,93 @@ export async function actionMsg(message, typeClass) {
   actionsMessage._timeout = setTimeout(() => {
     actionsMessage.classList.remove("slideIn");
   }, 5000);
+}
+
+
+const UPGRADE_URL = "/pages/billing/upgrade";
+
+const PRO_FEATURE_COPY = {
+  discussions: {
+    title: "Workspace discussions are a Pro feature",
+    description:
+      "Start threaded discussions with your team, keep context attached to the work.",
+    features: ["Unlimited workspace discussions", "Full history retained"],
+  },
+  exportDocx: {
+    title: "DOCX export is a Pro features",
+    description: "Export notes as PDF, HTML or DOCX to share outside LogHue.",
+    features: ["PDF export", "DOCX export", "HTML rxport"],
+  },
+  exportPdf: {
+    title: "PDF export is a Pro features",
+    description: "Export notes as PDF, HTML or DOCX to share outside LogHue.",
+    features: ["PDF export", "DOCX export", "HTML rxport"],
+  },
+  exportHtml: {
+    title: "HTML export is a Pro features",
+    description: "Export notes as PDF, HTML or DOCX to share outside LogHue.",
+    features: ["PDF export", "DOCX export", "HTML rxport"],
+  },
+  workspaceReminders: {
+    title: "Workspace task reminders are a Pro feature",
+    description:
+      "Get email and push reminders before workspace task deadlines.",
+    features: ["Email reminders", "Push notifications"],
+  },
+  unlimitedWorkspaces: {
+    title: "You've hit the Free plan workspace limit",
+    description: "Upgrade to Pro for unlimited workspaces.",
+    features: ["Unlimited workspaces", "Unlimited members per workspace"],
+  },
+  memberLimit: {
+    title: "You've hit the Free plan member limit",
+    description: "Upgrade to Pro to add more members to this workspace.",
+    features: ["Unlimited members per workspace"],
+  },
+  docStorage: {
+    title: "File size too large for your Free plan storage limit",
+    description: "Upgrade to Pro for more document upload space.",
+    features: ["10MB per account", "200MB shared workspace cap"],
+  },
+  activityLogs: {
+    title: "Activity logs are a Pro feature",
+    description:
+      "See a full history of changes and actions across your workspace.",
+    features: ["Full workspace activity history"],
+  },
+};
+
+export async function openUpgradeModal(featureKey, customCopy = null) {
+  await loadComponent("../components/modals/upgrade-modal", "modalContainer");
+
+  const copy = customCopy ||
+    PRO_FEATURE_COPY[featureKey] || {
+      title: "This is a Pro feature",
+      description: "Upgrade to Pro to unlock this and more.",
+      features: [],
+    };
+
+  document.getElementById("upgradeModalTitle").textContent = copy.title;
+  document.getElementById("upgradeModalDescription").textContent =
+    copy.description;
+
+  const featuresList = document.getElementById("upgradeModalFeatures");
+  featuresList.innerHTML = "";
+  copy.features.forEach((f) => {
+    const li = document.createElement("li");
+    li.textContent = f;
+    featuresList.appendChild(li);
+  });
+
+
+  document
+    .getElementById("upgradeModalDismiss")
+    .addEventListener("click", closeModal, { once: true });
+  document.getElementById("upgradeModalUpgrade").addEventListener(
+    "click",
+    () => {
+      window.location.href = UPGRADE_URL;
+    },
+    { once: true },
+  );
 }

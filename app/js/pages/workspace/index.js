@@ -135,9 +135,13 @@ export async function initWorkspaceDashboard() {
 
   if (container) container.innerHTML = "";
 
-  // Default section: activity logs
+  // Default section: Tasks
   try {
-    await renderSection("activities", currentWorkspace, container);
+    if(role === "member") {
+      await renderSection("myTasks", currentWorkspace, container);
+    } else if(role === "owner" || role === "admin") {
+      await renderSection("createdTasks", currentWorkspace, container);
+    }
   } catch (err) {
     console.error(err);
   }

@@ -1015,3 +1015,9 @@ flex-wrap: wrap;
   background: var(--bg-secondary);
   transform: translateY(-2px);
 }
+
+ ul {
+        padding-left: 20px;
+        margin: var(--space-lg) 0;
+        line-height: 1.6;
+      }
