@@ -18,14 +18,14 @@
   border-radius: var(--radius-sm);
   padding: var(--space-sm) var(--space-md);
   font-size: 0.85rem;
-  color: var(--text-secondary, #c5c5d2);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
 .dashboardStat strong {
-  color: var(--text-main, #ffffff);
+  color: var(--text-primary);
   font-weight: 600;
 }
 
@@ -48,7 +48,6 @@
       .dashboardHeader {
         justify-content: center;
           transition: opacity 0.5s ease;
-
       }
        h1{
         text-align: center;
@@ -64,10 +63,22 @@
         justify-content: center;
         gap: var(--space-md);
 
-         position: sticky;
-  top: 0;
+        position: relative;
+        top: 0;
       }
       
+      .searchIcon {
+  position: absolute;
+  top: var(--space-md);
+  left: var(--space-md);
+  color: var(--text-secondary);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.mainSearchInput {
+  padding-left: calc(var(--space-md) * 2 + 18px);
+}
       .dashboard-section.slide-up .mainSearchInput {
         min-height: auto;
 height: 100px;
