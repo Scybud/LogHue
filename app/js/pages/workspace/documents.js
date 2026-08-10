@@ -1,7 +1,8 @@
 import { supabase } from "../../supabase.js";
-import { actionMsg, confirmAction } from "../../utils/modals.js";
+import { actionMsg, confirmAction, openUpgradeModal } from "../../utils/modals.js";
 import { showUploadStatus } from "../../shared/workspace/utils.js";
 import { currentWorkspace } from "./state.js";
+import { sessionState } from "../../session.js";
 
 /**
  * Shared documents section (upload / view / download / delete own).
@@ -232,7 +233,14 @@ async function handleDocUpload(uploadBtn, fileInput, container) {
       const data = await res.json();
 
       if (!res.ok) {
-        showUploadStatus(data.error || "Upload failed", true, container);
+        if (
+          data.code === "account_limit" &&
+          sessionState.plan.name === "Free"
+        ) {
+          await openUpgradeModal("docStorage");
+        } else {
+          showUploadStatus(data.error || "Upload failed", true, container);
+        }
         return;
       }
 

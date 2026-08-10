@@ -219,6 +219,7 @@
         color: rgba(255, 255, 255, 0.6);
         font-size: 0.85rem;
         width: 100%;
+        border-top: 1px solid var(--border-primary);
       }
 
       .footer-inner {
@@ -368,70 +369,49 @@
       </header>
 
       <div class="pricing-grid">
-        <!-- FREE PLAN -->
-        <div class="plan">
-          <h2>Free</h2>
-          <div class="price text-bold">$0 <span>/ forever</span></div>
-          <p>For individuals and small groups exploring LogHue.</p>
+  <!-- FREE PLAN -->
+  <div class="plan">
+    <h2>Free</h2>
+    <div class="price text-bold">$0 <span>/ forever</span></div>
+    <p>For individuals and small groups exploring LogHue.</p>
 
-          <ul>
-            <li>1 workspace</li>
-            <li>Up to 5 members</li>
-            <li>Unlimited personal tasks</li>
-            <li>Unlimited notes</li>
-          </ul>
+    <ul>
+      <li>1 workspace</li>
+      <li>Up to 3 members</li>
+      <li>Unlimited personal tasks</li>
+      <li>Unlimited notes</li>
+      <li>TXT and MD export</li>
+      <li>1MB document upload</li>
+    </ul>
 
-          <a class="cta" href="https://app.loghue.com/pages/auth">Get Started</a>
-        </div>
+    <a class="cta" href="https://app.loghue.com/pages/auth">Get Started</a>
+  </div>
 
-        <!-- PRO PLAN -->
-<div class="plan" style="border: 2px solid var(--accent); position: relative; transform: scale(1.03);">
-  <h2>Pro</h2>
-          <div class="price text-bold">$6 <span>/ user / month</span></div>
-          <p style="color: var(--primary); font-weight: 600; position: absolute; top: 6px; right: 8px;   padding: 4px 12px;
-  border-radius: 999px;
-  background: rgba(3, 101, 146, 0.164);
-  color: var(--primary);
-  font-size: 0.85rem;
-  margin-bottom: var(--space-sm);
-  font-weight: 600;;">Most Popular</p>
-          <p>For small teams that need structure and collaboration.</p>
+  <!-- PRO PLAN -->
+  <div class="plan" style="border: 2px solid var(--accent); position: relative; transform: scale(1.03);">
+    <h2>Pro</h2>
+    <div class="price text-bold">$9 <span>/ user / month</span></div>
+    <p style="color: var(--primary); font-weight: 600; position: absolute; top: 6px; right: 8px; padding: 4px 12px; border-radius: 999px; background: rgba(3, 101, 146, 0.164); color: var(--primary); font-size: 0.85rem; margin-bottom: var(--space-sm); font-weight: 600;">Most Popular</p>
+    <p>For teams that need full flexibility and collaboration.</p>
 
-          <ul>
-            <li>Up to 10 workspaces</li>
-            <li>Up to 10 members per workspace</li>
-            <li>Workspace activity history</li>
-            <li>100 OCR credits / month</li>
-          </ul>
+    <ul>
+      <li>Unlimited workspaces</li>
+      <li>Unlimited members</li>
+      <li>Workspace discussions</li>
+      <li>PDF, DOCX, and HTML export</li>
+      <li>Workspace task reminders</li>
+      <li>Workspace activity history</li>
+      <li>10MB document upload</li>
+      <li>Priority support</li>
+    </ul>
 
-          <a
-            class="cta"
-            href="https://app.loghue.com/pages/billing/upgrade?plan=dee55ec9-ae01-40f3-b297-fe9faa8485d6"
-            >Upgrade to Pro</a
-          >
-        </div>
-
-        <!-- PRO PLAN -->
-        <div class="plan">
-          <h2>Team</h2>
-          <div class="price text-bold">$15 <span>/ user / month</span></div>
-          <p>For growing teams and organizations that need full flexibility.</p>
-
-          <ul>
-            <li>Unlimited workspaces</li>
-            <li>Unlimited members</li>
-            <li>Workspace activity history</li>
-            <li>250 OCR credits / month</li>
-            <li>Priority support</li>
-          </ul>
-
-          <a
-            class="cta"
-            href="https://app.loghue.com/pages/billing/upgrade?plan=e06ed82b-037b-4fac-bbec-94d761f1cdd5"
-            >Choose Team</a
-          >
-        </div>
-      </div>
+    
+     <a  class="cta"
+      href="https://app.loghue.com/pages/billing/upgrade?plan=e06ed82b-037b-4fac-bbec-94d761f1cdd5"
+      >Upgrade to Pro</a
+    >
+  </div>
+</div>
 
 
       <section style="max-width: 900px; width: 100%; margin-top: 80px">
@@ -487,77 +467,78 @@
         <h2 class="text-center">Compare Plans</h2>
 
         <table class="comparison-table" style="overflow-x: auto">
-          <thead>
-            <tr>
-              <th>Feature</th>
-              <th>Free</th>
-              <th>Pro</th>
-              <th>Team</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Workspaces</td>
-              <td>1</td>
-              <td>10</td>
-              <td>Unlimited</td>
-            </tr>
-            <tr>
-              <td>Members per Workspace</td>
-              <td>5</td>
-              <td>10</td>
-              <td>Unlimited</td>
-            </tr>
-            <tr>
-              <td>Personal Task Logs</td>
-              <td>Unlimited</td>
-              <td>Unlimited</td>
-              <td>Unlimited</td>
-            </tr>
-            <tr>
-              <td>Notes</td>
-              <td>Unlimited</td>
-              <td>Unlimited</td>
-              <td>Unlimited</td>
-            </tr>
-            <tr>
-              <td>Workspace Activity</td>
-              <td>-</td>
-              <td>Yes</td>
-              <td>Yes</td>
-            </tr>
-            <tr>
-              <td>Notes Export</td>
-              <td>Yes</td>
-              <td>Yes</td>
-              <td>Yes</td>
-            </tr>
-              <tr>
-              <td>OCR Credits</td>
-              <td>40</td>
-              <td>100</td>
-              <td>250</td>
-            </tr>
-            <tr>
-              <td>Support</td>
-              <td>Community</td>
-              <td>Standard</td>
-              <td>Priority</td>
-            </tr>
-          </tbody>
-        </table>
+  <thead>
+    <tr>
+      <th>Feature</th>
+      <th>Free</th>
+      <th>Pro</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Workspaces</td>
+      <td>1</td>
+      <td>Unlimited</td>
+    </tr>
+    <tr>
+      <td>Members per Workspace</td>
+      <td>3</td>
+      <td>Unlimited</td>
+    </tr>
+    <tr>
+      <td>Personal Task Logs</td>
+      <td>Unlimited</td>
+      <td>Unlimited</td>
+    </tr>
+    <tr>
+      <td>Notes</td>
+      <td>Unlimited</td>
+      <td>Unlimited</td>
+    </tr>
+    <tr>
+      <td>Workspace Discussions</td>
+      <td>View and reply only</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Workspace Activity</td>
+      <td>-</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>Notes Export</td>
+      <td>TXT, MD</td>
+      <td>TXT, MD, PDF, DOCX, HTML</td>
+    </tr>
+    <tr>
+      <td>Document Upload</td>
+      <td>1MB</td>
+      <td>10MB</td>
+    </tr>
+    <tr>
+      <td>OCR Credits</td>
+      <td>20</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <td>Support</td>
+      <td>Community</td>
+      <td>Priority</td>
+    </tr>
+  </tbody>
+</table>
       </section>
 
       <section style="max-width: 900px; width: 100%; margin-top: 80px">
         <h2 class="text-center">
-          Why Upgrade to Team?
-        </h2>
+  Why Upgrade to Pro?
+</h2>
 
-        <p style="margin: 20px 0">
-          Pro is built for teams that outgrow the limits of the Free and Team
-          plans. If your workspace is becoming central to your team's workflow,
-          Pro gives you the flexibility, scale, and control you need.
-        </p>
+<p style="margin: 20px 0">
+  Pro is built for teams that outgrow the limits of the Free plan. If your
+  workspace is becoming central to your team's workflow, Pro gives you the
+  flexibility, scale, and control you need.
+</p>
 
         <div
           style="
@@ -572,7 +553,7 @@
               border: 1px solid var(--border-primary);
               padding: 20px;
               border-radius: 10px;
-            "
+           background: var(--surface-secondary); "
           >
             <h3 style="margin-top: 0">Unlimited Workspaces</h3>
             <p>
@@ -586,7 +567,7 @@
               border: 1px solid var(--border-primary);
               padding: 20px;
               border-radius: 10px;
-            "
+           background: var(--surface-secondary); "
           >
             <h3 style="margin-top: 0">Unlimited Members</h3>
             <p>
@@ -600,7 +581,7 @@
               border: 1px solid var(--border-primary);
               padding: 20px;
               border-radius: 10px;
-            "
+           background: var(--surface-secondary); "
           >
             <h3 style="margin-top: 0">Full Activity History</h3>
             <p>
@@ -614,7 +595,7 @@
               border: 1px solid var(--border-primary);
               padding: 20px;
               border-radius: 10px;
-            "
+           background: var(--surface-secondary); "
           >
             <h3 style="margin-top: 0">Advanced Admin Tools</h3>
             <p>
@@ -627,7 +608,7 @@
               border: 1px solid var(--border-primary);
               padding: 20px;
               border-radius: 10px;
-            "
+           background: var(--surface-secondary); "
           >
             <h3 style="margin-top: 0">Priority Support</h3>
             <p>
@@ -649,16 +630,15 @@
           upgrades.
         </p>
 
-        <p>
-          The Free plan gives individuals and small groups everything they need
-          to get started. The Pro plan supports growing groups with more
-          structure and collaboration. And Team unlocks full flexibility for
-          teams that rely on LogHue every day.
-        </p>
+       <p>
+  The Free plan gives individuals and small groups everything they need to
+  get started. The Pro plan unlocks full flexibility, collaboration, and
+  scale for teams that rely on LogHue every day.
+</p>
 
-        <p>
-          We believe great tools should scale with you, not get in your way.
-        </p>
+<p>
+  We believe great tools should scale with you, not get in your way.
+</p>
       </section>
     </main>
 
@@ -668,7 +648,7 @@
         <div class="footer-brand">
           <div class="logo">Log<span>Hue</span></div>
           <p>
-            Calm workspace management for modern teams. <br />
+            Organise your work, your way. <br />
             A Scybud Product
           </p>
         </div>

@@ -1,12 +1,13 @@
 import { formatDateTime } from "../../utils/time.js";
 import { sessionState } from "../../session.js";
+import { openUpgradeModal } from "../../utils/modals.js";
 
 /**
  * Shared activities feed (admin / owner / member).
  * Gated behind paid plan.
  * Rendered as a grouped vertical log, not a card grid.
  */
-export function loadActivities(activities, container) {
+export async function loadActivities(activities, container) {
   const planName = (sessionState?.plan?.name || "").toLowerCase();
   if (planName === "free") {
     renderPlaceholder(
@@ -14,6 +15,8 @@ export function loadActivities(activities, container) {
       "Workspace activities overview is not available on your current plan.",
       true,
     );
+
+   await openUpgradeModal("activityLogs")
     return;
   }
 

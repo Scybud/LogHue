@@ -24,21 +24,24 @@ async function loadBilling() {
   const FEATURES = {
     Free: [
       { text: "Create 1 workspace", unlocked: true },
-      { text: "Join unlimited workspaces", unlocked: true },
-      { text: "Basic workspace tools", unlocked: true },
+      { text: "Up to 3 members per workspace", unlocked: true },
+      { text: "Unlimited personal tasks and notes", unlocked: true },
+      { text: "TXT and MD export", unlocked: true },
+      { text: "1MB document upload", unlocked: true },
+      { text: "Workspace discussions", unlocked: false },
+      { text: "PDF, DOCX, and HTML export", unlocked: false },
+      { text: "Workspace task reminders", unlocked: false },
       { text: "Activity overview", unlocked: false },
       { text: "Priority support", unlocked: false },
     ],
     Pro: [
-      { text: "Create up to 10 workspaces", unlocked: true },
-      { text: "Join unlimited workspaces", unlocked: true },
+      { text: "Unlimited workspaces", unlocked: true },
+      { text: "Unlimited members per workspace", unlocked: true },
+      { text: "Workspace discussions", unlocked: true },
+      { text: "PDF, DOCX, and HTML export", unlocked: true },
+      { text: "Workspace task reminders", unlocked: true },
       { text: "Activity overview", unlocked: true },
-      { text: "Priority support", unlocked: true },
-    ],
-    Team: [
-      { text: "Create unlimited workspaces", unlocked: true },
-      { text: "Join unlimited workspaces", unlocked: true },
-      { text: "Activity overview", unlocked: true },
+      { text: "10MB document upload", unlocked: true },
       { text: "Priority support", unlocked: true },
     ],
   };
@@ -62,10 +65,7 @@ async function loadBilling() {
   const higherFeaturesList = document.getElementById("higherFeatures");
   const nextPlanEl = document.getElementById("nextPlan");
 
-  let nextPlan = null;
-
-  if (planName === "Free") nextPlan = "Pro";
-  else if (planName === "Pro") nextPlan = "Team";
+  const nextPlan = planName === "Free" ? "Pro" : null;
 
   if (nextPlanEl) nextPlanEl.textContent = nextPlan || "—";
 
@@ -106,21 +106,11 @@ async function loadBilling() {
   // BUTTONS
 
   const upgradeToProBtn = document.getElementById("upgradeToProBtn");
-  const upgradeToTeamBtn = document.getElementById("upgradeToTeamBtn");
 
   const planKey = planName.toLowerCase();
 
-  if (planKey === "free") {
-    upgradeToTeamBtn?.remove();
-  }
-
   if (planKey === "pro") {
     upgradeToProBtn?.remove();
-  }
-
-  if (planKey === "team") {
-    upgradeToProBtn?.remove();
-    upgradeToTeamBtn?.remove();
 
     const title = document.getElementById("section-title");
     if (title) title.textContent = "You’ve reached the top.";
@@ -130,13 +120,6 @@ async function loadBilling() {
 
   if (upgradeToProBtn) {
     upgradeToProBtn.onclick = () => {
-      window.location.href =
-        "billing/upgrade?plan=dee55ec9-ae01-40f3-b297-fe9faa8485d6";
-    };
-  }
-
-  if (upgradeToTeamBtn) {
-    upgradeToTeamBtn.onclick = () => {
       window.location.href =
         "billing/upgrade?plan=e06ed82b-037b-4fac-bbec-94d761f1cdd5";
     };

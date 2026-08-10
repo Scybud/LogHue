@@ -21,6 +21,7 @@
 
       .command-palette-header h1{
         text-align: center;
+        color: #fff;
       }
 
       .command-palette-section.slide-up .command-palette-header {
@@ -115,4 +116,9 @@ height: 50px;
         width: 100%;
         overflow: auto;
         margin-top: var(--space-lg);
+      }
+#MainSearchResults.mainSearchResultContainer h2{
+        text-align: left;
+        color: #fff;
+        margin-left: var(--space-lg);
       }

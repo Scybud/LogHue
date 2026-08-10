@@ -58,14 +58,19 @@
     color: #49db00;
 }
 .searchItem {
+  opacity: 1;
   font-size: 1.05rem;
   color: var(--text-primary);
   padding: var(--space-sm);
   border-bottom: 1px solid var(--border-primary);
   width: 95%;
-  margin: 0 auto;
+  margin: var(--space-xs) auto;
+  background-color: var(--bg-secondary);
 border-radius: var(--radius-sm);
 transition: background 0.2s ease;
+}
+.searchItem p {
+  margin-bottom: 0;
 }
 .searchItem:hover {
     color: var(--text-secondary);
