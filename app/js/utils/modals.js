@@ -240,7 +240,8 @@ export async function actionMsg(message, typeClass) {
 }
 
 
-const UPGRADE_URL = "/pages/billing/upgrade";
+const UPGRADE_URL =
+  "/pages/billing/upgrade?plan=e06ed82b-037b-4fac-bbec-94d761f1cdd5";
 
 const PRO_FEATURE_COPY = {
   discussions: {
