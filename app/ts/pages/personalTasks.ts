@@ -1,3 +1,7 @@
+//LEAVE THIS FILE AS IS. IGNORE THE ERRORS.
+//THEY SHOW BECAUSE THE IMPORTS ARE NOT IN THE SAME FOLDER
+//THE ERRORS WON'T SHOW AFTER IT IS COMPILED AND CONVERTED TO JAVASCRIPT
+
 // Imports
 import { supabase } from "../../js/supabase.js";
 import { sessionState, sessionReady } from "../../js/session.js";
