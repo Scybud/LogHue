@@ -46,6 +46,8 @@
   <link rel="stylesheet" href="../css/components/command-palette.css">
   <link rel="stylesheet" href="../css/components/onboarding.css">
   <link rel="stylesheet" href="../css/components/sidebar.css">
+<link rel="stylesheet" href="../css/components/focus-timer.css">
+<link rel="stylesheet" href="../css/components/tags.css">
 
  <link
       rel="icon"
@@ -118,6 +120,10 @@
     .taskActions {
       display: flex;
       flex-wrap: wrap;
+    }
+
+    .taskActions .iconBtn.tooltip:hover::after {
+      opacity: 1;
     }
 
     .taskDescription {
@@ -305,7 +311,6 @@
 
     .iconBtn:hover {
       background: var(--surface-primary);
-      color: var(--text-primary);
     }
 
     .iconBtn svg {
@@ -382,10 +387,54 @@
           <div class="taskHeaderTop">
             <h2 id="taskTitle">Task Title Placeholder</h2>
 
-            <div class="taskActions">
-              <button id="markTaskDoneBtn" class="primaryBtn btn btn-sm">Mark as Done</button>
-              <button id="editTaskBtn" class="secondaryBtn btn btn-sm">Edit</button>
-            </div>
+           <div class="taskActions">
+ 
+        <button
+          id="markTaskDoneBtn"
+          class="iconBtn btn btn-sm"
+          type="button"
+          aria-label= "Mark task as completed"
+          title="Mark completed"
+        >
+              
+                <!-- check / complete icon -->
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+             
+        </button>
+
+        <button
+          id="editTaskBtn"
+          class="iconBtn btn btn-sm"
+          type="button"
+          aria-label="Edit task"
+          title="Edit task"
+        >
+          <!-- pencil icon -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+          </svg>
+        </button>
+     
+
+  <button
+    id="focusTimerBtn"
+    class="iconBtn btn btn-sm"
+    type="button"
+    aria-label="Open focus timer"
+    title="Focus timer"
+  >
+    <!-- timer / clock icon -->
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="13" r="8" />
+      <path d="M12 9v4l2 2" />
+      <path d="M9 2h6" />
+    </svg>
+  </button>
+</div>
           </div>
 
           <div class="taskMeta">

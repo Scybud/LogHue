@@ -440,6 +440,7 @@ input.error {
 list-style: none;
 display: flex;
 flex-direction: column;
+padding-left: 0;
 }
 #notificationsList .notificationsItem{
   border-radius: var(--radius-sm);

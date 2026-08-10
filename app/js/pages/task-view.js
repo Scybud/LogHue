@@ -7,6 +7,7 @@ import { formatDateTime, formatDateTimeRelatively } from "../utils/time.js";
 import { populateAssignDropdown } from "../utils/modalEvents.js";
 import { loadedMembers, setLoadedMembers } from "./workspace/state.js"; 
 import { loadWorkspaceMembersForTaskView } from "../data/tasksDb.js";
+import { openFocusTimerModal } from "../components/focus-timer.js";
 
 let currentTask = null;
 let currentWorkspace = null;
@@ -19,27 +20,27 @@ let isCreator;
 async function getUserRole(workspaceId) {
   const { data: userData } = await supabase.auth.getUser();
    userId = userData.user.id;
-
-  const { data, error } = await supabase
-    .from("workspace_members")
-    .select("role")
-    .eq("workspace_id", workspaceId)
+   
+   const { data, error } = await supabase
+   .from("workspace_members")
+   .select("role")
+   .eq("workspace_id", workspaceId)
     .eq("user_id", userId)
     .maybeSingle();
 
-  if (error) return null;
-  return { userId, role: data.role };
-}
-
-// INIT
-document.addEventListener("DOMContentLoaded", initTaskView);
+    if (error) return null;
+    return { userId, role: data.role };
+  }
+  
+  // INIT
+  document.addEventListener("DOMContentLoaded", initTaskView);
 
 const workspaceActivities = document.getElementById("workspaceActivities");
 
 async function loadWorkspaceActivities() {
   const { data: logs, error } = await supabase
-    .from("workspace_task_logs")
-    .select(
+  .from("workspace_task_logs")
+  .select(
       `
     *,
     profiles:created_by (full_name, avatar_url),
@@ -53,23 +54,23 @@ async function loadWorkspaceActivities() {
     .from("discussions")
     .select(
       `
-    *,
-    profiles:created_by (full_name, avatar_url)
-  `,
+      *,
+      profiles:created_by (full_name, avatar_url)
+      `,
     )
     .eq("workspace_id", currentWorkspace.id)
     .order("created_at", { ascending: false });
-
-  const normalizedLogs = (logs || []).map((log) => ({
-    id: log.id,
-    type: "task_log",
-    actor: log.profiles,
-    title: log.workspace_tasks?.title,
-    note: log.log_note,
-    status: log.task_status,
-    created_at: log.created_at,
-  }));
-
+    
+    const normalizedLogs = (logs || []).map((log) => ({
+      id: log.id,
+      type: "task_log",
+      actor: log.profiles,
+      title: log.workspace_tasks?.title,
+      note: log.log_note,
+      status: log.task_status,
+      created_at: log.created_at,
+    }));
+    
   const normalizedDiscussions = (actDcns || []).map((d) => ({
     id: d.id,
     type: "discussion",
@@ -91,6 +92,53 @@ const reloadBtn = document.querySelector(".reloadBtn");
 reloadBtn.addEventListener("click", () => {
   window.location.reload();
 });
+
+
+/* ---------------------------------------------
+   LOAD TASK + LOGS + COMMENTS
+--------------------------------------------- */
+async function loadTask(taskId) {
+  const { data, error } = await supabase
+    .from("workspace_tasks")
+    .select(
+      `
+      *,
+      profiles:assigned_to (id, full_name, avatar_url),
+      workspace:workspace_id (id, name),
+      logs:workspace_task_logs (
+        id,
+        log_note,
+        task_status,
+        created_at,
+        profiles:created_by (full_name, avatar_url),
+        comments:workspace_task_log_comments (
+          id,
+          comment,
+          created_at,
+          profiles:created_by (full_name, avatar_url)
+        )
+      )
+    `,
+    )
+    .eq("id", taskId)
+    .maybeSingle();
+
+  if (error) {
+    console.error(error);
+    console.log(error.message);
+    document.getElementById("taskViewContent").innerHTML =
+      `<p class="placeholderText">Invalid task link. <a href="index">Go Home</a></p>`;
+    loadSidebar();
+    actionMsg("Failed to load task.", "error");
+    return;
+  }
+
+  currentTask = data;
+  currentWorkspace = data?.workspace;
+
+}
+
+
 async function initTaskView() {
   const params = new URLSearchParams(window.location.search);
   const taskId = params.get("task");
@@ -102,7 +150,7 @@ async function initTaskView() {
   }
   loadTask.remove;
   await loadTask(taskId);
-await loadWorkspaceMembersForTaskView(currentWorkspace?.id)
+  await loadWorkspaceMembersForTaskView(currentWorkspace?.id)
   userRole = await getUserRole(currentWorkspace?.id);
 
   loadSidebar();
@@ -112,6 +160,13 @@ await loadWorkspaceMembersForTaskView(currentWorkspace?.id)
   attachLogSubmitHandler();
   attachMarkDoneHandler(taskId);
   await attachEditTaskHandler(taskId)
+  
+  const focusTimerBtn = document.getElementById("focusTimerBtn");
+  if (focusTimerBtn) {
+    focusTimerBtn.addEventListener("click", async () => {
+      await openFocusTimerModal(currentTask);
+    });
+  }
 }
 
 function loadSidebar() {
@@ -228,48 +283,6 @@ function loadSidebar() {
   });
 }
 
-/* ---------------------------------------------
-   LOAD TASK + LOGS + COMMENTS
---------------------------------------------- */
-async function loadTask(taskId) {
-  const { data, error } = await supabase
-    .from("workspace_tasks")
-    .select(
-      `
-      *,
-      profiles:assigned_to (id, full_name, avatar_url),
-      workspace:workspace_id (id, name),
-      logs:workspace_task_logs (
-        id,
-        log_note,
-        task_status,
-        created_at,
-        profiles:created_by (full_name, avatar_url),
-        comments:workspace_task_log_comments (
-          id,
-          comment,
-          created_at,
-          profiles:created_by (full_name, avatar_url)
-        )
-      )
-    `,
-    )
-    .eq("id", taskId)
-    .maybeSingle();
-
-  if (error) {
-    console.error(error);
-    console.log(error.message);
-    document.getElementById("taskViewContent").innerHTML =
-      `<p class="placeholderText">Invalid task link. <a href="index">Go Home</a></p>`;
-    loadSidebar();
-    actionMsg("Failed to load task.", "error");
-    return;
-  }
-
-  currentTask = data;
-  currentWorkspace = data?.workspace;
-}
 
 /* ---------------------------------------------
    RENDER TASK HEADER
@@ -284,20 +297,71 @@ function renderTaskHeader() {
   container.innerHTML = `
     <div class="taskHeaderTop">
       <h2>${currentTask.title || "Untitled"}</h2>
-      <div class="taskActions">
-      ${
-        isAdmin || isCreator
-          ? `
-           <button id="markTaskDoneBtn" class="primaryBtn btn btn-sm">
-          ${currentTask.status === "completed" ? "Reopen Task" : "Mark completed"}
+     <div class="taskActions">
+  ${
+    isAdmin || isCreator
+      ? `
+        <button
+          id="markTaskDoneBtn"
+          class="iconBtn tooltip btn-sm"
+          data-title="mark task as completed"
+          type="button"
+          aria-label="${currentTask.status === "completed" ? "Reopen task" : "Mark task as completed"}"
+          title="${currentTask.status === "completed" ? "Reopen task" : "Mark completed"}"
+        >
+          ${
+            currentTask.status === "completed"
+              ? `
+                <!-- reopen / undo icon -->
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                  <path d="M3 3v5h5" />
+                </svg>
+              `
+              : `
+                <!-- check / complete icon -->
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+              `
+          }
         </button>
-        <button id="editTaskBtn" class="secondaryBtn btn btn-sm">
-          Edit
+
+        <button
+          id="editTaskBtn"
+           class="iconBtn tooltip btn-sm"
+          data-title="Edit task"
+          type="button"
+          aria-label="Edit task"
+          title="Edit task"
+        >
+          <!-- pencil icon -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+          </svg>
         </button>
-         `
-          : ""
-      }
-      </div>
+      `
+      : ""
+  }
+
+  <button
+    id="focusTimerBtn"
+     class="iconBtn tooltip btn-sm"
+          data-title="Open focus timer"
+    type="button"
+    aria-label="Open focus timer"
+    title="Focus timer"
+  >
+    <!-- timer / clock icon -->
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="13" r="8" />
+      <path d="M12 9v4l2 2" />
+      <path d="M9 2h6" />
+    </svg>
+  </button>
+</div>
     </div>
 
     <div class="taskMeta">
@@ -372,7 +436,7 @@ function renderLogs() {
     content.classList.add("logContent");
     content.textContent = log.log_note;
 
-    const statusClass = log.task_status === "in progress" ? "in-progress" : "completed";
+    const statusClass = log.task_status === "in progress" || "in_progress" ? "in-progress" : "completed";
 
     const meta = document.createElement("div");
     meta.classList.add("logMeta");
