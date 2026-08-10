@@ -86,7 +86,7 @@ export function loadInviteHistory(invites, container) {
     revokeBtn.classList.add("revokeInviteBtn", "revoke");
     revokeBtn.type = "button";
     revokeBtn.id = inv.id;
-    revokeBtn.textContent = "Revoke";
+    revokeBtn.textContent = "Delete";
     actionsCell.append(revokeBtn);
 
     row.querySelector(".method").dataset.label = "Invite Method";

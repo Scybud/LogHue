@@ -9,7 +9,7 @@ import {
   savedTaskDetails,
   renderExistingTasks,
 } from "../pages/personalTasks.js";
-import { actionMsg } from "./modals.js";
+import { actionMsg, openUpgradeModal } from "./modals.js";
 import { sessionState } from "../session.js";
 import { notifyUser } from "./notifications.js";
 import bcrypt from "https://esm.sh/bcryptjs@2.4.3";
@@ -351,10 +351,7 @@ export async function attachAddMemberEvents(workspaceId) {
       count >= sessionState.plan.max_members &&
       sessionState.plan.max_members !== null
     ) {
-      actionMsg(
-        "You have exceeded the limit for adding members to this workspace on your current plan. Upgrade to a new plan to add more members!",
-        "error",
-      );
+      await openUpgradeModal("memberLimit");
       return;
     }
     const invite = await createWorkspaceInvite({
