@@ -147,6 +147,7 @@ type Task = {
   is_completed: boolean;
   task_deadline: string | null;
   created_at: string;
+  is_recurring: boolean | null;
 };
 
 // Create Task Element
@@ -216,7 +217,8 @@ export function renderExistingTasks() {
 
   personalCreatedTasks.innerHTML = "";
 
-  const incomplete = savedTaskDetails.filter((t) => !t.is_completed);
+  const incomplete = savedTaskDetails.filter((t) => !t.is_completed && !t.is_recurring);
+  const recurring = savedTaskDetails.filter((t) => t.is_recurring);
   const completed = savedTaskDetails.filter((t) => t.is_completed);
 
   // Create collapsible groups
@@ -225,6 +227,11 @@ export function renderExistingTasks() {
     incomplete.length,
     true,
   );
+  const recurringGroup = createCollapsibleGroup(
+    "Recurring Tasks",
+    recurring.length,
+    false,
+  )
   const completedGroup = createCollapsibleGroup(
     "Completed Tasks",
     completed.length,
@@ -238,6 +245,13 @@ export function renderExistingTasks() {
     requestAnimationFrame(() => el.classList.add("show"));
   });
 
+  //Render recurring tasks
+  recurring.forEach((task) => {
+    const el = createTaskElement(task);
+    recurringGroup.body.append(el);
+    requestAnimationFrame(() => el.classList.add("show"));
+  })
+
   // Render completed tasks
   completed.forEach((task) => {
     const el = createTaskElement(task);
@@ -246,7 +260,7 @@ export function renderExistingTasks() {
   });
 
   // Append groups to main container
-  personalCreatedTasks.append(incompleteGroup.wrapper, completedGroup.wrapper);
+  personalCreatedTasks.append(incompleteGroup.wrapper, recurringGroup.wrapper, completedGroup.wrapper);
 }
 
 // Toggle Complete (Delegated)

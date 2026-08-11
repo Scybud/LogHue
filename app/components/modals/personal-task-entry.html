@@ -29,7 +29,7 @@ class="closeModalBtn "
 
             <h2>Create Task</h2>
             <label for="task">Task
-              
+              <span style="color: var(--danger);">*</span>
               <input
               placeholder="e.g. Fixed API bug"
               type="text"
@@ -39,8 +39,21 @@ class="closeModalBtn "
             </label>
 
             <label for="taskTime">Due Date
+<span style="color: var(--danger);">*</span>
 
               <input type="datetime-local" id="taskTime" class="inputField" />
+            </label>
+
+            <label for="isRecurring">
+              <input type="radio" name="taskType" id="isRecurring">
+
+              Recurring task
+            </label>
+
+            <label for="isOneOff">
+              <input type="radio" name="taskType" id="isOneOff" checked>
+
+              Oneoff task
             </label>
 
             <label for="note">Note (Optional)

@@ -1,3 +1,6 @@
+//LEAVE THIS FILE AS IS. IGNORE THE ERRORS.
+//THEY SHOW BECAUSE THE IMPORTS ARE NOT IN THE SAME FOLDER
+//THE ERRORS WON'T SHOW AFTER IT IS COMPILED AND CONVERTED TO JAVASCRIPT
 // Imports
 import { supabase } from "../../js/supabase.js";
 import { sessionState, sessionReady } from "../../js/session.js";
@@ -154,15 +157,23 @@ export function renderExistingTasks() {
     if (!personalCreatedTasks)
         return;
     personalCreatedTasks.innerHTML = "";
-    const incomplete = savedTaskDetails.filter((t) => !t.is_completed);
+    const incomplete = savedTaskDetails.filter((t) => !t.is_completed && !t.is_recurring);
+    const recurring = savedTaskDetails.filter((t) => t.is_recurring);
     const completed = savedTaskDetails.filter((t) => t.is_completed);
     // Create collapsible groups
     const incompleteGroup = createCollapsibleGroup("Incomplete Tasks", incomplete.length, true);
+    const recurringGroup = createCollapsibleGroup("Recurring Tasks", recurring.length, false);
     const completedGroup = createCollapsibleGroup("Completed Tasks", completed.length, false);
     // Render incomplete tasks
     incomplete.forEach((task) => {
         const el = createTaskElement(task);
         incompleteGroup.body.append(el);
+        requestAnimationFrame(() => el.classList.add("show"));
+    });
+    //Render recurring tasks
+    recurring.forEach((task) => {
+        const el = createTaskElement(task);
+        recurringGroup.body.append(el);
         requestAnimationFrame(() => el.classList.add("show"));
     });
     // Render completed tasks
@@ -172,7 +183,7 @@ export function renderExistingTasks() {
         requestAnimationFrame(() => el.classList.add("show"));
     });
     // Append groups to main container
-    personalCreatedTasks.append(incompleteGroup.wrapper, completedGroup.wrapper);
+    personalCreatedTasks.append(incompleteGroup.wrapper, recurringGroup.wrapper, completedGroup.wrapper);
 }
 // Toggle Complete (Delegated)
 export function attachToggleCompleteEvent(container) {

@@ -496,9 +496,9 @@ export async function attachCreatePersonalTaskEvent() {
   const taskEl = document.getElementById("task");
   const timeEl = document.getElementById("taskTime");
   const noteEl = document.getElementById("note");
+  const recurringEl = document.getElementById("isRecurring");
   const logTaskBtn = document.getElementById("logTask");
-
-  if (!logTaskBtn || !taskEl || !timeEl || !noteEl) return;
+  if (!logTaskBtn || !taskEl || !timeEl || !noteEl || !recurringEl) return;
 
   const {
     data: { session },
@@ -517,6 +517,7 @@ export async function attachCreatePersonalTaskEvent() {
       ? new Date(timeEl.value).toISOString()
       : null;
     const noteValue = noteEl.value.trim();
+const recurringValue = recurringEl.checked ? true : false;
 
     if (!taskValue || !timeValue) {
       actionMsg("Task and time are required.", "error");
@@ -532,6 +533,7 @@ export async function attachCreatePersonalTaskEvent() {
         description: noteValue || "",
         task_deadline: timeValue,
         user_id: user.id,
+        is_recurring: recurringValue,
       })
       .select()
       .single();
