@@ -14,9 +14,7 @@ const saveBtn = document.querySelector(".settingsSaveBtn");
 
 let pendingAvatarProfile = null;
 
-// =========================
 // INIT
-// =========================
 async function initUserSettingsData() {
   try {
     const {
@@ -52,8 +50,9 @@ async function initUserSettingsData() {
     sessionState.originalEmail = user.email;
     sessionState.originalAvatar = profile.avatar_url;
 
-    loadData();
-    initNotificationPreference();
+loadData();
+initNotificationPreference();
+initProductUpdatesPreference();
   } catch (err) {
     console.error(err);
     actionMsg("Something went wrong.", "error");
@@ -62,9 +61,7 @@ async function initUserSettingsData() {
 
 initUserSettingsData();
 
-// =========================
 // LOAD UI DATA
-// =========================
 function loadData() {
   const accNameEl = document.getElementById("accName");
   const accEmailEl = document.getElementById("accEmail");
@@ -84,9 +81,7 @@ function loadData() {
   };
 }
 
-// =========================
 // AVATAR UPLOAD
-// =========================
 profileUploadBtn?.addEventListener("click", () => {
   profilePhotoInput.click();
 });
@@ -170,9 +165,7 @@ async function compressImage(img) {
   return null;
 }
 
-// =========================
 // SAVE SETTINGS
-// =========================
 saveBtn?.addEventListener("click", async () => {
   saveBtn.disabled = true;
 
@@ -188,16 +181,16 @@ saveBtn?.addEventListener("click", async () => {
       return;
     }
 
-    // =========================
+  
     // NAME UPDATE
-    // =========================
+  
     if (newName !== sessionState.originalName) {
       updates.full_name = newName;
     }
 
-    // =========================
+  
     // EMAIL UPDATE
-    // =========================
+  
     if (newEmail !== sessionState.originalEmail) {
       const { error } = await supabase.auth.updateUser({
         email: newEmail,
@@ -211,9 +204,9 @@ saveBtn?.addEventListener("click", async () => {
       actionMsg("Check your inbox to confirm the new email.", "success");
     }
 
-    // =========================
+  
     // AVATAR UPDATE
-    // =========================
+  
     if (pendingAvatarProfile) {
       const oldPath = extractFilePath(sessionState.originalAvatar);
 
@@ -268,9 +261,9 @@ saveBtn?.addEventListener("click", async () => {
       sessionState.originalAvatar = urlData.publicUrl;
     }
 
-    // =========================
+  
     // SAVE PROFILE CHANGES
-    // =========================
+  
     if (Object.keys(updates).length > 0 && !updates.avatar_url) {
       const { error } = await supabase
         .from("profiles")
@@ -298,9 +291,7 @@ saveBtn?.addEventListener("click", async () => {
   }
 });
 
-// =========================
 // HELPERS
-// =========================
 function extractFilePath(publicUrl) {
   if (!publicUrl) return null;
 
@@ -315,9 +306,51 @@ function extractFilePath(publicUrl) {
   }
 }
 
-// =========================
+// PRODUCT UPDATES PREFERENCE
+function initProductUpdatesPreference() {
+  const checkbox = document.getElementById("productUpdatesToggle");
+
+  if (!checkbox) return;
+
+  checkbox.checked = sessionState.profile.product_updates_opted_in ?? true;
+
+  checkbox.addEventListener("change", async (e) => {
+    const optedIn = e.target.checked;
+
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          product_updates_opted_in: optedIn,
+        })
+        .eq("id", sessionState.user.id);
+
+      if (error) {
+        console.error(error);
+
+        checkbox.checked = !optedIn;
+
+        actionMsg("Could not update preference.", "error");
+        return;
+      }
+
+      sessionState.profile.product_updates_opted_in = optedIn;
+
+      actionMsg(
+        optedIn ? "Subscribed to product updates" : "Unsubscribed from product updates",
+        "success",
+      );
+    } catch (err) {
+      console.error(err);
+
+      checkbox.checked = !optedIn;
+
+      actionMsg("Something went wrong.", "error");
+    }
+  });
+}
+
 // PUSH NOTIFICATIONS
-// =========================
 function initNotificationPreference() {
   const checkbox = document.getElementById("enablePush");
 
@@ -407,9 +440,7 @@ async function disablePushNotifications() {
   }
 }
 
-// =========================
 // ACCOUNT DELETION
-// =========================
 export function requestAccountDeletion() {
   const deleteAccountBtn = document.getElementById("deleteAccount");
 

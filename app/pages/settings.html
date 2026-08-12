@@ -259,11 +259,11 @@
           </div>
 
           <!-- NOTIFICATIONS -->
-          <div class="settingsCard">
-            <h3 class="settingsCardTitle">Notifications</h3>
-            <p class="descText">Manage how you recieve updates.</p>
+<div class="settingsCard">
+  <h3 class="settingsCardTitle">Notifications</h3>
+  <p class="descText">Manage how you recieve updates.</p>
 
-            <div class="settingsToggleRow">
+  <div class="settingsToggleRow">
   <span>In-App Alerts</span>
   <label class="lh-switch">
     <input type="checkbox" checked disabled/>
@@ -271,7 +271,7 @@
   </label>
 </div>
 
-<div class="settingsToggleRow">
+<div id="notifications" class="settingsToggleRow">
   <span>Push & Email Notifications</span>
   <label for="enablePush" class="lh-switch"
     ><input type="checkbox" id="enablePush" />
@@ -279,7 +279,15 @@
   </label>
 </div>
 
-          </div>
+<div class="settingsToggleRow">
+  <span>Product Updates</span>
+  <label for="productUpdatesToggle" class="lh-switch"
+    ><input type="checkbox" id="productUpdatesToggle" />
+        <span class="lh-slider"></span>
+  </label>
+</div>
+
+</div>
 
           <!-- PRIVACY -->
           <div class="settingsCard">
