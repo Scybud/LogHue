@@ -136,7 +136,7 @@ table thead {
 
   }
 
-  table, .data-table tbody, .data-table tr, .data-table td {
+  table, table tbody, table tr, table td {
 
     display: block;
 
