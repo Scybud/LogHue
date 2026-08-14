@@ -1,0 +1,287 @@
+/* ==========================================================================
+
+   DATA TABLE — for multi-field record lists (properties, org members)
+
+   ========================================================================== */
+
+.data-table-wrapper {
+
+  width: 100%;
+
+  overflow-x: auto;
+
+  border: 1px solid var(--border-primary);
+
+  border-radius: var(--radius-md);
+
+  background: var(--surface-primary);
+
+}
+
+
+
+table {
+
+  width: 100%;
+
+  border-collapse: collapse;
+
+  font-size: var(--text-sm);
+
+}
+
+
+
+table thead th {
+
+  text-align: left;
+
+  padding: var(--space-sm) var(--space-md);
+
+  color: var(--muted);
+
+  font-weight: var(--font-semibold);
+
+  font-size: var(--text-xs);
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.04em;
+
+  border-bottom: 1px solid var(--border-primary);
+
+  white-space: nowrap;
+
+}
+
+
+
+table tbody tr {
+
+  border-bottom: 1px solid var(--border-primary);
+
+  transition: background var(--transition-fast);
+
+}
+
+
+
+.data-table tbody tr:last-child {
+
+  border-bottom: none;
+
+}
+
+
+
+table tbody tr:hover {
+
+  background: var(--hover-bg);
+
+}
+
+
+
+table td {
+
+  padding: var(--space-sm) var(--space-md);
+
+  color: var(--text-primary);
+
+  vertical-align: middle;
+
+}
+
+
+
+table td.cell-muted {
+
+  color: var(--muted);
+
+  font-size: var(--text-xs);
+
+}
+
+
+
+table td.cell-actions {
+
+  text-align: right;
+
+  white-space: nowrap;
+
+}
+
+
+
+table td.cell-actions .btn {
+
+  padding: 6px 12px;
+
+  font-size: var(--text-xs);
+
+  display: inline-flex;
+
+}
+
+
+
+/* Mobile: collapse to stacked rows instead of horizontal scroll */
+
+@media (max-width: 800px) {
+
+table thead {
+
+    display: none;
+
+  }
+
+  table, .data-table tbody, .data-table tr, .data-table td {
+
+    display: block;
+
+    width: 100%;
+
+  }
+
+  table tbody tr {
+
+    padding: var(--space-sm) var(--space-md);
+
+  }
+
+  table td {
+
+    padding: 4px 0;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: var(--space-md);
+
+  }
+
+  table td.cell-actions {
+
+    justify-content: flex-end;
+
+    margin-top: var(--space-sm);
+
+  }
+
+  table td::before {
+
+    content: attr(data-label);
+
+    color: var(--muted);
+
+    font-size: var(--text-xs);
+
+    font-weight: var(--font-semibold);
+
+    text-transform: uppercase;
+
+  }
+
+}
+
+
+
+/* ==========================================================================
+
+   COMPACT LIST ROWS — for nested lower-tier records (tenants within a unit)
+
+   ========================================================================== */
+
+.data-list {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: var(--space-xs);
+
+}
+
+
+
+.data-list-row {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: var(--space-sm);
+
+  padding: var(--space-sm);
+
+  background: var(--surface-secondary);
+
+  border: 1px solid var(--border-primary);
+
+  border-radius: var(--radius-sm);
+
+  font-size: var(--text-sm);
+
+}
+
+
+
+.data-list-row .row-main {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 2px;
+
+}
+
+
+
+.data-list-row .row-main .row-title {
+
+  color: var(--text-primary);
+
+  font-weight: var(--font-medium);
+
+}
+
+
+
+.data-list-row .row-main .row-meta {
+
+  color: var(--muted);
+
+  font-size: var(--text-xs);
+
+}
+
+
+
+.data-list-row .row-actions {
+
+  display: flex;
+
+  gap: var(--space-xs);
+
+  flex-shrink: 0;
+
+}
+
+
+
+.data-list-empty {
+
+  color: var(--muted);
+
+  font-size: var(--text-sm);
+
+  font-style: italic;
+
+  padding: var(--space-sm) 0;
+
+}

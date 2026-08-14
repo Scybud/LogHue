@@ -46,7 +46,7 @@ export function loadInviteHistory(invites, container) {
     const method = inv.email ? "Email" : "Link";
     const target = inv.email
       ? inv.email
-      : `https://app.loghue.com/invite?token=${inv.token}`;
+      : `https://app.loghue.com/pages/invite?token=${inv.token}`;
 
     const created = inv.created_at;
     const count = inv.accepted_count ?? 0;
@@ -120,7 +120,11 @@ export function loadInviteHistory(invites, container) {
     });
   });
 
-  container.append(table);
+  const dataTableWrapper = document.createElement("div");
+  dataTableWrapper.classList.add("data-table-wrapper");
+  dataTableWrapper.append(table);
+
+  container.append(dataTableWrapper);
 }
 
 /**

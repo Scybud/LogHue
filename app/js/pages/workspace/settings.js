@@ -69,15 +69,17 @@ export async function loadSettingsAdmin(container, workspace, currentUserId) {
   apiCard.innerHTML = `
     <h3>API Keys</h3>
     <button class="btn-secondary btn" id="createApiKeyBtn">Create API Key</button>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Name</th><th>Prefix</th><th>Created</th>
-          <th>Last Used</th><th>Status</th><th>Permissions</th><th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="apiKeysTable"></tbody>
-    </table>
+  <div class="data-table-wrapper">
+  <table class="table">
+  <thead>
+  <tr>
+  <th>Name</th><th>Prefix</th><th>Created</th>
+  <th>Last Used</th><th>Status</th><th>Permissions</th><th>Actions</th>
+  </tr>
+  </thead>
+  <tbody id="apiKeysTable"></tbody>
+  </table>
+  </div>
   `;
   apiCard.querySelector("#createApiKeyBtn").onclick = async () => {
     await openApiKeyModal(workspace);
