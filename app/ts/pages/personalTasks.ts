@@ -217,7 +217,9 @@ export function renderExistingTasks() {
 
   personalCreatedTasks.innerHTML = "";
 
-  const incomplete = savedTaskDetails.filter((t) => !t.is_completed && !t.is_recurring);
+  const incomplete = savedTaskDetails.filter(
+    (t) => !t.is_completed && !t.is_recurring,
+  );
   const recurring = savedTaskDetails.filter((t) => t.is_recurring);
   const completed = savedTaskDetails.filter((t) => t.is_completed);
 
@@ -231,7 +233,7 @@ export function renderExistingTasks() {
     "Recurring Tasks",
     recurring.length,
     false,
-  )
+  );
   const completedGroup = createCollapsibleGroup(
     "Completed Tasks",
     completed.length,
@@ -250,7 +252,7 @@ export function renderExistingTasks() {
     const el = createTaskElement(task);
     recurringGroup.body.append(el);
     requestAnimationFrame(() => el.classList.add("show"));
-  })
+  });
 
   // Render completed tasks
   completed.forEach((task) => {
@@ -260,7 +262,11 @@ export function renderExistingTasks() {
   });
 
   // Append groups to main container
-  personalCreatedTasks.append(incompleteGroup.wrapper, recurringGroup.wrapper, completedGroup.wrapper);
+  personalCreatedTasks.append(
+    incompleteGroup.wrapper,
+    recurringGroup.wrapper,
+    completedGroup.wrapper,
+  );
 }
 
 // Toggle Complete (Delegated)
@@ -506,4 +512,22 @@ function createCollapsibleGroup(title: string, count: number, isOpen = true) {
 
   wrapper.append(header, body);
   return { wrapper, body };
+}
+
+export async function toggleTaskCompletion(taskId, isCompleted) {
+  const { error } = await supabase
+    .from("personal_tasks")
+    .update({ is_completed: isCompleted })
+    .eq("id", taskId);
+  if (error) {
+    console.error(error);
+    actionMsg("Failed to update task", "error");
+    return;
+  }
+  const taskRecord = savedTaskDetails.find(
+    (t) => String(t.id) === String(taskId),
+  );
+  if (taskRecord) taskRecord.is_completed = isCompleted;
+  renderExistingTasks();
+  document.dispatchEvent(new CustomEvent("personalTasksUpdated"));
 }

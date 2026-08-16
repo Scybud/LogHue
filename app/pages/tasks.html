@@ -34,6 +34,7 @@
     <link rel="stylesheet" href="../css/layout.css" />
     <link rel="stylesheet" href="../css/component.css" />
     <link rel="stylesheet" href="../css/tasks.css">
+    <link rel="stylesheet" href="../css/components/tasks-calendar.css">
     <link rel="stylesheet" href="../css/dashboard.css" />
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/components/sidebar.css">
@@ -162,10 +163,37 @@
         <!-- PERSONAL LOG TASKS SECTION -->
         <section class="personalCreatedTasksContainer">
 
+          <div class="taskViewControls">
+            <div class="taskModeToggle" id="taskModeToggle">
+              <button type="button" id="modeListBtn" class="active">List</button>
+              <button type="button" id="modeCalendarBtn">Calendar</button>
+            </div>
+            <div class="taskViewPills" id="calendarViewPills" hidden>
+              <button type="button" class="viewPill" data-view="year">Year</button>
+              <button type="button" class="viewPill" data-view="month">Month</button>
+              <button type="button" class="viewPill active" data-view="week">Week</button>
+              <button type="button" class="viewPill" data-view="day">Day</button>
+              <button type="button" class="viewPill" data-view="hour">Hour</button>
+            </div>
+            <div class="calendarNav" id="calendarNav" hidden>
+              <div class="navBtns">
+                <button type="button" id="calPrevBtn">‹</button>
+                <button type="button" id="calNextBtn">›</button>
+              </div>
+              <span id="calendarRangeText">Week</span>
+            </div>
+            <div class="calendarClock" id="calendarClock" hidden>
+              <span class="calendarClockDot"></span>
+              <time id="calClockTime">--:--</time>
+            </div>
+          </div>
+
           <div id="personalCreatedTasks">
   <div class="taskGroup" id="incompleteGroup"></div>
   <div class="taskGroup" id="completedGroup"></div>
 </div>
+
+          <div id="personalTasksCalendar" hidden></div>
 
         </section>
       </article>
@@ -179,7 +207,10 @@
     <script type="module" src="../js/session.js" defer></script>
     <script type="module" src="../js/app.js" defer></script>
     <script type="module" src="../js/pages/tasks.js" defer></script>
+    <script type="module">
+      import { initCalendarView } from "../js/components/calendarView.js";
+      window.addEventListener("DOMContentLoaded", initCalendarView);
+    </script>
 
   </body>
 </html>
-
