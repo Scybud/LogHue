@@ -1,7 +1,3 @@
-// calendarView.js
-// Calendar visualization for personal tasks. Reads the same savedTaskDetails
-// array personalTasks.js already populates and keeps updated, so there is no
-// second Supabase query and no separate source of truth.
 import { savedTaskDetails, toggleTaskCompletion } from "../pages/personalTasks.js";
 
 const ROW_H = 60;
@@ -201,10 +197,14 @@ function renderGrid(numDays) {
     for (let h = 0; h < 24; h++) {
         const lbl = document.createElement("div");
         lbl.className = "calHourLabel";
+        lbl.style.gridColumn = "1";
+        lbl.style.gridRow = String(h + 1);
         lbl.textContent = fmtHour(h);
         labelsHost.appendChild(lbl);
     }
-    els.calContainer.querySelectorAll(".calDayCol").forEach((col) => {
+    els.calContainer.querySelectorAll(".calDayCol").forEach((col, i) => {
+        col.style.gridColumn = String(i + 2);
+        col.style.gridRow = "1 / span 24";
         for (let h = 0; h < 24; h++) {
             const cell = document.createElement("div");
             cell.className = "calHourCell";

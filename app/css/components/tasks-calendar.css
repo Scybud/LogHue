@@ -87,7 +87,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--color);
   box-shadow: 0 0 6px var(--color);
 }
 
@@ -153,6 +153,7 @@
 
 .calHourGrid {
   display: grid;
+  grid-auto-rows: 60px;
   position: relative;
 }
 
@@ -206,8 +207,8 @@
 
 .calTask {
   position: absolute;
-  left: 5px;
-  right: 5px;
+  max-width: 100%;
+  right: 8px;
   border-radius: var(--radius-md, 6px);
   padding: 5px 8px;
   font-size: 0.75rem;
@@ -245,7 +246,8 @@
   border-color: var(--border-primary);
 }
 
-.calTask.done .calTaskTitle {
+.calTask.done .calTaskTitle,
+.calTask.done .chipTitle {
   color: var(--muted);
   text-decoration: line-through;
 }
@@ -409,6 +411,7 @@
   border-top: 1px solid var(--border-primary);
   padding: 10px 20px;
   gap: 14px;
+  position: relative;
 }
 
 .calAgendaSlot.isNow {
