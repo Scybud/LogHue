@@ -39,7 +39,7 @@
 
 .taskModeToggle button.active,
 .viewPill.active {
-  color: #fff;
+  color: var(--text-primary);
   background: var(--active);
 }
 
