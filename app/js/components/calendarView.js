@@ -23,8 +23,8 @@ export function initCalendarView() {
         clockTime: document.getElementById("calClockTime"),
     };
     if (!els.calContainer) return; // calendar markup not present on this page
-    els.modeListBtn?.addEventListener("click", () => setMode("list"));
-    els.modeCalendarBtn?.addEventListener("click", () => setMode("calendar"));
+    els.modeListBtn?.addEventListener("click", () => setMode("list", els.listContainer));
+    els.modeCalendarBtn?.addEventListener("click", () => setMode("calendar", els.listContainer));
     els.viewPills?.querySelectorAll(".viewPill").forEach((btn) => {
         btn.addEventListener("click", () => setView(btn.dataset.view));
     });
@@ -46,7 +46,7 @@ export function initCalendarView() {
     }, 60000);
 }
 
-function setMode(next) {
+function setMode(next, listContainer) {
     mode = next;
     els.modeListBtn?.classList.toggle("active", mode === "list");
     els.modeCalendarBtn?.classList.toggle("active", mode === "calendar");
@@ -55,7 +55,15 @@ function setMode(next) {
     if (els.viewPills) els.viewPills.hidden = mode !== "calendar";
     if (els.calendarNav) els.calendarNav.hidden = mode !== "calendar";
     if (els.calendarClock) els.calendarClock.hidden = mode !== "calendar";
-    if (mode === "calendar") render();
+    if (mode === "calendar") {
+listContainer?.classList.add("hide");
+        render();
+    } 
+    if (mode === "list") {
+      listContainer?.classList.remove("hide");
+      render();
+    } 
+    
 }
 
 function setView(next) {

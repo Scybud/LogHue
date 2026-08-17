@@ -188,3 +188,6 @@ line-height: var(--space-md);
   overflow-y: auto;
   margin: var(--space-md) 0;
 }
+.hide {
+  display: none !important;
+}
