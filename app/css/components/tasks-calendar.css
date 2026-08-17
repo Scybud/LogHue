@@ -194,9 +194,9 @@
   position: absolute;
   left: 0;
   right: 0;
-  height: 2px;
+  height: 1px;
   background: var(--muted);
-  box-shadow: 0 0 6px var(--text-primary);
+  box-shadow: 0 0 6px var(--muted);
   z-index: 2;
   pointer-events: none;
 }
