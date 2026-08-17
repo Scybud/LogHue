@@ -199,14 +199,22 @@ export async function confirmAction(header, message, actions = []) {
     btn.classList.add(
       "btn",
       "btn-sm",
-      a.type === "confirm" ? "btn-primary" : "secondary",
-      a.label === "Delete" || "Remove" ? "danger" : "btn-primary",
+      a.label === "Delete" || a.label === "Remove"
+        ? "danger"
+        : a.type === "confirm"
+          ? "btn-primary"
+          : "secondary",
     );
 
-    btn.onclick = () => {
-      closeModal();
-      a.onClick && a.onClick();
-    };
+   btn.onclick = () => {
+     closeModal();
+
+     if (a.type === "cancel") {
+       return;
+     }
+
+     a.onClick && a.onClick();
+   };
 
     actionsBox.appendChild(btn);
   });

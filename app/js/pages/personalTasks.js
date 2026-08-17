@@ -158,7 +158,7 @@ export function renderExistingTasks() {
         return;
     personalCreatedTasks.innerHTML = "";
     const incomplete = savedTaskDetails.filter((t) => !t.is_completed && !t.is_recurring);
-    const recurring = savedTaskDetails.filter((t) => t.is_recurring);
+    const recurring = savedTaskDetails.filter((t) => t.is_recurring && !t.is_completed);
     const completed = savedTaskDetails.filter((t) => t.is_completed);
     // Create collapsible groups
     const incompleteGroup = createCollapsibleGroup("Incomplete Tasks", incomplete.length, true);
@@ -195,28 +195,62 @@ export function attachToggleCompleteEvent(container) {
             return;
         const taskId = checkbox.id.replace("task-", "");
         const isCompleted = checkbox.checked;
-        const previousChecked = !isCompleted; // for rollback on failure
-        const { error } = await supabase
+        const previousChecked = !isCompleted;
+        const { data: task, error: taskError } = await supabase
             .from("personal_tasks")
-            .update({ is_completed: isCompleted })
-            .eq("id", taskId);
-        if (error) {
-            console.error(error);
-            actionMsg("Failed to update task", "error");
+            .select("is_recurring, is_completed")
+            .eq("id", taskId)
+            .single();
+        if (taskError) {
             checkbox.checked = previousChecked;
+            actionMsg("Sorry, something went wrong", "error");
             return;
         }
-        const taskRecord = savedTaskDetails.find((t) => String(t.id) === String(taskId));
-        if (taskRecord)
-            taskRecord.is_completed = isCompleted;
-        renderExistingTasks();
+        // Only confirm when an incomplete recurring task
+        // is being marked as completed.
+        if (task.is_recurring && !task.is_completed && isCompleted) {
+            // Immediately undo the checkbox change.
+            checkbox.checked = false;
+            confirmAction("Mark Done", "Marking a recurring task as done will stop notification behaviours.", [
+                {
+                    label: "Cancel",
+                    type: "cancel",
+                },
+                {
+                    label: "Mark done",
+                    type: "confirm",
+                    onClick: async () => {
+                        await updateTaskCompletion(taskId, true);
+                    },
+                },
+            ]);
+            return;
+        }
+        // Normal check/uncheck
+        await updateTaskCompletion(taskId, isCompleted);
     });
+}
+async function updateTaskCompletion(taskId, isCompleted) {
+    const { error } = await supabase
+        .from("personal_tasks")
+        .update({ is_completed: isCompleted })
+        .eq("id", taskId);
+    if (error) {
+        console.error(error);
+        actionMsg("Failed to update task", "error");
+        return;
+    }
+    const taskRecord = savedTaskDetails.find((t) => String(t.id) === String(taskId));
+    if (taskRecord) {
+        taskRecord.is_completed = isCompleted;
+    }
+    renderExistingTasks();
 }
 // Delete Task
 export function attachDeleteTaskEvent(container, userId) {
     if (!container)
         return;
-    container.addEventListener("click", (e) => {
+    container.addEventListener("click", async (e) => {
         const btn = e.target.closest(".deleteBtn");
         if (!btn)
             return;
