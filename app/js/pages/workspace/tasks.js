@@ -314,6 +314,7 @@ export function loadAllTasks(tasks, container) {
   tasks.forEach((tsk) => {
     const card = document.createElement("div");
     card.classList.add("taskCard");
+    card.dataset.id = tsk.id;
 
     const taskTitle = document.createElement("h3");
     taskTitle.textContent = tsk.title;
@@ -340,8 +341,17 @@ export function loadAllTasks(tasks, container) {
       window.location.href = `task-view?task=${tsk.id}`;
     });
 
+    
     card.append(taskTitle, meta, viewBtn);
 
+    if (!tsk.assigned_to || !tsk.profiles) {
+      const assignBtn = document.createElement("button");
+      assignBtn.type = "button";
+      assignBtn.classList.add("btn", "btn-secondary", "assignBtn", "btn-sm");
+      assignBtn.textContent = "Assign";
+      card.append(assignBtn);
+    }
+    
     if (canDeleteTask(tsk)) {
       const deleteBtn = document.createElement("button");
       deleteBtn.type = "button";
@@ -367,6 +377,8 @@ export function loadAllTasks(tasks, container) {
     }
 
     grid.prepend(card);
+      attachAssignTaskEvent(grid);
+
   });
 
   section.append(title, grid);
