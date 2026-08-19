@@ -224,7 +224,7 @@
   line-height: 1.3;
   background: color-mix(in srgb, var(--text-primary) 15%, transparent);
   border: 1px solid color-mix(in srgb, var(--text-primary) 35%, transparent);
-  z-index: 2;
+  z-index: 1;
   overflow: hidden;
   cursor: pointer;
 }
