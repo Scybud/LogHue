@@ -379,7 +379,8 @@
   font-size: 0.6rem;
   text-align: center;
   color: var(--text-secondary);
-  height: 16px;
+  height: 18px;
+  width: 18px;
   line-height: 16px;
   position: relative;
 }
