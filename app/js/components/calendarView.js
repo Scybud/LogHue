@@ -133,7 +133,7 @@ function deadlineDate(t) {
     return new Date(t.task_deadline);
 }
 function isOverdue(t) {
-    return !t.is_completed && deadlineDate(t) < new Date();
+    return !t.is_completed && deadlineDate(t) < new Date() && !t.is_recurring;
 }
 function stateClass(t) {
     return t.is_completed ? "done" : isOverdue(t) ? "overdue" : "";
