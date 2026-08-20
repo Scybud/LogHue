@@ -1,4 +1,5 @@
 import { savedTaskDetails, toggleTaskCompletion } from "../pages/personalTasks.js";
+import { logEvent } from "../utils/logEvent.js";
 
 const ROW_H = 60;
 
@@ -47,6 +48,7 @@ export function initCalendarView() {
 }
 
 function setMode(next, listContainer) {
+    if (next === mode) return;
     mode = next;
     els.modeListBtn?.classList.toggle("active", mode === "list");
     els.modeCalendarBtn?.classList.toggle("active", mode === "calendar");
@@ -55,22 +57,26 @@ function setMode(next, listContainer) {
     if (els.viewPills) els.viewPills.hidden = mode !== "calendar";
     if (els.calendarNav) els.calendarNav.hidden = mode !== "calendar";
     if (els.calendarClock) els.calendarClock.hidden = mode !== "calendar";
+    logEvent("calendar_vs_list_toggle", { chosen_view: mode });
     if (mode === "calendar") {
-listContainer?.classList.add("hide");
+        listContainer?.classList.add("hide");
+        logEvent("calendar_view_opened", { view });
         render();
-    } 
+    }
     if (mode === "list") {
-      listContainer?.classList.remove("hide");
-      render();
-    } 
-    
+        listContainer?.classList.remove("hide");
+        render();
+    }
 }
 
 function setView(next) {
+    if (next === view) return;
+    const from = view;
     view = next;
     els.viewPills?.querySelectorAll(".viewPill").forEach((b) => {
         b.classList.toggle("active", b.dataset.view === view);
     });
+    logEvent("calendar_view_switched", { from_view: from, to_view: view });
     render();
 }
 
@@ -127,10 +133,19 @@ function deadlineDate(t) {
     return new Date(t.task_deadline);
 }
 function isOverdue(t) {
-    return !t.is_completed && deadlineDate(t) < new Date() && !t.is_recurring;
+    return !t.is_completed && deadlineDate(t) < new Date();
 }
 function stateClass(t) {
     return t.is_completed ? "done" : isOverdue(t) ? "overdue" : "";
+}
+
+function taskState(t) {
+    return t.is_completed ? "done" : isOverdue(t) ? "overdue" : "pending";
+}
+
+function handleTaskClick(t) {
+    logEvent("calendar_task_clicked", { task_status: taskState(t) });
+    toggleTaskCompletion(t.id, !t.is_completed);
 }
 
 function taskChip(t, cls) {
@@ -140,7 +155,7 @@ function taskChip(t, cls) {
     el.innerHTML = `<span class="chipTitle">${escapeHtml(t.name)}</span>`;
     el.addEventListener("click", (e) => {
         e.stopPropagation();
-        toggleTaskCompletion(t.id, !t.is_completed);
+        handleTaskClick(t);
     });
     return el;
 }
@@ -232,7 +247,7 @@ function renderGrid(numDays) {
                 el.style.height = ROW_H - 6 + "px";
                 el.dataset.id = t.id;
                 el.innerHTML = `<span class="calTaskTime">${fmtTime(d)}</span><span class="calTaskTitle">${escapeHtml(t.name)}</span>`;
-                el.addEventListener("click", () => toggleTaskCompletion(t.id, !t.is_completed));
+                el.addEventListener("click", () => handleTaskClick(t));
                 col.appendChild(el);
             });
         if (sameDay(colDate, today)) {

@@ -4,6 +4,7 @@ import { fetchUserNotes } from "../data/notesDb.js";
 import { fetchUserTasks } from "../data/tasksDb.js";
 import { fetchWorkspaceFromMember } from "../data/workspaceDb.js";
 import { escapeHTML } from "./escapeHTML.js";
+import { logEvent } from "../shared/logEvent.js";
 
 await sessionReady;
 
@@ -135,7 +136,7 @@ export async function initSmartSearch(container = document) {
         };
       });
 
-      renderResults(tagged, value);
+      renderResults(tagged, value, true);
       return;
     }
 
@@ -153,12 +154,12 @@ export async function initSmartSearch(container = document) {
       .ilike("title", `%${value}%`)
       .limit(10);
 
-      const { data: discussionSearch, error: discussionSearchError } =
-        await supabase
-          .from("discussions")
-          .select("id, title")
-          .ilike("title", `%${value}%`)
-          .limit(10);
+    const { data: discussionSearch, error: discussionSearchError } =
+      await supabase
+        .from("discussions")
+        .select("id, title")
+        .ilike("title", `%${value}%`)
+        .limit(10);
 
     const { data: notesSearch, error: notesSearchError } = await supabase
       .from("personal_notes")
@@ -210,6 +211,7 @@ export async function initSmartSearch(container = document) {
         ...notesSearchTagged,
       ],
       value,
+      false,
     );
   };
 
@@ -243,8 +245,15 @@ export async function initSmartSearch(container = document) {
     });
   });
 
-  function renderResults(results, queryValue) {
+  function renderResults(results, queryValue, shortcutUsed = false) {
     resultsContainer.innerHTML = "";
+
+    logEvent("search_query_run", {
+      query: queryValue,
+      result_count: results.length,
+      result_types: [...new Set(results.map((r) => r.type))],
+      shortcut_used: shortcutUsed,
+    });
 
     const resultsHeader = document.createElement("h2");
     resultsHeader.textContent = "Results";
@@ -271,6 +280,14 @@ export async function initSmartSearch(container = document) {
     <p>${label}</p>
   </a>
 `;
+      const linkEl = div.querySelector("a");
+      linkEl.addEventListener("click", () => {
+        logEvent("search_result_clicked", {
+          query: queryValue,
+          result_type: result.type,
+        });
+      });
+
       resultsContainer.append(div);
     });
   }
@@ -279,13 +296,13 @@ export async function initSmartSearch(container = document) {
 function searchType(result) {
   if (result.type === "workspace") return "Workspace";
   if (result.type === "task") return "Task";
-    if (result.type === "discussion") return "Discussion";
+  if (result.type === "discussion") return "Discussion";
   if (result.type === "note") return "Note";
 }
 
 function searchLink(result) {
   if (result.type === "workspace") return `workspace?ws=${result.id}`;
   if (result.type === "task") return `task-view?task=${result.id}`;
-    if (result.type === "discussion") return `discussion-view?dcn=${result.id}`;
+  if (result.type === "discussion") return `discussion-view?dcn=${result.id}`;
   if (result.type === "note") return `notes?note=${result.id}`;
 }
