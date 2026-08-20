@@ -4,7 +4,7 @@ import { fetchUserNotes } from "../data/notesDb.js";
 import { fetchUserTasks } from "../data/tasksDb.js";
 import { fetchWorkspaceFromMember } from "../data/workspaceDb.js";
 import { escapeHTML } from "./escapeHTML.js";
-import { logEvent } from "../shared/logEvent.js";
+import { logEvent } from "./logEvent.js";
 
 await sessionReady;
 
