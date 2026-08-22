@@ -355,11 +355,13 @@ input.error {
   width: 100%;
   padding: var(--space-xs);
   height: fit-content;
-  transition: top 0.5s ease, right 0.5s ease;
+  opacity: 0;
+  transition: top 0.5s ease, right 0.5s ease, opacity 0.5s ease;
 }
 
 #actionsMessage.slideIn {
   right: 10px;
+  opacity: 1;
 }
 
 .actionMessageContainer {
