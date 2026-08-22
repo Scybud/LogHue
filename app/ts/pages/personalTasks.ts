@@ -14,7 +14,7 @@ import { setLoading, closeModal } from "../../js/ui.js";
 import {
   loadComponent,
   createEmptyState,
-} from "https://scybud.github.io/scybud-ui/js/ui.js";
+} from "https://ui.scybud.com/js/ui.js";
 import { attachCreatePersonalTaskEvent } from "../../js/utils/modalEvents.js";
 import { formatDateTime } from "../../js/utils/time.js";
 
@@ -564,7 +564,7 @@ function createCollapsibleGroup(title: string, count: number, isOpen = true) {
   return { wrapper, body };
 }
 
-export async function toggleTaskCompletion(taskId, isCompleted) {
+export async function toggleTaskCompletion(taskId: string, isCompleted: boolean) {
   const { error } = await supabase
     .from("personal_tasks")
     .update({ is_completed: isCompleted })
