@@ -6,7 +6,7 @@ import { supabase } from "../../js/supabase.js";
 import { sessionState, sessionReady } from "../../js/session.js";
 import { actionMsg, openLogPersonalTaskModal, confirmAction, } from "../../js/utils/modals.js";
 import { setLoading, closeModal } from "../../js/ui.js";
-import { loadComponent, createEmptyState, } from "https://scybud.github.io/scybud-ui/js/ui.js";
+import { loadComponent, createEmptyState, } from "https://ui.scybud.com/js/ui.js";
 import { attachCreatePersonalTaskEvent } from "../../js/utils/modalEvents.js";
 import { formatDateTime } from "../../js/utils/time.js";
 // State
