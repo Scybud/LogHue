@@ -1,20 +1,12 @@
 import { sessionState, sessionReady } from "../session.js";
-import { supabase } from "../supabase.js";
-
-async function protectLoginPage() {
-  await sessionReady;
-
-  if (sessionState.user) {
-    window.location.href = "./";
-    return;
-  }
-
-  // listen once for OAuth redirect
-
-  supabase.auth.onAuthStateChange((_event, session) => {
-    if (session) {
-      window.location.href = "./";
+async function protectAppPage() {
+    await sessionReady;
+    const redirectUrl = window.location.href;
+    if (!sessionState.user) {
+        window.location.href = `auth?redirect=${redirectUrl}`;
+        return;
     }
-  });
+    // User is logged in, continue loading the page
 }
-protectLoginPage();
+protectAppPage();
+//# sourceMappingURL=authSessionProtect.js.map
