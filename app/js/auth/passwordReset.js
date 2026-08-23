@@ -44,7 +44,7 @@ if (passwordResetEmailForm) {
     try {
       const success = await sendPasswordResetEmail(
         email,
-        "https://app.loghue.com/auth/passwordChange",
+        "https://app.loghue.com/pages/auth/passwordChange",
       );
 
       if (!success) {
