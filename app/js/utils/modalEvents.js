@@ -431,6 +431,10 @@ export async function attachCreatePersonalTaskEvent() {
             return;
         }
         // Insert into Supabase FIRST (strict UI)
+        // If recurring, this row is the TEMPLATE: is_template true, hidden
+        // from the main task list/calendar, only shown in the recurring
+        // dropdown. It is never shown to the user directly and never marked
+        // complete.
         const { data, error } = await supabase
             .from("personal_tasks")
             .insert({
@@ -438,7 +442,7 @@ export async function attachCreatePersonalTaskEvent() {
             description: noteValue || "",
             task_deadline: timeValue,
             user_id: user.id,
-            is_recurring: recurringValue,
+            is_template: recurringValue,
         })
             .select()
             .single();
@@ -448,10 +452,37 @@ export async function attachCreatePersonalTaskEvent() {
             setButtonLoading(logTaskBtn, false);
             return;
         }
+        // The row the user actually sees and can complete. For a one-off task
+        // this is just the row we already inserted. For a recurring task, we
+        // additionally spawn today's real instance now instead of waiting for
+        // the nightly ensure-recurring-instances cron, so the user sees their
+        // task immediately instead of it appearing up to a day later.
+        let visibleTask = data;
+        if (recurringValue) {
+            const { data: instance, error: instanceError } = await supabase
+                .from("personal_tasks")
+                .insert({
+                name: taskValue,
+                description: noteValue || "",
+                task_deadline: timeValue,
+                user_id: user.id,
+                is_template: false,
+                parent_task_id: data.id,
+            })
+                .select()
+                .single();
+            if (instanceError) {
+                console.error(instanceError);
+                actionMsg("Task series created, but today's task failed to appear.", "error");
+            }
+            else {
+                visibleTask = instance;
+            }
+        }
         // Update in-memory state
-        savedTaskDetails.unshift(data);
+        savedTaskDetails.unshift(visibleTask);
         document.dispatchEvent(new CustomEvent("onboarding:task_created", {
-            detail: { taskId: data.id },
+            detail: { taskId: visibleTask.id },
         }));
         // Re-render UI
         await renderExistingTasks();

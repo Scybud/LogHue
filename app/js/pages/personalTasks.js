@@ -1,6 +1,3 @@
-//LEAVE THIS FILE AS IS. IGNORE THE ERRORS.
-//THEY SHOW BECAUSE THE IMPORTS ARE NOT IN THE SAME FOLDER
-//THE ERRORS WON'T SHOW AFTER IT IS COMPILED AND CONVERTED TO JAVASCRIPT
 // Imports
 import { supabase } from "../../js/supabase.js";
 import { sessionState, sessionReady } from "../../js/session.js";
@@ -25,6 +22,7 @@ export async function initPersonalTasks() {
     personalCreatedTasks = document.getElementById("personalCreatedTasks");
     loggedTasksCount = document.getElementById("loggedTasksCount");
     setLoading(true, personalCreatedTasks);
+    // Fetch both templates and instances in one call. Templates
     const { data, error } = await supabase
         .from("personal_tasks")
         .select("*")
@@ -157,8 +155,14 @@ export function renderExistingTasks() {
     if (!personalCreatedTasks)
         return;
     personalCreatedTasks.innerHTML = "";
-    const incomplete = savedTaskDetails.filter((t) => !t.is_completed && !t.is_recurring);
-    const recurring = savedTaskDetails.filter((t) => t.is_recurring && !t.is_completed);
+    // is_template is the only flag that matters now, is_recurring is no
+    // longer written on new rows. Templates (is_template true) are the
+    // recurrence definitions and render into the "Recurring Tasks" group.
+    // Everything else (is_template false) is a real, independently
+    // completable task, whether it was created as a one-off or spawned as
+    // a recurring instance, and renders into "Incomplete Tasks".
+    const incomplete = savedTaskDetails.filter((t) => !t.is_completed && !t.is_template);
+    const recurring = savedTaskDetails.filter((t) => t.is_template && !t.is_completed);
     const completed = savedTaskDetails.filter((t) => t.is_completed);
     // Create collapsible groups
     const incompleteGroup = createCollapsibleGroup("Incomplete Tasks", incomplete.length, true);
@@ -198,7 +202,7 @@ export function attachToggleCompleteEvent(container) {
         const previousChecked = !isCompleted;
         const { data: task, error: taskError } = await supabase
             .from("personal_tasks")
-            .select("is_recurring, is_completed")
+            .select("is_template, is_completed")
             .eq("id", taskId)
             .single();
         if (taskError) {
@@ -206,18 +210,17 @@ export function attachToggleCompleteEvent(container) {
             actionMsg("Sorry, something went wrong", "error");
             return;
         }
-        // Only confirm when an incomplete recurring task
-        // is being marked as completed.
-        if (task.is_recurring && !task.is_completed && isCompleted) {
+        // Only confirm when an incomplete TEMPLATE is being marked done.
+        if (task.is_template && !task.is_completed && isCompleted) {
             // Immediately undo the checkbox change.
             checkbox.checked = false;
-            confirmAction("Mark Done", "Marking a recurring task as done will stop notification behaviours.", [
+            confirmAction("Stop Recurring Task", "Marking this recurring task as done will stop new occurrences from being created. Past occurrences already created won't be affected.", [
                 {
                     label: "Cancel",
                     type: "cancel",
                 },
                 {
-                    label: "Mark done",
+                    label: "Stop series",
                     type: "confirm",
                     onClick: async () => {
                         await updateTaskCompletion(taskId, true);
@@ -254,7 +257,16 @@ export function attachDeleteTaskEvent(container, userId) {
         const btn = e.target.closest(".deleteBtn");
         if (!btn)
             return;
-        confirmAction("Delete Task", "Delete this task?", [
+        const card = btn.closest(".taskCard");
+        const taskId = card?.dataset.id;
+        const taskRecord = taskId
+            ? savedTaskDetails.find((t) => String(t.id) === String(taskId))
+            : undefined;
+        // stops the series going forward. Instances it already spawned stay
+        const message = taskRecord?.is_template
+            ? "Deleting this recurring task will stop future occurrences. Tasks it already created will stay in your list."
+            : "Delete this task?";
+        confirmAction("Delete Task", message, [
             { label: "Cancel", type: "cancel" },
             {
                 label: "Delete",
@@ -289,8 +301,6 @@ async function performTaskDelete(btn, userId) {
 export function attachDuplicateTaskEvent(container, userId) {
     if (!container)
         return;
-    // Registered once here instead of inside renderExistingTasks() — see the
-    // NOTE in that function for why that mattered.
     container.addEventListener("click", async (e) => {
         const btn = e.target.closest(".duplicateBtn");
         if (!btn)
@@ -305,9 +315,6 @@ export function attachDuplicateTaskEvent(container, userId) {
         await loadComponent("../components/modals/duplicate-task", "modalContainer");
         const workspaceListContainer = document.getElementById("workspaceListContainer");
         await populateWorkspaceList(workspaceListContainer, userId);
-        // The modal's content is replaced fresh by loadComponent() on every open,
-        // so #duplicateTaskToWorkspaceBtn is a new DOM node each time — safe to
-        // attach a listener here without the stacking issue this file had before.
         const confirmBtn = document.getElementById("duplicateTaskToWorkspaceBtn");
         if (confirmBtn) {
             confirmBtn.addEventListener("click", async (evt) => {
@@ -328,9 +335,6 @@ async function performTaskDuplicate(btn, userId) {
         return;
     }
     btn.disabled = true;
-    // Field mapping: personal_tasks (name/description) -> workspace_tasks
-    // (title/description/status/assigned_to/workspace_id/created_by), matching
-    // the shape used in attachCreateTaskEvent for workspace task creation.
     const { error } = await supabase.from("workspace_tasks").insert({
         workspace_id: selectedWorkspaceId,
         created_by: userId,
