@@ -285,6 +285,17 @@ button.danger {
   border-bottom: 1px solid var(--warning);
   color: #ffdc2e;
   background: #352a01ca;
+  animation: expandTextField 2s ease;
+  max-height: fit-content;
+  overflow: hidden;
+}
+@keyframes expandTextField {
+from {
+  height: 0;
+
+} to {
+  height: 300px;
+}
 }
 .confirmActionModal p::before {
   content: "⚠️ ";
