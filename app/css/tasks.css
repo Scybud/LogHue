@@ -249,13 +249,15 @@ line-height: var(--space-md);
 }
 
 .linkNoteDropdown {
+    background: var(--input-bg) !important;
+  color: var(--input-color);
+  padding: calc(var(--space-xs) * 2);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-primary) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+
   width: 100%;
   font-size: 0.85rem;
-  padding: var(--space-sm) var(--space-md);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--surface-secondary);
-  color: var(--text-primary);
 }
 
 .linkNoteDropdown:focus {
