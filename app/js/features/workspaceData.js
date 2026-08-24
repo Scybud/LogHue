@@ -6,7 +6,11 @@ import {
 } from "https://scybud.github.io/scybud-ui/js/ui.js";
 import { supabase } from "../supabase.js";
 import { sessionState, sessionReady } from "../session.js";
-import { confirmAction, actionMsg, openUpgradeModal } from "../../js/utils/modals.js";
+import {
+  confirmAction,
+  actionMsg,
+  openUpgradeModal,
+} from "../../js/utils/modals.js";
 import { createDropdown } from "../ui.js";
 import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
 import { formatDateTime, formatDateTimeRelatively } from "../utils/time.js";
@@ -254,15 +258,14 @@ async function attachCreateWorkspaceEvent(container, workspaces) {
       return;
     }
 
-    
-  if (
-    workspaces.length >= sessionState.plan.max_workspaces &&
-    sessionState.plan.max_workspaces !== null
-  ) {
-    openUpgradeModal("unlimitedWorkspaces");
-    setButtonLoading(createWorkspaceBtn, false);
-    return;
-  }
+    if (
+      workspaces.length >= sessionState.plan.max_workspaces &&
+      sessionState.plan.max_workspaces !== null
+    ) {
+      openUpgradeModal("unlimitedWorkspaces");
+      setButtonLoading(createWorkspaceBtn, false);
+      return;
+    }
 
     //DEFINE DATA CONTENT
     const workspaceData = {
@@ -466,7 +469,7 @@ function attachOpenWorkspaceClickEvent() {
 export async function deleteWorkspace(id) {
   confirmAction(
     "Delete Workspace",
-    "Are you sure you want to delete this? All activites(Tasks, logs and discussions) related to this workspace will be deleted and members will be removed from the workspace permanently. It cannot be reversed",
+    "Are you sure you want to delete this? All Activities(Tasks, logs and discussions) related to this workspace will be deleted and members will be removed from the workspace permanently. It cannot be reversed",
     [
       { label: "Cancel", type: "cancel" },
       {
