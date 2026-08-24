@@ -74,7 +74,6 @@
 }
 .mainSearchInput:focus {
   height: 100px;
-  border-radius: var(--radius-md);
   padding-top: var(--space-md);
   padding-right: var(--space-md);
   padding-bottom: var(--space-md);
