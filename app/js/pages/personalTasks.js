@@ -26,7 +26,7 @@ export async function initPersonalTasks() {
     // Fetch both templates and instances in one call. Templates
     const { data, error } = await supabase
         .from("personal_tasks")
-        .select("*, personal_notes!linked_note_id(title)")
+        .select("*, personal_notes!linked_note_id(id, title)")
         .eq("user_id", user.id)
         .order("is_completed", { ascending: true })
         .order("created_at", { ascending: false });

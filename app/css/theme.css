@@ -52,7 +52,7 @@
     --text-primary: #000000;
     --text-secondary: #414141;
 
-    --active-color: #358cff;
+    --active-color: #000000;
 
     --hover-bg: #d9d9d9;
 
@@ -72,7 +72,7 @@
   --mainContent-bg: #f7f7f7;
 
   --navBtn-bg: #f0f0f0;
-  --active: #e6e6e6;
+  --active: #d4d3d3;
   background-color: #e6f7ff; /* light blue for unread */
 
   --card-bg: #ffffff;
