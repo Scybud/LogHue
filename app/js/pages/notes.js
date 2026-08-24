@@ -7,9 +7,9 @@ import { formatDateTimeRelatively } from "../utils/time.js";
 import { sessionState } from "../session.js";
 
 /*
---------------------------------
+
 GLOBAL STATE
---------------------------------
+
 */
 let quill = null;
 let currentNoteId = null;
@@ -36,9 +36,9 @@ function setSaveStatus(text) {
 }
 
 /*
---------------------------------
+
 AUTOSAVE
---------------------------------
+
 */
 function scheduleAutosave() {
   clearAutosaveTimer();
@@ -90,9 +90,9 @@ async function runAutosave() {
 }
 
 /*
---------------------------------
+
 INITIALIZE NOTES UI
---------------------------------
+
 */
 async function initNotes() {
   setLoading(true);
@@ -248,9 +248,9 @@ async function loadCreateNote() {
 }
 
 /*
---------------------------------
+
 LOAD USER NOTES
---------------------------------
+
 */
 async function fetchUserNotes() {
   const {
@@ -296,6 +296,7 @@ async function loadNotes(noteId) {
     clearAutosaveTimer();
     lastSavedSnapshot = "";
     setSaveStatus("");
+  document.getElementById("linkedTasksChip")?.remove();
 
     const titleInput = document.getElementById("noteTitle");
     if (titleInput) titleInput.value = "";
@@ -315,9 +316,9 @@ async function refreshSidebarOnly() {
 }
 
 /*
---------------------------------
+
 HELPERS
---------------------------------
+
 */
 function getPlainPreview(html, maxLength = 60) {
   if (!html) return "";
@@ -331,9 +332,9 @@ function getPlainPreview(html, maxLength = 60) {
 }
 
 /*
---------------------------------
+
 RENDER NOTES LIST
---------------------------------
+
 */
 function renderNotesList(notes) {
   const notesList = document.getElementById("notesList");
@@ -407,9 +408,9 @@ function highlightActiveNote(id) {
 }
 
 /*
---------------------------------
+
 OPEN NOTE IN EDITOR
---------------------------------
+
 */
 async function openNoteById(noteId, userId) {
   const noteData = await fetchNoteById(noteId, userId);
@@ -426,6 +427,9 @@ async function openNoteById(noteId, userId) {
   lastSavedSnapshot = title + content;
   setSaveStatus("");
   highlightActiveNote(noteData.id);
+
+    fetchLinkedTasks(noteData.id).then(renderLinkedTasksChip);
+
 }
 
 function openNote(note) {
@@ -441,12 +445,14 @@ function openNote(note) {
   lastSavedSnapshot = title + content;
   setSaveStatus("");
   highlightActiveNote(note.id);
+
+  fetchLinkedTasks(note.id).then(renderLinkedTasksChip)
 }
 
 /*
---------------------------------
+
 CREATE NOTE
---------------------------------
+
 */
 async function createNote() {
   setLoading(true);
@@ -490,9 +496,9 @@ document.getElementById("createNote").addEventListener("click", () => {
 });
 
 /*
---------------------------------
+
 SAVE NOTE
---------------------------------
+
 */
 async function persistNote(title, content) {
   if (!currentNoteId) {
@@ -624,16 +630,9 @@ function attachDeleteNoteListener() {
   });
 }
 
-/*
---------------------------------
-EXPORT
---------------------------------
-*/
-/*
---------------------------------
-HTML TO MARKDOWN
---------------------------------
-*/
+// EXPORT
+
+//HTML TO MARKDOWN
 function htmlToMarkdown(html) {
   const container = document.createElement("div");
   container.innerHTML = html;
@@ -908,10 +907,41 @@ async function exportCurrentNote(type) {
   }
 }
 
+//Fetch linked tasks
+async function fetchLinkedTasks(noteId) {
+  const { data, error } = await supabase
+    .from("personal_tasks")
+    .select("id, name, is_completed")
+    .eq("linked_note_id", noteId);
+
+  if (error) {
+    console.error(error);
+    return [];
+  }
+
+  return data || [];
+}
+
+function renderLinkedTasksChip(tasks) {
+  const existing = document.getElementById("linkedTasksChip");
+  if (existing) existing.remove();
+
+  if (!tasks.length) return;
+
+  const chip = document.createElement("div");
+  chip.id = "linkedTasksChip";
+  chip.classList.add("linkedTasksChip");
+  chip.title = tasks.map((t) => t.name).join(", ");
+  chip.textContent = `🔗 ${tasks.length} linked task${tasks.length > 1 ? "s" : ""}`;
+
+  document.querySelector(".editorTop")?.appendChild(chip);
+}
+
+
 /*
---------------------------------
+
 DELETE
---------------------------------
+
 */
 async function attachDeleteNoteEvent(noteToDelete, id) {
   setLoading(true);

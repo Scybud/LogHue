@@ -400,3 +400,14 @@ button.toggleNotesListBtn {
     max-width: 100%;
   }
 }
+
+.linkedTasksChip {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  background: var(--bg-subtle, rgba(0, 0, 0, 0.04));
+  padding: 3px 10px;
+  border-radius: var(--radius-full, 999px);
+  cursor: default;
+  white-space: nowrap;
+  align-self: center;
+}

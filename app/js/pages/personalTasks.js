@@ -11,6 +11,7 @@ let personalCreatedTasks;
 let loggedTasksCount;
 let selectedWorkspaceId = "";
 let taskIdToDuplicate = ""; // set when duplicateBtn is clicked, before the modal opens
+let userNotes = [];
 let user = null;
 export let savedTaskDetails = []; // exported for other modules
 // Initialization
@@ -25,7 +26,7 @@ export async function initPersonalTasks() {
     // Fetch both templates and instances in one call. Templates
     const { data, error } = await supabase
         .from("personal_tasks")
-        .select("*")
+        .select("*, personal_notes!linked_note_id(title)")
         .eq("user_id", user.id)
         .order("is_completed", { ascending: true })
         .order("created_at", { ascending: false });
@@ -36,11 +37,18 @@ export async function initPersonalTasks() {
         return;
     }
     savedTaskDetails = data || [];
+    const { data: notesData } = await supabase
+        .from("personal_notes")
+        .select("id, title")
+        .eq("user_id", user.id)
+        .order("updated_at", { ascending: false });
+    userNotes = notesData || [];
     renderExistingTasks();
     checkIfEmpty();
     attachDeleteTaskEvent(personalCreatedTasks, user.id);
     attachToggleCompleteEvent(personalCreatedTasks);
     attachDuplicateTaskEvent(personalCreatedTasks, user.id);
+    attachLinkNoteEvent(personalCreatedTasks);
     openLogPersonalTaskModal();
 }
 // Empty State
@@ -99,6 +107,18 @@ const duplicateIconPaths = [
         attrs: { d: "M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" },
     },
 ];
+const linkNoteIconPaths = [
+    {
+        tag: "path",
+        attrs: { d: "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" },
+    },
+    {
+        tag: "path",
+        attrs: {
+            d: "M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71",
+        },
+    },
+];
 // Create Task Element
 export function createTaskElement(task) {
     const el = document.createElement("div");
@@ -125,12 +145,17 @@ export function createTaskElement(task) {
     duplicateBtn.classList.add("duplicateBtn", "tooltip");
     duplicateBtn.setAttribute("data-title", "Duplicate to Workspace");
     duplicateBtn.appendChild(createSvgIcon(duplicateIconPaths));
+    const linkNoteBtn = document.createElement("button");
+    linkNoteBtn.type = "button";
+    linkNoteBtn.classList.add("linkNoteBtn", "tooltip");
+    linkNoteBtn.setAttribute("data-title", "Link Note");
+    linkNoteBtn.appendChild(createSvgIcon(linkNoteIconPaths));
     const deleteBtn = document.createElement("button");
     deleteBtn.type = "button";
     deleteBtn.classList.add("deleteBtn", "tooltip");
     deleteBtn.setAttribute("data-title", "Delete Task");
     deleteBtn.appendChild(createSvgIcon(deleteIconPaths));
-    actionsGroup.append(duplicateBtn, deleteBtn);
+    actionsGroup.append(linkNoteBtn, duplicateBtn, deleteBtn);
     topRow.append(checkbox, nameLabel, actionsGroup);
     el.append(topRow);
     // Description
@@ -139,6 +164,14 @@ export function createTaskElement(task) {
         desc.classList.add("taskDescription");
         desc.textContent = task.description;
         el.append(desc);
+    }
+    //notes badge(if linked to note)
+    if (task.personal_notes?.title) {
+        const noteBadge = document.createElement("a");
+        noteBadge.href = `notes?note=${task.personal_notes.id}`;
+        noteBadge.classList.add("linkedNoteBadge");
+        noteBadge.textContent = `📝 ${task.personal_notes.title}`;
+        el.append(noteBadge);
     }
     // Date
     const dateSpan = document.createElement("span");
@@ -155,12 +188,6 @@ export function renderExistingTasks() {
     if (!personalCreatedTasks)
         return;
     personalCreatedTasks.innerHTML = "";
-    // is_template is the only flag that matters now, is_recurring is no
-    // longer written on new rows. Templates (is_template true) are the
-    // recurrence definitions and render into the "Recurring Tasks" group.
-    // Everything else (is_template false) is a real, independently
-    // completable task, whether it was created as a one-off or spawned as
-    // a recurring instance, and renders into "Incomplete Tasks".
     const incomplete = savedTaskDetails.filter((t) => !t.is_completed && !t.is_template);
     const recurring = savedTaskDetails.filter((t) => t.is_template && !t.is_completed);
     const completed = savedTaskDetails.filter((t) => t.is_completed);
@@ -323,6 +350,70 @@ export function attachDuplicateTaskEvent(container, userId) {
             });
         }
     });
+}
+//link task to note
+function createNoteLinkSelect(task) {
+    const wrapper = document.createElement("div");
+    wrapper.classList.add("linkNoteSelect");
+    const select = document.createElement("select");
+    select.classList.add("linkNoteDropdown");
+    const noneOpt = document.createElement("option");
+    noneOpt.value = "";
+    noneOpt.textContent = "No linked note";
+    select.appendChild(noneOpt);
+    userNotes.forEach((note) => {
+        const opt = document.createElement("option");
+        opt.value = note.id;
+        opt.textContent = note.title || "Untitled";
+        if (note.id === task.linked_note_id)
+            opt.selected = true;
+        select.appendChild(opt);
+    });
+    select.addEventListener("change", async () => {
+        await updateTaskLinkedNote(task.id, select.value || null);
+    });
+    wrapper.appendChild(select);
+    return wrapper;
+}
+export function attachLinkNoteEvent(container) {
+    if (!container)
+        return;
+    container.addEventListener("click", (e) => {
+        const btn = e.target.closest(".linkNoteBtn");
+        if (!btn)
+            return;
+        const card = btn.closest(".taskCard");
+        if (!card)
+            return;
+        const existing = card.querySelector(".linkNoteSelect");
+        if (existing) {
+            existing.remove();
+            return;
+        }
+        const taskId = card.dataset.id;
+        const task = savedTaskDetails.find((t) => String(t.id) === String(taskId));
+        if (!task)
+            return;
+        card.appendChild(createNoteLinkSelect(task));
+    });
+}
+async function updateTaskLinkedNote(taskId, noteId) {
+    const { error } = await supabase
+        .from("personal_tasks")
+        .update({ linked_note_id: noteId })
+        .eq("id", taskId);
+    if (error) {
+        console.error(error);
+        actionMsg("Failed to link note", "error");
+        return;
+    }
+    const taskRecord = savedTaskDetails.find((t) => String(t.id) === String(taskId));
+    if (taskRecord) {
+        taskRecord.linked_note_id = noteId;
+        const note = userNotes.find((n) => n.id === noteId);
+        taskRecord.personal_notes = note ? { id: note.id, title: note.title } : null;
+    }
+    renderExistingTasks();
 }
 async function performTaskDuplicate(btn, userId) {
     if (!selectedWorkspaceId) {

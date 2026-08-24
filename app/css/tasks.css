@@ -202,9 +202,11 @@ line-height: var(--space-md);
 /* Date                             */
 /* ------------------------------- */
 .taskDate {
-  font-size: 0.75rem;
+  display: inline-block;
+  font-size: var(--text-xs);
   color: var(--muted);
-  padding-left: calc(18px + var(--space-sm, 10px));
+  padding: 0 var(--space-sm);
+  overflow: hidden;
 }
 
 .workspaceListContainer {
@@ -217,4 +219,46 @@ line-height: var(--space-md);
 }
 .hide {
   display: none !important;
+}
+
+
+/* Linked note badge on task card */
+.linkedNoteBadge {
+  display: inline-block;
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-lg);
+  margin-top: var(--space-md);
+  width: fit-content;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.linkedNoteBadge:hover {
+  text-decoration: underline;
+}
+
+/* Note picker dropdown, injected into task card */
+.linkNoteSelect {
+  margin-top: 6px;
+  width: 100%;
+}
+
+.linkNoteDropdown {
+  width: 100%;
+  font-size: 0.85rem;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-secondary);
+  color: var(--text-primary);
+}
+
+.linkNoteDropdown:focus {
+  outline: none;
+  border-color: var(--primary);
 }
