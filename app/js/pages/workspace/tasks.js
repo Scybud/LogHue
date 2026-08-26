@@ -341,7 +341,6 @@ export function loadAllTasks(tasks, container) {
       window.location.href = `task-view?task=${tsk.id}`;
     });
 
-    
     card.append(taskTitle, meta, viewBtn);
 
     if (!tsk.assigned_to || !tsk.profiles) {
@@ -351,7 +350,7 @@ export function loadAllTasks(tasks, container) {
       assignBtn.textContent = "Assign";
       card.append(assignBtn);
     }
-    
+
     if (canDeleteTask(tsk)) {
       const pingBtn = document.createElement("button");
       pingBtn.type = "button";
@@ -396,8 +395,7 @@ export function loadAllTasks(tasks, container) {
     }
 
     grid.prepend(card);
-      attachAssignTaskEvent(grid);
-
+    attachAssignTaskEvent(grid);
   });
 
   section.append(title, grid);
