@@ -353,6 +353,25 @@ export function loadAllTasks(tasks, container) {
     }
     
     if (canDeleteTask(tsk)) {
+      const pingBtn = document.createElement("button");
+      pingBtn.type = "button";
+      pingBtn.classList.add("btn", "btn-secondary", "btn-sm");
+      pingBtn.textContent = "Ping Assignee";
+      pingBtn.title =
+        "Pinging assignee will send a notification to them asking for update on the task.";
+      pingBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        await notifyUser({
+          workspaceId: currentWorkspace.id,
+          receiverUserId: tsk.profiles.id,
+          actorId: user.id,
+          type: "task_ping",
+          entityId: tsk.id,
+          entityType: "task",
+        });
+        actionMsg("Assignee pinged!", "success");
+      });
+
       const deleteBtn = document.createElement("button");
       deleteBtn.type = "button";
       deleteBtn.classList.add("btn", "danger", "btn-sm");
@@ -373,7 +392,7 @@ export function loadAllTasks(tasks, container) {
           ],
         );
       });
-      card.append(deleteBtn);
+      card.append(pingBtn, deleteBtn);
     }
 
     grid.prepend(card);
