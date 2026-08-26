@@ -981,3 +981,40 @@ flex-wrap: wrap;
         margin: var(--space-lg) 0;
         line-height: 1.6;
       }
+
+      .isCollapsible {
+  overflow: hidden;
+  position: relative;
+  transition: max-height 0.25s ease;
+}
+
+.isCollapsible:not(.expanded)::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--bg-secondary)
+  );
+}
+
+.contentToggle {
+  margin-top: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent-color);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.contentToggle:hover {
+  text-decoration: underline;
+}

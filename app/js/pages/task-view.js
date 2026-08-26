@@ -8,6 +8,7 @@ import { populateAssignDropdown } from "../utils/modalEvents.js";
 import { loadedMembers, setLoadedMembers } from "./workspace/state.js"; 
 import { loadWorkspaceMembersForTaskView } from "../data/tasksDb.js";
 import { openFocusTimerModal } from "../components/focus-timer.js";
+import {makeCollapsible} from "../utils/toggle.js"
 
 let currentTask = null;
 let currentWorkspace = null;
@@ -284,6 +285,100 @@ function loadSidebar() {
 }
 
 
+function renderFormattedText(text, container) {
+  container.innerHTML = "";
+
+  if (!text?.trim()) return;
+
+  const lines = text.replace(/\r\n/g, "\n").split("\n");
+
+  let paragraph = [];
+  let currentList = null;
+  let currentListType = null;
+
+  const flushParagraph = () => {
+    if (!paragraph.length) return;
+
+    const p = document.createElement("p");
+
+    paragraph.forEach((line, index) => {
+      if (index > 0) p.appendChild(document.createElement("br"));
+
+      p.appendChild(document.createTextNode(line));
+    });
+
+    container.appendChild(p);
+    paragraph = [];
+  };
+
+  const flushList = () => {
+    if (!currentList) return;
+
+    container.appendChild(currentList);
+    currentList = null;
+    currentListType = null;
+  };
+
+  lines.forEach((line) => {
+    const trimmed = line.trim();
+
+    // Empty line = new paragraph / section
+    if (!trimmed) {
+      flushParagraph();
+      flushList();
+      return;
+    }
+
+    // Numbered list: 1. Something
+    const numberedMatch = trimmed.match(/^(\d+)\.\s+(.+)$/);
+
+    if (numberedMatch) {
+      flushParagraph();
+
+      if (currentListType !== "ol") {
+        flushList();
+
+        currentList = document.createElement("ol");
+        currentListType = "ol";
+      }
+
+      const li = document.createElement("li");
+      li.textContent = numberedMatch[2];
+
+      currentList.appendChild(li);
+      return;
+    }
+
+    // Bullet list: - Something or * Something
+    const bulletMatch = trimmed.match(/^[-*]\s+(.+)$/);
+
+    if (bulletMatch) {
+      flushParagraph();
+
+      if (currentListType !== "ul") {
+        flushList();
+
+        currentList = document.createElement("ul");
+        currentListType = "ul";
+      }
+
+      const li = document.createElement("li");
+      li.textContent = bulletMatch[1];
+
+      currentList.appendChild(li);
+      return;
+    }
+
+    // Normal text
+    flushList();
+    paragraph.push(trimmed);
+  });
+
+  flushParagraph();
+  flushList();
+}
+
+
 /* ---------------------------------------------
    RENDER TASK HEADER
 --------------------------------------------- */
@@ -389,8 +484,18 @@ function renderTaskHeader() {
             </div>
     </div>
 
-    <p class="taskDescription">${currentTask.description || "No description provided."}</p>
   `;
+const description = document.createElement("div");
+description.className = "taskDescription";
+
+if (currentTask.description?.trim()) {
+renderFormattedText(currentTask.description, description);
+makeCollapsible(description);
+} else {
+  description.textContent = "No description provided.";
+}
+
+container.appendChild(description);
 
 }
 
@@ -434,7 +539,9 @@ function renderLogs() {
 
     const content = document.createElement("div");
     content.classList.add("logContent");
-    content.textContent = log.log_note;
+
+renderFormattedText(log.log_note, content);
+makeCollapsible(content);
 
     const statusClass = log.task_status === "in progress" || "in_progress" ? "in-progress" : "completed";
 
@@ -495,7 +602,10 @@ function appendLogComments(comments, container) {
     body.classList.add("commentBody");
 
     const text = document.createElement("div");
-    text.textContent = c.comment;
+    text.classList.add("commentText");
+
+renderFormattedText(c.comment, text);
+makeCollapsible(text);
 
     const time = document.createElement("div");
     time.className = "timestamp";
