@@ -338,7 +338,7 @@ gap: var(--space-sm);
   flex: 1;
   overflow: auto;
   border: none;
-  background: var(--mainContent-bg);
+  background: var(--surface-primary);
   color: var(--text-primary);
   min-height: 0;
 }
