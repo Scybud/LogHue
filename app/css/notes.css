@@ -1,6 +1,6 @@
-/* =====================
+/*
    NOTES PAGE
-   ===================== */
+   */
 
 .contentHeader {
   margin-bottom: 0;
@@ -69,9 +69,9 @@
   }
 }
 
-/* =====================
+/*
    NOTES LAYOUT
-   ===================== */
+   */
 
 .notesContainer {
   display: grid;
@@ -256,9 +256,9 @@ gap: var(--space-sm);
   height: 30px;
 }
 
-/* =====================
+/*
    EDITOR AREA
-   ===================== */
+   */
 
 #editorContainer {
   display: flex;
@@ -338,9 +338,11 @@ gap: var(--space-sm);
   flex: 1;
   overflow: auto;
   border: none;
-  background: var(--surface-primary);
+  background: var(--bg-primary);
   color: var(--text-primary);
   min-height: 0;
+  margin: var(--space-xs);
+  border-radius: var(--radius-sm);
 }
 
 #editor img {
@@ -355,9 +357,9 @@ button.toggleNotesListBtn {
   width: fit-content;
 }
 
-/* =====================
+/*
    MOBILE
-   ===================== */
+   */
 
 @media (max-width: 800px) {
   .notesContainer {
@@ -366,7 +368,6 @@ button.toggleNotesListBtn {
     height: auto;
     max-height: none;
     border: none;
-    border-radius: 0;
     overflow: visible;
   }
 
