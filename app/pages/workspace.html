@@ -54,7 +54,77 @@
 
     <main class="main">
       <!-- Single shared sidebar – role‑based visibility handled by applySidebarRole() -->
-      <aside class="sidebar" id="workspaceSidebarContainer"></aside>
+<aside class="sidebar" id="workspaceSidebarContainer">
+
+  <div id="sidebarSkeleton" class="sidebarSkeleton">
+
+    <!-- Main navigation -->
+    <div class="sidebarSkeletonNav">
+
+      <div class="sidebarSkeletonItem">
+        <span class="skeletonSidebarIcon"></span>
+        <span class="skeletonSidebarText skeletonSidebarTextLong"></span>
+      </div>
+
+      <div class="sidebarSkeletonItem">
+        <span class="skeletonSidebarIcon"></span>
+        <span class="skeletonSidebarText skeletonSidebarTextMedium"></span>
+      </div>
+
+      <div class="sidebarSkeletonItem">
+        <span class="skeletonSidebarIcon"></span>
+        <span class="skeletonSidebarText skeletonSidebarTextShort"></span>
+      </div>
+
+      <div class="sidebarSkeletonItem">
+        <span class="skeletonSidebarIcon"></span>
+        <span class="skeletonSidebarText skeletonSidebarTextMedium"></span>
+      </div>
+
+      <div class="sidebarSkeletonItem">
+        <span class="skeletonSidebarIcon"></span>
+        <span class="skeletonSidebarText skeletonSidebarTextShort"></span>
+      </div>
+
+    </div>
+
+
+    <!-- Workspace heading -->
+    <div class="skeletonSidebarHeading"></div>
+
+
+    <!-- Workspace -->
+    <div class="sidebarSkeletonItem">
+      <span class="skeletonSidebarIcon"></span>
+      <span class="skeletonSidebarText skeletonSidebarTextMedium"></span>
+    </div>
+
+    <div class="sidebarSkeletonItem">
+      <span class="skeletonSidebarIcon"></span>
+      <span class="skeletonSidebarText skeletonSidebarTextShort"></span>
+    </div>
+
+
+    <!-- Create workspace -->
+    <div class="skeletonSidebarCreate"></div>
+
+
+    <!-- User section -->
+    <div class="sidebarSkeletonUser">
+
+      <div class="skeletonSidebarAvatar"></div>
+
+      <div class="skeletonSidebarUserInfo">
+        <div class="skeletonSidebarUsername"></div>
+        <div class="skeletonSidebarPlan"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+</aside>
+
 
       <article class="mainContent">
         <div class="contentHeader">
