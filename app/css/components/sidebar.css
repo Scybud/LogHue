@@ -55,3 +55,194 @@
     transform: translateX(0);
   }
 }
+
+
+/* ========================================
+   SIDEBAR SKELETON
+======================================== */
+
+.sidebarSkeleton {
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 24px 15px;
+
+  overflow: hidden;
+}
+
+.sidebarSkeletonNav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebarSkeletonItem {
+  height: 40px;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 0 10px;
+
+  border-radius: 7px;
+}
+
+
+/* Base skeleton */
+
+.skeletonSidebarIcon,
+.skeletonSidebarText,
+.skeletonSidebarHeading,
+.skeletonSidebarCreate,
+.skeletonSidebarAvatar,
+.skeletonSidebarUsername,
+.skeletonSidebarPlan {
+  position: relative;
+  overflow: hidden;
+
+  background: #1a1a1a;
+}
+
+.skeletonSidebarIcon::after,
+.skeletonSidebarText::after,
+.skeletonSidebarHeading::after,
+.skeletonSidebarCreate::after,
+.skeletonSidebarAvatar::after,
+.skeletonSidebarUsername::after,
+.skeletonSidebarPlan::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.06),
+    transparent
+  );
+
+  transform: translateX(-100%);
+
+  animation: sidebarSkeletonShimmer 1.5s infinite;
+}
+
+@keyframes sidebarSkeletonShimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+
+/* Icons */
+
+.skeletonSidebarIcon {
+  width: 18px;
+  height: 18px;
+
+  flex-shrink: 0;
+
+  border-radius: 4px;
+}
+
+
+/* Navigation text */
+
+.skeletonSidebarText {
+  height: 13px;
+
+  border-radius: 4px;
+}
+
+.skeletonSidebarTextLong {
+  width: 85px;
+}
+
+.skeletonSidebarTextMedium {
+  width: 70px;
+}
+
+.skeletonSidebarTextShort {
+  width: 55px;
+}
+
+
+/* Workspace heading */
+
+.skeletonSidebarHeading {
+  width: 85px;
+  height: 12px;
+
+  margin: 24px 10px 10px;
+
+  border-radius: 4px;
+}
+
+
+/* Create workspace */
+
+.skeletonSidebarCreate {
+  width: 100%;
+  height: 43px;
+
+  margin-top: 14px;
+
+  border-radius: 8px;
+}
+
+
+/* User section */
+
+.sidebarSkeletonUser {
+  margin-top: auto;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 12px 8px 4px;
+
+  border-top: 1px solid #252525;
+}
+
+
+/* Avatar */
+
+.skeletonSidebarAvatar {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+}
+
+
+/* User information */
+
+.skeletonSidebarUserInfo {
+  flex: 1;
+}
+
+.skeletonSidebarUsername {
+  width: 105px;
+  height: 13px;
+
+  margin-bottom: 7px;
+
+  border-radius: 4px;
+}
+
+.skeletonSidebarPlan {
+  width: 55px;
+  height: 10px;
+
+  border-radius: 4px;
+}

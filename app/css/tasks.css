@@ -264,3 +264,231 @@ line-height: var(--space-md);
   outline: none;
   border-color: var(--primary);
 }
+
+
+
+/* ========================================
+   TASKS PAGE SKELETON
+======================================== */
+
+.tasksSkeleton {
+  width: 100%;
+  padding-bottom: 40px;
+}
+
+/* Base skeleton */
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #1a1a1a;
+  border-radius: 6px;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.045) 45%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.045) 55%,
+    transparent 100%
+  );
+
+  transform: translateX(-100%);
+  animation: taskSkeletonShimmer 1.5s infinite;
+}
+
+@keyframes taskSkeletonShimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+
+/* ========================================
+   VIEW CONTROLS
+======================================== */
+
+.taskSkeletonControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin: 24px 0;
+}
+
+.skeletonToggle {
+  width: 164px;
+  height: 42px;
+  border-radius: 22px;
+}
+
+.skeletonCalendarPills {
+  width: 350px;
+  height: 42px;
+  border-radius: 22px;
+}
+
+
+/* ========================================
+   TASK GROUP
+======================================== */
+
+.skeletonGroup {
+  margin-top: 12px;
+}
+
+.skeletonGroupTitle {
+  width: 190px;
+  height: 40px;
+  border-radius: 22px;
+  margin-bottom: 18px;
+}
+
+
+/* ========================================
+   TASK CARD
+======================================== */
+
+.skeletonTask {
+  width: 100%;
+  min-height: 108px;
+
+  display: flex;
+  align-items: flex-start;
+
+  padding: 28px 20px;
+
+  margin-bottom: 10px;
+
+  background: #111111;
+  border: 1px solid #292929;
+  border-radius: 9px;
+}
+
+
+/* Checkbox */
+
+.skeletonCheckbox {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+
+  border-radius: 50%;
+
+  margin: 3px 10px 0 0;
+}
+
+
+/* Task content */
+
+.skeletonTaskContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.skeletonTaskTitle {
+  width: 58%;
+  height: 17px;
+  border-radius: 4px;
+
+  margin-bottom: 17px;
+}
+
+.skeletonTaskDate {
+  width: 180px;
+  height: 13px;
+  border-radius: 4px;
+}
+
+
+/* Different title lengths */
+
+.skeletonWidthLong {
+  width: 72%;
+}
+
+.skeletonWidthMedium {
+  width: 48%;
+}
+
+.skeletonWidthShort {
+  width: 35%;
+}
+
+
+/* ========================================
+   ACTION ICONS
+======================================== */
+
+.skeletonTaskActions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  margin-left: 20px;
+  padding-top: 1px;
+}
+
+.skeletonIcon {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+
+/* ========================================
+   RECURRING TASKS
+======================================== */
+
+.skeletonRecurring {
+  margin-top: 18px;
+}
+
+.skeletonRecurringTitle {
+  width: 195px;
+  height: 40px;
+  border-radius: 22px;
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 700px) {
+
+  .taskSkeletonControls {
+    gap: 10px;
+  }
+
+  .skeletonCalendarPills {
+    display: none;
+  }
+
+  .skeletonTask {
+    padding: 22px 15px;
+  }
+
+  .skeletonTaskActions {
+    gap: 10px;
+  }
+
+  .skeletonIcon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .skeletonTaskTitle {
+    width: 70%;
+  }
+
+  .skeletonWidthLong {
+    width: 82%;
+  }
+}
