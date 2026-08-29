@@ -171,14 +171,14 @@ async function initTaskView() {
 }
 
 function loadSidebar() {
-  const workspacePageSidebar = document.getElementById("workspacePageSidebar");
+  const taskSidebar = document.getElementById("taskSidebar");
   let isAdmin;
   if (userRole) {
     isAdmin = userRole.role === "admin" || userRole.role === "owner";
   }
 
   if (!userRole || userRole === null)
-    return (workspacePageSidebar.innerHTML = `<nav><!-- DASHBOARD -->
+    return (taskSidebar.innerHTML = `<nav><!-- DASHBOARD -->
     <a href="dashboard" class="navBtn" data-section="index" id="dashboardLink">
       <span class="navIcon">
         <!-- Back / Dashboard Icon -->
@@ -202,7 +202,7 @@ function loadSidebar() {
     </a>
 </nav>`);
 
-  workspacePageSidebar.innerHTML = `<!--CLOSE BUTTON -->
+  taskSidebar.innerHTML = `<!--CLOSE BUTTON -->
   <button type="button" class="menuBtn" id="closeSidebar">
 
     <svg 
@@ -280,7 +280,7 @@ function loadSidebar() {
 `;
 
   document.getElementById("closeSidebar").addEventListener("click", () => {
-    workspacePageSidebar.classList.toggle("show");
+    taskSidebar.classList.toggle("slideShow");
   });
 }
 

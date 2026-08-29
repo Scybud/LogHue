@@ -114,10 +114,10 @@ async function initDiscussionView() {
 }
 
 function loadSidebar() {
-  const workspacePageSidebar = document.getElementById("workspacePageSidebar");
+  const discussionSidebar = document.getElementById("discussionsSidebar");
   const isAdmin = userRole.role === "admin" || userRole.role === "owner";
 
-  workspacePageSidebar.innerHTML = `<!--CLOSE BUTTON -->
+  discussionSidebar.innerHTML = `<!--CLOSE BUTTON -->
   <!--CLOSE BUTTON -->
   <button type="button" class="menuBtn" id="closeSidebar">
 
@@ -197,7 +197,7 @@ function loadSidebar() {
 `;
 
   document.getElementById("closeSidebar").addEventListener("click", () => {
-    workspacePageSidebar.classList.toggle("show");
+    discussionSidebar.classList.toggle("slideShow");
   });
 }
 
