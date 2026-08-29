@@ -470,7 +470,7 @@ function renderTaskHeader() {
 
       <div class="metaItem">
         <span class="metaLabel">Status:</span>
-        <span class="statusBadge ${currentTask.status}">${currentTask.status}</span>
+<span class="statusBadge ${currentTask.status.replace(" ", "-")}">${currentTask.status}</span>
       </div>
 
       <div class="metaItem">
@@ -543,8 +543,10 @@ function renderLogs() {
 renderFormattedText(log.log_note, content);
 makeCollapsible(content);
 
-    const statusClass = log.task_status === "in progress" || "in_progress" ? "in-progress" : "completed";
-
+const statusClass = ["in progress", "in_progress"].includes(log.task_status)
+  ? "in-progress"
+  : "completed";
+  
     const meta = document.createElement("div");
     meta.classList.add("logMeta");
     const status = document.createElement("span");

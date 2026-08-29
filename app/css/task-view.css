@@ -1,0 +1,454 @@
+:root {
+  --primary-dim: #1c3a63;
+  --lh-bg: #000000;
+  --lh-surface: #111111;
+  --lh-surface-2: #1c1c1c;
+  --lh-border: #333333;
+  --lh-text: #f2f2f2;
+  --lh-text-dim: #9a9a9a;
+  --lh-text-faint: #6a6a6a;
+  --lh-amber: #e8b84b;
+  --lh-green: #4cc38a;
+  --lh-radius: 12px;
+  --lh-radius-sm: 8px;
+}
+
+.taskContents {
+display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.mainContent {
+display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#taskViewContent {
+ display: grid;
+  grid-template-columns: 1fr minmax(280px, 340px);
+  gap: var(--space-sm);
+  height: calc(100vh - 0px);
+}
+
+.taskContents {
+  min-width: 0;
+}
+
+.badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+}
+.badge:empty,
+.badge[data-count="0"] {
+  display: none;
+}
+
+/*
+   TASK HEADER */
+.taskHeader {
+      flex-shrink: 0;
+
+  padding: 24px;
+  border-radius: var(--lh-radius);
+  background: var(--lh-surface);
+  border: 1px solid var(--lh-border);
+  margin-bottom: 28px;
+}
+
+.taskHeaderTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.taskHeaderTop h2 {
+  font-size: 19px;
+  font-weight: 650;
+  line-height: 1.35;
+  color: var(--lh-text);
+}
+
+.taskActions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.iconBtn {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 8px;
+  border-radius: var(--lh-radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--lh-text-dim);
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+.iconBtn:hover {
+  background: var(--lh-surface-2);
+  border-color: var(--lh-border);
+  color: var(--lh-text);
+}
+.iconBtn svg {
+  width: 17px;
+  height: 17px;
+}
+
+/*
+   META INFO */
+.taskMeta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  padding: 18px 0;
+  border-top: 1px solid var(--lh-border);
+  border-bottom: 1px solid var(--lh-border);
+  margin-bottom: 18px;
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.metaLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--lh-text-faint);
+}
+
+.metaItem > span:not(.metaLabel) {
+  font-size: 14px;
+  color: var(--lh-text);
+}
+
+.avatarGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--lh-text);
+}
+.avatarGroup .profileImg {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--lh-border);
+}
+
+.statusBadge {
+  display: inline-flex;
+  width: fit-content;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 5px 10px;
+  border-radius: 100px;
+  background: rgba(232, 184, 75, 0.12);
+  color: var(--lh-amber);
+  border: 1px solid rgba(232, 184, 75, 0.28);
+}
+.statusBadge.completed {
+  background: rgba(76, 195, 138, 0.12);
+  color: var(--lh-green);
+  border-color: rgba(76, 195, 138, 0.28);
+}
+.statusBadge.in-progress {
+  background: rgba(232, 184, 75, 0.12);
+  color: var(--lh-amber);
+  border-color: rgba(232, 184, 75, 0.28);
+}
+
+.taskDescription {
+  margin-top: 4px;
+  color: var(--lh-text-dim);
+  line-height: 1.65;
+  font-size: 14px;
+}
+
+/*
+   LOGS FEED */
+.taskLogsSection {
+flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.taskLogsSection h3 {
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--lh-text);
+  margin-bottom: 3px;
+}
+
+.sectionDescription {
+  font-size: 13px;
+  color: var(--lh-text-faint);
+}
+
+.logsFeed {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 16px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.logsFeed > .placeholderText {
+  padding: 28px;
+  text-align: center;
+  border: 1px dashed var(--lh-border);
+  border-radius: var(--lh-radius);
+}
+
+.logCard {
+  background: var(--lh-surface);
+  border: 1px solid var(--lh-border);
+  border-radius: var(--lh-radius);
+  padding: 16px;
+}
+
+.logHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.logHeader .profileImg {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--lh-border);
+}
+.logHeader .name {
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--lh-text);
+}
+.logHeader .timestamp {
+  font-size: 11.5px;
+  color: var(--lh-text-faint);
+}
+
+.logContent {
+  margin: 8px 0 14px;
+  line-height: 1.6;
+  font-size: 14px;
+  color: var(--lh-text-dim);
+}
+
+.logMeta {
+  margin-bottom: 6px;
+}
+
+.addCommentBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--lh-text-dim);
+  width: auto;
+  padding: 6px 10px;
+}
+.addCommentBtn svg {
+  width: 15px;
+  height: 15px;
+}
+
+/*
+   COMMENTS */
+.commentsThread {
+  margin: 12px 0 0 2.2rem;
+  border-left: 2px solid var(--lh-border);
+  padding-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.commentsThread:empty {
+  display: none;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.comment {
+  display: flex;
+  gap: 10px;
+}
+.comment .profileImg {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--lh-border);
+  flex-shrink: 0;
+}
+
+.comment .commentBody {
+  background: var(--lh-surface-2);
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--lh-radius-sm);
+  border: 1px solid var(--lh-border);
+  font-size: 13.5px;
+  color: var(--lh-text);
+  line-height: 1.55;
+}
+.comment .commentBody .timestamp {
+  font-size: 11px;
+  color: var(--lh-text-faint);
+  margin-top: 6px;
+}
+
+.inlineCommentBox {
+  margin-top: 12px;
+}
+.inlineCommentBox textarea {
+  width: 100%;
+  min-height: 56px;
+  padding: 10px;
+  border-radius: var(--lh-radius-sm);
+  border: 1px solid var(--lh-border);
+  background: var(--lh-bg);
+  color: var(--lh-text);
+  font-family: inherit;
+  font-size: 13.5px;
+  resize: vertical;
+}
+.commentActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/*
+   ADD LOG INPUT */
+.addLogContainer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  position: sticky;
+  bottom: 0;
+  flex-shrink: 0;
+  padding: var(--space-md);
+  border-top: 1px solid var(--border);
+  backdrop-filter: var(--filter);
+}
+
+#logInput {
+  width: 100%;
+  min-height: 56px;
+  padding: 12px;
+  border-radius: var(--lh-radius-sm);
+  border: 1px solid var(--lh-border);
+  background: var(--lh-bg);
+  color: var(--lh-text);
+  resize: vertical;
+  font-family: inherit;
+  font-size: 14px;
+  margin-bottom: 0;
+}
+#logInput::placeholder {
+  color: var(--lh-text-faint);
+}
+#logInput:focus {
+  outline: 2px solid var(--primary-light);
+  border-color: var(--primary);
+}
+#submitLogBtn {
+    width: fit-content;
+    float: right;
+    align-self: flex-end;
+}
+/*
+   ACTIVITIES RAIL */
+.activitiesContainer {
+  max-height: calc(100vh - 56px);
+  position: sticky;
+  top: calc(var(--space-xl) * 2.2);
+  overflow-y: auto;
+  background: var(--lh-surface);
+  border: 1px solid var(--lh-border);
+  border-radius: var(--lh-radius);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.activitiesUpperSection {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.reloadBtn {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  background: transparent;
+
+  width: 32px;
+  height: 32px;
+  border-radius: var(--lh-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.reloadBtn:hover {
+  color: var(--lh-text);
+}
+
+/*
+   RESPONSIVE */
+@media (max-width: 1000px) {
+  #taskViewContent {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .commentsThread {
+    margin-left: 1.4rem;
+  }
+}
+@media (max-width: 600px) {
+  .activitiesContainer {
+    display: none;
+  }
+  .commentsThread {
+    margin-left: 1.4rem;
+  }
+}

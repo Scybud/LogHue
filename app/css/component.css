@@ -670,7 +670,6 @@ button.dropdown-item {
 
 .logMarker {
   position: relative;
-  width: 32px;
   flex-shrink: 0;
   display: flex;
   justify-content: center;
@@ -697,9 +696,7 @@ button.dropdown-item {
 }
 
 .logHeadline {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+ margin-bottom: var(--space-xs);
 }
 
 .logAvatar {
@@ -710,7 +707,7 @@ button.dropdown-item {
 }
 
 .logText {
-  font-size: 0.9rem;
+  font-size: var(--text-sm);
   color: var(--text-primary);
   flex: 1;
   min-width: 0;
