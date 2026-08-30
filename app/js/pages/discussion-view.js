@@ -1,12 +1,30 @@
 import { supabase } from "../supabase.js";
 import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
 import { loadActivities } from "./workspace/activities.js";
-import { formatDateTime } from "../utils/time.js";
+import { formatDateTime, formatDateTimeRelatively } from "../utils/time.js";
+import { actionMsg } from "../utils/modals.js";
+import {
+  subscribeWorkspaceChannel,
+  unsubscribeChannel,
+} from "../shared/realtime.js";
 
 let currentDiscussion = null;
 let currentWorkspace = null;
 let userRole = null;
 export let currentUser = null;
+
+// user_id -> { id, full_name, avatar_url }, built once from workspace_members
+let memberProfiles = new Map();
+
+let realtimeChannel = null;
+
+// True once a realtime event has changed ordering (new comment, or a
+// reply that bumps its parent). Applied on next full render, not live,
+// so nothing shifts under an active reader.
+let pendingResort = false;
+
+let idleTimer = null;
+const IDLE_RESORT_MS = 15000;
 
 /* ---------------------------------------------
 GET USER ROLE
@@ -26,6 +44,30 @@ async function getUserRole(workspaceId) {
 
   if (error) return null;
   return { userId: userData.user.id, role: data.role };
+}
+
+async function loadMemberProfiles(workspaceId) {
+  const { data, error } = await supabase
+    .from("workspace_members")
+    .select("user_id, profiles:user_id (id, full_name, avatar_url)")
+    .eq("workspace_id", workspaceId);
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  memberProfiles = new Map((data || []).map((m) => [m.user_id, m.profiles]));
+}
+
+function resolveProfile(userId) {
+  return (
+    memberProfiles.get(userId) || {
+      id: userId,
+      full_name: "Unknown User",
+      avatar_url: null,
+    }
+  );
 }
 
 const workspaceActivities = document.getElementById("workspaceActivities");
@@ -90,6 +132,9 @@ reloadBtn.addEventListener("click", () => {
    INIT
 --------------------------------------------- */
 document.addEventListener("DOMContentLoaded", initDiscussionView);
+window.addEventListener("beforeunload", () => {
+  unsubscribeChannel(realtimeChannel);
+});
 
 async function initDiscussionView() {
   const params = new URLSearchParams(window.location.search);
@@ -104,21 +149,37 @@ async function initDiscussionView() {
 
   await loadDiscussion(discussionId);
   userRole = await getUserRole(currentWorkspace.id);
+  await loadMemberProfiles(currentWorkspace.id);
 
   loadSidebar();
   renderDiscussionHeader();
   renderComments();
   loadWorkspaceActivities();
   attachCommentSubmitHandler();
-  attachMarkDoneHandler(discussionId);
+  attachIdleResortTracking();
+
+  // renderComments() already scrolls to bottom, but avatar images load
+  // asynchronously and grow the feed's height after that snapshot, so
+  // the initial scroll can land short. Re-run once layout has settled
+  // and once more after images finish loading.
+  requestAnimationFrame(() => requestAnimationFrame(scrollFeedToBottom));
+  window.addEventListener("load", scrollFeedToBottom, { once: true });
+
+  realtimeChannel = subscribeWorkspaceChannel(currentWorkspace.id, {
+    onDiscussionUpdate: handleDiscussionUpdate,
+    onCommentInsert: handleCommentInsert,
+    onCommentUpdate: handleCommentUpdate,
+    onCommentDelete: handleCommentDelete,
+    onReplyInsert: handleReplyInsert,
+    onReplyUpdate: handleReplyUpdate,
+    onReplyDelete: handleReplyDelete,
+  });
 }
 
 function loadSidebar() {
   const discussionSidebar = document.getElementById("discussionsSidebar");
-  const isAdmin = userRole.role === "admin" || userRole.role === "owner";
 
   discussionSidebar.innerHTML = `<!--CLOSE BUTTON -->
-  <!--CLOSE BUTTON -->
   <button type="button" class="menuBtn" id="closeSidebar">
 
     <svg 
@@ -150,7 +211,6 @@ function loadSidebar() {
  <!-- WORKSPACE -->
  <a href="workspace?ws=${currentWorkspace.id}" class="navBtn" data-section="index" id="dashboardLink">
       <span class="navIcon">
-        <!-- Back  Icon -->
         <svg
           width="20"
           height="20"
@@ -170,11 +230,9 @@ function loadSidebar() {
       <span class="navText">Workspace</span>
     </a>
 
-
     <!-- DASHBOARD -->
     <a href="dashboard" class="navBtn" data-section="index" id="dashboardLink">
       <span class="navIcon">
-        <!-- Back / Dashboard Icon -->
         <svg
           width="20"
           height="20"
@@ -205,11 +263,11 @@ function loadSidebar() {
    LOAD DISCUSSION + COMMENTS
 --------------------------------------------- */
 async function loadDiscussion(discussionId) {
-    if (!discussionId) {
-      console.warn("No discussion ID provided — skipping Supabase fetch.");
-      return null;
-    }
-    
+  if (!discussionId) {
+    console.warn("No discussion ID provided — skipping Supabase fetch.");
+    return null;
+  }
+
   const { data, error } = await supabase
     .from("discussions")
     .select(
@@ -221,20 +279,22 @@ async function loadDiscussion(discussionId) {
         id,
         comment,
         created_at,
-        discussion_status,
+        updated_at,
+        last_activity_at,
         created_by,
-        profiles:created_by (id, full_name, avatar_url),
         replies:discussion_comment_comments (
           id,
           comment,
           created_at,
-          created_by,
-          profiles:created_by (id, full_name, avatar_url)
+          updated_at,
+          created_by
         )
       )
     `,
     )
     .eq("id", discussionId)
+    .order("last_activity_at", { ascending: true, foreignTable: "comments" })
+    .order("created_at", { ascending: true, foreignTable: "comments.replies" })
     .single();
 
   if (error) {
@@ -243,16 +303,9 @@ async function loadDiscussion(discussionId) {
     return;
   }
   currentDiscussion = data;
+  currentDiscussion.comments = currentDiscussion.comments || [];
   currentWorkspace = data.workspace;
-}
-
-/* ---------------------------------------------
-   REFRESH UI
---------------------------------------------- */
-async function refreshDiscussion() {
-  await loadDiscussion(currentDiscussion.id);
-  renderDiscussionHeader();
-  renderComments();
+  pendingResort = false;
 }
 
 /* ---------------------------------------------
@@ -263,6 +316,7 @@ function renderDiscussionHeader() {
   if (!container) return;
 
   const isAdmin = ["admin", "owner"].includes(userRole.role);
+  const isClosed = currentDiscussion.status === "closed";
 
   container.innerHTML = `
     <div class="discussionHeaderTop">
@@ -271,41 +325,60 @@ function renderDiscussionHeader() {
         ${
           isAdmin || currentDiscussion.created_by === currentUser.user.id
             ? `<button id="markDiscussionClosedBtn" class="primaryBtn btn btn-sm">
-                ${currentDiscussion.status === "closed" ? "Reopen" : "Close"}
+                ${isClosed ? "Reopen" : "Close"}
               </button>`
             : ""
         }
       </div>
     </div>
 
-    <div class="discussionMeta">
-      <div class="metaItem">
-        <span class="metaLabel">Started by:</span>
-        <div class="avatarGroup">
-          <img src="${currentDiscussion.profiles?.avatar_url || "/assets/default-avatar.png"}" class="profileImg" />
-          <span>${currentDiscussion.profiles?.full_name || "Unknown"}</span>
+    <details class="discussionMetaDetails">
+      <summary>Thread details</summary>
+      <div class="discussionMeta">
+        <div class="metaItem">
+          <span class="metaLabel">Started by:</span>
+          <div class="avatarGroup">
+            <img src="${currentDiscussion.profiles?.avatar_url || "/assets/default-avatar.png"}" class="profileImg" />
+            <span>${currentDiscussion.profiles?.full_name || "Unknown"}</span>
+          </div>
         </div>
-      </div>
 
-      <div class="metaItem">
-        <span class="metaLabel">Status:</span>
-        <span class="statusBadge" data-status="${currentDiscussion.status}">
-          ${currentDiscussion.status}
-        </span>
-      </div>
+        <div class="metaItem">
+          <span class="metaLabel">Status:</span>
+          <span class="statusBadge" data-status="${currentDiscussion.status}">
+            ${currentDiscussion.status}
+          </span>
+        </div>
 
-      <div class="metaItem">
-        <span class="metaLabel">Started:</span>
-        <span>${formatDateTime(currentDiscussion.created_at)}</span>
-      </div>
-    </div>
+        <div class="metaItem">
+          <span class="metaLabel">Started:</span>
+          <span>${formatDateTime(currentDiscussion.created_at)}</span>
+        </div>
 
-    <p class="discussionDescription">${currentDiscussion.content || "No content provided."}</p>
+        <p class="discussionDescription">${currentDiscussion.content || "No content provided."}</p>
+      </div>
+    </details>
+
+    ${isClosed ? `<p class="placeholderText closedNotice">This thread is closed. No new messages can be sent.</p>` : ""}
   `;
+
+  document
+    .getElementById("markDiscussionClosedBtn")
+    ?.addEventListener("click", handleToggleClosed);
+
+  toggleCommentInputForClosedState();
 }
 
 /* ---------------------------------------------
-   RENDER COMMENTS
+   SCROLL
+--------------------------------------------- */
+function scrollFeedToBottom() {
+  const feed = document.getElementById("commentsFeed");
+  if (feed) feed.scrollTop = feed.scrollHeight;
+}
+
+/* ---------------------------------------------
+   RENDER COMMENTS (full, sorted render)
 --------------------------------------------- */
 function renderComments() {
   const feed = document.getElementById("commentsFeed");
@@ -319,114 +392,151 @@ function renderComments() {
   const myId = currentUser?.user?.id;
 
   currentDiscussion.comments.forEach((comment) => {
-    const isOwn = comment.created_by === myId;
-
-    const card = document.createElement("div");
-    card.classList.add("commentCard");
-    if (isOwn) card.classList.add("is-own");
-
-    // Header
-    const header = document.createElement("div");
-    header.classList.add("commentHeader");
-
-    const avatar = document.createElement("img");
-    avatar.src = comment.profiles?.avatar_url || "/assets/default-avatar.png";
-    avatar.className = "profileImg";
-
-    const headerInfo = document.createElement("div");
-    const name = document.createElement("span");
-    name.classList.add("name");
-    name.textContent = comment.profiles?.full_name || "Unknown User";
-
-    const timestamp = document.createElement("div");
-    timestamp.className = "timestamp";
-    timestamp.textContent = formatDateTime(comment.created_at);
-
-    headerInfo.appendChild(name);
-    headerInfo.appendChild(timestamp);
-    header.append(avatar, headerInfo);
-
-    // Content bubble
-    const content = document.createElement("div");
-    content.classList.add("commentContent");
-    content.textContent = comment.comment;
-
-    // Meta (status)
-    const meta = document.createElement("div");
-    meta.classList.add("commentMeta");
-    const status = document.createElement("span");
-    status.classList.add("statusBadge");
-    status.textContent = comment.discussion_status;
-    meta.appendChild(status);
-
-    // Replies thread
-    const thread = document.createElement("div");
-    thread.classList.add("commentsThread");
-    renderReplies(comment.replies, thread, myId);
-
-    // Reply button
-    const replyButton = document.createElement("button");
-    replyButton.className = "iconBtn addCommentBtn";
-    replyButton.dataset.comment = comment.id;
-    replyButton.textContent = "Reply";
-
-    card.append(header, content, meta, thread, replyButton);
-    feed.appendChild(card);
+    feed.appendChild(buildCommentCard(comment, myId));
   });
-
-  if (feed) {
-    feed.scrollTop = feed.scrollHeight;
-  }
 
   attachInlineReplyHandlers();
+  pendingResort = false;
+
+  scrollFeedToBottom();
 }
 
-function renderReplies(replies, container, myId) {
-  if (!replies?.length) return;
+function buildCommentCard(comment, myId) {
+  const isOwn = comment.created_by === myId;
+  const isAdmin = ["admin", "owner"].includes(userRole.role);
+  const profile = resolveProfile(comment.created_by);
 
-  replies.forEach((reply) => {
-    const isOwnReply = reply.created_by === myId;
+  const card = document.createElement("div");
+  card.classList.add("commentCard");
+  card.dataset.id = comment.id;
+  if (isOwn) card.classList.add("is-own");
 
-    const replyElement = document.createElement("div");
-    replyElement.classList.add("comment", "reply");
-    if (isOwnReply) replyElement.classList.add("is-own");
+  const header = document.createElement("div");
+  header.classList.add("commentHeader");
 
-    const avatar = document.createElement("img");
-    avatar.src = reply.profiles?.avatar_url || "/assets/default-avatar.png";
-    avatar.className = "profileImg";
+  const avatar = document.createElement("img");
+  avatar.src = profile.avatar_url || "/assets/default-avatar.png";
+  avatar.className = "profileImg";
 
-    const body = document.createElement("div");
-    body.classList.add("commentBody");
+  const headerInfo = document.createElement("div");
+  const name = document.createElement("span");
+  name.classList.add("name");
+  name.textContent = profile.full_name || "Unknown User";
 
-    const text = document.createElement("div");
-    text.textContent = reply.comment;
+  const timestamp = document.createElement("div");
+  timestamp.className = "timestamp";
+  timestamp.textContent = formatDateTimeRelatively(comment.created_at);
+  if (comment.updated_at) {
+    timestamp.textContent += " (edited)";
+  }
 
-    const timestamp = document.createElement("div");
-    timestamp.className = "timestamp";
-    timestamp.textContent = formatDateTime(reply.created_at);
+  headerInfo.appendChild(name);
+  headerInfo.appendChild(timestamp);
+  header.append(avatar, headerInfo);
 
-    body.append(text, timestamp);
-    replyElement.append(avatar, body);
-    container.appendChild(replyElement);
+  const content = document.createElement("div");
+  content.classList.add("commentContent");
+  content.textContent = comment.comment;
+
+  const actions = document.createElement("div");
+  actions.classList.add("commentActionsRow");
+
+  if (isOwn) {
+    const editBtn = document.createElement("button");
+    editBtn.className = "iconBtn editCommentBtn";
+    editBtn.textContent = "Edit";
+    editBtn.addEventListener("click", () => openEditCommentBox(card, comment));
+    actions.appendChild(editBtn);
+  }
+
+  if (isOwn || isAdmin) {
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "iconBtn deleteCommentBtn";
+    deleteBtn.textContent = "Delete";
+    deleteBtn.addEventListener("click", () => handleDeleteComment(comment.id));
+    actions.appendChild(deleteBtn);
+  }
+
+  const thread = document.createElement("div");
+  thread.classList.add("commentsThread");
+  (comment.replies || []).forEach((reply) => {
+    thread.appendChild(buildReplyElement(reply, myId));
   });
+
+  const replyButton = document.createElement("button");
+  replyButton.className = "iconBtn addCommentBtn";
+  replyButton.dataset.comment = comment.id;
+  replyButton.textContent = "Reply";
+
+  card.append(header, content, actions, thread, replyButton);
+  return card;
+}
+
+function buildReplyElement(reply, myId) {
+  const isOwnReply = reply.created_by === myId;
+  const isAdmin = ["admin", "owner"].includes(userRole.role);
+  const profile = resolveProfile(reply.created_by);
+
+  const replyElement = document.createElement("div");
+  replyElement.classList.add("comment", "reply");
+  replyElement.dataset.replyId = reply.id;
+  if (isOwnReply) replyElement.classList.add("is-own");
+
+  const avatar = document.createElement("img");
+  avatar.src = profile.avatar_url || "/assets/default-avatar.png";
+  avatar.className = "profileImg";
+
+  const body = document.createElement("div");
+  body.classList.add("commentBody");
+
+  const nameEl = document.createElement("span");
+  nameEl.className = "name";
+  nameEl.textContent = profile.full_name || "Unknown User";
+
+  const text = document.createElement("div");
+  text.className = "replyText";
+  text.textContent = reply.comment;
+
+  const timestamp = document.createElement("div");
+  timestamp.className = "timestamp";
+  timestamp.textContent = formatDateTimeRelatively(reply.created_at);
+  if (reply.updated_at) {
+    timestamp.textContent += " (edited)";
+  }
+
+  const actions = document.createElement("div");
+  actions.classList.add("commentActionsRow");
+
+  if (isOwnReply) {
+    const editBtn = document.createElement("button");
+    editBtn.className = "iconBtn editReplyBtn";
+    editBtn.textContent = "Edit";
+    editBtn.addEventListener("click", () =>
+      openEditReplyBox(replyElement, reply),
+    );
+    actions.appendChild(editBtn);
+  }
+
+  if (isOwnReply || isAdmin) {
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "iconBtn deleteReplyBtn";
+    deleteBtn.textContent = "Delete";
+    deleteBtn.addEventListener("click", () => handleDeleteReply(reply.id));
+    actions.appendChild(deleteBtn);
+  }
+
+  body.append(nameEl, text, timestamp, actions);
+  replyElement.append(avatar, body);
+  return replyElement;
 }
 
 /* ---------------------------------------------
-   ADD TOP‑LEVEL COMMENT
+   ADD TOP-LEVEL COMMENT
 --------------------------------------------- */
 function attachCommentSubmitHandler() {
   const btn = document.getElementById("submitCommentBtn");
   const input = document.getElementById("commentInput");
-
   if (!btn || !input) return;
-
-  const isClosed = currentDiscussion.status === "closed";
-
-  if (isClosed) {
-    btn.remove();
-    input.remove();
-    return;
-  }
 
   btn.addEventListener("click", async () => {
     const note = input.value.trim();
@@ -436,17 +546,19 @@ function attachCommentSubmitHandler() {
       return;
     }
 
+    if (currentDiscussion.status === "closed") {
+      actionMsg("This thread is closed.", "error");
+      return;
+    }
+
     setButtonLoading(btn, true);
 
     try {
-      const { data: userData } = await supabase.auth.getUser();
-
       const { error } = await supabase.from("discussion_comments").insert({
         workspace_id: currentWorkspace.id,
         discussion_id: currentDiscussion.id,
-        created_by: userData.user.id,
+        created_by: currentUser.user.id,
         comment: note,
-        discussion_status: currentDiscussion.status,
       });
 
       if (error) {
@@ -455,42 +567,44 @@ function attachCommentSubmitHandler() {
       }
 
       input.value = "";
-      await refreshDiscussion();
     } finally {
       setButtonLoading(btn, false);
     }
   });
 }
 
+function toggleCommentInputForClosedState() {
+  const btn = document.getElementById("submitCommentBtn");
+  const input = document.getElementById("commentInput");
+  const container = document.getElementById("addCommentContainer");
+  if (!btn || !input || !container) return;
+
+  const isClosed = currentDiscussion.status === "closed";
+  btn.disabled = isClosed;
+  input.disabled = isClosed;
+  container.classList.toggle("is-disabled", isClosed);
+}
+
 /* ---------------------------------------------
-   MARK DISCUSSION DONE
+   CLOSE / REOPEN
 --------------------------------------------- */
-function attachMarkDoneHandler(discussionId) {
+function handleToggleClosed() {
   const btn = document.getElementById("markDiscussionClosedBtn");
   if (!btn) return;
 
-  btn.addEventListener("click", async () => {
-    setButtonLoading(btn, true);
+  setButtonLoading(btn, true);
 
-    try {
-      const newStatus =
-        currentDiscussion.status === "closed" ? "open" : "closed";
+  const newStatus = currentDiscussion.status === "closed" ? "open" : "closed";
 
-      const { error } = await supabase
-        .from("discussions")
-        .update({ status: newStatus, closed_at: new Date().toISOString() })
-        .eq("id", discussionId);
-
-      if (error) {
-        alert(error.message);
-        return;
-      }
-
-      await refreshDiscussion();
-    } finally {
+  supabase
+    .from("discussions")
+    .update({ status: newStatus, closed_at: new Date().toISOString() })
+    .eq("id", currentDiscussion.id)
+    .then(({ error }) => {
       setButtonLoading(btn, false);
-    }
-  });
+      if (error) alert(error.message);
+      // UI updates via realtime onDiscussionUpdate
+    });
 }
 
 /* ---------------------------------------------
@@ -504,17 +618,15 @@ function attachInlineReplyHandlers() {
   });
 }
 
-const err = document.createElement("p");
-err.classList.add("error");
-
 function openInlineReplyBox(commentId) {
   document.querySelectorAll(".inlineCommentBox").forEach((el) => el.remove());
 
-  const card = document
-    .querySelector(`.addCommentBtn[data-comment="${commentId}"]`)
-    .closest(".commentCard");
+  const card = document.querySelector(`.commentCard[data-id="${commentId}"]`);
+  if (!card) return;
 
   if (currentDiscussion.status === "closed") {
+    const err = document.createElement("p");
+    err.classList.add("error");
     err.textContent = "You cannot comment on closed discussions.";
     card.appendChild(err);
     return;
@@ -547,11 +659,10 @@ async function submitInlineReply(e) {
 
   if (!text) return;
 
-  const { data: userData } = await supabase.auth.getUser();
-
   const { error } = await supabase.from("discussion_comment_comments").insert({
     comment_id: commentId,
-    created_by: userData.user.id,
+    workspace_id: currentWorkspace.id,
+    created_by: currentUser.user.id,
     comment: text,
   });
 
@@ -561,5 +672,312 @@ async function submitInlineReply(e) {
   }
 
   box.remove();
-  await refreshDiscussion();
+}
+
+/* ---------------------------------------------
+   EDIT / DELETE — COMMENTS
+--------------------------------------------- */
+function openEditCommentBox(card, comment) {
+  const contentEl = card.querySelector(".commentContent");
+  if (!contentEl) return;
+
+  const original = comment.comment;
+
+  const textarea = document.createElement("textarea");
+  textarea.className = "inputField editCommentInput";
+  textarea.value = original;
+
+  const actions = document.createElement("div");
+  actions.classList.add("commentActions");
+
+  const saveBtn = document.createElement("button");
+  saveBtn.className = "primaryBtn";
+  saveBtn.textContent = "Save";
+
+  const cancelBtn = document.createElement("button");
+  cancelBtn.className = "secondaryBtn";
+  cancelBtn.textContent = "Cancel";
+
+  actions.append(cancelBtn, saveBtn);
+
+  contentEl.replaceWith(textarea);
+  textarea.insertAdjacentElement("afterend", actions);
+
+  cancelBtn.addEventListener("click", () => {
+    actions.remove();
+    textarea.replaceWith(contentEl);
+  });
+
+  saveBtn.addEventListener("click", async () => {
+    const newText = textarea.value.trim();
+    if (!newText) return;
+
+    setButtonLoading(saveBtn, true);
+
+    const { error } = await supabase
+      .from("discussion_comments")
+      .update({ comment: newText, updated_at: new Date().toISOString() })
+      .eq("id", comment.id);
+
+    setButtonLoading(saveBtn, false);
+
+    if (error) {
+      alert("Failed to edit comment.");
+      return;
+    }
+
+    comment.comment = newText;
+    comment.updated_at = new Date().toISOString();
+
+    contentEl.textContent = newText;
+    actions.remove();
+    textarea.replaceWith(contentEl);
+
+    const timestampEl = card.querySelector(".commentHeader .timestamp");
+    if (timestampEl) {
+      timestampEl.textContent =
+        formatDateTime(comment.created_at) + " (edited)";
+    }
+  });
+}
+
+async function handleDeleteComment(commentId) {
+  if (!confirm("Delete this message? Replies to it will also be deleted."))
+    return;
+
+  const { error } = await supabase
+    .from("discussion_comments")
+    .delete()
+    .eq("id", commentId);
+
+  if (error) alert("Failed to delete comment.");
+  // UI updates via realtime onCommentDelete
+}
+
+/* ---------------------------------------------
+   EDIT / DELETE — REPLIES
+--------------------------------------------- */
+function openEditReplyBox(replyElement, reply) {
+  const textEl = replyElement.querySelector(".replyText");
+  if (!textEl) return;
+
+  const original = reply.comment;
+
+  const textarea = document.createElement("textarea");
+  textarea.className = "inputField editCommentInput";
+  textarea.value = original;
+
+  const actions = document.createElement("div");
+  actions.classList.add("commentActions");
+
+  const saveBtn = document.createElement("button");
+  saveBtn.className = "primaryBtn";
+  saveBtn.textContent = "Save";
+
+  const cancelBtn = document.createElement("button");
+  cancelBtn.className = "secondaryBtn";
+  cancelBtn.textContent = "Cancel";
+
+  actions.append(cancelBtn, saveBtn);
+
+  textEl.replaceWith(textarea);
+  textarea.insertAdjacentElement("afterend", actions);
+
+  cancelBtn.addEventListener("click", () => {
+    actions.remove();
+    textarea.replaceWith(textEl);
+  });
+
+  saveBtn.addEventListener("click", async () => {
+    const newText = textarea.value.trim();
+    if (!newText) return;
+
+    setButtonLoading(saveBtn, true);
+
+    const { error } = await supabase
+      .from("discussion_comment_comments")
+      .update({ comment: newText, updated_at: new Date().toISOString() })
+      .eq("id", reply.id);
+
+    setButtonLoading(saveBtn, false);
+
+    if (error) {
+      alert("Failed to edit reply.");
+      return;
+    }
+
+    reply.comment = newText;
+    reply.updated_at = new Date().toISOString();
+
+    textEl.textContent = newText;
+    actions.remove();
+    textarea.replaceWith(textEl);
+
+    const timestampEl = replyElement.querySelector(".timestamp");
+    if (timestampEl) {
+      timestampEl.textContent = formatDateTime(reply.created_at) + " (edited)";
+    }
+  });
+}
+
+async function handleDeleteReply(replyId) {
+  if (!confirm("Delete this reply?")) return;
+
+  const { error } = await supabase
+    .from("discussion_comment_comments")
+    .delete()
+    .eq("id", replyId);
+
+  if (error) alert("Failed to delete reply.");
+  // UI updates via realtime onReplyDelete
+}
+
+/* ---------------------------------------------
+   REALTIME HANDLERS
+--------------------------------------------- */
+function handleDiscussionUpdate(row) {
+  if (row.id !== currentDiscussion.id) return;
+  currentDiscussion.status = row.status;
+  currentDiscussion.closed_at = row.closed_at;
+  renderDiscussionHeader();
+}
+
+function handleCommentInsert(row) {
+  if (row.discussion_id !== currentDiscussion.id) return;
+  if (currentDiscussion.comments.some((c) => c.id === row.id)) return;
+
+  const comment = { ...row, replies: [] };
+  currentDiscussion.comments.push(comment);
+
+  const feed = document.getElementById("commentsFeed");
+  const placeholder = feed.querySelector(".placeholderText");
+  if (placeholder) placeholder.remove();
+
+  feed.appendChild(buildCommentCard(comment, currentUser?.user?.id));
+  attachInlineReplyHandlers();
+  scrollFeedToBottom();
+}
+
+function handleCommentUpdate(row) {
+  const comment = currentDiscussion.comments.find((c) => c.id === row.id);
+  if (!comment) return;
+
+  comment.comment = row.comment;
+  comment.updated_at = row.updated_at;
+
+  const card = document.querySelector(`.commentCard[data-id="${row.id}"]`);
+  if (!card) return;
+
+  // Skip the DOM patch entirely if this comment's edit box is open
+  // locally, so an incoming update can't clobber in-progress typing.
+  if (card.querySelector(".editCommentInput")) return;
+
+  const contentEl = card.querySelector(".commentContent");
+  if (contentEl) contentEl.textContent = row.comment;
+
+  const timestampEl = card.querySelector(".commentHeader .timestamp");
+  if (timestampEl) {
+    timestampEl.textContent =
+      formatDateTime(comment.created_at) + (row.updated_at ? " (edited)" : "");
+  }
+}
+
+function handleCommentDelete(row) {
+  currentDiscussion.comments = currentDiscussion.comments.filter(
+    (c) => c.id !== row.id,
+  );
+
+  const card = document.querySelector(`.commentCard[data-id="${row.id}"]`);
+  card?.remove();
+
+  const feed = document.getElementById("commentsFeed");
+  if (feed && !feed.children.length) {
+    feed.innerHTML = `<p class="placeholderText">No comments yet. Be the first to comment!</p>`;
+  }
+}
+
+function handleReplyInsert(row) {
+  const comment = currentDiscussion.comments.find(
+    (c) => c.id === row.comment_id,
+  );
+  if (!comment) return;
+  if (comment.replies.some((r) => r.id === row.id)) return;
+
+  comment.replies.push(row);
+  comment.last_activity_at = row.created_at;
+  pendingResort = true;
+
+  const card = document.querySelector(
+    `.commentCard[data-id="${row.comment_id}"]`,
+  );
+  const thread = card?.querySelector(".commentsThread");
+  if (thread) {
+    thread.appendChild(buildReplyElement(row, currentUser?.user?.id));
+  }
+}
+
+function handleReplyUpdate(row) {
+  const comment = currentDiscussion.comments.find((c) =>
+    c.replies.some((r) => r.id === row.id),
+  );
+  const reply = comment?.replies.find((r) => r.id === row.id);
+  if (!reply) return;
+
+  reply.comment = row.comment;
+  reply.updated_at = row.updated_at;
+
+  const replyEl = document.querySelector(`[data-reply-id="${row.id}"]`);
+  if (!replyEl) return;
+
+  if (replyEl.querySelector(".editCommentInput")) return;
+
+  const textEl = replyEl.querySelector(".replyText");
+  if (textEl) textEl.textContent = row.comment;
+
+  const timestampEl = replyEl.querySelector(".timestamp");
+  if (timestampEl) {
+    timestampEl.textContent =
+      formatDateTime(reply.created_at) + (row.updated_at ? " (edited)" : "");
+  }
+}
+
+function handleReplyDelete(row) {
+  for (const comment of currentDiscussion.comments) {
+    const idx = comment.replies.findIndex((r) => r.id === row.id);
+    if (idx !== -1) comment.replies.splice(idx, 1);
+  }
+
+  document.querySelector(`[data-reply-id="${row.id}"]`)?.remove();
+}
+
+/* ---------------------------------------------
+   DEFERRED RESORT (idle / next open)
+--------------------------------------------- */
+function attachIdleResortTracking() {
+  const feed = document.getElementById("commentsFeed");
+  if (!feed) return;
+
+  const reset = () => {
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(applyDeferredResortIfNeeded, IDLE_RESORT_MS);
+  };
+
+  feed.addEventListener("scroll", reset);
+  document.addEventListener("mousemove", reset, { passive: true });
+  document.addEventListener("keydown", reset);
+
+  reset();
+}
+
+function applyDeferredResortIfNeeded() {
+  if (!pendingResort) return;
+
+  currentDiscussion.comments.sort(
+    (a, b) => new Date(a.last_activity_at) - new Date(b.last_activity_at),
+  );
+  currentDiscussion.comments.forEach((c) => {
+    c.replies.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+  });
+
+  renderComments();
 }

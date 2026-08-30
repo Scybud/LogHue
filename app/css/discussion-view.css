@@ -172,7 +172,6 @@ align-items: flex-end;
   .commentCard {
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm);
     padding: 0.35rem 0.5rem;
     border-radius: 8px;
     transition: background 0.12s ease;
@@ -214,8 +213,9 @@ align-items: flex-end;
 
   .commentContent {
     background: var(--surface-primary);
-    padding: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
     max-width: 300px;
+    width: fit-content;
     border-radius: var(--radius-sm);
     font-size: 0.9rem;
     line-height: 1.45;
@@ -270,9 +270,22 @@ align-items: flex-end;
     color: var(--text-secondary);
   }
 
+  .deleteCommentBtn {
+    background: none;
+    color: rgb(255, 80, 80);
+        border: none;
+    background: var(--surface-primary);
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm);
+        cursor: pointer;
+ font-weight: 500;
+    width: fit-content;
+  }
+.editCommentBtn {
+  margin: 0 var(--space-xs);
+}
   /* Reply trigger */
-  .addCommentBtn {
-    margin-top: 0.25rem;
+  .addCommentBtn, .editCommentBtn {
     font-size: 0.75rem;
     text-align: left;
     color: var(--text-secondary);
@@ -283,8 +296,11 @@ align-items: flex-end;
     cursor: pointer;
     font-weight: 500;
     width: fit-content;
+    transition: opacity 0.5s ease;
+  }
+  .addCommentBtn {
+    margin-top: var(--space-xs);
     opacity: 0;
-    transition: opacity 0.12s ease;
   }
 @media (hover: none) and (pointer: coarse) {
 .addCommentBtn {
