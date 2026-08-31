@@ -17,6 +17,7 @@ function handleOnboardingWarning() {
 const searchInput = document.getElementById("mainSearchInput");
 
 const hints = [
+  "Press Ctrl + K anywhere",
   "Search workspaces...",
   "Search notes...",
   "Search tasks...",
@@ -25,7 +26,6 @@ const hints = [
   'Try "all notes"',
   'Try "all tasks"',
   'Try "/notes"',
-  "Press Ctrl + K anywhere",
   'Try "/workspaces"',
   'Try "/tasks"',
 ];
@@ -93,6 +93,7 @@ async function renderDashboardStats(user) {
       .from("personal_tasks")
       .select("id", { count: "exact", head: true })
       .eq("user_id", user.id)
+      .eq("is_recurring", false)
       .eq("is_completed", false),
     supabase
       .from("personal_notes")
