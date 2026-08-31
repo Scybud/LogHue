@@ -63,18 +63,25 @@ export function dropdownClick() {
     if (!btn) return;
 
     const card = btn.closest(".workspaceCard");
+    const cardHeaderRight = card.querySelector(".workspaceCardHeaderRight");
+    if (!cardHeaderRight) return;
+
+    // If a dropdown is already open in this card, close it and stop.
+    const existing = cardHeaderRight.querySelector(".dropdown");
+    if (existing) {
+      existing.remove();
+      return;
+    }
+
     const wsId = card.dataset.id;
     const ws = savedWorkspaceData.find((w) => w.id == wsId);
-
     if (!ws) return;
 
-    // Create dropdown on demand
     const dropdown = getWorkspaceDropdown(ws);
     if (!dropdown) return;
 
-    document.querySelector("main").append(dropdown);
-    dropdown.classList.add("show");
-    setTimeout(() => dropdown.classList.add("open"), 20);
+    dropdown.hidden = false;
+    cardHeaderRight.append(dropdown);
 
     dropdown.addEventListener("click", () => dropdown.remove(), { once: true });
   });

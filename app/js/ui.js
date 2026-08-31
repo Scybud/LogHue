@@ -159,10 +159,8 @@ export function setInterfaceDensity() {
 //Create dropdown
 export function createDropdown(items = []) {
   const container = document.createElement("div");
+  container.hidden = true;
   container.classList.add("dropdown");
-const text = document.createElement("p")
-text.classList.add("placeholderText")
-text.textContent = "Menu"
 
   const list = document.createElement("div");
   list.classList.add("dropdown-list");
@@ -178,7 +176,7 @@ text.textContent = "Menu"
       container.remove();
     });
 
-    list.prepend(text, btn);
+    list.prepend(btn);
   });
 
   container.prepend(list);
