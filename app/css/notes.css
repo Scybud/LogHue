@@ -217,12 +217,17 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-sm);
-  background: transparent;
+  background: var(--bg-primary);
   color: var(--text-secondary);
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
   padding: 0;
+}
+@media (hover: none) and (pointer: coarse) {
+.noteItem .deleteBtn {
+    opacity: 1;
+}
 }
 
 .noteItem:hover .deleteBtn {
