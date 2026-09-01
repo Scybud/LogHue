@@ -485,7 +485,7 @@ export async function attachCreatePersonalTaskEvent() {
             detail: { taskId: visibleTask.id },
         }));
         // Re-render UI
-        await renderExistingTasks();
+        renderExistingTasks();
         checkIfEmpty();
         // Clear inputs
         taskEl.value = "";

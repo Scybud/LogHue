@@ -4,7 +4,6 @@ import { createWorkspaceInvite } from "../pages/workspace/invite.js";
 import { loadedMembers } from "../pages/workspace/state.js";
 import { supabase } from "../supabase.js";
 import {
-  createTaskElement,
   checkIfEmpty,
   savedTaskDetails,
   renderExistingTasks,
@@ -649,7 +648,7 @@ export async function attachCreatePersonalTaskEvent() {
     );
 
     // Re-render UI
-    await renderExistingTasks();
+     renderExistingTasks();
     checkIfEmpty();
 
     // Clear inputs
