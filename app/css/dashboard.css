@@ -23,7 +23,9 @@
   align-items: center;
   gap: 6px;
 }
-
+a.dashboardStat:hover {
+  color: var(--text-primary);
+}
 .dashboardStat strong {
   color: var(--text-primary);
   font-weight: 600;

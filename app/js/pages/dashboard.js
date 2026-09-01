@@ -93,7 +93,7 @@ async function renderDashboardStats(user) {
       .from("personal_tasks")
       .select("id", { count: "exact", head: true })
       .eq("user_id", user.id)
-      .eq("is_recurring", false)
+      .eq("is_template", false)
       .eq("is_completed", false),
     supabase
       .from("personal_notes")
@@ -110,8 +110,8 @@ async function renderDashboardStats(user) {
   const workspaces = membershipRes.count ?? 0;
 
   statsEl.innerHTML = `
-    <span class="dashboardStat"><strong>${openTasks}</strong> open task${openTasks === 1 ? "" : "s"}</span>
-    <span class="dashboardStat"><strong>${notes}</strong> note${notes === 1 ? "" : "s"}</span>
-    <span class="dashboardStat"><strong>${workspaces}</strong> workspace${workspaces === 1 ? "" : "s"}</span>
+    <a href="tasks" class="dashboardStat"><strong>${openTasks}</strong> open task${openTasks === 1 ? "" : "s"}</a>
+    <a href="notes" class="dashboardStat"><strong>${notes}</strong> note${notes === 1 ? "" : "s"}</a>
+    <a href="my-workspaces" class="dashboardStat"><strong>${workspaces}</strong> workspace${workspaces === 1 ? "" : "s"}</a>
   `;
 }
