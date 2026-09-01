@@ -9,6 +9,7 @@ import { loadedMembers, setLoadedMembers } from "./workspace/state.js";
 import { loadWorkspaceMembersForTaskView } from "../data/tasksDb.js";
 import { openFocusTimerModal } from "../components/focus-timer.js";
 import {makeCollapsible} from "../utils/toggle.js"
+import { linkify } from "../utils/linkify.js";
 
 let currentTask = null;
 let currentWorkspace = null;
@@ -290,7 +291,9 @@ function renderFormattedText(text, container) {
 
   if (!text?.trim()) return;
 
-  const lines = text.replace(/\r\n/g, "\n").split("\n");
+  const linkified = linkify(text); // escapes internally, then adds <a> tags
+
+  const lines = linkified.replace(/\r\n/g, "\n").split("\n");
 
   let paragraph = [];
   let currentList = null;
@@ -303,8 +306,9 @@ function renderFormattedText(text, container) {
 
     paragraph.forEach((line, index) => {
       if (index > 0) p.appendChild(document.createElement("br"));
-
-      p.appendChild(document.createTextNode(line));
+      const span = document.createElement("span");
+      span.innerHTML = line;
+      p.appendChild(span);
     });
 
     container.appendChild(p);
@@ -313,7 +317,6 @@ function renderFormattedText(text, container) {
 
   const flushList = () => {
     if (!currentList) return;
-
     container.appendChild(currentList);
     currentList = null;
     currentListType = null;
@@ -322,54 +325,42 @@ function renderFormattedText(text, container) {
   lines.forEach((line) => {
     const trimmed = line.trim();
 
-    // Empty line = new paragraph / section
     if (!trimmed) {
       flushParagraph();
       flushList();
       return;
     }
 
-    // Numbered list: 1. Something
     const numberedMatch = trimmed.match(/^(\d+)\.\s+(.+)$/);
 
     if (numberedMatch) {
       flushParagraph();
-
       if (currentListType !== "ol") {
         flushList();
-
         currentList = document.createElement("ol");
         currentListType = "ol";
       }
-
       const li = document.createElement("li");
-      li.textContent = numberedMatch[2];
-
+      li.innerHTML = numberedMatch[2];
       currentList.appendChild(li);
       return;
     }
 
-    // Bullet list: - Something or * Something
     const bulletMatch = trimmed.match(/^[-*]\s+(.+)$/);
 
     if (bulletMatch) {
       flushParagraph();
-
       if (currentListType !== "ul") {
         flushList();
-
         currentList = document.createElement("ul");
         currentListType = "ul";
       }
-
       const li = document.createElement("li");
-      li.textContent = bulletMatch[1];
-
+      li.innerHTML = bulletMatch[1];
       currentList.appendChild(li);
       return;
     }
 
-    // Normal text
     flushList();
     paragraph.push(trimmed);
   });
