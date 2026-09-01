@@ -203,3 +203,69 @@ border: 1px solid var(--border);
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Active Sessions */
+.activeSessionsContainer {
+  width: min(520px, calc(100vw - 32px));
+}
+
+.activeSessionsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin: var(--space-md) 0;
+}
+
+.activeSessionItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+
+  padding: var(--space-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--surface-secondary);
+}
+
+.activeSessionInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.activeSessionInfo strong {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.activeSessionInfo span {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+}
+
+.activeSessionActions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.activeSessionCurrent {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--active);
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.sessionRevokeBtn {
+  white-space: nowrap;
+  width: fit-content;
+}
+
+#signOutOtherSessions {
+  width: 100%;
+  margin-top: var(--space-xs);
+}

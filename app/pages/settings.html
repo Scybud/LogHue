@@ -378,12 +378,12 @@
           </div>
           
           <!-- SECURITY -->
-          <div class="settingsCard" style="display: none;">
+          <div class="settingsCard" >
             <h3 class="settingsCardTitle">Security</h3>
             <p class="descText">Keep your account secure.</p>
 
             <div class="settingsGrid">
-              <div class="settingsField">
+              <div class="settingsField" style="display: none;">
                 <label class="settingsLabel">Two-Factor Authentication</label>
                 <button class="btn settingsLongBtn">
                   Enable 2FA
@@ -392,7 +392,7 @@
 
               <div class="settingsField">
                 <label class="settingsLabel">Active Sessions</label>
-                <button class="btn settingsLongBtn">
+                <button id="viewSessions" class="btn settingsLongBtn">
                   View Devices
                 </button>
               </div>
@@ -410,6 +410,7 @@
                 <select class="inputField">
                   <option value="en">English</option>
                   <option value="de">Deutsch</option>
+                  <option value="ru">Russian</option>
                 </select>
               </div>
 
