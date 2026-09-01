@@ -377,7 +377,7 @@ input.error {
   border-radius:var(--radius-sm);
   background:rgba(24,27,33,.92);
   box-shadow:var(--shadow);
-  backdrop-filter:blur(16px);
+  backdrop-filter:blur(16px) brightness(30%);
   overflow:hidden;
 }
 
