@@ -29,7 +29,10 @@ export let workspace = null;
 
 function waitForSidebar(timeoutMs = 4000) {
   return new Promise((resolve) => {
-    if (document.getElementById("navBtnDropdown") || document.getElementById("sidebar")) {
+    if (
+      document.getElementById("navBtnDropdown") ||
+      document.getElementById("sidebar")
+    ) {
       resolve();
       return;
     }
@@ -75,7 +78,7 @@ export async function initWorkspaceDashboard() {
       "Access Denied: You are not a member of this workspace.",
       "error",
     );
-    window.location.href = "all-workspaces";
+    window.location.href = "my-workspaces";
     return;
   }
   setCurrentRole(role);
@@ -84,7 +87,7 @@ export async function initWorkspaceDashboard() {
 
   if (role !== "member" && role !== "owner" && role !== "admin") {
     actionMsg("Access Denied.", "error");
-    window.location.href = "all-workspaces";
+    window.location.href = "my-workspaces";
     return;
   }
 
@@ -137,9 +140,9 @@ export async function initWorkspaceDashboard() {
 
   // Default section: Tasks
   try {
-    if(role === "member") {
+    if (role === "member") {
       await renderSection("myTasks", currentWorkspace, container);
-    } else if(role === "owner" || role === "admin") {
+    } else if (role === "owner" || role === "admin") {
       await renderSection("createdTasks", currentWorkspace, container);
     }
   } catch (err) {

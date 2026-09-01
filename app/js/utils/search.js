@@ -34,7 +34,7 @@ const PAGE_ROUTES = {
   tasks: "tasks",
   scanhue: "ScanHue",
   settings: "settings",
-  workspaces: "all-workspaces",
+  workspaces: "my-workspaces",
   archive: "archive",
   billing: "billing",
   docs: "https://docs.loghue.com",
