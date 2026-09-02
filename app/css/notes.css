@@ -161,7 +161,8 @@
   border-radius: var(--radius-sm);
   cursor: pointer;
   color: #fff;
-  transition: background 0.2s ease;
+  border-left: 2px solid transparent;
+  transition: background 0.2s ease, border-color 0.2s ease;
   position: relative;
 }
 
@@ -170,7 +171,8 @@
 }
 
 .noteItem.active {
-  background: var(--active);
+  background: var(--hover-bg);
+  border-left-color: var(--primary-light);
   color: #fff;
 }
 
@@ -307,8 +309,9 @@ gap: var(--space-sm);
 
 .actionBtnsContainer {
   display: flex;
+      align-self: flex-end;
+
   align-items: center;
-  gap: var(--space-xs);
   background: var(--card-bg);
 }
 
@@ -323,6 +326,7 @@ gap: var(--space-sm);
   min-width: auto;
   padding: 6px 14px;
   font-size: 0.85rem;
+  text-align: center;
 }
 
 #saveNoteBtn {
@@ -389,7 +393,7 @@ button.toggleNotesListBtn {
   }
 
   #notesList.expandList {
-    height: 280px;
+    height: min(60vh, 420px);
     padding: var(--space-sm);
     overflow: auto;
   }
@@ -403,7 +407,21 @@ button.toggleNotesListBtn {
   }
 
   #noteTitle {
-    max-width: 100%;
+    max-width: 300px;
+  }
+
+  .actionBtnsContainer {
+    width: 100%;
+    max-width: fit-content;
+  }
+
+  .notesActionBtn {
+    width: fit-content;
+  }
+
+  .saveStatus {
+    text-align: left;
+    order: -1;
   }
 }
 
