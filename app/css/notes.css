@@ -121,6 +121,12 @@
   letter-spacing: -0.01em;
 }
 
+.newNoteActionContainer {
+  position: relative;
+}
+.newNoteActionContainer .actionBtn {
+  padding: var(--space-sm);
+}
 .notesCount {
   font-size: 0.75rem;
   font-weight: 500;
@@ -253,14 +259,6 @@
 .noteActions {
 display: flex;
 gap: var(--space-sm);
-}
-
-/* Create button */
-#createNote {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 30px;
 }
 
 /*
