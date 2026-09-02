@@ -7,9 +7,9 @@
 }
 
 .settingsCard {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  background: var(--card-bg);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
   padding: calc(var(--space-md) + 8px);
   display: flex;
   flex-direction: column;
@@ -84,8 +84,8 @@ div.settingsCard.danger {
   border-bottom: none;
 }
 .btn {
-  color: #000;
-  background: var(--neutral);
+  color: var(--text-primary);
+  background: var(--surface-primary);
   border: 1px solid var(--border);
 }
 .btn:hover {
@@ -101,7 +101,6 @@ div.settingsCard.danger {
       color: var(--text-primary) !important;
     }
 a.btn {
-  color: #000000;
   text-decoration: none;
 }
 .settingsSaveBtn {
@@ -122,13 +121,11 @@ a.btn {
 .settingsLongBtn {
   width: 100%;
   max-width: 300px;
-  color: #000000;
 }
 .settingsLongBtn:hover {
   text-decoration: none;
 }
 .changePasswordBtn {
-  color: #000000;
   display: block;
   max-width: 200px;
   text-decoration: none;
