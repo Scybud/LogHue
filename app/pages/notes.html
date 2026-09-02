@@ -170,12 +170,36 @@
 
             <div class="noteActions">
 
-              <button id="createNote" class=" actionBtn" type="button">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-                  <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-                </svg>
-                New Note
-              </button>
+              <div class="newNoteActionContainer" id="newNoteActionContainer">
+
+                <button onclick="notesTypeSelectContainer.hidden ^= 1" class="btn actionBtn" type="button">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                  </svg>
+                  Create
+                </button>
+
+                <div class="dropdown notesTypeSelectContainer" id="notesTypeSelectContainer" hidden>
+
+                  <div class="dropdown-list">
+                    <button id="createNote" class="btn" type="button">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                      </svg>
+                      New Note
+                    </button>
+                    
+                    <button id="createSketch" class="btn" type="button">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                      </svg>
+                      New Sketch
+                    </button>
+                  </div>
+
+                </div>
+
+              </div>
               
               <button type="button" class="toggleNotesListBtn actionBtn" id="toggleNotesListBtn" aria-label="Toggle notes list" aria-expanded="false">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">

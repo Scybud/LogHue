@@ -447,8 +447,8 @@ max-width: 200px;
 
 .dropdown {
     position: absolute;
-    top: calc(var(--space-lg) * 2);
-    right: var(--space-sm);
+    top: calc(var(--space-lg) * 1.7);
+    right: 0;
     max-width: 200px;
     width: 200px;
     padding: var(--space-xs);
@@ -470,11 +470,14 @@ max-width: 200px;
   font-weight: 500;
   font-size: var(--text-sm);
   width: 100%;
+  max-width: none;
+  text-align: left;
   display: block;
+  background: none;
   padding: calc(var(--space-sm) * 1.2) var(--space-sm);
   margin: 0;
 }
-.dropdown-list .btn:last-child {
+.workspaceCardHeaderRight .dropdown-list .btn:last-child {
   color: var(--danger);
 }
 .dropdown-list .btn:nth-child(5):hover {

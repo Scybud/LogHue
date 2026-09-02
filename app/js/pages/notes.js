@@ -13,6 +13,7 @@ GLOBAL STATE
 */
 let quill = null;
 let currentNoteId = null;
+let currentNoteType = "text"; // "text" | "sketch"
 let savedNoteDetails = [];
 let isLoading = false;
 let isSaving = false;
@@ -20,6 +21,17 @@ let lastSavedSnapshot = "";
 let autosaveTimer = null;
 
 const AUTOSAVE_DELAY = 1500;
+
+// --- sketch state ---
+let board = null;
+let context = null;
+let isdrawing = false;
+let sketchTool = "pen"; // "pen" | "text"
+let undoStack = [];
+const UNDO_LIMIT = 20;
+let isSavingSketch = false;
+let lastSavedSketchSnapshot = "";
+let sketchAutosaveTimer = null;
 
 // -------------------------------
 // Loading State
@@ -35,9 +47,14 @@ function setSaveStatus(text) {
   if (el) el.textContent = text;
 }
 
+function setSketchSaveStatus(text) {
+  const el = document.getElementById("sketchSaveStatus");
+  if (el) el.textContent = text;
+}
+
 /*
 
-AUTOSAVE
+AUTOSAVE (text notes)
 
 */
 function scheduleAutosave() {
@@ -91,6 +108,64 @@ async function runAutosave() {
 
 /*
 
+AUTOSAVE (sketch notes)
+
+*/
+function scheduleSketchAutosave() {
+  clearSketchAutosaveTimer();
+  sketchAutosaveTimer = setTimeout(runSketchAutosave, AUTOSAVE_DELAY);
+}
+
+function clearSketchAutosaveTimer() {
+  if (sketchAutosaveTimer) {
+    clearTimeout(sketchAutosaveTimer);
+    sketchAutosaveTimer = null;
+  }
+}
+
+async function runSketchAutosave() {
+  if (
+    isSavingSketch ||
+    !currentNoteId ||
+    currentNoteType !== "sketch" ||
+    !board
+  )
+    return;
+
+  const titleInput = document.getElementById("sketchTitle");
+  const title = titleInput ? titleInput.value : "";
+  const imageData = board.toDataURL("image/png");
+  const snapshot = title + imageData;
+
+  if (snapshot === lastSavedSketchSnapshot) return;
+
+  isSavingSketch = true;
+  setSketchSaveStatus("Saving…");
+
+  const { error } = await supabase
+    .from("personal_notes")
+    .update({
+      title: title || "Untitled Sketch",
+      canvas_data: imageData,
+      updated_at: new Date(),
+    })
+    .eq("id", currentNoteId);
+
+  isSavingSketch = false;
+
+  if (error) {
+    console.error(error);
+    setSketchSaveStatus("Autosave failed");
+    return;
+  }
+
+  lastSavedSketchSnapshot = snapshot;
+  setSketchSaveStatus("Saved");
+  updateSidebarEntry(currentNoteId, title, null);
+}
+
+/*
+
 INITIALIZE NOTES UI
 
 */
@@ -109,22 +184,45 @@ async function initNotes() {
   }
 
   editorContainer.innerHTML = `
-    <div class="editorTop">
-      <input id="noteTitle" name="noteTitle" placeholder="Note title" class="noteTitle inputField" />
-      <div class="actionBtnsContainer">
-        <span id="saveStatus" class="saveStatus"></span>
-        <button id="saveNoteBtn" class="btn-sm btn notesActionBtn">Save</button>
-        <select id="exportNotesBtn" class="btn-sm btn btn-secondary notesActionBtn">
-          <option value="">Export As</option>
-          <option value="pdf">PDF</option>
-          <option value="docx">DOCX</option>
-          <option value="html">HTML</option>
-          <option value="txt">TXT</option>
-          <option value="md">Markdown</option>
-        </select>
+    <div id="textEditorPane">
+      <div class="editorTop">
+        <input id="noteTitle" name="noteTitle" placeholder="Note title" class="noteTitle inputField" />
+        <div class="actionBtnsContainer">
+          <span id="saveStatus" class="saveStatus"></span>
+          <button id="saveNoteBtn" class="btn-sm btn notesActionBtn">Save</button>
+          <select id="exportNotesBtn" class="btn-sm btn btn-secondary notesActionBtn">
+            <option value="">Export As</option>
+            <option value="pdf">PDF</option>
+            <option value="docx">DOCX</option>
+            <option value="html">HTML</option>
+            <option value="txt">TXT</option>
+            <option value="md">Markdown</option>
+          </select>
+        </div>
+      </div>
+      <div id="editor"></div>
+    </div>
+
+    <div id="sketchEditorPane" hidden>
+      <div class="editorTop">
+        <input id="sketchTitle" name="sketchTitle" placeholder="Sketch title" class="noteTitle inputField" />
+        <div class="actionBtnsContainer">
+          <span id="sketchSaveStatus" class="saveStatus"></span>
+          <div id="sketchToolbar">
+            <input type="color" id="color-picker" value="#000000" title="Color" />
+            <input type="range" id="brush-size" min="1" max="50" value="5" title="Brush size" />
+            <button type="button" id="text-tool-button" class="btn-sm btn btn-secondary">Text</button>
+            <button type="button" id="undo-button" class="btn-sm btn btn-secondary">Undo</button>
+            <button type="button" id="clear-button" class="btn-sm btn btn-secondary">Clear</button>
+            <button type="button" id="fill-button" class="btn-sm btn btn-secondary">Fill</button>
+            <button type="button" id="download-button" class="btn-sm btn notesActionBtn">Download PNG</button>
+          </div>
+        </div>
+      </div>
+      <div id="sketchCanvasWrap">
+        <canvas id="board"></canvas>
       </div>
     </div>
-    <div id="editor"></div>
   `;
 
   const Font = Quill.import("formats/font");
@@ -173,6 +271,7 @@ async function initNotes() {
   });
 
   attachDeleteNoteListener();
+  initSketchBoard();
 
   const saveBtn = document.getElementById("saveNoteBtn");
   saveBtn.addEventListener("click", saveNote);
@@ -193,6 +292,10 @@ async function initNotes() {
   document
     .getElementById("noteTitle")
     .addEventListener("input", scheduleAutosave);
+
+  document
+    .getElementById("sketchTitle")
+    .addEventListener("input", scheduleSketchAutosave);
 
   try {
     const createdFromDraft = await loadCreateNote();
@@ -226,6 +329,7 @@ async function loadCreateNote() {
       user_id: user.id,
       title: "Untitled",
       content: sanitizeHTML(savedText),
+      note_type: "text",
     })
     .select()
     .single();
@@ -236,9 +340,11 @@ async function loadCreateNote() {
   }
 
   actionMsg("Note created", "success");
-  document.dispatchEvent(new CustomEvent("onboarding:note_created", {
-    detail: { noteId: data.id },
-  }));
+  document.dispatchEvent(
+    new CustomEvent("onboarding:note_created", {
+      detail: { noteId: data.id },
+    }),
+  );
   localStorage.removeItem("createNote");
 
   await loadNotes();
@@ -293,11 +399,14 @@ async function loadNotes(noteId) {
     openNote(notes[0]);
   } else {
     currentNoteId = null;
+    currentNoteType = "text";
     clearAutosaveTimer();
+    clearSketchAutosaveTimer();
     lastSavedSnapshot = "";
     setSaveStatus("");
-  document.getElementById("linkedTasksChip")?.remove();
+    document.getElementById("linkedTasksChip")?.remove();
 
+    showTextPane();
     const titleInput = document.getElementById("noteTitle");
     if (titleInput) titleInput.value = "";
     if (quill) {
@@ -356,6 +465,7 @@ function renderNotesList(notes) {
   notes.forEach((note) => {
     const item = document.createElement("div");
     item.classList.add("noteItem");
+    if (note.note_type === "sketch") item.classList.add("noteItemSketch");
     item.dataset.id = note.id;
 
     const content = document.createElement("div");
@@ -363,11 +473,15 @@ function renderNotesList(notes) {
 
     const titleEl = document.createElement("p");
     titleEl.classList.add("noteTitle");
-    titleEl.textContent = note.title || "Untitled";
+    titleEl.textContent =
+      (note.note_type === "sketch" ? "🖊 " : "") + (note.title || "Untitled");
 
     const previewEl = document.createElement("span");
     previewEl.classList.add("notePreview");
-    previewEl.textContent = getPlainPreview(note.content);
+    previewEl.textContent =
+      note.note_type === "sketch"
+        ? "Sketch note"
+        : getPlainPreview(note.content);
 
     const metaEl = document.createElement("span");
     metaEl.classList.add("noteMeta");
@@ -409,49 +523,63 @@ function highlightActiveNote(id) {
 
 /*
 
+PANE SWITCHING
+
+*/
+function showTextPane() {
+  document.getElementById("textEditorPane")?.removeAttribute("hidden");
+  document.getElementById("sketchEditorPane")?.setAttribute("hidden", "");
+}
+
+function showSketchPane() {
+  document.getElementById("sketchEditorPane")?.removeAttribute("hidden");
+  document.getElementById("textEditorPane")?.setAttribute("hidden", "");
+  // board has zero size while its pane was hidden, size it now that it's visible
+  resizeBoard();
+}
+
+/*
+
 OPEN NOTE IN EDITOR
 
 */
 async function openNoteById(noteId, userId) {
   const noteData = await fetchNoteById(noteId, userId);
-
-  clearAutosaveTimer();
-  currentNoteId = noteData.id;
-
-  const title = noteData.title || "Untitled";
-  const content = sanitizeHTML(noteData.content || "");
-
-  document.getElementById("noteTitle").value = title;
-  quill.root.innerHTML = content;
-
-  lastSavedSnapshot = title + content;
-  setSaveStatus("");
-  highlightActiveNote(noteData.id);
-
-    fetchLinkedTasks(noteData.id).then(renderLinkedTasksChip);
-
+  openNote(noteData);
 }
 
 function openNote(note) {
   clearAutosaveTimer();
+  clearSketchAutosaveTimer();
   currentNoteId = note.id;
-
-  const title = note.title || "Untitled";
-  const content = sanitizeHTML(note.content || "");
-
-  document.getElementById("noteTitle").value = title;
-  quill.root.innerHTML = content;
-
-  lastSavedSnapshot = title + content;
-  setSaveStatus("");
+  currentNoteType = note.note_type || "text";
   highlightActiveNote(note.id);
 
-  fetchLinkedTasks(note.id).then(renderLinkedTasksChip)
+  if (currentNoteType === "sketch") {
+    showSketchPane();
+    document.getElementById("sketchTitle").value =
+      note.title || "Untitled Sketch";
+    undoStack = [];
+    loadImageOntoBoard(note.canvas_data);
+    lastSavedSketchSnapshot = (note.title || "") + (note.canvas_data || "");
+    setSketchSaveStatus("");
+    setSketchTool("pen");
+  } else {
+    showTextPane();
+    const title = note.title || "Untitled";
+    const content = sanitizeHTML(note.content || "");
+    document.getElementById("noteTitle").value = title;
+    quill.root.innerHTML = content;
+    lastSavedSnapshot = title + content;
+    setSaveStatus("");
+  }
+
+  fetchLinkedTasks(note.id).then(renderLinkedTasksChip);
 }
 
 /*
 
-CREATE NOTE
+CREATE NOTE (text)
 
 */
 async function createNote() {
@@ -468,6 +596,7 @@ async function createNote() {
         user_id: user.id,
         title: "Untitled",
         content: "",
+        note_type: "text",
       })
       .select()
       .single();
@@ -481,9 +610,11 @@ async function createNote() {
     await loadNotes();
     openNote(data);
 
-    document.dispatchEvent(new CustomEvent("onboarding:note_created", {
-      detail: { noteId: data.id },
-    }));
+    document.dispatchEvent(
+      new CustomEvent("onboarding:note_created", {
+        detail: { noteId: data.id },
+      }),
+    );
 
     actionMsg("Note created. Start typing!", "success");
   } finally {
@@ -491,13 +622,65 @@ async function createNote() {
   }
 }
 
+/*
+
+CREATE NOTE (sketch)
+
+*/
+async function createSketchNote() {
+  setLoading(true);
+
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const { data, error } = await supabase
+      .from("personal_notes")
+      .insert({
+        user_id: user.id,
+        title: "Untitled Sketch",
+        content: "",
+        note_type: "sketch",
+        canvas_data: null,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error(error);
+      actionMsg("Failed to create sketch.", "error");
+      return;
+    }
+
+    await loadNotes();
+    openNote(data);
+
+    document.dispatchEvent(
+      new CustomEvent("onboarding:note_created", {
+        detail: { noteId: data.id },
+      }),
+    );
+
+    actionMsg("Sketch created!", "success");
+  } finally {
+    setLoading(false);
+  }
+}
+
+// "createNote" = New Note dropdown option, "createSketch" = New Sketch dropdown option
 document.getElementById("createNote").addEventListener("click", () => {
+  notesTypeSelectContainer.hidden = true;
   createNote();
+});
+document.getElementById("createSketch").addEventListener("click", () => {
+  notesTypeSelectContainer.hidden = true;
+  createSketchNote();
 });
 
 /*
 
-SAVE NOTE
+SAVE NOTE (text)
 
 */
 async function persistNote(title, content) {
@@ -516,6 +699,7 @@ async function persistNote(title, content) {
         user_id: user.id,
         title: title || "Untitled",
         content,
+        note_type: "text",
       })
       .select()
       .single();
@@ -524,12 +708,11 @@ async function persistNote(title, content) {
 
     currentNoteId = data.id;
 
-    // Covers both the explicit Save button and the very first
-    // autosave — this is the single point where a note first
-    // actually exists in the database.
-    document.dispatchEvent(new CustomEvent("onboarding:note_created", {
-      detail: { noteId: data.id },
-    }));
+    document.dispatchEvent(
+      new CustomEvent("onboarding:note_created", {
+        detail: { noteId: data.id },
+      }),
+    );
 
     return { data, created: true };
   }
@@ -554,15 +737,18 @@ function updateSidebarEntry(id, title, content = null) {
   if (!item) return;
 
   const titleEl = item.querySelector(".noteTitle");
-  if (titleEl) titleEl.textContent = title || "Untitled";
+  if (titleEl) {
+    const isSketch = item.classList.contains("noteItemSketch");
+    titleEl.textContent = (isSketch ? "🖊 " : "") + (title || "Untitled");
+  }
 
   if (content !== null) {
     const previewEl = item.querySelector(".notePreview");
     if (previewEl) previewEl.textContent = getPlainPreview(content);
-
-    const metaEl = item.querySelector(".noteMeta");
-    if (metaEl) metaEl.textContent = "Just now";
   }
+
+  const metaEl = item.querySelector(".noteMeta");
+  if (metaEl) metaEl.textContent = "Just now";
 
   const cached = savedNoteDetails.find(
     (note) => String(note.id) === String(id),
@@ -630,7 +816,199 @@ function attachDeleteNoteListener() {
   });
 }
 
-// EXPORT
+/*
+
+SKETCH BOARD
+Built on the working freehand-draw prototype: pointer events directly
+drive a 2D context path (raster, not vector). Extended with a text tool,
+snapshot-based undo, and Supabase persistence.
+
+*/
+function initSketchBoard() {
+  board = document.getElementById("board");
+  if (!board) return;
+  context = board.getContext("2d");
+
+  const colorPicker = document.getElementById("color-picker");
+  const brushSize = document.getElementById("brush-size");
+  const textToolBtn = document.getElementById("text-tool-button");
+  const undoBtn = document.getElementById("undo-button");
+  const clearBtn = document.getElementById("clear-button");
+  const fillBtn = document.getElementById("fill-button");
+  const downloadBtn = document.getElementById("download-button");
+
+  board.style.touchAction = "none";
+
+  board.addEventListener("pointerdown", (e) => {
+    if (sketchTool === "text") {
+      placeSketchText(e);
+      return;
+    }
+    pushUndoSnapshot();
+    isdrawing = true;
+  });
+
+  board.addEventListener("pointerup", () => {
+    if (!isdrawing) return;
+    isdrawing = false;
+    context.beginPath();
+    scheduleSketchAutosave();
+  });
+
+  board.addEventListener("pointerout", () => (isdrawing = false));
+  board.addEventListener("pointermove", drawOnBoard);
+
+  clearBtn.addEventListener("click", () => {
+    pushUndoSnapshot();
+    clearBoard();
+    scheduleSketchAutosave();
+  });
+
+  fillBtn.addEventListener("click", () => {
+    pushUndoSnapshot();
+    fillBoard();
+    scheduleSketchAutosave();
+  });
+
+  downloadBtn.addEventListener("click", downloadBoard);
+  undoBtn.addEventListener("click", undoSketch);
+  textToolBtn.addEventListener("click", () => {
+    setSketchTool(sketchTool === "text" ? "pen" : "text");
+  });
+
+  window.addEventListener("resize", () => {
+    if (currentNoteType === "sketch") resizeBoard();
+  });
+
+  function drawOnBoard(e) {
+    if (!isdrawing) return;
+
+    context.lineWidth = brushSize.value;
+    context.lineCap = "round";
+    context.strokeStyle = colorPicker.value;
+
+    context.lineTo(e.offsetX, e.offsetY);
+    context.stroke();
+    context.beginPath();
+    context.moveTo(e.offsetX, e.offsetY);
+  }
+}
+
+function resizeBoard() {
+  if (!board) return;
+  const wrap = board.parentElement;
+  const rect = wrap.getBoundingClientRect();
+  if (rect.width === 0 || rect.height === 0) return; // still hidden
+
+  // Resizing a canvas clears it, so preserve what's drawn first.
+  const previous =
+    board.width && board.height ? board.toDataURL("image/png") : null;
+
+  board.width = rect.width;
+  board.height = rect.height;
+
+  if (previous) {
+    const img = new Image();
+    img.onload = () => context.drawImage(img, 0, 0);
+    img.src = previous;
+  }
+}
+
+function clearBoard() {
+  context.clearRect(0, 0, board.width, board.height);
+}
+
+function fillBoard() {
+  const colorPicker = document.getElementById("color-picker");
+  context.fillStyle = colorPicker.value;
+  context.fillRect(0, 0, board.width, board.height);
+}
+
+function downloadBoard() {
+  const title = document.getElementById("sketchTitle")?.value || "sketch";
+  const safeTitle = title.replace(/[^a-z0-9]/gi, "_").toLowerCase();
+  const imageLink = document.createElement("a");
+  imageLink.download = `${safeTitle || "sketch"}.png`;
+  imageLink.href = board.toDataURL("image/png");
+  imageLink.click();
+}
+
+function setSketchTool(tool) {
+  sketchTool = tool;
+  const textToolBtn = document.getElementById("text-tool-button");
+  textToolBtn?.classList.toggle("active", tool === "text");
+  board.style.cursor = tool === "text" ? "text" : "crosshair";
+}
+
+function placeSketchText(e) {
+  const x = e.offsetX;
+  const y = e.offsetY;
+  const colorPicker = document.getElementById("color-picker");
+
+  const editable = document.createElement("div");
+  editable.contentEditable = "true";
+  editable.className = "sketchTextInput";
+  editable.style.position = "absolute";
+  editable.style.left = `${x}px`;
+  editable.style.top = `${y}px`;
+  editable.style.color = colorPicker.value;
+  editable.style.font = "20px sans-serif";
+  editable.style.minWidth = "20px";
+  editable.style.outline = "1px dashed var(--accent, #3b82f6)";
+  editable.style.background = "transparent";
+  board.parentElement.appendChild(editable);
+  editable.focus();
+
+  const commit = () => {
+    const content = editable.textContent.trim();
+    editable.remove();
+    if (!content) return;
+    pushUndoSnapshot();
+    context.fillStyle = colorPicker.value;
+    context.font = "20px sans-serif";
+    context.textBaseline = "top";
+    context.fillText(content, x, y);
+    scheduleSketchAutosave();
+  };
+
+  editable.addEventListener("blur", commit, { once: true });
+  editable.addEventListener("keydown", (ev) => {
+    if (ev.key === "Enter" && !ev.shiftKey) {
+      ev.preventDefault();
+      editable.blur();
+    }
+  });
+}
+
+function pushUndoSnapshot() {
+  if (!board.width || !board.height) return;
+  undoStack.push(board.toDataURL("image/png"));
+  if (undoStack.length > UNDO_LIMIT) undoStack.shift();
+}
+
+function undoSketch() {
+  const previous = undoStack.pop();
+  if (!previous) return;
+  const img = new Image();
+  img.onload = () => {
+    context.clearRect(0, 0, board.width, board.height);
+    context.drawImage(img, 0, 0);
+    scheduleSketchAutosave();
+  };
+  img.src = previous;
+}
+
+function loadImageOntoBoard(dataUrl) {
+  resizeBoard();
+  if (!context) return;
+  context.clearRect(0, 0, board.width, board.height);
+  if (!dataUrl) return;
+  const img = new Image();
+  img.onload = () => context.drawImage(img, 0, 0);
+  img.src = dataUrl;
+}
+
+// EXPORT (text notes)
 
 //HTML TO MARKDOWN
 function htmlToMarkdown(html) {
@@ -698,7 +1076,6 @@ function htmlToMarkdown(html) {
           out += `\n> ${inner.trim()}\n\n`;
           break;
         case "li": {
-          const isChecklist = child.classList.contains("ql-indent-0") && child.dataset.list;
           const parent = child.parentElement;
           const isOrdered = parent && parent.tagName.toLowerCase() === "ol";
 
@@ -740,7 +1117,6 @@ function htmlToMarkdown(html) {
     .trim();
 }
 
-
 function exportFile(filename, content, type = "text/plain") {
   const blob = new Blob([content], { type });
   const url = URL.createObjectURL(blob);
@@ -767,9 +1143,9 @@ async function exportCurrentNote(type) {
   const htmlContent = quill.root.innerHTML;
   const plainText = quill.getText();
 
- const planName = (sessionState?.plan?.name || "").toLowerCase();
+  const planName = (sessionState?.plan?.name || "").toLowerCase();
 
- let didExport = false;
+  let didExport = false;
 
   switch (type) {
     case "html": {
@@ -934,9 +1310,12 @@ function renderLinkedTasksChip(tasks) {
   chip.title = tasks.map((t) => t.name).join(", ");
   chip.textContent = `🔗 ${tasks.length} linked task${tasks.length > 1 ? "s" : ""}`;
 
-  document.querySelector(".editorTop")?.appendChild(chip);
+  const activePane =
+    currentNoteType === "sketch"
+      ? document.querySelector("#sketchEditorPane .editorTop")
+      : document.querySelector("#textEditorPane .editorTop");
+  activePane?.appendChild(chip);
 }
-
 
 /*
 
@@ -948,6 +1327,7 @@ async function attachDeleteNoteEvent(noteToDelete, id) {
 
   if (String(id) === String(currentNoteId)) {
     clearAutosaveTimer();
+    clearSketchAutosaveTimer();
   }
 
   const { error } = await supabase.from("personal_notes").delete().eq("id", id);

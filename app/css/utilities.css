@@ -417,7 +417,9 @@ input.error {
 /*NOTIFICATIONS*/
 #notificationsContainer h2 {
   text-align: left;
-  margin-left: var(--space-md);
+  font-size: var(--text-lg);
+  border-bottom: 1px solid var(--border-primary);
+  margin: 0 var(--space-md);
 }
 #notificationsContainer {
   border-radius: var(--radius-md);

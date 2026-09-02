@@ -433,3 +433,13 @@ button.toggleNotesListBtn {
   white-space: nowrap;
   align-self: center;
 }
+
+#sketchCanvasWrap {
+  width: 100%;
+  height: 100%;
+}
+#baord {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+}
