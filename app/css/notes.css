@@ -338,7 +338,7 @@ gap: var(--space-sm);
   border: 1px solid var(--border-primary);
 }
 
-#editor {
+#editor, #textEditorPane {
   flex: 1;
   overflow: auto;
   border: none;
