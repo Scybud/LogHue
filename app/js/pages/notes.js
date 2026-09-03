@@ -26,12 +26,14 @@ const AUTOSAVE_DELAY = 1500;
 let board = null;
 let context = null;
 let isdrawing = false;
-let sketchTool = "pen"; // "pen" | "text"
+let sketchTool = "pen"; // "pen" | "eraser" | "text"
 let undoStack = [];
 const UNDO_LIMIT = 20;
 let isSavingSketch = false;
 let lastSavedSketchSnapshot = "";
 let sketchAutosaveTimer = null;
+const BOARD_WIDTH = 1920;
+const BOARD_HEIGHT = 1080;
 
 // -------------------------------
 // Loading State
@@ -211,6 +213,7 @@ async function initNotes() {
           <div id="sketchToolbar">
             <input type="color" id="color-picker" value="#000000" title="Color" />
             <input type="range" id="brush-size" min="1" max="50" value="5" title="Brush size" />
+            <button type="button" id="eraser-tool-button" class="btn-sm btn btn-secondary">Eraser</button>
             <button type="button" id="text-tool-button" class="btn-sm btn btn-secondary">Text</button>
             <button type="button" id="undo-button" class="btn-sm btn btn-secondary">Undo</button>
             <button type="button" id="clear-button" class="btn-sm btn btn-secondary">Clear</button>
@@ -534,8 +537,7 @@ function showTextPane() {
 function showSketchPane() {
   document.getElementById("sketchEditorPane")?.removeAttribute("hidden");
   document.getElementById("textEditorPane")?.setAttribute("hidden", "");
-  // board has zero size while its pane was hidden, size it now that it's visible
-  resizeBoard();
+  ensureBoardSized();
 }
 
 /*
@@ -831,6 +833,7 @@ function initSketchBoard() {
 
   const colorPicker = document.getElementById("color-picker");
   const brushSize = document.getElementById("brush-size");
+  const eraserToolBtn = document.getElementById("eraser-tool-button");
   const textToolBtn = document.getElementById("text-tool-button");
   const undoBtn = document.getElementById("undo-button");
   const clearBtn = document.getElementById("clear-button");
@@ -852,6 +855,7 @@ function initSketchBoard() {
     if (!isdrawing) return;
     isdrawing = false;
     context.beginPath();
+    context.globalCompositeOperation = "source-over";
     scheduleSketchAutosave();
   });
 
@@ -875,43 +879,41 @@ function initSketchBoard() {
   textToolBtn.addEventListener("click", () => {
     setSketchTool(sketchTool === "text" ? "pen" : "text");
   });
-
-  window.addEventListener("resize", () => {
-    if (currentNoteType === "sketch") resizeBoard();
+  eraserToolBtn.addEventListener("click", () => {
+    setSketchTool(sketchTool === "eraser" ? "pen" : "eraser");
   });
 
   function drawOnBoard(e) {
     if (!isdrawing) return;
 
-    context.lineWidth = brushSize.value;
+    const [x, y] = getBoardPos(e);
+
+    context.lineWidth =
+      sketchTool === "eraser" ? brushSize.value * 3 : brushSize.value;
     context.lineCap = "round";
+    context.globalCompositeOperation =
+      sketchTool === "eraser" ? "destination-out" : "source-over";
     context.strokeStyle = colorPicker.value;
 
-    context.lineTo(e.offsetX, e.offsetY);
+    context.lineTo(x, y);
     context.stroke();
     context.beginPath();
-    context.moveTo(e.offsetX, e.offsetY);
+    context.moveTo(x, y);
   }
 }
 
-function resizeBoard() {
+function getBoardPos(e) {
+  const rect = board.getBoundingClientRect();
+  const scaleX = board.width / rect.width;
+  const scaleY = board.height / rect.height;
+  return [(e.clientX - rect.left) * scaleX, (e.clientY - rect.top) * scaleY];
+}
+
+function ensureBoardSized() {
   if (!board) return;
-  const wrap = board.parentElement;
-  const rect = wrap.getBoundingClientRect();
-  if (rect.width === 0 || rect.height === 0) return; // still hidden
-
-  // Resizing a canvas clears it, so preserve what's drawn first.
-  const previous =
-    board.width && board.height ? board.toDataURL("image/png") : null;
-
-  board.width = rect.width;
-  board.height = rect.height;
-
-  if (previous) {
-    const img = new Image();
-    img.onload = () => context.drawImage(img, 0, 0);
-    img.src = previous;
-  }
+  if (board.width === BOARD_WIDTH && board.height === BOARD_HEIGHT) return; // already sized, don't touch it
+  board.width = BOARD_WIDTH;
+  board.height = BOARD_HEIGHT;
 }
 
 function clearBoard() {
@@ -935,22 +937,29 @@ function downloadBoard() {
 
 function setSketchTool(tool) {
   sketchTool = tool;
-  const textToolBtn = document.getElementById("text-tool-button");
-  textToolBtn?.classList.toggle("active", tool === "text");
-  board.style.cursor = tool === "text" ? "text" : "crosshair";
+  document
+    .getElementById("text-tool-button")
+    ?.classList.toggle("active", tool === "text");
+  document
+    .getElementById("eraser-tool-button")
+    ?.classList.toggle("active", tool === "eraser");
+  board.style.cursor =
+    tool === "text" ? "text" : tool === "eraser" ? "cell" : "crosshair";
 }
 
 function placeSketchText(e) {
-  const x = e.offsetX;
-  const y = e.offsetY;
+  const rect = board.getBoundingClientRect();
+  const displayX = e.clientX - rect.left; // CSS pixels, for positioning the overlay
+  const displayY = e.clientY - rect.top;
+  const [boardX, boardY] = getBoardPos(e); // canvas pixels, for the actual drawing
   const colorPicker = document.getElementById("color-picker");
 
   const editable = document.createElement("div");
   editable.contentEditable = "true";
   editable.className = "sketchTextInput";
   editable.style.position = "absolute";
-  editable.style.left = `${x}px`;
-  editable.style.top = `${y}px`;
+  editable.style.left = `${displayX}px`;
+  editable.style.top = `${displayY}px`;
   editable.style.color = colorPicker.value;
   editable.style.font = "20px sans-serif";
   editable.style.minWidth = "20px";
@@ -964,10 +973,11 @@ function placeSketchText(e) {
     editable.remove();
     if (!content) return;
     pushUndoSnapshot();
+    const scale = board.width / rect.width;
     context.fillStyle = colorPicker.value;
-    context.font = "20px sans-serif";
+    context.font = `${20 * scale}px sans-serif`;
     context.textBaseline = "top";
-    context.fillText(content, x, y);
+    context.fillText(content, boardX, boardY);
     scheduleSketchAutosave();
   };
 
@@ -999,7 +1009,7 @@ function undoSketch() {
 }
 
 function loadImageOntoBoard(dataUrl) {
-  resizeBoard();
+  ensureBoardSized();
   if (!context) return;
   context.clearRect(0, 0, board.width, board.height);
   if (!dataUrl) return;
@@ -1353,5 +1363,5 @@ async function attachDeleteNoteEvent(noteToDelete, id) {
   }, 400);
 
   setLoading(false);
-  actionMsg("Note deleted successfully!", "success");
+  actionMsg("Note deleted", "success");
 }
