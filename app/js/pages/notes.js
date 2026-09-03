@@ -211,7 +211,40 @@ async function initNotes() {
         <div class="actionBtnsContainer">
           <span id="sketchSaveStatus" class="saveStatus"></span>
 
+          <button id="expandCanvasBtn" data-title="Resize canvas" arial-label="Resize canvas" class="btn tooltip actionBtn" type="button">
+              <svg
+  width="16"
+  height="16"
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- Maximize window -->
+  <rect
+    x="5"
+    y="4"
+    width="18"
+    height="14"
+    rx="2"
+    stroke="currentColor"
+    stroke-width="3"
+  />
+
+  <!-- Minimize bar -->
+  <line
+    x1="7"
+    y1="24"
+    x2="21"
+    y2="24"
+    stroke="currentColor"
+    stroke-width="5"
+    stroke-linecap="round"
+  />
+</svg>
+         </button>
+            
           <div class="newNoteActionContainer">
+
             <button onclick="sketchToolbarContainer.hidden ^= 1" class="btn actionBtn" type="button">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="3" />
@@ -235,6 +268,7 @@ async function initNotes() {
                   <span class="toolLabel">Eraser</span>
                 </button>
 
+                <!--
                 <button id="text-tool-button" class="btn" type="button">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="4 7 4 4 20 4 20 7" />
@@ -243,6 +277,7 @@ async function initNotes() {
                   </svg>
                   <span class="toolLabel">Text</span>
                 </button>
+                -->
 
                 <button id="undo-button" class="btn" type="button">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -252,7 +287,6 @@ async function initNotes() {
                   <span class="toolLabel">Undo</span>
                 </button>
 
-                
                 <button id="fill-button" class="btn" type="button">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M19 11l-8-8-8.5 8.5a2 2 0 0 0 0 2.8L9 21l10-10z" />
@@ -262,6 +296,15 @@ async function initNotes() {
                 <span class="toolLabel">Fill</span>
                 </button>
                 
+                <button id="download-button" class="btn" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3v12" />
+                <polyline points="7 10 12 15 17 10" />
+                <path d="M5 21h14" />
+                </svg>
+                <span class="toolLabel">Download PNG</span>
+                </button>
+
                 <button id="clear-button" class="btn danger" type="button">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="3 6 5 6 21 6" />
@@ -270,15 +313,6 @@ async function initNotes() {
                     <path d="M14 11v6" />
                   </svg>
                   <span class="toolLabel">Clear</span>
-                </button>
-
-                <button id="download-button" class="btn" type="button">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 3v12" />
-                    <polyline points="7 10 12 15 17 10" />
-                    <path d="M5 21h14" />
-                  </svg>
-                  <span class="toolLabel">Download PNG</span>
                 </button>
               </div>
             </div>
@@ -336,8 +370,9 @@ async function initNotes() {
     }
   });
 
-  attachDeleteNoteListener();
-  initSketchBoard();
+attachDeleteNoteListener();
+initSketchBoard();
+toggleSketchPaneExpand();
 
   const saveBtn = document.getElementById("saveNoteBtn");
   saveBtn.addEventListener("click", saveNote);
@@ -601,6 +636,30 @@ function showSketchPane() {
   document.getElementById("sketchEditorPane")?.removeAttribute("hidden");
   document.getElementById("textEditorPane")?.setAttribute("hidden", "");
   ensureBoardSized();
+}
+
+function toggleSketchPaneExpand() {
+  const expandCanvasBtn = document.getElementById("expandCanvasBtn");
+  const pane = document.getElementById("sketchEditorPane");
+
+  expandCanvasBtn.addEventListener("click", () => {
+    const first = pane.getBoundingClientRect();
+    pane.classList.toggle("expanded");
+    const last = pane.getBoundingClientRect();
+
+    const dx = first.left - last.left;
+    const dy = first.top - last.top;
+    const sx = first.width / last.width;
+    const sy = first.height / last.height;
+
+    pane.animate(
+      [
+        { transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` },
+        { transform: "none" },
+      ],
+      { duration: 400, easing: "ease" },
+    );
+  });
 }
 
 /*
@@ -897,7 +956,7 @@ function initSketchBoard() {
   const colorPicker = document.getElementById("color-picker");
   const brushSize = document.getElementById("brush-size");
   const eraserToolBtn = document.getElementById("eraser-tool-button");
-  const textToolBtn = document.getElementById("text-tool-button");
+//const textToolBtn = document.getElementById("text-tool-button");
   const undoBtn = document.getElementById("undo-button");
   const clearBtn = document.getElementById("clear-button");
   const fillBtn = document.getElementById("fill-button");
@@ -939,9 +998,13 @@ function initSketchBoard() {
 
   downloadBtn.addEventListener("click", downloadBoard);
   undoBtn.addEventListener("click", undoSketch);
+ 
+  /*
   textToolBtn.addEventListener("click", () => {
     setSketchTool(sketchTool === "text" ? "pen" : "text");
   });
+  */
+
   eraserToolBtn.addEventListener("click", () => {
     setSketchTool(sketchTool === "eraser" ? "pen" : "eraser");
   });

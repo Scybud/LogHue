@@ -77,8 +77,8 @@
   display: grid;
   grid-template-columns: minmax(240px, 320px) 1fr;
   gap: 0;
-  height: calc(100vh - 140px);
-  max-height: calc(100vh - 140px);
+  height: calc(100vh - 80px);
+  max-height: calc(100vh - 80px);
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -339,11 +339,12 @@ gap: var(--space-sm);
 }
 
 #textEditorPane {
-  flex: 1 1 auto;      /* gets real height from #editorContainer's flex chain */
+  flex: 1 1 auto;
   min-height: 0;
+    height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden;    /* NOT auto — this container itself never scrolls */
+  overflow: hidden;
 }
 
 #editor {
@@ -379,7 +380,7 @@ button.toggleNotesListBtn {
   .notesContainer {
     display: flex;
     flex-direction: column;
-    height: auto;
+    height: 100%;
     max-height: none;
     border: none;
     overflow: visible;
@@ -441,14 +442,22 @@ button.toggleNotesListBtn {
   align-self: center;
 }
 
+#sketchEditorPane {
+  position: relative;
+  transition: transform 0.5s ease, width 0.5s ease, height 0.5s ease,
+    top 0.5s ease, left 0.5s ease, border-radius 0.5s ease;
+}
 #sketchCanvasWrap {
   flex: 1;
   min-height: 0;
+  height: 100%;
 }
 #board {
   width: 100%;
   height: 100%;
+  max-height: 100%;
   display: block;
+  background: #ffffff;
   border-radius: var(--radius-sm);
 }
 
@@ -457,6 +466,31 @@ button.toggleNotesListBtn {
   align-items: center;
   gap: var(--space-sm);
   padding: var(--space-xs) 0;
+}
+
+#sketchEditorPane.expanded {
+position: fixed;
+width: calc(100% - 60px);
+height: 100%;
+z-index: 2;
+top: 0;
+left: 60px;
+backdrop-filter: var(--filter);
+}
+#sketchEditorPane .actionBtn.tooltip:hover::after {
+  color: var(--text-primary);
+}
+
+@media (max-width: 800px) {
+ #sketchEditorPane.expanded {
+width: 100%;
+height: 100%;
+left: 0;
+}
+#sketchEditorPane.expanded #sketchCanvasWrap {
+  height: 100%;
+}
+
 }
 #textEditorPane[hidden],
 #sketchEditorPane[hidden] {

@@ -21,7 +21,7 @@ export async function fetchUserNotes(userId) {
 export async function fetchNoteById(noteId, userId) {
   const { data: note, error } = await supabase
     .from("personal_notes")
-    .select("id, title, content")
+    .select("id, title, content, note_type, canvas_data")
     .eq("user_id", userId)
     .eq("id", noteId)
     .single();
