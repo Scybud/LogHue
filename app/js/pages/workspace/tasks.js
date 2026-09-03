@@ -296,8 +296,10 @@ export function loadAssignedTasks(sectionTitle, tasks, container) {
  * Member view – all workspace tasks (read-only, no delete here by design).
  */
 export function loadAllTasks(tasks, container) {
-  if (!tasks || tasks.length === 0) {
-    container.innerHTML = `<p class="placeholderText">No tasks created yet.</p>`;
+      const allIncompleteTasks = tasks.filter((t) => t.status !== "completed");
+
+  if (!allIncompleteTasks || allIncompleteTasks.length === 0) {
+    container.innerHTML = `<p class="placeholderText">No incompleted tasks.</p>`;
     return;
   }
 
@@ -311,7 +313,7 @@ export function loadAllTasks(tasks, container) {
   const grid = document.createElement("div");
   grid.classList.add("container", "double-grid");
 
-  tasks.forEach((tsk) => {
+  allIncompleteTasks.forEach((tsk) => {
     const card = document.createElement("div");
     card.classList.add("taskCard");
     card.dataset.id = tsk.id;

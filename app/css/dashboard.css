@@ -300,7 +300,10 @@ h3 {
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
 }
-
+.taskCard .btn {
+  width: fit-content;
+  margin: 0 var(--space-xs);
+}
 .taskMenuBtn {
   position: absolute;
   top: var(--space-sm);
