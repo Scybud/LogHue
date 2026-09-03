@@ -311,7 +311,7 @@ async function initNotes() {
         ["code-block"],
       ],
     },
-    placeholder: "Create your first note...",
+    placeholder: "Start typing...",
     theme: "snow",
   });
 

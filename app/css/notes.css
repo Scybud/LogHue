@@ -305,7 +305,7 @@ gap: var(--space-sm);
 }
 
 .actionBtnsContainer {
-
+  display: flex;
   align-items: center;
   background: var(--card-bg);
 }
@@ -338,13 +338,23 @@ gap: var(--space-sm);
   border: 1px solid var(--border-primary);
 }
 
-#editor, #textEditorPane {
-  flex: 1;
-  overflow: auto;
+#textEditorPane {
+  flex: 1 1 auto;      /* gets real height from #editorContainer's flex chain */
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;    /* NOT auto — this container itself never scrolls */
+}
+
+#editor {
+  flex: 1 1 auto;       /* takes remaining space after the toolbar */
+  min-height: 0;
+  height: auto;          /* remove height:100%, flex handles sizing now */
+  max-height: none;
+  overflow: auto;        /* only #editor scrolls */
   border: none;
   background: var(--bg-primary);
   color: var(--text-primary);
-  min-height: 0;
   margin: var(--space-xs);
   border-radius: var(--radius-sm);
 }
@@ -447,4 +457,8 @@ button.toggleNotesListBtn {
   align-items: center;
   gap: var(--space-sm);
   padding: var(--space-xs) 0;
+}
+#textEditorPane[hidden],
+#sketchEditorPane[hidden] {
+  display: none !important;
 }
