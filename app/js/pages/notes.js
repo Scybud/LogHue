@@ -210,15 +210,78 @@ async function initNotes() {
         <input id="sketchTitle" name="sketchTitle" placeholder="Sketch title" class="noteTitle inputField" />
         <div class="actionBtnsContainer">
           <span id="sketchSaveStatus" class="saveStatus"></span>
-          <div id="sketchToolbar">
-            <input type="color" id="color-picker" value="#000000" title="Color" />
-            <input type="range" id="brush-size" min="1" max="50" value="5" title="Brush size" />
-            <button type="button" id="eraser-tool-button" class="btn-sm btn btn-secondary">Eraser</button>
-            <button type="button" id="text-tool-button" class="btn-sm btn btn-secondary">Text</button>
-            <button type="button" id="undo-button" class="btn-sm btn btn-secondary">Undo</button>
-            <button type="button" id="clear-button" class="btn-sm btn btn-secondary">Clear</button>
-            <button type="button" id="fill-button" class="btn-sm btn btn-secondary">Fill</button>
-            <button type="button" id="download-button" class="btn-sm btn notesActionBtn">Download PNG</button>
+
+          <div class="newNoteActionContainer">
+            <button onclick="sketchToolbarContainer.hidden ^= 1" class="btn actionBtn" type="button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.6 1z" />
+              </svg>
+              Tools
+            </button>
+
+            <div class="dropdown sketchToolbarContainer" id="sketchToolbarContainer" hidden>
+              <div class="dropdown-list">
+                <div class="sketchToolInputRow">
+                  <input type="color" id="color-picker" value="#000000" title="Color" />
+                  <input type="range" id="brush-size" min="1" max="50" value="5" title="Brush size" />
+                </div>
+
+                <button id="eraser-tool-button" class="btn" type="button">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 20H8.5L3 14.5a1 1 0 0 1 0-1.4l9-9a1 1 0 0 1 1.4 0l7 7a1 1 0 0 1 0 1.4L14 19" />
+                    <path d="M8 12l7 7" />
+                  </svg>
+                  <span class="toolLabel">Eraser</span>
+                </button>
+
+                <button id="text-tool-button" class="btn" type="button">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="4 7 4 4 20 4 20 7" />
+                    <line x1="12" y1="4" x2="12" y2="20" />
+                    <line x1="9" y1="20" x2="15" y2="20" />
+                  </svg>
+                  <span class="toolLabel">Text</span>
+                </button>
+
+                <button id="undo-button" class="btn" type="button">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 10h10a5 5 0 0 1 0 10H8" />
+                    <polyline points="7 5 3 10 7 15" />
+                  </svg>
+                  <span class="toolLabel">Undo</span>
+                </button>
+
+                
+                <button id="fill-button" class="btn" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 11l-8-8-8.5 8.5a2 2 0 0 0 0 2.8L9 21l10-10z" />
+                <path d="M5 13h11" />
+                <circle cx="20" cy="18" r="2" />
+                </svg>
+                <span class="toolLabel">Fill</span>
+                </button>
+                
+                <button id="clear-button" class="btn danger" type="button">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6l-1 14H6L5 6" />
+                    <path d="M10 11v6" />
+                    <path d="M14 11v6" />
+                  </svg>
+                  <span class="toolLabel">Clear</span>
+                </button>
+
+                <button id="download-button" class="btn" type="button">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 3v12" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <path d="M5 21h14" />
+                  </svg>
+                  <span class="toolLabel">Download PNG</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

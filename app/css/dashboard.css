@@ -480,7 +480,7 @@ max-width: 200px;
 .workspaceCardHeaderRight .dropdown-list .btn:last-child {
   color: var(--danger);
 }
-.dropdown-list .btn:nth-child(5):hover {
+.dropdown-list .btn.danger:hover {
   background-color: var(--danger);
 }
 .dropdown-list button.dropdown-item,
