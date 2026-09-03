@@ -13,7 +13,7 @@ import {
 } from "https://ui.scybud.com/js/ui.js";
 import { attachCreatePersonalTaskEvent } from "../../js/utils/modalEvents.js";
 import { formatDateTime } from "../../js/utils/time.js";
-
+import {linkify} from "../../js/utils/linkify.js";
 // State
 let personalCreatedTasks: HTMLElement;
 let loggedTasksCount: HTMLElement;
@@ -225,7 +225,7 @@ actionsGroup.append(linkNoteBtn, duplicateBtn, deleteBtn);
   if (task.description?.trim()) {
     const desc = document.createElement("p");
     desc.classList.add("taskDescription");
-    desc.textContent = task.description;
+    desc.innerHTML = linkify(task.description);
     el.append(desc);
   }
 

@@ -1,5 +1,5 @@
 import { supabase } from "../supabase.js";
-import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
+import { setButtonLoading } from "https://ui.scybud.com/js/ui.js";
 import { loadActivities } from "./workspace/activities.js";
 import { formatDateTime, formatDateTimeRelatively } from "../utils/time.js";
 import { actionMsg } from "../utils/modals.js";

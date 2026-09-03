@@ -6,6 +6,7 @@ import { setLoading, closeModal } from "../../js/ui.js";
 import { loadComponent, createEmptyState, } from "https://ui.scybud.com/js/ui.js";
 import { attachCreatePersonalTaskEvent } from "../../js/utils/modalEvents.js";
 import { formatDateTime } from "../../js/utils/time.js";
+import { linkify } from "../../js/utils/linkify.js";
 // State
 let personalCreatedTasks;
 let loggedTasksCount;
@@ -162,7 +163,7 @@ export function createTaskElement(task) {
     if (task.description?.trim()) {
         const desc = document.createElement("p");
         desc.classList.add("taskDescription");
-        desc.textContent = task.description;
+        desc.innerHTML = linkify(task.description);
         el.append(desc);
     }
     //notes badge(if linked to note)
