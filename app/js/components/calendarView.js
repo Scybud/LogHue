@@ -26,6 +26,7 @@ export function initCalendarView() {
     nextBtn: document.getElementById("calNextBtn"),
     clockTime: document.getElementById("calClockTime"),
   };
+
   if (!els.calContainer) return; // calendar markup not present on this page
   els.modeListBtn?.addEventListener("click", () =>
     setMode("list", els.listContainer),
@@ -66,12 +67,23 @@ function setMode(next, listContainer) {
   if (els.calendarClock) els.calendarClock.hidden = mode !== "calendar";
   logEvent("calendar_vs_list_toggle", { chosen_view: mode });
   if (mode === "calendar") {
-    listContainer?.classList.add("hide");
+    els.listContainer?.classList.add("hide");
+    els.prevBtn?.classList.remove("hide");
+    els.calendarNav?.classList.remove("hide");
+    els.calendarClock?.classList.remove("hide");
+    els.nextBtn?.classList.remove("hide");
+    els.viewPills?.classList.remove("hide");
     logEvent("calendar_view_opened", { view });
     render();
   }
   if (mode === "list") {
-    listContainer?.classList.remove("hide");
+    els.listContainer?.classList.remove("hide");
+    els.prevBtn?.classList.add("hide");
+    els.calendarNav?.classList.add("hide");
+    els.calendarClock?.classList.add("hide");
+    els.nextBtn?.classList.add("hide");
+    els.viewPills?.classList.add("hide");
+
     render();
   }
 }

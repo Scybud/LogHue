@@ -88,6 +88,25 @@
   border-color: var(--border-secondary, var(--color));
 }
 
+.recurringBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 13px;
+  color: var(--text-secondary, gray);
+  flex-shrink: 0;
+}
+
+.taskCard.overdue {
+  background: color-mix(in srgb, var(--danger) 5%, transparent);
+  border-color: color-mix(in srgb, var(--danger) 20%, transparent);}
+
+.taskCard.overdue .taskDate {
+  color: var(--danger);
+}
+
 /* Completed state — dim the card, strike through the name */
 .taskCard.completed {
   opacity: 0.6;
@@ -96,6 +115,11 @@
 .taskCard.completed .personalTaskName {
   text-decoration: line-through;
   color: var(--text-secondary, gray);
+}
+
+.taskCard.removing {
+  opacity: 0;
+  transform: translateY(-6px) scale(0.6);
 }
 
 /* ------------------------------- */

@@ -139,6 +139,14 @@ export function createTaskElement(task) {
     nameLabel.htmlFor = checkbox.id;
     nameLabel.classList.add("personalTaskName");
     nameLabel.textContent = task.name;
+    topRow.append(checkbox, nameLabel);
+    if (task.is_template) {
+        const recurringBadge = document.createElement("span");
+        recurringBadge.classList.add("recurringBadge");
+        recurringBadge.title = "Recurring task";
+        recurringBadge.textContent = "↻";
+        topRow.append(recurringBadge);
+    }
     const actionsGroup = document.createElement("div");
     actionsGroup.classList.add("taskActions");
     const duplicateBtn = document.createElement("button");
@@ -184,38 +192,85 @@ export function createTaskElement(task) {
     el.append(dateSpan);
     return el;
 }
+// Date bucketing
+function getDateBucket(deadline) {
+    if (!deadline)
+        return "later";
+    const now = new Date();
+    const due = new Date(deadline);
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startOfDue = new Date(due.getFullYear(), due.getMonth(), due.getDate());
+    const diffDays = Math.round((startOfDue.getTime() - startOfToday.getTime()) / 86400000);
+    if (diffDays < 0)
+        return "overdue";
+    if (diffDays === 0)
+        return "today";
+    if (diffDays <= 7)
+        return "week";
+    return "later";
+}
+function sortByDeadline(tasks) {
+    return [...tasks].sort((a, b) => {
+        if (!a.task_deadline)
+            return 1;
+        if (!b.task_deadline)
+            return -1;
+        return (new Date(a.task_deadline).getTime() - new Date(b.task_deadline).getTime());
+    });
+}
 // Render Tasks
 export function renderExistingTasks() {
     if (!personalCreatedTasks)
         return;
     personalCreatedTasks.innerHTML = "";
     const incomplete = savedTaskDetails.filter((t) => !t.is_completed && !t.is_template);
-    const recurring = savedTaskDetails.filter((t) => t.is_template && !t.is_completed);
     const completed = savedTaskDetails.filter((t) => t.is_completed);
-    // Create collapsible groups
-    const incompleteGroup = createCollapsibleGroup("Incomplete Tasks", incomplete.length, true);
-    const recurringGroup = createCollapsibleGroup("Recurring Tasks", recurring.length, false);
-    const completedGroup = createCollapsibleGroup("Completed Tasks", completed.length, false);
-    // Render incomplete tasks
+    const recurring = savedTaskDetails.filter((t) => t.is_template && !t.is_completed);
+    const buckets = {
+        overdue: [],
+        today: [],
+        week: [],
+        later: [],
+    };
     incomplete.forEach((task) => {
-        const el = createTaskElement(task);
-        incompleteGroup.body.append(el);
-        requestAnimationFrame(() => el.classList.add("show"));
+        buckets[getDateBucket(task.task_deadline)].push(task);
     });
-    //Render recurring tasks
-    recurring.forEach((task) => {
-        const el = createTaskElement(task);
-        recurringGroup.body.append(el);
-        requestAnimationFrame(() => el.classList.add("show"));
+    const bucketLabels = [
+        ["overdue", "Overdue"],
+        ["today", "Today"],
+        ["week", "This week"],
+        ["later", "Later"],
+    ];
+    bucketLabels.forEach(([key, label]) => {
+        const tasks = sortByDeadline(buckets[key]);
+        if (tasks.length === 0)
+            return;
+        const group = createCollapsibleGroup(label, tasks.length, true);
+        tasks.forEach((task) => {
+            const el = createTaskElement(task);
+            if (key === "overdue")
+                el.classList.add("overdue");
+            group.body.append(el);
+            requestAnimationFrame(() => el.classList.add("show"));
+        });
+        personalCreatedTasks.append(group.wrapper);
     });
-    // Render completed tasks
+    if (recurring.length > 0) {
+        const recurringGroup = createCollapsibleGroup("Recurring series", recurring.length, false);
+        recurring.forEach((task) => {
+            const el = createTaskElement(task);
+            recurringGroup.body.append(el);
+            requestAnimationFrame(() => el.classList.add("show"));
+        });
+        personalCreatedTasks.append(recurringGroup.wrapper);
+    }
+    const completedGroup = createCollapsibleGroup("Completed Tasks", completed.length, false);
     completed.forEach((task) => {
         const el = createTaskElement(task);
         completedGroup.body.append(el);
         requestAnimationFrame(() => el.classList.add("show"));
     });
-    // Append groups to main container
-    personalCreatedTasks.append(incompleteGroup.wrapper, recurringGroup.wrapper, completedGroup.wrapper);
+    personalCreatedTasks.append(completedGroup.wrapper);
 }
 // Toggle Complete (Delegated)
 export function attachToggleCompleteEvent(container) {
