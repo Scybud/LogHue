@@ -39,7 +39,9 @@ div#editor.ql-container.ql-snow {
   padding: var(--space-lg) var(--space-xl);
   line-height: 1.65;
 }
-
+.ql-editor p {
+  margin-bottom: auto;
+}
 .ql-editor.ql-blank::before {
   color: var(--text-secondary);
   font-style: italic;

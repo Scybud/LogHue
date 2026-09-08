@@ -106,6 +106,8 @@
   padding: var(--space-md) var(--space-md);
   border-bottom: 1px solid var(--border-primary);
   flex-shrink: 0;
+    margin-bottom: 0;
+
 }
 
 .sectionHeaderLeft {
