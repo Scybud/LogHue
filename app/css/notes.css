@@ -315,7 +315,6 @@ gap: var(--space-sm);
 .saveStatus {
   font-size: 0.8rem;
   color: var(--text-secondary);
-  min-width: 70px;
   text-align: right;
 }
 
@@ -366,6 +365,9 @@ gap: var(--space-sm);
   border-radius: var(--radius-sm);
   max-width: 100%;
   height: auto;
+}
+#expandNoteBtn {
+  width: fit-content;
 }
 
 /* Mobile toggle */
@@ -419,6 +421,8 @@ button.toggleNotesListBtn {
   }
 
   .actionBtnsContainer {
+    float: right;
+    gap: var(--space-xs);
     width: 100%;
     max-width: fit-content;
   }
@@ -428,8 +432,9 @@ button.toggleNotesListBtn {
   }
 
   .saveStatus {
+    width: fit-content;
     text-align: left;
-    order: -1;
+    order: 3;
   }
 }
 
@@ -469,8 +474,10 @@ button.toggleNotesListBtn {
   gap: var(--space-sm);
   padding: var(--space-xs) 0;
 }
-
-#sketchEditorPane.expanded {
+.sketchToolInputRow .tooltip {
+color: var(--text-primary);
+}
+#sketchEditorPane.expanded, #textEditorPane.expanded {
 position: fixed;
 width: calc(100% - 60px);
 height: 100%;
@@ -479,12 +486,14 @@ top: 0;
 left: 60px;
 backdrop-filter: var(--filter);
 }
-#sketchEditorPane .actionBtn.tooltip:hover::after {
+ .actionBtn.tooltip:hover::after {
   color: var(--text-primary);
+  z-index: 1;
 }
 
+
 @media (max-width: 800px) {
- #sketchEditorPane.expanded {
+ #sketchEditorPane.expanded, #textEditorPane.expanded {
 width: 100%;
 height: 100%;
 left: 0;

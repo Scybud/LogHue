@@ -1,3 +1,50 @@
+/* Fonts */
+/* Load the actual font families you're mapping to */
+@import url('https://fonts.googleapis.com/css2?family=Roboto&family=Ubuntu&family=PT+Sans&family=Inconsolata&display=swap');
+
+.ql-font-sofia {
+  font-family: 'Segoe UI', sans-serif; /* pick a real font stack for "sofia" */
+}
+.ql-font-slabo {
+  font-family: 'Roboto Slab', serif; /* "slabo" isn't a real font name, map it to something real */
+}
+.ql-font-roboto {
+  font-family: 'Roboto', sans-serif;
+}
+.ql-font-inconsolata {
+  font-family: 'Inconsolata', monospace;
+}
+.ql-font-ubuntu {
+  font-family: 'Ubuntu', sans-serif;
+}
+
+/* also style the dropdown labels so the picker itself shows font names, not just "sans serif" text */
+.ql-picker.ql-font .ql-picker-label[data-value="sofia"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="sofia"]::before {
+  content: 'Sofia';
+  font-family: 'Segoe UI', sans-serif;
+}
+.ql-picker.ql-font .ql-picker-label[data-value="slabo"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="slabo"]::before {
+  content: 'Slabo';
+  font-family: 'Roboto Slab', serif;
+}
+.ql-picker.ql-font .ql-picker-label[data-value="roboto"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="roboto"]::before {
+  content: 'Roboto';
+  font-family: 'Roboto', sans-serif;
+}
+.ql-picker.ql-font .ql-picker-label[data-value="inconsolata"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="inconsolata"]::before {
+  content: 'Inconsolata';
+  font-family: 'Inconsolata', monospace;
+}
+.ql-picker.ql-font .ql-picker-label[data-value="ubuntu"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="ubuntu"]::before {
+  content: 'Ubuntu';
+  font-family: 'Ubuntu', sans-serif;
+}
+
 .ql-container.ql-snow {
   font-size: 15.5px;
   background-color: var(--mainContent-bg);
@@ -41,16 +88,19 @@ div#editor.ql-container.ql-snow {
 }
 .ql-editor p {
   margin-bottom: auto;
+  line-height: normal;
 }
 .ql-editor.ql-blank::before {
-  color: var(--text-secondary);
+  color: var(--muted);
   font-style: italic;
   font-weight: 400;
   font-size: 0.95rem;
   left: var(--space-xl);
   right: var(--space-xl);
 }
-
+#editor .ql-editor.ql p, #editor .ql-editor.ql ol, #editor .ql-editor.ql ul, #editor .ql-editor.ql pre, #editor .ql-editor.ql blockquote, #editor .ql-editor.ql h1, #editor .ql-editor.ql h2, #editor .ql-editor.ql h3, #editor .ql-editor.ql h4, #editor .ql-editor.ql h5, #editor .ql-editor.ql h6 {
+  margin: auto;
+}
 .ql-picker-options {
   background-color: var(--input-bg) !important;
   color: var(--input-color);
@@ -60,20 +110,4 @@ div#editor.ql-container.ql-snow {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
 }
 
-/* Fonts */
-.ql-font-sans { font-family: sans-serif; }
-.ql-font-serif { font-family: serif; }
-.ql-font-mono { font-family: monospace; }
-.ql-font-inter { font-family: 'Inter', sans-serif; }
-.ql-font-poppins { font-family: 'Poppins', sans-serif; }
-.ql-font-roboto { font-family: 'Roboto', sans-serif; }
-.ql-font-lato { font-family: 'Lato', sans-serif; }
-.ql-font-montserrat { font-family: 'Montserrat', sans-serif; }
-.ql-font-opensans { font-family: 'Open Sans', sans-serif; }
-.ql-font-nunito { font-family: 'Nunito', sans-serif; }
-.ql-font-raleway { font-family: 'Raleway', sans-serif; }
-.ql-font-ubuntu { font-family: 'Ubuntu', sans-serif; }
-.ql-font-cabin { font-family: 'Cabin', sans-serif; }
-.ql-font-merriweather { font-family: 'Merriweather', serif; }
-.ql-font-playfair { font-family: 'Playfair Display', serif; }
-.ql-font-inconsolata { font-family: 'Inconsolata', monospace; }
+

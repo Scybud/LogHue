@@ -187,23 +187,29 @@ async function initNotes() {
 
   editorContainer.innerHTML = `
     <div id="textEditorPane">
-      <div class="editorTop">
-        <input id="noteTitle" name="noteTitle" placeholder="Note title" class="noteTitle inputField" />
-        <div class="actionBtnsContainer">
-          <span id="saveStatus" class="saveStatus"></span>
-          <button id="saveNoteBtn" class="btn-sm btn notesActionBtn">Save</button>
-          <select id="exportNotesBtn" class="btn-sm btn btn-secondary notesActionBtn">
-            <option value="">Export As</option>
-            <option value="pdf">PDF</option>
-            <option value="docx">DOCX</option>
-            <option value="html">HTML</option>
-            <option value="txt">TXT</option>
-            <option value="md">Markdown</option>
-          </select>
-        </div>
-      </div>
-      <div id="editor"></div>
+  <div class="editorTop">
+    <input id="noteTitle" name="noteTitle" placeholder="Note title" class="noteTitle inputField" />
+    <div class="actionBtnsContainer">
+      <span id="saveStatus" class="saveStatus"></span>
+      <button id="expandNoteBtn" data-title="Resize editor" aria-label="Resize editor" class="btn tooltip actionBtn" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="5" y="4" width="18" height="14" rx="2" stroke="currentColor" stroke-width="3" />
+          <line x1="7" y1="24" x2="21" y2="24" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
+        </svg>
+      </button>
+      <button id="saveNoteBtn" class="btn-sm btn notesActionBtn">Save</button>
+      <select id="exportNotesBtn" class="btn-sm btn btn-secondary notesActionBtn">
+        <option value="">Export As</option>
+        <option value="pdf">PDF</option>
+        <option value="docx">DOCX</option>
+        <option value="html">HTML</option>
+        <option value="txt">TXT</option>
+        <option value="md">Markdown</option>
+      </select>
     </div>
+  </div>
+  <div id="editor"></div>
+</div>
 
     <div id="sketchEditorPane" hidden>
       <div class="editorTop">
@@ -256,9 +262,17 @@ async function initNotes() {
             <div class="dropdown sketchToolbarContainer" id="sketchToolbarContainer" hidden>
               <div class="dropdown-list">
                 <div class="sketchToolInputRow">
-                  <input type="color" id="color-picker" value="#000000" title="Color" />
-                  <input type="range" id="brush-size" min="1" max="50" value="5" title="Brush size" />
+                  <input type="color" id="color-picker" value="#000000" class="tooltip" data-title="Color" title="Color" />
+                  <input type="range" id="brush-size" min="1" max="50" value="5" class="tooltip" data-title="Brush size" title="Brush size" />
                 </div>
+
+                <button id="pen-tool-button" class="btn active" type="button">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 20h9" />
+    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+  </svg>
+  <span class="toolLabel">Pen</span>
+</button>
 
                 <button id="eraser-tool-button" class="btn" type="button">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -325,23 +339,36 @@ async function initNotes() {
     </div>
   `;
 
-  const Font = Quill.import("formats/font");
-  Font.whitelist = ["sans serif", "serif"];
-  Quill.register(Font, true);
+  const FontAttributor = Quill.import("attributors/class/font");
+  FontAttributor.whitelist = [
+    "sans serif",
+    "serif",
+    "sofia",
+    "slabo",
+    "roboto",
+    "inconsolata",
+    "ubuntu",
+  ];
+  const Color = Quill.import("formats/color");
+  const Background = Quill.import("formats/background");
+
+  Quill.register(FontAttributor, true);
+  Quill.register(Color, true);
+  Quill.register(Background, true);
 
   quill = new Quill("#editor", {
     modules: {
       toolbar: [
-        [{ header: [1, 2, 3, 4, 5, 6, false] }],
-        [{ font: Font.whitelist }],
+        [{ header: [2, 3, 4, 5, 6, false] }],
+        [{ font: FontAttributor.whitelist }],
         ["bold", "italic", "underline", "link"],
+        [{ color: [] }, { background: [] }],
         [
           { list: "ordered" },
           { list: "bullet" },
           { list: "check" },
           { align: [] },
         ],
-        ["image"],
         ["code-block"],
       ],
     },
@@ -372,7 +399,8 @@ async function initNotes() {
 
 attachDeleteNoteListener();
 initSketchBoard();
-toggleSketchPaneExpand();
+attachExpandToggle("expandCanvasBtn", "sketchEditorPane");
+attachExpandToggle("expandNoteBtn", "textEditorPane");
 
   const saveBtn = document.getElementById("saveNoteBtn");
   saveBtn.addEventListener("click", saveNote);
@@ -955,8 +983,9 @@ function initSketchBoard() {
 
   const colorPicker = document.getElementById("color-picker");
   const brushSize = document.getElementById("brush-size");
+  const penToolBtn = document.getElementById("pen-tool-button");
   const eraserToolBtn = document.getElementById("eraser-tool-button");
-//const textToolBtn = document.getElementById("text-tool-button");
+  //const textToolBtn = document.getElementById("text-tool-button");
   const undoBtn = document.getElementById("undo-button");
   const clearBtn = document.getElementById("clear-button");
   const fillBtn = document.getElementById("fill-button");
@@ -998,12 +1027,10 @@ function initSketchBoard() {
 
   downloadBtn.addEventListener("click", downloadBoard);
   undoBtn.addEventListener("click", undoSketch);
- 
-  /*
-  textToolBtn.addEventListener("click", () => {
-    setSketchTool(sketchTool === "text" ? "pen" : "text");
+
+  penToolBtn.addEventListener("click", () => {
+    setSketchTool("pen");
   });
-  */
 
   eraserToolBtn.addEventListener("click", () => {
     setSketchTool(sketchTool === "eraser" ? "pen" : "eraser");
@@ -1026,6 +1053,8 @@ function initSketchBoard() {
     context.beginPath();
     context.moveTo(x, y);
   }
+
+  setSketchTool("pen");
 }
 
 function getBoardPos(e) {
@@ -1064,8 +1093,8 @@ function downloadBoard() {
 function setSketchTool(tool) {
   sketchTool = tool;
   document
-    .getElementById("text-tool-button")
-    ?.classList.toggle("active", tool === "text");
+    .getElementById("pen-tool-button")
+    ?.classList.toggle("active", tool === "pen");
   document
     .getElementById("eraser-tool-button")
     ?.classList.toggle("active", tool === "eraser");
@@ -1490,4 +1519,29 @@ async function attachDeleteNoteEvent(noteToDelete, id) {
 
   setLoading(false);
   actionMsg("Note deleted", "success");
+}
+
+function attachExpandToggle(btnId, paneId) {
+  const btn = document.getElementById(btnId);
+  const pane = document.getElementById(paneId);
+  if (!btn || !pane) return;
+
+  btn.addEventListener("click", () => {
+    const first = pane.getBoundingClientRect();
+    pane.classList.toggle("expanded");
+    const last = pane.getBoundingClientRect();
+
+    const dx = first.left - last.left;
+    const dy = first.top - last.top;
+    const sx = first.width / last.width;
+    const sy = first.height / last.height;
+
+    pane.animate(
+      [
+        { transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` },
+        { transform: "none" },
+      ],
+      { duration: 400, easing: "ease" },
+    );
+  });
 }

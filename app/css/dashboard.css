@@ -480,6 +480,9 @@ max-width: 200px;
   padding: calc(var(--space-sm) * 1.2) var(--space-sm);
   margin: 0;
 }
+.dropdown-list .btn.active {
+  background-color: var(--active);
+}
 .workspaceCardHeaderRight .dropdown-list .btn:last-child {
   color: var(--danger);
 }
