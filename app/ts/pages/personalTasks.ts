@@ -80,7 +80,10 @@ export async function initPersonalTasks() {
 export async function checkIfEmpty() {
   if (!personalCreatedTasks) return;
 
+  
   if (savedTaskDetails.length === 0) {
+    personalCreatedTasks.innerHTML = "";
+
     await createEmptyState({
       container: personalCreatedTasks,
       icon: "🎯",
@@ -357,11 +360,18 @@ export function renderExistingTasks() {
     completed.length,
     false,
   );
+  if (completed.length > 0) {
   completed.forEach((task) => {
     const el = createTaskElement(task);
     completedGroup.body.append(el);
     requestAnimationFrame(() => el.classList.add("show"));
   });
+} else {
+  const emptySateText = document.createElement("p");
+  emptySateText.classList.add("placeholderText");
+  emptySateText.textContent = "No completed tasks yet"
+  completedGroup.body.append(emptySateText);
+}
   personalCreatedTasks.append(completedGroup.wrapper);
 }
 
