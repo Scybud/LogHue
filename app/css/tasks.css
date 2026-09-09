@@ -26,9 +26,10 @@
   display: flex;
   gap: var(--space-sm);
   align-items: center;
-  max-width: fit-content;
+  max-width: 240px;
   background: var(--surface-primary);
-  padding: 10px 14px;
+  padding: calc(var(--space-sm) + 2px) var(--space-md);
+  margin-bottom: var(--space-sm);
   border-radius: var(--radius-lg);
   cursor: pointer;
   font-weight: 600;
