@@ -264,11 +264,11 @@ async function buildNotificationItem(notif) {
   const actorAvatar = document.createElement("img");
   actorAvatar.classList.add("profileAvatar");
   actorAvatar.src =
-    notif.actor.avatar_url ||
-    "https://loghue.com/assets/images/default_profile.png";
+    notif.actor?.avatar_url ||
+    "/assets/images/default_profile.png";
   link.appendChild(actorAvatar);
 
-  const actorName = notif.actor.full_name || "Someone";
+  const actorName = notif.actor?.full_name || "Someone";
 
   let bodyTextContent = document.createElement("p");
 
