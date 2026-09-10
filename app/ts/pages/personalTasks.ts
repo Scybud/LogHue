@@ -267,7 +267,7 @@ actionsGroup.append(linkNoteBtn, duplicateBtn, deleteBtn);
 }
 
 // Date bucketing
-function getDateBucket(deadline: string | null): "overdue" | "today" | "week" | "later" {
+export function getDateBucket(deadline: string | null): "overdue" | "today" | "week" | "later" {
   if (!deadline) return "later";
 
   const now = new Date();
