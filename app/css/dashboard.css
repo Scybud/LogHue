@@ -49,15 +49,21 @@ a.dashboardStat:hover {
 
       .dashboardHeader {
         justify-content: center;
-          transition: opacity 0.5s ease;
+          transition: opacity 0.5s ease, height 0.5s ease;
+          height: 30px;
+
       }
        h1{
         text-align: center;
       }
-      .dashboard-section.slide-up .dashboardHeader {
-        opacity: 0;
-
-      }
+      .dashboard-section.slide-up .dashboardHeader,
+.dashboard-section.slide-up .dashboardStats {
+  opacity: 0;
+  height: 10px;
+  margin: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
       .searchBarContainer {
         width: 100%;
         display: flex;
