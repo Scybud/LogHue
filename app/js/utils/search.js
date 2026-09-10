@@ -57,9 +57,6 @@ export async function initSmartSearch(container = document) {
   const isDashboardScope =
     dashboardContainer && container.contains(dashboardContainer);
 
-  // Scoped to container so repeated Ctrl+K opens don't keep re-attaching
-  // listeners to the dashboard's button from inside the palette's init call
-  const createNoteBtn = container.querySelector(".createNoteBtn");
 
   if (!resultsContainer) {
     console.warn(
@@ -68,13 +65,6 @@ export async function initSmartSearch(container = document) {
     return;
   }
 
-  if (createNoteBtn) {
-    createNoteBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      localStorage.setItem("createNote", ".");
-      window.location.href = "notes";
-    });
-  }
 
   let isSlideUp = false;
   let searchToken = 0;

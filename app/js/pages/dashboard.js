@@ -4,6 +4,7 @@ import { supabase } from "../supabase.js";
 import { loadPersonalTasksOnLimit } from "../data/tasksDb.js";
 import { formatDateTimeRelatively } from "../utils/time.js";
 import { getDateBucket } from "./personalTasks.js";
+import { escapeHTML } from "../utils/escapeHTML.js";
 
 
 const searchInput = document.getElementById("mainSearchInput");
@@ -169,7 +170,7 @@ if (todayTasks.length === 0) {
     <svg viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,2" fill="none" stroke="#000" stroke-width="2"/></svg>
     </button>
     <span class="dTaskTime">${formatTaskTime(task.task_deadline)}</span>
-    <span class="dTaskTitle">${escapeHtml(task.name)}</span>
+    <span class="dTaskTitle">${escapeHTML(task.name)}</span>
     </li>
     `,
   )
@@ -243,7 +244,7 @@ async function renderRecentNotes(user) {
       <a href="notes?note=${note.id}">
         <span class="dNoteDot"></span>
         <span>
-          <span class="dNoteTitle">${escapeHtml(note.title || "Untitled note")}</span>
+          <span class="dNoteTitle">${escapeHTML(note.title || "Untitled note")}</span>
           <span class="dNoteMeta">${formatDateTimeRelatively(note.updated_at)}</span>
         </span>
       </a>
@@ -253,9 +254,7 @@ async function renderRecentNotes(user) {
     .join("");
 }
 
-// NOTE: assumes a `workspaces` table with `name`/`color`, related from
-// workspace_members via a `workspace` relation. Rename the relation and
-// columns in the select string to match your actual schema.
+
 async function renderWorkspacesList(user) {
   const listEl = document.getElementById("workspacesList");
   if (!listEl) return;
@@ -284,7 +283,7 @@ async function renderWorkspacesList(user) {
       <li>
         <a href="workspace?ws=${ws.id}">
           <span class="dWsDot" style="background:${ws.color || "var(--link)"}"></span>
-          <span class="dWsName">${escapeHtml(ws.name || "Untitled")}</span>
+          <span class="dWsName">${escapeHTML(ws.name || "Untitled")}</span>
         </a>
       </li>
     `;
@@ -292,8 +291,3 @@ async function renderWorkspacesList(user) {
     .join("");
 }
 
-function escapeHtml(str) {
-  const div = document.createElement("div");
-  div.textContent = str ?? "";
-  return div.innerHTML;
-}

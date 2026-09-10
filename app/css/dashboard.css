@@ -7,7 +7,6 @@
   border: none;
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
   min-height: 100%;
   width: 100%;
   max-width: 1100px;
@@ -24,7 +23,6 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--space-md);
   transition: opacity 0.5s ease, height 0.5s ease, margin 0.5s ease;
 }
 
@@ -150,7 +148,6 @@ margin: 0 !important;
 }
 .dashboard-section.slide-up .mainSearchInput {
   min-height: auto;
-  height: 100px;
 }
 
 .searchKbd {
@@ -592,7 +589,7 @@ button.dropdown-item {
 .dashboardGrid {
   display: grid;
   grid-template-columns: 1.5fr 1.1fr 1fr;
-  gap: var(--space-md);
+  gap: var(--space-sm);
   transition: opacity 0.5s ease, height 0.5s ease, margin 0.5s ease;
 }
 
@@ -775,11 +772,5 @@ button.dropdown-item {
 @media (max-width: 1000px) {
   .dashboardGrid {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 620px) {
-  .dashboardTopRow {
-    flex-direction: column;
   }
 }
