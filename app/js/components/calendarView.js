@@ -148,12 +148,7 @@ function fmtTime(d) {
   return `${hh}:${m.toString().padStart(2, "0")} ${ap}`;
 }
 
-// Only tasks with a real deadline can be placed on the calendar. Tasks
-// created before task_deadline was required (or any legacy null rows) are
-// skipped here and remain visible only in list view. Templates
-// (is_template true) are recurrence definitions, not real occurrences,
-// and are excluded here too — the spawned instances are what should show
-// on the calendar.
+
 function scheduledTasks() {
   return savedTaskDetails.filter((t) => t.task_deadline && !t.is_template);
 }
