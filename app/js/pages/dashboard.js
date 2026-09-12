@@ -261,7 +261,7 @@ async function renderWorkspacesList(user) {
 
   const { data, error } = await supabase
     .from("workspace_members")
-    .select("workspace_id, workspace:workspaces(id, name)")
+    .select("workspace_id, workspace:workspaces(id, name, status)")
     .eq("user_id", user.id)
     .limit(6);
 
@@ -276,7 +276,8 @@ async function renderWorkspacesList(user) {
     return;
   }
 
-  listEl.innerHTML = data
+  const activeWorkspaces = data.filter((aw) => aw.workspace.status === "active")
+  listEl.innerHTML = activeWorkspaces
     .map((row) => {
       const ws = row.workspace || {};
       return `
