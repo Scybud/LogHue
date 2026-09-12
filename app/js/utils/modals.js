@@ -199,7 +199,7 @@ export async function confirmAction(header, message, actions = []) {
     btn.classList.add(
       "btn",
       "btn-sm",
-      a.label === "Delete" || a.label === "Remove"
+      a.label === "Delete" || a.label === "Remove" || a.label === "Leave"
         ? "danger"
         : a.type === "confirm"
           ? "btn-primary"

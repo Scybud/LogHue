@@ -562,7 +562,7 @@ max-width: 200px;
 .dropdown-list .btn.active {
   background-color: var(--active);
 }
-.workspaceCardHeaderRight .dropdown-list .btn:last-child {
+.workspaceCardHeaderRight .dropdown-list .btn:last-child, .workspaceCardHeaderRight .dropdown-list .danger {
   color: var(--danger);
 }
 .dropdown-list .btn.danger:hover {
@@ -574,8 +574,11 @@ button.dropdown-item {
   color: var(--text-primary);
   text-align: left;
 }
-
 .dropdown-list button.dropdown-item:last-child:hover {
+  background: var(--danger);
+  color: #fff;
+}
+.workspaceCardHeaderRight .dropdown-list .danger:hover {
   background: rgb(255, 52, 52);
   color: #fff;
 }

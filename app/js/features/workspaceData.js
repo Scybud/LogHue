@@ -1,4 +1,3 @@
-import { dataCount } from "../utils.js";
 import {
   loadComponent,
   createEmptyState,
@@ -13,7 +12,7 @@ import {
 } from "../../js/utils/modals.js";
 import { createDropdown } from "../ui.js";
 import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
-import { formatDateTime, formatDateTimeRelatively } from "../utils/time.js";
+import { formatDateTimeRelatively } from "../utils/time.js";
 
 if (window.__workspaceInit) {
   console.warn("workspaceData.js already initialized");
@@ -39,6 +38,10 @@ function getWorkspaceDropdown(ws) {
   }
   if (ws.role === "admin") {
     return createDropdown([
+      {
+        label: "Leave Workspace",
+        action: () => leaveWorkspace(user.id, ws.id),
+      },
       { label: "Archive Workspace", action: () => archiveWorkspace(ws.id) },
       { label: "Edit Workspace", action: () => editWorkspace(ws, ws.id) },
       { label: "Open Workspace", action: () => openWorkspace(ws.id) },
@@ -46,7 +49,7 @@ function getWorkspaceDropdown(ws) {
   }
   if (ws.role === "member") {
     return createDropdown([
-      { label: "Leave Workspace", action: () => leaveWorkspace(ws.id) },
+      { label: "Leave Workspace", action: () => leaveWorkspace(user.id, ws.id) },
       { label: "Open Workspace", action: () => openWorkspace(ws.id) },
     ]);
   }
@@ -509,11 +512,51 @@ async function performWorkspaceDelete(id) {
   }, 2000);
 }
 
+//LEAVE WORKSPACE
+export async function leaveWorkspace(userId, wsId) {
+  confirmAction(
+    "Leave Workspace",
+    "Are you sure you want to leave this workspace? This action cannot be undone.",
+    [
+      { label: "Cancel", type: "cancel" },
+      {
+        label: "Leave",
+        type: "confirm",
+        onClick: () => performWorkspaceLeave(userId, wsId),
+      },
+    ],
+  );
+}
+
+//PERFORM WORKSPACE LEAVE
+async function performWorkspaceLeave(userId, wsId) {
+  const { data, error } = await supabase
+    .from("workspace_members")
+    .delete()
+    .eq("user_id", userId)
+    .eq("workspace_id", wsId)
+    .select("workspace:workspaces(name)")
+    .maybeSingle();
+
+  if (error) {
+    console.error(error);
+    actionMsg("Failed to delete workspace", "error");
+    return;
+  }
+
+  actionMsg(`You have left ${data.workspace.name}`, "success");
+
+  setTimeout(() => {
+    // Refresh UI
+    window.location.reload();
+  }, 2000);
+}
+
 //ARCHEIVE WORKSPACE
 export async function archiveWorkspace(id) {
   confirmAction(
     "Archive Workspace",
-    "Are you sure you want to Archeive this?",
+    "Are you sure you want to archeive this workspace?",
     [
       { label: "Cancel", type: "cancel" },
       {
