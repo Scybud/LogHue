@@ -696,6 +696,7 @@ transform: scale(0.9);
   }
 
   tr {
+    min-width: 100%;
     margin-bottom: var(--space-sm);
     border: 1px solid var(--border-light);
     padding: 12px;

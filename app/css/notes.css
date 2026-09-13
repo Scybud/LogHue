@@ -74,6 +74,7 @@
    */
 
 .notesContainer {
+  padding: 0;
   display: grid;
   grid-template-columns: minmax(240px, 320px) 1fr;
   gap: 0;
@@ -141,7 +142,6 @@
 
 #notesList {
   overflow-y: auto;
-  padding: var(--space-sm);
   min-height: 0;
 }
 
@@ -161,20 +161,21 @@
 
 /* Note items */
 .noteItem {
+  border-bottom: 1px solid var(--border-primary);
   display: flex;
   align-items: flex-start;
   gap: var(--space-sm);
   padding: var(--space-xs) var(--space-md);
   margin-bottom: 4px;
-  border-radius: var(--radius-sm);
   cursor: pointer;
   color: #fff;
   border-left: 2px solid transparent;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  transition: background 0.4s ease, border-color 0.4s ease, border-radius 0.4s ease;
   position: relative;
 }
 
 .noteItem:hover {
+    border-radius: var(--radius-sm);
   background: var(--hover-bg);
 }
 
@@ -271,8 +272,9 @@ gap: var(--space-sm);
   display: flex;
   flex-direction: column;
   min-height: 0;
-  background: var(--mainContent-bg);
   padding: 0;
+  overflow: auto;
+  width: 100%;
 }
 
 .editorTop {
@@ -288,7 +290,7 @@ gap: var(--space-sm);
   backdrop-filter: var(--filter);
 }
 
-#noteTitle {
+#noteTitle, #sketchTitle, #tableTitle {
   border: 1px solid var(--border-primary);
   width: 100%;
   max-width: 420px;
@@ -323,6 +325,7 @@ gap: var(--space-sm);
   padding: 6px 14px;
   font-size: 0.85rem;
   text-align: center;
+  width: fit-content;
 }
 
 #saveNoteBtn {
@@ -333,10 +336,11 @@ gap: var(--space-sm);
   background: var(--primary-light);
 }
 
-#exportNotesBtn {
+#exportNotesBtn, #exportTableBtn {
   color: var(--text-primary);
   background: var(--card-bg);
   border: 1px solid var(--border-primary);
+  text-align: left;
 }
 
 #textEditorPane {
@@ -477,7 +481,7 @@ button.toggleNotesListBtn {
 .sketchToolInputRow .tooltip {
 color: var(--text-primary);
 }
-#sketchEditorPane.expanded, #textEditorPane.expanded {
+#sketchEditorPane.expanded, #textEditorPane.expanded, #tableEditorPane.expanded {
 position: fixed;
 width: calc(100% - 60px);
 height: 100%;

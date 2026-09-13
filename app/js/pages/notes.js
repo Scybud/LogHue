@@ -5,6 +5,12 @@ import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
 import { fetchNoteById } from "../data/notesDb.js";
 import { formatDateTimeRelatively } from "../utils/time.js";
 import { sessionState } from "../session.js";
+import {
+  createTable,
+  renderTableWidget,
+  renderTableToHTML,
+} from "../components/tables/tableWidget.js";
+import { registerTableEmbedBlot } from "../components/tables/TableembedBlot.js";
 
 /*
 
@@ -13,7 +19,7 @@ GLOBAL STATE
 */
 let quill = null;
 let currentNoteId = null;
-let currentNoteType = "text"; // "text" | "sketch"
+let currentNoteType = "text"; // "text" | "sketch" | "table"
 let savedNoteDetails = [];
 let isLoading = false;
 let isSaving = false;
@@ -21,6 +27,15 @@ let lastSavedSnapshot = "";
 let autosaveTimer = null;
 
 const AUTOSAVE_DELAY = 1500;
+
+// --- table state ---
+// For "text" notes: the tables inline-embedded inside the Quill content.
+// For "table" notes: a single-entry array holding that note's one table.
+let currentTables = [];
+let isMountingEmbeds = false; // suppress autosave while hydrating table embeds
+let isSavingTableNote = false;
+let lastSavedTableSnapshot = "";
+let tableAutosaveTimer = null;
 
 // --- sketch state ---
 let board = null;
@@ -54,10 +69,15 @@ function setSketchSaveStatus(text) {
   if (el) el.textContent = text;
 }
 
+function setTableSaveStatus(text) {
+  const el = document.getElementById("tableSaveStatus");
+  if (el) el.textContent = text;
+}
+
 /*
-
+ 
 AUTOSAVE (text notes)
-
+ 
 */
 function scheduleAutosave() {
   clearAutosaveTimer();
@@ -78,8 +98,9 @@ async function runAutosave() {
   if (!titleInput) return;
 
   const title = titleInput.value;
-  const content = sanitizeHTML(quill.root.innerHTML);
-  const snapshot = title + content;
+  const content = sanitizeHTML(getSavableContentHTML());
+  const tableSnapshot = JSON.stringify(currentTables);
+  const snapshot = title + content + tableSnapshot;
 
   if (snapshot === lastSavedSnapshot) return;
 
@@ -87,7 +108,7 @@ async function runAutosave() {
   setSaveStatus("Saving…");
 
   try {
-    const { error, created } = await persistNote(title, content);
+    const { error, created } = await persistNote(title, content, currentTables);
 
     if (error) {
       console.error(error);
@@ -109,9 +130,9 @@ async function runAutosave() {
 }
 
 /*
-
+ 
 AUTOSAVE (sketch notes)
-
+ 
 */
 function scheduleSketchAutosave() {
   clearSketchAutosaveTimer();
@@ -167,9 +188,61 @@ async function runSketchAutosave() {
 }
 
 /*
+ 
+AUTOSAVE (standalone table notes)
+ 
+*/
+function scheduleTableAutosave() {
+  clearTableAutosaveTimer();
+  tableAutosaveTimer = setTimeout(runTableAutosave, AUTOSAVE_DELAY);
+}
 
+function clearTableAutosaveTimer() {
+  if (tableAutosaveTimer) {
+    clearTimeout(tableAutosaveTimer);
+    tableAutosaveTimer = null;
+  }
+}
+
+async function runTableAutosave() {
+  if (isSavingTableNote || !currentNoteId || currentNoteType !== "table")
+    return;
+
+  const titleInput = document.getElementById("tableTitle");
+  const title = titleInput ? titleInput.value : "";
+  const snapshot = title + JSON.stringify(currentTables);
+
+  if (snapshot === lastSavedTableSnapshot) return;
+
+  isSavingTableNote = true;
+  setTableSaveStatus("Saving…");
+
+  const { error } = await supabase
+    .from("personal_notes")
+    .update({
+      title: title || "Untitled Table",
+      table_data: currentTables,
+      updated_at: new Date(),
+    })
+    .eq("id", currentNoteId);
+
+  isSavingTableNote = false;
+
+  if (error) {
+    console.error(error);
+    setTableSaveStatus("Autosave failed");
+    return;
+  }
+
+  lastSavedTableSnapshot = snapshot;
+  setTableSaveStatus("Saved");
+  updateSidebarEntry(currentNoteId, title, null);
+}
+
+/*
+ 
 INITIALIZE NOTES UI
-
+ 
 */
 async function initNotes() {
   setLoading(true);
@@ -191,6 +264,12 @@ async function initNotes() {
     <input id="noteTitle" name="noteTitle" placeholder="Note title" class="noteTitle inputField" />
     <div class="actionBtnsContainer">
       <span id="saveStatus" class="saveStatus"></span>
+      <button id="insertTableBtn" data-title="Insert table" aria-label="Insert table" class="btn tooltip actionBtn" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="16" rx="2" />
+          <path d="M3 10h18M9 4v16" />
+        </svg>
+      </button>
       <button id="expandNoteBtn" data-title="Resize editor" aria-label="Resize editor" class="btn tooltip actionBtn" type="button">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect x="5" y="4" width="18" height="14" rx="2" stroke="currentColor" stroke-width="3" />
@@ -210,13 +289,13 @@ async function initNotes() {
   </div>
   <div id="editor"></div>
 </div>
-
+ 
     <div id="sketchEditorPane" hidden>
       <div class="editorTop">
         <input id="sketchTitle" name="sketchTitle" placeholder="Sketch title" class="noteTitle inputField" />
         <div class="actionBtnsContainer">
           <span id="sketchSaveStatus" class="saveStatus"></span>
-
+ 
           <button id="expandCanvasBtn" data-title="Resize canvas" arial-label="Resize canvas" class="btn tooltip actionBtn" type="button">
               <svg
   width="16"
@@ -235,7 +314,7 @@ async function initNotes() {
     stroke="currentColor"
     stroke-width="3"
   />
-
+ 
   <!-- Minimize bar -->
   <line
     x1="7"
@@ -250,7 +329,7 @@ async function initNotes() {
          </button>
             
           <div class="newNoteActionContainer">
-
+ 
             <button onclick="sketchToolbarContainer.hidden ^= 1" class="btn actionBtn" type="button">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="3" />
@@ -258,14 +337,14 @@ async function initNotes() {
               </svg>
               Tools
             </button>
-
+ 
             <div class="dropdown sketchToolbarContainer" id="sketchToolbarContainer" hidden>
               <div class="dropdown-list">
                 <div class="sketchToolInputRow">
                   <input type="color" id="color-picker" value="#000000" class="tooltip" data-title="Color" title="Color" />
                   <input type="range" id="brush-size" min="1" max="50" value="5" class="tooltip" data-title="Brush size" title="Brush size" />
                 </div>
-
+ 
                 <button id="pen-tool-button" class="btn active" type="button">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 20h9" />
@@ -273,7 +352,7 @@ async function initNotes() {
   </svg>
   <span class="toolLabel">Pen</span>
 </button>
-
+ 
                 <button id="eraser-tool-button" class="btn" type="button">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 20H8.5L3 14.5a1 1 0 0 1 0-1.4l9-9a1 1 0 0 1 1.4 0l7 7a1 1 0 0 1 0 1.4L14 19" />
@@ -281,7 +360,7 @@ async function initNotes() {
                   </svg>
                   <span class="toolLabel">Eraser</span>
                 </button>
-
+ 
                 <!--
                 <button id="text-tool-button" class="btn" type="button">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -292,7 +371,7 @@ async function initNotes() {
                   <span class="toolLabel">Text</span>
                 </button>
                 -->
-
+ 
                 <button id="undo-button" class="btn" type="button">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 10h10a5 5 0 0 1 0 10H8" />
@@ -300,7 +379,7 @@ async function initNotes() {
                   </svg>
                   <span class="toolLabel">Undo</span>
                 </button>
-
+ 
                 <button id="fill-button" class="btn" type="button">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M19 11l-8-8-8.5 8.5a2 2 0 0 0 0 2.8L9 21l10-10z" />
@@ -318,7 +397,7 @@ async function initNotes() {
                 </svg>
                 <span class="toolLabel">Download PNG</span>
                 </button>
-
+ 
                 <button id="clear-button" class="btn danger" type="button">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="3 6 5 6 21 6" />
@@ -337,7 +416,31 @@ async function initNotes() {
         <canvas id="board"></canvas>
       </div>
     </div>
+ 
+    <div id="tableEditorPane" hidden>
+      <div class="editorTop">
+        <input id="tableTitle" name="tableTitle" placeholder="Table title" class="noteTitle inputField" />
+        <div class="actionBtnsContainer">
+          <span id="tableSaveStatus" class="saveStatus"></span>
+          <button id="expandTableBtn" data-title="Resize table" aria-label="Resize table" class="btn tooltip actionBtn" type="button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="5" y="4" width="18" height="14" rx="2" stroke="currentColor" stroke-width="3" />
+              <line x1="7" y1="24" x2="21" y2="24" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button id="saveTableBtn" class="btn-sm btn notesActionBtn">Save</button>
+          <select id="exportTableBtn" class="btn-sm btn btn-secondary notesActionBtn">
+            <option value="">Export As</option>
+            <option value="pdf">PDF</option>
+            <option value="html">HTML</option>
+          </select>
+        </div>
+      </div>
+      <div id="standaloneTableWrap"></div>
+    </div>
   `;
+
+  registerTableEmbedBlot(Quill);
 
   const FontAttributor = Quill.import("attributors/class/font");
   FontAttributor.whitelist = [
@@ -397,10 +500,11 @@ async function initNotes() {
     }
   });
 
-attachDeleteNoteListener();
-initSketchBoard();
-attachExpandToggle("expandCanvasBtn", "sketchEditorPane");
-attachExpandToggle("expandNoteBtn", "textEditorPane");
+  attachDeleteNoteListener();
+  initSketchBoard();
+  attachExpandToggle("expandCanvasBtn", "sketchEditorPane");
+  attachExpandToggle("expandNoteBtn", "textEditorPane");
+  attachExpandToggle("expandTableBtn", "tableEditorPane");
 
   const saveBtn = document.getElementById("saveNoteBtn");
   saveBtn.addEventListener("click", saveNote);
@@ -413,8 +517,27 @@ attachExpandToggle("expandNoteBtn", "textEditorPane");
     e.target.value = "";
   });
 
+  document
+    .getElementById("insertTableBtn")
+    .addEventListener("click", insertInlineTable);
+
+  document
+    .getElementById("saveTableBtn")
+    .addEventListener("click", saveTableNote);
+
+  document
+    .getElementById("tableTitle")
+    .addEventListener("input", scheduleTableAutosave);
+
+  document.getElementById("exportTableBtn").addEventListener("change", (e) => {
+    const type = e.target.value;
+    if (!type) return;
+    exportCurrentNote(type);
+    e.target.value = "";
+  });
+
   quill.on("text-change", (delta, oldDelta, source) => {
-    if (source !== "user") return;
+    if (source !== "user" || isMountingEmbeds) return;
     scheduleAutosave();
   });
 
@@ -483,9 +606,9 @@ async function loadCreateNote() {
 }
 
 /*
-
+ 
 LOAD USER NOTES
-
+ 
 */
 async function fetchUserNotes() {
   const {
@@ -531,6 +654,8 @@ async function loadNotes(noteId) {
     currentNoteType = "text";
     clearAutosaveTimer();
     clearSketchAutosaveTimer();
+    clearTableAutosaveTimer();
+    currentTables = [];
     lastSavedSnapshot = "";
     setSaveStatus("");
     document.getElementById("linkedTasksChip")?.remove();
@@ -554,9 +679,9 @@ async function refreshSidebarOnly() {
 }
 
 /*
-
+ 
 HELPERS
-
+ 
 */
 function getPlainPreview(html, maxLength = 60) {
   if (!html) return "";
@@ -570,9 +695,9 @@ function getPlainPreview(html, maxLength = 60) {
 }
 
 /*
-
+ 
 RENDER NOTES LIST
-
+ 
 */
 function renderNotesList(notes) {
   const notesList = document.getElementById("notesList");
@@ -595,22 +720,33 @@ function renderNotesList(notes) {
     const item = document.createElement("div");
     item.classList.add("noteItem");
     if (note.note_type === "sketch") item.classList.add("noteItemSketch");
+    if (note.note_type === "table") item.classList.add("noteItemTable");
     item.dataset.id = note.id;
 
     const content = document.createElement("div");
     content.classList.add("noteItemContent");
 
+    const typePrefix =
+      note.note_type === "sketch"
+        ? "🖊 "
+        : note.note_type === "table"
+          ? "▦ "
+          : "";
+
     const titleEl = document.createElement("p");
     titleEl.classList.add("noteTitle");
-    titleEl.textContent =
-      (note.note_type === "sketch" ? "🖊 " : "") + (note.title || "Untitled");
+    titleEl.textContent = typePrefix + (note.title || "Untitled");
 
     const previewEl = document.createElement("span");
     previewEl.classList.add("notePreview");
     previewEl.textContent =
       note.note_type === "sketch"
         ? "Sketch note"
-        : getPlainPreview(note.content);
+        : note.note_type === "table"
+          ? note.table_data?.[0]?.cols?.length
+            ? `${note.table_data[0].cols.length} columns · ${note.table_data[0].rows?.length || 0} rows`
+            : "Table note"
+          : getPlainPreview(note.content);
 
     const metaEl = document.createElement("span");
     metaEl.classList.add("noteMeta");
@@ -651,19 +787,27 @@ function highlightActiveNote(id) {
 }
 
 /*
-
+ 
 PANE SWITCHING
-
+ 
 */
 function showTextPane() {
   document.getElementById("textEditorPane")?.removeAttribute("hidden");
   document.getElementById("sketchEditorPane")?.setAttribute("hidden", "");
+  document.getElementById("tableEditorPane")?.setAttribute("hidden", "");
 }
 
 function showSketchPane() {
   document.getElementById("sketchEditorPane")?.removeAttribute("hidden");
   document.getElementById("textEditorPane")?.setAttribute("hidden", "");
+  document.getElementById("tableEditorPane")?.setAttribute("hidden", "");
   ensureBoardSized();
+}
+
+function showTablePane() {
+  document.getElementById("tableEditorPane")?.removeAttribute("hidden");
+  document.getElementById("textEditorPane")?.setAttribute("hidden", "");
+  document.getElementById("sketchEditorPane")?.setAttribute("hidden", "");
 }
 
 function toggleSketchPaneExpand() {
@@ -691,9 +835,9 @@ function toggleSketchPaneExpand() {
 }
 
 /*
-
+ 
 OPEN NOTE IN EDITOR
-
+ 
 */
 async function openNoteById(noteId, userId) {
   const noteData = await fetchNoteById(noteId, userId);
@@ -703,6 +847,7 @@ async function openNoteById(noteId, userId) {
 function openNote(note) {
   clearAutosaveTimer();
   clearSketchAutosaveTimer();
+  clearTableAutosaveTimer();
   currentNoteId = note.id;
   currentNoteType = note.note_type || "text";
   highlightActiveNote(note.id);
@@ -716,13 +861,34 @@ function openNote(note) {
     lastSavedSketchSnapshot = (note.title || "") + (note.canvas_data || "");
     setSketchSaveStatus("");
     setSketchTool("pen");
+  } else if (currentNoteType === "table") {
+    showTablePane();
+    const title = note.title || "Untitled Table";
+    currentTables =
+      Array.isArray(note.table_data) && note.table_data.length
+        ? note.table_data
+        : [createTable("Table 1")];
+    document.getElementById("tableTitle").value = title;
+    const wrap = document.getElementById("standaloneTableWrap");
+    renderTableWidget(wrap, currentTables[0], {
+      allowNameEdit: false,
+      onChange: () => scheduleTableAutosave(),
+    });
+    lastSavedTableSnapshot = title + JSON.stringify(currentTables);
+    setTableSaveStatus("");
   } else {
     showTextPane();
     const title = note.title || "Untitled";
     const content = sanitizeHTML(note.content || "");
+    currentTables = Array.isArray(note.table_data) ? note.table_data : [];
     document.getElementById("noteTitle").value = title;
     quill.root.innerHTML = content;
-    lastSavedSnapshot = title + content;
+    // heal any note saved while the data-mounted leak (fixed above) was live
+    quill.root
+      .querySelectorAll(".ql-table-embed[data-mounted]")
+      .forEach((n) => n.removeAttribute("data-mounted"));
+    mountTableEmbeds(quill.root);
+    lastSavedSnapshot = title + content + JSON.stringify(currentTables);
     setSaveStatus("");
   }
 
@@ -730,9 +896,9 @@ function openNote(note) {
 }
 
 /*
-
+ 
 CREATE NOTE (text)
-
+ 
 */
 async function createNote() {
   setLoading(true);
@@ -775,9 +941,9 @@ async function createNote() {
 }
 
 /*
-
+ 
 CREATE NOTE (sketch)
-
+ 
 */
 async function createSketchNote() {
   setLoading(true);
@@ -829,13 +995,172 @@ document.getElementById("createSketch").addEventListener("click", () => {
   notesTypeSelectContainer.hidden = true;
   createSketchNote();
 });
+document.getElementById("createTable").addEventListener("click", () => {
+  notesTypeSelectContainer.hidden = true;
+  createTableNote();
+});
 
 /*
-
-SAVE NOTE (text)
-
+ 
+CREATE NOTE (standalone table)
+ 
 */
-async function persistNote(title, content) {
+async function createTableNote() {
+  setLoading(true);
+
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const { data, error } = await supabase
+      .from("personal_notes")
+      .insert({
+        user_id: user.id,
+        title: "Untitled Table",
+        content: "",
+        note_type: "table",
+        table_data: [createTable("Table 1")],
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error(error);
+      actionMsg("Failed to create table.", "error");
+      return;
+    }
+
+    await loadNotes();
+    openNote(data);
+
+    document.dispatchEvent(
+      new CustomEvent("onboarding:note_created", {
+        detail: { noteId: data.id },
+      }),
+    );
+
+    actionMsg("Table created!", "success");
+  } finally {
+    setLoading(false);
+  }
+}
+
+/*
+ 
+SAVE NOTE (standalone table)
+ 
+*/
+async function saveTableNote() {
+  if (isSavingTableNote) return;
+
+  const saveBtn = document.getElementById("saveTableBtn");
+  isSavingTableNote = true;
+  setButtonLoading(saveBtn, true);
+  clearTableAutosaveTimer();
+
+  const title = document.getElementById("tableTitle").value;
+
+  try {
+    const { error } = await supabase
+      .from("personal_notes")
+      .update({
+        title: title || "Untitled Table",
+        table_data: currentTables,
+        updated_at: new Date(),
+      })
+      .eq("id", currentNoteId);
+
+    if (error) {
+      console.error(error);
+      actionMsg("Failed to save table.", "error");
+      return;
+    }
+
+    lastSavedTableSnapshot = title + JSON.stringify(currentTables);
+    setTableSaveStatus("Saved");
+
+    await loadNotes();
+    actionMsg("Table saved successfully!", "success");
+  } finally {
+    isSavingTableNote = false;
+    setButtonLoading(saveBtn, false);
+  }
+}
+
+/*
+ 
+INLINE TABLES (inside text notes)
+A table-embed blot is an opaque placeholder inside Quill's content; the
+actual interactive widget is mounted into it here, outside Quill's own
+diffing, so cell edits never get interpreted as text changes.
+ 
+*/
+function insertInlineTable() {
+  if (!quill) return;
+  const range = quill.getSelection(true) || {
+    index: quill.getLength(),
+    length: 0,
+  };
+
+  const table = createTable("Table " + (currentTables.length + 1));
+  currentTables.push(table);
+
+  quill.insertEmbed(range.index, "table-embed", { id: table.id }, "user");
+  quill.setSelection(range.index + 1, 0, "user");
+
+  mountTableEmbeds(quill.root);
+  scheduleAutosave();
+}
+
+function mountTableEmbeds(root) {
+  isMountingEmbeds = true;
+  const nodes = root.querySelectorAll(".ql-table-embed:not([data-mounted])");
+  nodes.forEach((node) => {
+    const tableId = node.getAttribute("data-table-id");
+    const table = currentTables.find((t) => t.id === tableId);
+    if (!table) return;
+
+    node.setAttribute("data-mounted", "1");
+    renderTableWidget(node, table, {
+      onDelete: () => {
+        currentTables = currentTables.filter((t) => t.id !== tableId);
+        const blot = Quill.find(node);
+        if (blot) {
+          const index = quill.getIndex(blot);
+          quill.deleteText(index, 1, "user");
+        }
+        scheduleAutosave();
+      },
+      onChange: () => {
+        scheduleAutosave();
+      },
+    });
+  });
+  isMountingEmbeds = false;
+}
+
+// Quill's content field must only ever store empty table-embed placeholders
+// (never the live mounted widget markup) so sanitizeHTML doesn't flatten
+// table/tr/td/input/button into plain text. Actual table data lives in
+// currentTables / table_data, not in this HTML.
+function getSavableContentHTML() {
+  const clone = quill.root.cloneNode(true);
+  clone.querySelectorAll(".ql-table-embed").forEach((node) => {
+    const id = node.getAttribute("data-table-id");
+    node.innerHTML = "";
+    node.setAttribute("data-table-id", id);
+    node.removeAttribute("data-mounted"); // must not persist, or reload skips mounting
+  });
+  return clone.innerHTML;
+}
+
+/*
+ 
+SAVE NOTE (text)
+ 
+*/
+async function persistNote(title, content, tableData = []) {
   if (!currentNoteId) {
     const {
       data: { user },
@@ -852,6 +1177,7 @@ async function persistNote(title, content) {
         title: title || "Untitled",
         content,
         note_type: "text",
+        table_data: tableData,
       })
       .select()
       .single();
@@ -874,6 +1200,7 @@ async function persistNote(title, content) {
     .update({
       title,
       content,
+      table_data: tableData,
       updated_at: new Date(),
     })
     .eq("id", currentNoteId);
@@ -891,7 +1218,9 @@ function updateSidebarEntry(id, title, content = null) {
   const titleEl = item.querySelector(".noteTitle");
   if (titleEl) {
     const isSketch = item.classList.contains("noteItemSketch");
-    titleEl.textContent = (isSketch ? "🖊 " : "") + (title || "Untitled");
+    const isTable = item.classList.contains("noteItemTable");
+    const prefix = isSketch ? "🖊 " : isTable ? "▦ " : "";
+    titleEl.textContent = prefix + (title || "Untitled");
   }
 
   if (content !== null) {
@@ -921,10 +1250,10 @@ async function saveNote() {
   clearAutosaveTimer();
 
   const title = document.getElementById("noteTitle").value;
-  const content = sanitizeHTML(quill.root.innerHTML);
+  const content = sanitizeHTML(getSavableContentHTML());
 
   try {
-    const { error } = await persistNote(title, content);
+    const { error } = await persistNote(title, content, currentTables);
 
     if (error) {
       console.error(error);
@@ -932,7 +1261,7 @@ async function saveNote() {
       return;
     }
 
-    lastSavedSnapshot = title + content;
+    lastSavedSnapshot = title + content + JSON.stringify(currentTables);
     setSaveStatus("Saved");
 
     await loadNotes();
@@ -969,12 +1298,12 @@ function attachDeleteNoteListener() {
 }
 
 /*
-
+ 
 SKETCH BOARD
 Built on the working freehand-draw prototype: pointer events directly
 drive a 2D context path (raster, not vector). Extended with a text tool,
 snapshot-based undo, and Supabase persistence.
-
+ 
 */
 function initSketchBoard() {
   board = document.getElementById("board");
@@ -1294,33 +1623,36 @@ function exportFile(filename, content, type = "text/plain") {
   URL.revokeObjectURL(url);
 }
 
-async function exportCurrentNote(type) {
-  setLoading(true);
+// Replaces each inline table-embed placeholder in Quill's HTML with a real,
+// styled <table> so exports don't ship an empty div. Only used for the
+// html/pdf export paths — docx/txt/md still drop tables for now.
+function resolveInlineTablesHTML(rawHtml) {
+  const container = document.createElement("div");
+  container.innerHTML = rawHtml;
 
-  if (!currentNoteId) {
-    setLoading(false);
-    actionMsg("Save the note before exporting.", "error");
-    return;
-  }
+  container.querySelectorAll(".ql-table-embed").forEach((node) => {
+    const tableId = node.getAttribute("data-table-id");
+    const table = currentTables.find((t) => t.id === tableId);
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = table ? renderTableToHTML(table) : "";
+    node.replaceWith(wrapper);
+  });
 
-  const title = document.getElementById("noteTitle").value || "Untitled";
-  const safeTitle = title.replace(/[^a-z0-9]/gi, "_").toLowerCase();
-  const htmlContent = quill.root.innerHTML;
-  const plainText = quill.getText();
+  return container.innerHTML;
+}
 
+// Shared html/pdf export renderer, used by both text notes (with inline
+// tables already substituted in) and standalone table notes.
+async function exportRenderedNote(type, title, safeTitle, htmlContent) {
   const planName = (sessionState?.plan?.name || "").toLowerCase();
 
-  let didExport = false;
+  if (type === "html") {
+    if (planName === "free") {
+      await openUpgradeModal("exportHtml");
+      return false;
+    }
 
-  switch (type) {
-    case "html": {
-      if (planName === "free") {
-        await openUpgradeModal("exportHtml");
-        setLoading(false);
-        return;
-      }
-
-      const fullHTML = `
+    const fullHTML = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -1337,8 +1669,123 @@ async function exportCurrentNote(type) {
   <div class="ql-editor">${htmlContent}</div>
 </body>
 </html>`;
-      exportFile(`${safeTitle}.html`, fullHTML, "text/html");
-      didExport = true;
+    exportFile(`${safeTitle}.html`, fullHTML, "text/html");
+    return true;
+  }
+
+  if (type === "pdf") {
+    if (planName === "free") {
+      await openUpgradeModal("exportPdf");
+      return false;
+    }
+
+    const cleanHTML = htmlContent.replace(/&nbsp;/g, " ");
+    const wrapper = document.createElement("div");
+    wrapper.style.width = "210mm";
+    wrapper.style.padding = "20mm";
+    wrapper.style.background = "#fff";
+    wrapper.style.fontFamily = "Arial, sans-serif";
+    wrapper.style.fontSize = "12px";
+    wrapper.style.lineHeight = "1.6";
+
+    wrapper.innerHTML = `
+      <style>
+        .pdf-container, .pdf-container *, .pdf-container p, .pdf-container span {
+          color: #000000 !important;
+          -webkit-text-fill-color: #000000 !important;
+        }
+        .pdf-container h1 {
+          text-align: center;
+          margin-bottom: 20px;
+          color: #000000 !important;
+        }
+      </style>
+      <div class="pdf-container">
+        <h1>${title}</h1>
+        <div>${cleanHTML}</div>
+      </div>
+    `;
+
+    document.body.appendChild(wrapper);
+
+    setTimeout(() => {
+      html2pdf()
+        .set({
+          margin: 0,
+          filename: `${safeTitle}.pdf`,
+          html2canvas: { scale: 2, useCORS: true, logging: false },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          pagebreak: { mode: ["css", "legacy"] },
+        })
+        .from(wrapper)
+        .save()
+        .catch((err) => {
+          console.error(err);
+          actionMsg("Failed to export PDF.", "error");
+        })
+        .finally(() => {
+          if (wrapper.parentNode) document.body.removeChild(wrapper);
+        });
+    }, 300);
+
+    return true;
+  }
+
+  return false;
+}
+
+async function exportCurrentNote(type) {
+  setLoading(true);
+
+  if (!currentNoteId) {
+    setLoading(false);
+    actionMsg("Save the note before exporting.", "error");
+    return;
+  }
+
+  if (currentNoteType === "table") {
+    if (type !== "html" && type !== "pdf") {
+      setLoading(false);
+      actionMsg("Table notes currently export as PDF or HTML only.", "error");
+      return;
+    }
+    const title =
+      document.getElementById("tableTitle").value || "Untitled Table";
+    const safeTitle = title.replace(/[^a-z0-9]/gi, "_").toLowerCase();
+    const htmlContent = renderTableToHTML(currentTables[0]);
+    const didExport = await exportRenderedNote(
+      type,
+      title,
+      safeTitle,
+      htmlContent,
+    );
+    setLoading(false);
+    if (didExport) actionMsg("Note exported!", "success");
+    return;
+  }
+
+  const title = document.getElementById("noteTitle").value || "Untitled";
+  const safeTitle = title.replace(/[^a-z0-9]/gi, "_").toLowerCase();
+  const htmlContent = quill.root.innerHTML;
+  const plainText = quill.getText();
+
+  const planName = (sessionState?.plan?.name || "").toLowerCase();
+
+  let didExport = false;
+
+  switch (type) {
+    case "html": {
+      const resolvedHTML = resolveInlineTablesHTML(htmlContent);
+      didExport = await exportRenderedNote(
+        type,
+        title,
+        safeTitle,
+        resolvedHTML,
+      );
+      if (!didExport) {
+        setLoading(false);
+        return;
+      }
       break;
     }
 
@@ -1377,62 +1824,17 @@ async function exportCurrentNote(type) {
     }
 
     case "pdf": {
-      if (planName === "free") {
-        await openUpgradeModal("exportPdf");
+      const resolvedHTML = resolveInlineTablesHTML(htmlContent);
+      didExport = await exportRenderedNote(
+        type,
+        title,
+        safeTitle,
+        resolvedHTML,
+      );
+      if (!didExport) {
         setLoading(false);
         return;
       }
-
-      const cleanHTML = htmlContent.replace(/&nbsp;/g, " ");
-      const wrapper = document.createElement("div");
-      wrapper.style.width = "210mm";
-      wrapper.style.padding = "20mm";
-      wrapper.style.background = "#fff";
-      wrapper.style.fontFamily = "Arial, sans-serif";
-      wrapper.style.fontSize = "12px";
-      wrapper.style.lineHeight = "1.6";
-
-      wrapper.innerHTML = `
-        <style>
-          .pdf-container, .pdf-container *, .pdf-container p, .pdf-container span {
-            color: #000000 !important;
-            -webkit-text-fill-color: #000000 !important;
-          }
-          .pdf-container h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #000000 !important;
-          }
-        </style>
-        <div class="pdf-container">
-          <h1>${title}</h1>
-          <div>${cleanHTML}</div>
-        </div>
-      `;
-
-      document.body.appendChild(wrapper);
-
-      setTimeout(() => {
-        html2pdf()
-          .set({
-            margin: 0,
-            filename: `${safeTitle}.pdf`,
-            html2canvas: { scale: 2, useCORS: true, logging: false },
-            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-            pagebreak: { mode: ["css", "legacy"] },
-          })
-          .from(wrapper)
-          .save()
-          .catch((err) => {
-            console.error(err);
-            actionMsg("Failed to export PDF.", "error");
-          })
-          .finally(() => {
-            if (wrapper.parentNode) document.body.removeChild(wrapper);
-          });
-      }, 300);
-
-      didExport = true;
       break;
     }
 
@@ -1483,9 +1885,9 @@ function renderLinkedTasksChip(tasks) {
 }
 
 /*
-
+ 
 DELETE
-
+ 
 */
 async function attachDeleteNoteEvent(noteToDelete, id) {
   setLoading(true);
@@ -1493,6 +1895,7 @@ async function attachDeleteNoteEvent(noteToDelete, id) {
   if (String(id) === String(currentNoteId)) {
     clearAutosaveTimer();
     clearSketchAutosaveTimer();
+    clearTableAutosaveTimer();
   }
 
   const { error } = await supabase.from("personal_notes").delete().eq("id", id);

@@ -85,6 +85,8 @@ div#editor.ql-container.ql-snow {
 .ql-editor {
   padding: var(--space-lg) var(--space-xl);
   line-height: 1.65;
+  max-width: 100%;
+  overflow-x: auto;
 }
 .ql-editor p {
   margin-bottom: auto;
