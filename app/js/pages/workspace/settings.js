@@ -15,7 +15,7 @@ import { sessionState } from "../../session.js";
  */
 let userId = null;
 
-userId = await sessionState.user.id;
+userId = await sessionState?.user?.id;
 
 export async function loadSettingsAdmin(container, workspace, currentUserId) {
   container.innerHTML = "";
@@ -273,7 +273,5 @@ const leaveBtn = document.querySelector("#leaveWorkspaceBtn");
   }
   if(leaveBtn) {
     leaveBtn.onclick = async () => leaveWorkspace(userId, id)
-  } else {
-    console.log("dgfd")
   }
 }
