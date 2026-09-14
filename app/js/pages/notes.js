@@ -513,7 +513,7 @@ async function initNotes() {
   exportSelect.addEventListener("change", (e) => {
     const type = e.target.value;
     if (!type) return;
-    exportCurrentNote(type);
+    exportCurrentNote(type, false);
     e.target.value = "";
   });
 
@@ -532,7 +532,7 @@ async function initNotes() {
   document.getElementById("exportTableBtn").addEventListener("change", (e) => {
     const type = e.target.value;
     if (!type) return;
-    exportCurrentNote(type);
+    exportCurrentNote(type, false);
     e.target.value = "";
   });
 
@@ -1734,12 +1734,34 @@ async function exportRenderedNote(type, title, safeTitle, htmlContent) {
   return false;
 }
 
-async function exportCurrentNote(type) {
+async function exportCurrentNote(type, skipTableWarning = false) {
   setLoading(true);
 
   if (!currentNoteId) {
     setLoading(false);
     actionMsg("Save the note before exporting.", "error");
+    return;
+  }
+
+  const hasInlineTables =
+    currentNoteType === "text" && currentTables.length > 0;
+  const unsupportedForTables =
+    type === "docx" || type === "txt" || type === "md";
+
+  if (hasInlineTables && unsupportedForTables && !skipTableWarning) {
+    setLoading(false);
+    confirmAction(
+      "Tables won't be exported",
+      "This note has one or more table. DOCX, TXT, and Markdown exports don't support tables yet, it'll be left out of the file. Export anyway?",
+      [
+        { label: "Cancel", type: "cancel" },
+        {
+          label: "Export anyway",
+          type: "confirm",
+          onClick: () => exportCurrentNote(type, true),
+        },
+      ],
+    );
     return;
   }
 

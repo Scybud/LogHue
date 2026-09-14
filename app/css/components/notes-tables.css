@@ -165,14 +165,11 @@ tr:hover .tableRowDel {
 .tableCell {
   flex: 1;
   min-height: 34px;
-  max-height: 34px;
   overflow: hidden;
   padding: 7px 8px;
   font-size: 0.82rem;
   color: var(--text-primary);
   outline: none;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   cursor: text;
 }
 .tableCell:focus {
