@@ -176,7 +176,7 @@ if (todayTasks.length === 0) {
   )
   .join("");
   
-  if (metaEl) metaEl.textContent = `${todayTasks.length} open`;
+  if (metaEl) metaEl.textContent = `${data.length} open`;
 
   listEl.querySelectorAll("[data-toggle]").forEach((btn) => {
     btn.addEventListener("click", async () => {
@@ -263,7 +263,7 @@ async function renderWorkspacesList(user) {
     .from("workspace_members")
     .select("workspace_id, workspace:workspaces(id, name, status)")
     .eq("user_id", user.id)
-    .limit(6);
+    .limit(5);
 
   if (error) {
     console.error(error);
