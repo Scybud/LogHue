@@ -194,7 +194,7 @@ export function createTaskElement(task) {
     return el;
 }
 // Date bucketing
-function getDateBucket(deadline) {
+export function getDateBucket(deadline) {
     if (!deadline)
         return "later";
     const now = new Date();

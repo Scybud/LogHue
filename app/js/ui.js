@@ -166,10 +166,13 @@ export function createDropdown(items = []) {
   list.classList.add("dropdown-list");
 
   items.forEach((item) => {
-    const btn = document.createElement("button");
-    btn.classList.add("dropdown-item", "btn-md", "btn", "btn-secondary");
-    btn.textContent = item.label;
+    const dangerClass = item.label === "Leave Workspace" || item.label === "Delete" ? "danger" : "normalBtn";
 
+    const btn = document.createElement("button");
+    btn.classList.add(dangerClass, "btn", "dropdown-item", "btn-md", "btn-secondary");
+    btn.textContent = item.label;
+    
+    
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       item.action();

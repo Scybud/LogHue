@@ -37,3 +37,37 @@ export async function loadWorkspaceMembersForTaskView(workspaceId) {
 
   setLoadedMembers(data);
 }
+
+export async function loadPersonalTasks(userId) {
+  const { data, error } = await supabase
+    .from("personal_tasks")
+    .select("*")
+    .eq("user_id", user.id);
+
+  if (error) {
+    console.error(error);
+    actionMsg("Failed to load tasks", "error");
+    return;
+  }
+
+  return data;
+}
+
+export async function loadPersonalTasksOnLimit(userId, limit) {
+  const { data, error } = await supabase
+    .from("personal_tasks")
+    .select("id, name, task_deadline, is_completed, is_template")
+    .eq("user_id", userId)
+    .eq("is_template", false)
+    .eq("is_completed", false)
+    .order("task_deadline", { ascending: true })
+    .limit(limit);
+
+  if (error) {
+    console.error(error);
+    actionMsg("Failed to load tasks", "error");
+    return;
+  }
+
+  return data;
+}
