@@ -426,7 +426,9 @@ export async function attachCreatePersonalTaskEvent() {
         const noteValue = noteEl.value.trim();
         const recurringValue = recurringEl.checked ? true : false;
         if (!taskValue || !timeValue) {
-            actionMsg("Task and time are required.", "error");
+            taskEl.classList.add("error");
+            timeEl.classList.add("error");
+            actionMsg("Task and due date are required.", "error");
             setButtonLoading(logTaskBtn, false);
             return;
         }
