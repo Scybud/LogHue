@@ -263,20 +263,25 @@ async function initNotes() {
   <div class="editorTop">
     <input id="noteTitle" name="noteTitle" placeholder="Note title" class="noteTitle inputField" />
     <div class="actionBtnsContainer">
-      <span id="saveStatus" class="saveStatus"></span>
-      <button id="insertTableBtn" data-title="Insert table" aria-label="Insert table" class="btn tooltip actionBtn" type="button">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="4" width="18" height="16" rx="2" />
-          <path d="M3 10h18M9 4v16" />
-        </svg>
-      </button>
+      
+    <span id="saveStatus" class="saveStatus"></span>
+      
       <button id="expandNoteBtn" data-title="Resize editor" aria-label="Resize editor" class="btn tooltip actionBtn" type="button">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect x="5" y="4" width="18" height="14" rx="2" stroke="currentColor" stroke-width="3" />
           <line x1="7" y1="24" x2="21" y2="24" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
         </svg>
       </button>
+
+      <button id="insertTableBtn" data-title="Insert table" aria-label="Insert table" class="btn tooltip actionBtn" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="16" rx="2" />
+          <path d="M3 10h18M9 4v16" />
+        </svg>
+      </button>
+
       <button id="saveNoteBtn" class="btn-sm btn notesActionBtn">Save</button>
+
       <select id="exportNotesBtn" class="btn-sm btn btn-secondary notesActionBtn">
         <option value="">Export As</option>
         <option value="pdf">PDF</option>
@@ -285,6 +290,7 @@ async function initNotes() {
         <option value="txt">TXT</option>
         <option value="md">Markdown</option>
       </select>
+      
     </div>
   </div>
   <div id="editor"></div>

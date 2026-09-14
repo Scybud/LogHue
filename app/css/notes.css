@@ -445,9 +445,9 @@ button.toggleNotesListBtn {
 .linkedTasksChip {
   font-size: 0.8rem;
   color: var(--text-secondary);
-  background: var(--bg-subtle, rgba(0, 0, 0, 0.04));
+  background: var(--surface-primary);
   padding: 3px 10px;
-  border-radius: var(--radius-full, 999px);
+  border-radius: var(--radius-lg);
   cursor: default;
   white-space: nowrap;
   align-self: center;
