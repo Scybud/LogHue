@@ -256,6 +256,7 @@ export async function loadSettingsMember(container, workspace) {
 
 }
 
+
 async function attachSettingsActions(ws, id) {
   const editBtn = document.querySelector("#editWorkspace");
   const archiveBtn = document.querySelector("#archiveWorkspace");
