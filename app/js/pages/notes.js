@@ -506,6 +506,14 @@ async function initNotes() {
     }
   });
 
+  // Clipboard matcher so Quill understands the embed when pasting / converting
+  const Delta = Quill.import("delta");
+  quill.clipboard.addMatcher(".ql-table-embed", (node, delta) => {
+    const id = node.getAttribute("data-table-id");
+    if (!id) return delta;
+    return new Delta().insert({ "table-embed": { id } });
+  });
+
   attachDeleteNoteListener();
   initSketchBoard();
   attachExpandToggle("expandCanvasBtn", "sketchEditorPane");
@@ -816,30 +824,6 @@ function showTablePane() {
   document.getElementById("sketchEditorPane")?.setAttribute("hidden", "");
 }
 
-function toggleSketchPaneExpand() {
-  const expandCanvasBtn = document.getElementById("expandCanvasBtn");
-  const pane = document.getElementById("sketchEditorPane");
-
-  expandCanvasBtn.addEventListener("click", () => {
-    const first = pane.getBoundingClientRect();
-    pane.classList.toggle("expanded");
-    const last = pane.getBoundingClientRect();
-
-    const dx = first.left - last.left;
-    const dy = first.top - last.top;
-    const sx = first.width / last.width;
-    const sy = first.height / last.height;
-
-    pane.animate(
-      [
-        { transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` },
-        { transform: "none" },
-      ],
-      { duration: 400, easing: "ease" },
-    );
-  });
-}
-
 /*
  
 OPEN NOTE IN EDITOR
@@ -883,17 +867,30 @@ function openNote(note) {
     lastSavedTableSnapshot = title + JSON.stringify(currentTables);
     setTableSaveStatus("");
   } else {
+    // ---------- TEXT NOTE (with possible inline tables) ----------
     showTextPane();
     const title = note.title || "Untitled";
     const content = sanitizeHTML(note.content || "");
     currentTables = Array.isArray(note.table_data) ? note.table_data : [];
+
     document.getElementById("noteTitle").value = title;
-    quill.root.innerHTML = content;
-    // heal any note saved while the data-mounted leak (fixed above) was live
+
+    // Put the raw placeholders into the editor
+    quill.root.innerHTML = content || "";
+
+    // Heal any leftover data-mounted attributes from older saves
     quill.root
       .querySelectorAll(".ql-table-embed[data-mounted]")
       .forEach((n) => n.removeAttribute("data-mounted"));
-    mountTableEmbeds(quill.root);
+
+    // Force Quill to notice the new nodes
+    quill.update("silent");
+
+    // Mount the interactive widgets after the browser has painted
+    requestAnimationFrame(() => {
+      mountTableEmbeds(quill.root);
+    });
+
     lastSavedSnapshot = title + content + JSON.stringify(currentTables);
     setSaveStatus("");
   }
@@ -1121,16 +1118,36 @@ function insertInlineTable() {
 
 function mountTableEmbeds(root) {
   isMountingEmbeds = true;
-  const nodes = root.querySelectorAll(".ql-table-embed:not([data-mounted])");
+
+  const nodes = root.querySelectorAll(".ql-table-embed");
+
   nodes.forEach((node) => {
     const tableId = node.getAttribute("data-table-id");
-    const table = currentTables.find((t) => t.id === tableId);
-    if (!table) return;
+    if (!tableId) {
+      console.warn("table-embed missing data-table-id", node);
+      return;
+    }
 
+    let table = currentTables.find((t) => String(t.id) === String(tableId));
+
+    // Orphan placeholder from an old buggy save → create a new empty table
+    // with the exact same id so the slot is filled and can be edited again.
+    if (!table) {
+      console.warn("orphan table-embed, creating fresh table for id", tableId);
+      table = createTable("Table (recovered)");
+      table.id = tableId; // keep the original id
+      currentTables.push(table);
+    }
+
+    // Always remove any previous mount flag so we can re-mount cleanly
+    node.removeAttribute("data-mounted");
     node.setAttribute("data-mounted", "1");
+
     renderTableWidget(node, table, {
       onDelete: () => {
-        currentTables = currentTables.filter((t) => t.id !== tableId);
+        currentTables = currentTables.filter(
+          (t) => String(t.id) !== String(tableId),
+        );
         const blot = Quill.find(node);
         if (blot) {
           const index = quill.getIndex(blot);
@@ -1138,11 +1155,10 @@ function mountTableEmbeds(root) {
         }
         scheduleAutosave();
       },
-      onChange: () => {
-        scheduleAutosave();
-      },
+      onChange: () => scheduleAutosave(),
     });
   });
+
   isMountingEmbeds = false;
 }
 
@@ -1638,7 +1654,7 @@ function resolveInlineTablesHTML(rawHtml) {
 
   container.querySelectorAll(".ql-table-embed").forEach((node) => {
     const tableId = node.getAttribute("data-table-id");
-    const table = currentTables.find((t) => t.id === tableId);
+    const table = currentTables.find((t) => String(t.id) === String(tableId));
     const wrapper = document.createElement("div");
     wrapper.innerHTML = table ? renderTableToHTML(table) : "";
     node.replaceWith(wrapper);
