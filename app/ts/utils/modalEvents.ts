@@ -584,11 +584,7 @@ export async function attachCreatePersonalTaskEvent() {
       return;
     }
 
-    // Insert into Supabase FIRST (strict UI)
-    // If recurring, this row is the TEMPLATE: is_template true, hidden
-    // from the main task list/calendar, only shown in the recurring
-    // dropdown. It is never shown to the user directly and never marked
-    // complete.
+
     const { data, error } = await supabase
       .from("personal_tasks")
       .insert({

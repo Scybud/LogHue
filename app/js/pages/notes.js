@@ -265,9 +265,9 @@ async function initNotes() {
     <div class="actionBtnsContainer">
       
     <span id="saveStatus" class="saveStatus"></span>
-      
-      <button id="expandNoteBtn" data-title="Resize editor" aria-label="Resize editor" class="btn tooltip actionBtn" type="button">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    
+    <button id="expandNoteBtn" data-title="Resize editor" aria-label="Resize editor" class="btn tooltip actionBtn" type="button">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect x="5" y="4" width="18" height="14" rx="2" stroke="currentColor" stroke-width="3" />
           <line x1="7" y1="24" x2="21" y2="24" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
         </svg>
@@ -1758,7 +1758,7 @@ async function exportCurrentNote(type, skipTableWarning = false) {
     setLoading(false);
     confirmAction(
       "Tables won't be exported",
-      "This note has one or more table. DOCX, TXT, and Markdown exports don't support tables yet, it'll be left out of the file. Export anyway?",
+      "This note has one or more tables. DOCX, TXT, and Markdown exports don't support tables yet, it'll be left out of the file. Export anyway?",
       [
         { label: "Cancel", type: "cancel" },
         {
