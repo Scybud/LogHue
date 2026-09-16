@@ -119,13 +119,125 @@
               stroke-width="1.6"
               stroke-linecap="round"
               stroke-linejoin="round"
+              />
+            </svg>
+            <span>Back</span>
+          </button>
+        </div>
+        
+        <div class="logoContainer">
+          <svg
+            id="icon-scanhue"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 64 64"
+            width="54"
+            height="54"
+          >
+            <!-- Outer rounded frame (blue glow-ready) -->
+            <rect
+              x="6"
+              y="6"
+              width="52"
+              height="52"
+              rx="12"
+              fill="none"
+              stroke="#3B82F6"
+              stroke-width="2.5"
             />
+    
+            <!-- Corner scan brackets -->
+            <path
+              d="M16 22 V16 H24"
+              fill="none"
+              stroke="#3B82F6"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M48 22 V16 H40"
+              fill="none"
+              stroke="#3B82F6"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M16 42 V48 H24"
+              fill="none"
+              stroke="#3B82F6"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M48 42 V48 H40"
+              fill="none"
+              stroke="#3B82F6"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+    
+            <!-- Document shape -->
+            <path
+              d="M24 20 H36 L44 28 V44 H24 Z"
+              fill="none"
+              stroke="#FFFFFF"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M36 20 V28 H44"
+              fill="none"
+              stroke="#FFFFFF"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+    
+            <!-- Text lines inside document -->
+            <line
+              x1="27"
+              y1="32"
+              x2="41"
+              y2="32"
+              stroke="#FFFFFF"
+              stroke-width="1.6"
+              stroke-linecap="round"
+            />
+            <line
+              x1="27"
+              y1="36"
+              x2="39"
+              y2="36"
+              stroke="#FFFFFF"
+              stroke-width="1.6"
+              stroke-linecap="round"
+            />
+            <line
+              x1="27"
+              y1="40"
+              x2="37"
+              y2="40"
+              stroke="#FFFFFF"
+              stroke-width="1.6"
+              stroke-linecap="round"
+            />
+    
+            <!-- Scan beam -->
+            <rect
+              x="20"
+              y="30"
+              width="24"
+              height="4"
+              rx="2"
+              fill="#3B82F6"
+              opacity="0.35"
+            />
+    
+            <!-- Yellow accent dot (ScanHue identity) -->
+            <circle cx="40" cy="24" r="2.2" fill="#FACC15" />
           </svg>
-          <span>Back</span>
-        </button>
-      </div>
-
-      <div class="headerRight">
+          <h1 class="logo">Scan<span>Hue</span></h1>
+        </div>
+        
+        <div class="headerRight">
         <div class="profileAvatarContainer">
           <img
             src="../../assets/images/default_profile.png"
@@ -167,117 +279,6 @@
       </div>
     </div>
 
-    <div class="logoContainer">
-      <svg
-        id="icon-scanhue"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 64 64"
-        width="54"
-        height="54"
-      >
-        <!-- Outer rounded frame (blue glow-ready) -->
-        <rect
-          x="6"
-          y="6"
-          width="52"
-          height="52"
-          rx="12"
-          fill="none"
-          stroke="#3B82F6"
-          stroke-width="2.5"
-        />
-
-        <!-- Corner scan brackets -->
-        <path
-          d="M16 22 V16 H24"
-          fill="none"
-          stroke="#3B82F6"
-          stroke-width="2"
-          stroke-linecap="round"
-        />
-        <path
-          d="M48 22 V16 H40"
-          fill="none"
-          stroke="#3B82F6"
-          stroke-width="2"
-          stroke-linecap="round"
-        />
-        <path
-          d="M16 42 V48 H24"
-          fill="none"
-          stroke="#3B82F6"
-          stroke-width="2"
-          stroke-linecap="round"
-        />
-        <path
-          d="M48 42 V48 H40"
-          fill="none"
-          stroke="#3B82F6"
-          stroke-width="2"
-          stroke-linecap="round"
-        />
-
-        <!-- Document shape -->
-        <path
-          d="M24 20 H36 L44 28 V44 H24 Z"
-          fill="none"
-          stroke="#FFFFFF"
-          stroke-width="2"
-          stroke-linejoin="round"
-        />
-        <path
-          d="M36 20 V28 H44"
-          fill="none"
-          stroke="#FFFFFF"
-          stroke-width="2"
-          stroke-linejoin="round"
-        />
-
-        <!-- Text lines inside document -->
-        <line
-          x1="27"
-          y1="32"
-          x2="41"
-          y2="32"
-          stroke="#FFFFFF"
-          stroke-width="1.6"
-          stroke-linecap="round"
-        />
-        <line
-          x1="27"
-          y1="36"
-          x2="39"
-          y2="36"
-          stroke="#FFFFFF"
-          stroke-width="1.6"
-          stroke-linecap="round"
-        />
-        <line
-          x1="27"
-          y1="40"
-          x2="37"
-          y2="40"
-          stroke="#FFFFFF"
-          stroke-width="1.6"
-          stroke-linecap="round"
-        />
-
-        <!-- Scan beam -->
-        <rect
-          x="20"
-          y="30"
-          width="24"
-          height="4"
-          rx="2"
-          fill="#3B82F6"
-          opacity="0.35"
-        />
-
-        <!-- Yellow accent dot (ScanHue identity) -->
-        <circle cx="40" cy="24" r="2.2" fill="#FACC15" />
-      </svg>
-      <h1 class="logo">Scan<span>Hue</span></h1>
-    </div>
     <p class="tunedText">
       Extract text from images.
       <a

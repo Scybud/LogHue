@@ -2,10 +2,12 @@ import { supabase } from "../../js/supabase.js";
 import { actionMsg } from "../../js/utils/modals.js";
 import { sessionReady, sessionState } from "../../js/session.js";
 
-
 const imageInput = document.getElementById("imageInput");
 const processBtn = document.getElementById("processBtn");
 const canvas = document.getElementById("previewCanvas");
+const previewCanvasContainer = document.querySelector(
+  ".previewCanvasContainer",
+);
 const output = document.getElementById("output");
 const outputLower = document.querySelector(".outputLower");
 const copyBtn = document.getElementById("copyBtn");
@@ -20,20 +22,19 @@ let cropBox = null;
 let guestId = localStorage.getItem("loghue_anon_id");
 let user = null;
 
-
 if (!guestId) {
   guestId = crypto.randomUUID();
   localStorage.setItem("loghue_anon_id", guestId);
 }
 
 async function loadUi() {
-await sessionReady
-user = sessionState.profile;
+  await sessionReady;
+  user = sessionState.profile;
 
-  if(user) {
-    if(ads) {
+  if (user) {
+    if (ads) {
       ads.remove();
-    } 
+    }
   }
 
   if (!user) {
@@ -81,8 +82,7 @@ function canvasDefault() {
 }
 window.addEventListener("load", () => {
   canvasDefault();
-    loadUsage(); 
-
+  loadUsage();
 });
 
 // --- Preview image ---
@@ -110,7 +110,6 @@ imageInput.addEventListener("change", (e) => {
   };
   reader.readAsDataURL(file);
 });
-
 
 // --- OCR via Supabase Edge Function ---
 async function runOCRViaEdgeFunction(canvas) {
@@ -177,6 +176,7 @@ processBtn.addEventListener("click", async () => {
   processBtn.disabled = true;
   output.value = "";
   output.placeholder = "Extracting text...";
+  previewCanvasContainer?.classList.add("scan");
 
   try {
     const result = await runOCRViaEdgeFunction(canvas);
@@ -197,12 +197,13 @@ processBtn.addEventListener("click", async () => {
     if (err?.used != null && err?.limit != null) {
       showLimitModal(err.used, err.limit);
     } else {
-      actionMsg(err?.message || "Extraction failed, please try again", "error");
+      actionMsg(err?.message || "Extraction failed, please try again", "warning");
     }
 
     output.placeholder = "Extraction failed";
   } finally {
     processBtn.disabled = false;
+    previewCanvasContainer?.classList.remove("scan");
   }
 });
 
@@ -259,9 +260,9 @@ function updateUsageUI(used, limit) {
   // optional visual feedback
   const percent = used / limit;
 
-  if (percent > 0.9) {
+  if (percent > 0.8) {
     usageText.style.color = "red";
-  } else if (percent > 0.7) {
+  } else if (percent > 0.6) {
     usageText.style.color = "orange";
   } else {
     usageText.style.color = "inherit";
