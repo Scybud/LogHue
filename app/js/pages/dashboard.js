@@ -176,7 +176,7 @@ if (todayTasks.length === 0) {
   )
   .join("");
   
-  if (metaEl) metaEl.textContent = `${data.length} listed`;
+  if (metaEl) metaEl.textContent = `${data.length} open`;
 
   listEl.querySelectorAll("[data-toggle]").forEach((btn) => {
     btn.addEventListener("click", async () => {
