@@ -8,7 +8,7 @@
   border-radius: var(--radius-md);
   overflow-x: auto;
   background: var(--card-bg);
-  margin: var(--space-sm) 0;
+  margin: 0;
 }
 
 /* Inline embeds sit inside Quill's editor padding, so give them a little
