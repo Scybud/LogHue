@@ -14,6 +14,7 @@ import {
 import { attachCreatePersonalTaskEvent } from "../../js/utils/modalEvents.js";
 import { formatDateTime } from "../../js/utils/time.js";
 import {linkify} from "../../js/utils/linkify.js";
+import {makeCollapsible} from "../../js/utils/toggle.js"
 
 // State
 let personalCreatedTasks: HTMLElement;
@@ -241,7 +242,11 @@ actionsGroup.append(linkNoteBtn, duplicateBtn, deleteBtn);
   if (task.description?.trim()) {
     const desc = document.createElement("p");
     desc.classList.add("taskDescription");
+
+    
     desc.innerHTML = linkify(task.description);
+    makeCollapsible(desc, 60)
+
     el.append(desc);
   }
 

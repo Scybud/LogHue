@@ -100,8 +100,12 @@ export function loadTasks(title, tasks, container) {
     `;
 
     const actionsMenu = document.createElement("div");
-    actionsMenu.classList.add("taskActionsMenu");
+    actionsMenu.classList.add("dropdown", "taskActionsMenu");
     actionsMenu.hidden = true;
+
+   const actionMenuList = document.createElement("div")
+    actionMenuList.classList.add("dropdown-list")
+    actionsMenu.append(actionMenuList);
 
     menuBtn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -121,7 +125,7 @@ export function loadTasks(title, tasks, container) {
       e.stopPropagation();
       window.location.href = `task-view?task=${tsk.id}`;
     });
-    actionsMenu.append(viewBtn);
+    actionMenuList.append(viewBtn);
 
     taskCard.append(taskTitle, taskMeta, menuBtn, actionsMenu);
 
@@ -130,7 +134,7 @@ export function loadTasks(title, tasks, container) {
       assignBtn.type = "button";
       assignBtn.classList.add("btn", "btn-secondary", "assignBtn", "btn-sm");
       assignBtn.textContent = "Assign";
-      actionsMenu.append(assignBtn);
+      actionMenuList.append(assignBtn);
     } else {
       const pingBtn = document.createElement("button");
       pingBtn.type = "button";
@@ -150,7 +154,7 @@ export function loadTasks(title, tasks, container) {
         });
         actionMsg("Assignee pinged!", "success");
       });
-      actionsMenu.append(pingBtn);
+      actionMenuList.append(pingBtn);
     }
 
     if (canDeleteTask(tsk)) {
@@ -174,7 +178,7 @@ export function loadTasks(title, tasks, container) {
           ],
         );
       });
-      actionsMenu.append(deleteBtn);
+      actionMenuList.append(deleteBtn);
     }
 
     divGrid.prepend(taskCard);
@@ -211,10 +215,8 @@ async function handleTaskDelete(tsk, taskCard) {
   taskCard.remove();
   actionMsg("Task deleted.", "success");
 }
-/**
- * Member view – tasks assigned to the current user, with Delete
- * available if the current user created the task or is the workspace owner.
- */
+
+
 export function loadAssignedTasks(sectionTitle, tasks, container) {
   if (!tasks || tasks.length === 0) {
     container.innerHTML = `<p class="placeholderText">No tasks assigned yet.</p>`;

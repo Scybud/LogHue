@@ -7,6 +7,7 @@ import { loadComponent, createEmptyState, } from "https://ui.scybud.com/js/ui.js
 import { attachCreatePersonalTaskEvent } from "../../js/utils/modalEvents.js";
 import { formatDateTime } from "../../js/utils/time.js";
 import { linkify } from "../../js/utils/linkify.js";
+import { makeCollapsible } from "../../js/utils/toggle.js";
 // State
 let personalCreatedTasks;
 let loggedTasksCount;
@@ -173,6 +174,7 @@ export function createTaskElement(task) {
         const desc = document.createElement("p");
         desc.classList.add("taskDescription");
         desc.innerHTML = linkify(task.description);
+        makeCollapsible(desc, 60);
         el.append(desc);
     }
     //notes badge(if linked to note)

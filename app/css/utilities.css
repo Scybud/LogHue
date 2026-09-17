@@ -988,16 +988,17 @@ flex-wrap: wrap;
         line-height: 1.6;
       }
 
-      .isCollapsible {
+  .isCollapsible {
   overflow: hidden;
   position: relative;
   transition: max-height 0.25s ease;
+  padding-bottom: 32px; /* reserved space so the button never sits on text */
 }
 
 .isCollapsible:not(.expanded)::after {
   content: "";
   position: absolute;
-  bottom: 0;
+  bottom: 32px;
   left: 0;
   right: 0;
   height: 60px;
@@ -1005,22 +1006,32 @@ flex-wrap: wrap;
   background: linear-gradient(
     to bottom,
     transparent,
-    var(--bg-secondary)
+    var(--card-bg, var(--bg-secondary)) 80%
   );
 }
 
 .contentToggle {
-  margin-top: 8px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 1;
   padding: 0;
   border: 0;
-  background: none;
+  background: var(--card-bg, var(--bg-secondary));
   color: var(--accent-color);
   font: inherit;
   font-size: 13px;
   font-weight: 500;
+  text-align: left;
   cursor: pointer;
 }
 
 .contentToggle:hover {
   text-decoration: underline;
+}
+.contentToggle:active {
+  transform: scale(1);
+  color: var(--hover-bg);
 }

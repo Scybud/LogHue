@@ -60,8 +60,6 @@ export function makeCollapsible(element, maxHeight = 220) {
   if (!element) return;
 
   requestAnimationFrame(() => {
-    // Don't do anything if the content isn't actually taller
-    // than the allowed height.
     if (element.scrollHeight <= maxHeight) return;
 
     element.classList.add("isCollapsible");
@@ -73,7 +71,7 @@ export function makeCollapsible(element, maxHeight = 220) {
     button.className = "contentToggle";
     button.textContent = "Show more";
 
-    element.insertAdjacentElement("afterend", button);
+    element.append(button);
 
     button.addEventListener("click", () => {
       const expanded = element.classList.toggle("expanded");
