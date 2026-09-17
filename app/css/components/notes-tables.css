@@ -75,6 +75,7 @@
 table.tableWidgetGrid {
   border-collapse: separate;
   border-spacing: 0;
+  width: 100%;
 }
 table.tableWidgetGrid td,
 table.tableWidgetGrid th {
@@ -160,7 +161,7 @@ tr:hover .tableRowDel {
   display: flex;
   align-items: flex-start;
   min-width: 140px;
-  max-width: 260px;
+ 
 }
 .tableCell {
   flex: 1;

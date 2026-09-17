@@ -497,7 +497,7 @@ backdrop-filter: var(--filter);
 
 
 @media (max-width: 800px) {
- #sketchEditorPane.expanded, #textEditorPane.expanded {
+ #sketchEditorPane.expanded, #textEditorPane.expanded, #tableEditorPane.expanded {
 width: 100%;
 height: 100%;
 left: 0;

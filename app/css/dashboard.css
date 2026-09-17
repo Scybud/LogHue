@@ -533,7 +533,10 @@ max-width: 200px;
     max-width: 200px;
     width: 200px;
     padding: var(--space-xs);
+    /*
     background: var(--surface-secondary);
+    */
+    backdrop-filter: var(--filter);
     border: 1px solid var(--border);
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
@@ -544,7 +547,9 @@ max-width: 200px;
 .dropdown-list {
   border-radius: var(--radius-sm);
   height: 100%;
+  /*
   background: var(--card-bg);
+  */
 }
 .dropdown-list .btn {
   color: var(--text-secondary);
@@ -584,6 +589,7 @@ button.dropdown-item {
 .dropdown-list .btn:hover {
     opacity: 1;
   background: var(--hover-bg);
+
 }
 
 /* ===== Dashboard console grid, added to match prototype ===== */
