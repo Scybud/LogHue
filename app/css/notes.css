@@ -287,12 +287,15 @@ gap: var(--space-sm);
   background: var(--card-bg);
   position: sticky;
   top: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
   backdrop-filter: var(--filter);
 }
 
 #noteTitle, #sketchTitle, #tableTitle {
   border: 1px solid var(--border-primary);
   width: 100%;
+  min-width: 250px;
   max-width: 420px;
   margin: 0;
   font-size: 1.15rem;
