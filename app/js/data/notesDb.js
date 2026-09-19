@@ -18,6 +18,20 @@ export async function fetchUserNotes(userId) {
   return notes;
 }
 
+export async function fetchUserFolders(userId) {
+ const { data: folders, error } = await supabase
+    .from("note_folders")
+    .select("id, name, user_id")
+    .eq("user_id", userId);
+
+  if (error) {
+    actionMsg("Error loading folders", "error");
+    return;
+  }
+
+  return folders;
+}
+
 export async function fetchNoteById(noteId, userId) {
   const { data: note, error } = await supabase
     .from("personal_notes")

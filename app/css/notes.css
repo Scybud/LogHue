@@ -140,6 +140,162 @@
   border: 1px solid var(--border-primary);
 }
 
+
+.dropdown-divider {
+  border-top: 1px solid var(--border-primary);
+  margin: 4px 0;
+}
+
+/* Folder groups */
+.noteFolder {
+  margin-bottom: 2px;
+}
+
+.noteFolderHeader {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: var(--space-xs) var(--space-md);
+  cursor: pointer;
+  user-select: none;
+  color: var(--text-primary);
+}
+
+.noteFolderHeader:hover {
+  background: var(--hover-bg);
+}
+
+.folderChevron {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  color: var(--text-secondary);
+}
+
+.noteFolder.collapsed .folderChevron {
+  transform: rotate(-90deg);
+}
+
+.noteFolderName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.noteFolderCount {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.deleteFolderBtn {
+  opacity: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.noteFolderHeader:hover .deleteFolderBtn {
+  opacity: 1;
+}
+
+.deleteFolderBtn:hover {
+  color: var(--danger);
+}
+
+.noteFolderNotes {
+  padding-left: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 3000px;
+  transition: max-height 0.25s ease;
+}
+
+.noteFolder.collapsed .noteFolderNotes {
+  max-height: 0;
+}
+
+.folderEmpty {
+  padding: 8px var(--space-md);
+  font-size: 0.78rem;
+}
+
+/* Per-note actions button, replaces the old plain deleteBtn */
+.noteActionsBtn {
+  opacity: 0;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .noteActionsBtn, .deleteFolderBtn {
+    opacity: 1;
+  }
+  
+}
+
+.noteItem:hover .noteActionsBtn {
+  opacity: 1;
+}
+
+.noteActionsBtn:hover {
+  color: var(--text-primary);
+}
+
+.newFolderModal {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  max-height: fit-content;
+  z-index: 3;
+  backdrop-filter: var(--filter) brightness(30%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: var(--space-xs) var(--space-md);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.newFolderModal .inputField {
+  max-width: 400px;
+}
+.newFolderModal .btn {
+  max-width: fit-content;
+  margin: var(--space-sm);
+}
+
+.dropdown-sectionLabel {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-secondary);
+  padding: 6px 10px 2px;
+}
+
 #notesList {
   overflow-y: auto;
   min-height: 0;

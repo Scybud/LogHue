@@ -2,7 +2,10 @@ import { supabase } from "../supabase.js";
 import { confirmAction, actionMsg, openUpgradeModal } from "../utils/modals.js";
 import { sanitizeHTML } from "../utils.js";
 import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
-import { fetchNoteById } from "../data/notesDb.js";
+import {
+  fetchNoteById,
+  fetchUserFolders as fetchFolders,
+} from "../data/notesDb.js";
 import { formatDateTimeRelatively } from "../utils/time.js";
 import { sessionState } from "../session.js";
 import {
@@ -12,11 +15,7 @@ import {
 } from "../components/tables/tableWidget.js";
 import { registerTableEmbedBlot } from "../components/tables/TableembedBlot.js";
 
-/*
-
-GLOBAL STATE
-
-*/
+// Global state
 let quill = null;
 let currentNoteId = null;
 let currentNoteType = "text"; // "text" | "sketch" | "table"
@@ -28,16 +27,14 @@ let autosaveTimer = null;
 
 const AUTOSAVE_DELAY = 1500;
 
-// --- table state ---
-// For "text" notes: the tables inline-embedded inside the Quill content.
-// For "table" notes: a single-entry array holding that note's one table.
+// Table state: inline tables for text notes, single-entry array for table notes
 let currentTables = [];
-let isMountingEmbeds = false; // suppress autosave while hydrating table embeds
+let isMountingEmbeds = false;
 let isSavingTableNote = false;
 let lastSavedTableSnapshot = "";
 let tableAutosaveTimer = null;
 
-// --- sketch state ---
+// Sketch state
 let board = null;
 let context = null;
 let isdrawing = false;
@@ -50,9 +47,26 @@ let sketchAutosaveTimer = null;
 const BOARD_WIDTH = 1920;
 const BOARD_HEIGHT = 1080;
 
-// -------------------------------
-// Loading State
-// -------------------------------
+// Folder state
+let savedFolders = [];
+let folderCollapseState = loadFolderCollapseState();
+let noteMenuOutsideClickAttached = false;
+
+function loadFolderCollapseState() {
+  try {
+    return JSON.parse(localStorage.getItem("noteFolderCollapse") || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function persistFolderCollapseState() {
+  localStorage.setItem(
+    "noteFolderCollapse",
+    JSON.stringify(folderCollapseState),
+  );
+}
+
 function setLoading(state) {
   isLoading = state;
   const notesContainer = document.querySelector(".notesContainer");
@@ -74,11 +88,7 @@ function setTableSaveStatus(text) {
   if (el) el.textContent = text;
 }
 
-/*
- 
-AUTOSAVE (text notes)
- 
-*/
+// Autosave: text notes
 function scheduleAutosave() {
   clearAutosaveTimer();
   autosaveTimer = setTimeout(runAutosave, AUTOSAVE_DELAY);
@@ -129,11 +139,7 @@ async function runAutosave() {
   }
 }
 
-/*
- 
-AUTOSAVE (sketch notes)
- 
-*/
+// Autosave: sketch notes
 function scheduleSketchAutosave() {
   clearSketchAutosaveTimer();
   sketchAutosaveTimer = setTimeout(runSketchAutosave, AUTOSAVE_DELAY);
@@ -187,11 +193,7 @@ async function runSketchAutosave() {
   updateSidebarEntry(currentNoteId, title, null);
 }
 
-/*
- 
-AUTOSAVE (standalone table notes)
- 
-*/
+// Autosave: standalone table notes
 function scheduleTableAutosave() {
   clearTableAutosaveTimer();
   tableAutosaveTimer = setTimeout(runTableAutosave, AUTOSAVE_DELAY);
@@ -239,11 +241,7 @@ async function runTableAutosave() {
   updateSidebarEntry(currentNoteId, title, null);
 }
 
-/*
- 
-INITIALIZE NOTES UI
- 
-*/
+// Init notes UI
 async function initNotes() {
   setLoading(true);
 
@@ -263,25 +261,20 @@ async function initNotes() {
   <div class="editorTop">
     <input id="noteTitle" name="noteTitle" placeholder="Note title" class="noteTitle inputField" />
     <div class="actionBtnsContainer">
-      
     <span id="saveStatus" class="saveStatus"></span>
-    
     <button id="expandNoteBtn" data-title="Resize editor" aria-label="Resize editor" class="btn tooltip actionBtn" type="button">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect x="5" y="4" width="18" height="14" rx="2" stroke="currentColor" stroke-width="3" />
           <line x1="7" y1="24" x2="21" y2="24" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
         </svg>
       </button>
-
       <button id="insertTableBtn" data-title="Insert table" aria-label="Insert table" class="btn tooltip actionBtn" type="button">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="4" width="18" height="16" rx="2" />
           <path d="M3 10h18M9 4v16" />
         </svg>
       </button>
-
       <button id="saveNoteBtn" class="btn-sm btn notesActionBtn">Save</button>
-
       <select id="exportNotesBtn" class="btn-sm btn btn-secondary notesActionBtn">
         <option value="">Export As</option>
         <option value="pdf">PDF</option>
@@ -290,52 +283,23 @@ async function initNotes() {
         <option value="txt">TXT</option>
         <option value="md">Markdown</option>
       </select>
-      
     </div>
   </div>
   <div id="editor"></div>
 </div>
- 
+
     <div id="sketchEditorPane" hidden>
       <div class="editorTop">
         <input id="sketchTitle" name="sketchTitle" placeholder="Sketch title" class="noteTitle inputField" />
         <div class="actionBtnsContainer">
           <span id="sketchSaveStatus" class="saveStatus"></span>
- 
           <button id="expandCanvasBtn" data-title="Resize canvas" arial-label="Resize canvas" class="btn tooltip actionBtn" type="button">
-              <svg
-  width="16"
-  height="16"
-  viewBox="0 0 24 24"
-  fill="none"
-  xmlns="http://www.w3.org/2000/svg"
->
-  <!-- Maximize window -->
-  <rect
-    x="5"
-    y="4"
-    width="18"
-    height="14"
-    rx="2"
-    stroke="currentColor"
-    stroke-width="3"
-  />
- 
-  <!-- Minimize bar -->
-  <line
-    x1="7"
-    y1="24"
-    x2="21"
-    y2="24"
-    stroke="currentColor"
-    stroke-width="5"
-    stroke-linecap="round"
-  />
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="5" y="4" width="18" height="14" rx="2" stroke="currentColor" stroke-width="3" />
+  <line x1="7" y1="24" x2="21" y2="24" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
 </svg>
          </button>
-            
           <div class="newNoteActionContainer">
- 
             <button onclick="sketchToolbarContainer.hidden ^= 1" class="btn actionBtn" type="button">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="3" />
@@ -343,14 +307,12 @@ async function initNotes() {
               </svg>
               Tools
             </button>
- 
             <div class="dropdown sketchToolbarContainer" id="sketchToolbarContainer" hidden>
               <div class="dropdown-list">
                 <div class="sketchToolInputRow">
                   <input type="color" id="color-picker" value="#000000" class="tooltip" data-title="Color" title="Color" />
                   <input type="range" id="brush-size" min="1" max="50" value="5" class="tooltip" data-title="Brush size" title="Brush size" />
                 </div>
- 
                 <button id="pen-tool-button" class="btn active" type="button">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 20h9" />
@@ -358,7 +320,6 @@ async function initNotes() {
   </svg>
   <span class="toolLabel">Pen</span>
 </button>
- 
                 <button id="eraser-tool-button" class="btn" type="button">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 20H8.5L3 14.5a1 1 0 0 1 0-1.4l9-9a1 1 0 0 1 1.4 0l7 7a1 1 0 0 1 0 1.4L14 19" />
@@ -366,18 +327,6 @@ async function initNotes() {
                   </svg>
                   <span class="toolLabel">Eraser</span>
                 </button>
- 
-                <!--
-                <button id="text-tool-button" class="btn" type="button">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="4 7 4 4 20 4 20 7" />
-                    <line x1="12" y1="4" x2="12" y2="20" />
-                    <line x1="9" y1="20" x2="15" y2="20" />
-                  </svg>
-                  <span class="toolLabel">Text</span>
-                </button>
-                -->
- 
                 <button id="undo-button" class="btn" type="button">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 10h10a5 5 0 0 1 0 10H8" />
@@ -385,7 +334,6 @@ async function initNotes() {
                   </svg>
                   <span class="toolLabel">Undo</span>
                 </button>
- 
                 <button id="fill-button" class="btn" type="button">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M19 11l-8-8-8.5 8.5a2 2 0 0 0 0 2.8L9 21l10-10z" />
@@ -394,7 +342,6 @@ async function initNotes() {
                 </svg>
                 <span class="toolLabel">Fill</span>
                 </button>
-                
                 <button id="download-button" class="btn" type="button">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 3v12" />
@@ -403,7 +350,6 @@ async function initNotes() {
                 </svg>
                 <span class="toolLabel">Download PNG</span>
                 </button>
- 
                 <button id="clear-button" class="btn danger" type="button">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="3 6 5 6 21 6" />
@@ -422,7 +368,7 @@ async function initNotes() {
         <canvas id="board"></canvas>
       </div>
     </div>
- 
+
     <div id="tableEditorPane" hidden>
       <div class="editorTop">
         <input id="tableTitle" name="tableTitle" placeholder="Table title" class="noteTitle inputField" />
@@ -501,12 +447,9 @@ async function initNotes() {
     }
 
     const value = prompt("Enter URL:");
-    if (value) {
-      quill.format("link", value);
-    }
+    if (value) quill.format("link", value);
   });
 
-  // Clipboard matcher so Quill understands the embed when pasting / converting
   const Delta = Quill.import("delta");
   quill.clipboard.addMatcher(".ql-table-embed", (node, delta) => {
     const id = node.getAttribute("data-table-id");
@@ -514,17 +457,14 @@ async function initNotes() {
     return new Delta().insert({ "table-embed": { id } });
   });
 
-  attachDeleteNoteListener();
   initSketchBoard();
   attachExpandToggle("expandCanvasBtn", "sketchEditorPane");
   attachExpandToggle("expandNoteBtn", "textEditorPane");
   attachExpandToggle("expandTableBtn", "tableEditorPane");
 
-  const saveBtn = document.getElementById("saveNoteBtn");
-  saveBtn.addEventListener("click", saveNote);
+  document.getElementById("saveNoteBtn").addEventListener("click", saveNote);
 
-  const exportSelect = document.getElementById("exportNotesBtn");
-  exportSelect.addEventListener("change", (e) => {
+  document.getElementById("exportNotesBtn").addEventListener("change", (e) => {
     const type = e.target.value;
     if (!type) return;
     exportCurrentNote(type, false);
@@ -534,11 +474,9 @@ async function initNotes() {
   document
     .getElementById("insertTableBtn")
     .addEventListener("click", insertInlineTable);
-
   document
     .getElementById("saveTableBtn")
     .addEventListener("click", saveTableNote);
-
   document
     .getElementById("tableTitle")
     .addEventListener("input", scheduleTableAutosave);
@@ -558,10 +496,28 @@ async function initNotes() {
   document
     .getElementById("noteTitle")
     .addEventListener("input", scheduleAutosave);
-
   document
     .getElementById("sketchTitle")
     .addEventListener("input", scheduleSketchAutosave);
+
+  document.getElementById("createNote").addEventListener("click", () => {
+    notesTypeSelectContainer.hidden = true;
+    createNote();
+  });
+  document.getElementById("createSketch").addEventListener("click", () => {
+    notesTypeSelectContainer.hidden = true;
+    createSketchNote();
+  });
+  document.getElementById("createTable").addEventListener("click", () => {
+    notesTypeSelectContainer.hidden = true;
+    createTableNote();
+  });
+  document.getElementById("createFolder")?.addEventListener("click", () => {
+    notesTypeSelectContainer.hidden = true;
+    openCreateFolderRow();
+  });
+
+  attachNoteMenuOutsideClickHandler();
 
   try {
     const createdFromDraft = await loadCreateNote();
@@ -607,9 +563,7 @@ async function loadCreateNote() {
 
   actionMsg("Note created", "success");
   document.dispatchEvent(
-    new CustomEvent("onboarding:note_created", {
-      detail: { noteId: data.id },
-    }),
+    new CustomEvent("onboarding:note_created", { detail: { noteId: data.id } }),
   );
   localStorage.removeItem("createNote");
 
@@ -619,26 +573,12 @@ async function loadCreateNote() {
   return true;
 }
 
-/*
- 
-LOAD USER NOTES
- 
-*/
-async function fetchUserNotes() {
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
-
-  if (authError || !user) {
-    console.error("User not authenticated");
-    return null;
-  }
-
+// Fetch user notes and folders
+async function fetchUserNotes(userId) {
   const { data: notes, error } = await supabase
     .from("personal_notes")
     .select("*")
-    .eq("user_id", user.id)
+    .eq("user_id", userId)
     .order("updated_at", { ascending: false });
 
   if (error) {
@@ -649,17 +589,36 @@ async function fetchUserNotes() {
   return notes || [];
 }
 
+async function fetchUserFolders(userId) {
+  const folders = await fetchFolders(userId);
+
+  if (!folders) {
+    return [];
+  }
+
+  return folders;
+}
+
 async function loadNotes(noteId) {
-  const notes = await fetchUserNotes();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) return;
+
+  const [notes, folders] = await Promise.all([
+    fetchUserNotes(user.id),
+    fetchUserFolders(user.id),
+  ]);
+
   if (notes === null) return;
 
   savedNoteDetails = notes;
+  savedFolders = folders;
   renderNotesList(notes);
 
   if (noteId) {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
     await openNoteById(noteId, user.id);
   } else if (notes.length > 0) {
     openNote(notes[0]);
@@ -685,18 +644,26 @@ async function loadNotes(noteId) {
 }
 
 async function refreshSidebarOnly() {
-  const notes = await fetchUserNotes();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) return;
+
+  const [notes, folders] = await Promise.all([
+    fetchUserNotes(user.id),
+    fetchUserFolders(user.id),
+  ]);
+
   if (notes === null) return;
 
   savedNoteDetails = notes;
+  savedFolders = folders;
   renderNotesList(notes);
 }
 
-/*
- 
-HELPERS
- 
-*/
+// Helpers
 function getPlainPreview(html, maxLength = 60) {
   if (!html) return "";
   const text = html
@@ -708,11 +675,7 @@ function getPlainPreview(html, maxLength = 60) {
   return text.slice(0, maxLength).trim() + "…";
 }
 
-/*
- 
-RENDER NOTES LIST
- 
-*/
+// Render notes list
 function renderNotesList(notes) {
   const notesList = document.getElementById("notesList");
   const notesCount = document.getElementById("notesCount");
@@ -721,77 +684,220 @@ function renderNotesList(notes) {
 
   notesList.innerHTML = "";
 
-  if (notesCount) {
-    notesCount.textContent = notes.length;
-  }
+  if (notesCount) notesCount.textContent = notes.length;
 
-  if (notes.length === 0) {
+  if (notes.length === 0 && savedFolders.length === 0) {
     notesList.innerHTML = `<p class="placeholderText">No notes created yet.</p>`;
     return;
   }
 
-  notes.forEach((note) => {
-    const item = document.createElement("div");
-    item.classList.add("noteItem");
-    if (note.note_type === "sketch") item.classList.add("noteItemSketch");
-    if (note.note_type === "table") item.classList.add("noteItemTable");
-    item.dataset.id = note.id;
+  savedFolders.forEach((folder) => {
+    const folderNotes = notes.filter(
+      (n) => String(n.folder_id) === String(folder.id),
+    );
+    const collapsed = !!folderCollapseState[folder.id];
 
-    const content = document.createElement("div");
-    content.classList.add("noteItemContent");
+    const folderEl = document.createElement("div");
+    folderEl.classList.add("noteFolder");
+    if (collapsed) folderEl.classList.add("collapsed");
+    folderEl.dataset.folderId = folder.id;
 
-    const typePrefix =
-      note.note_type === "sketch"
-        ? "🖊 "
-        : note.note_type === "table"
-          ? "▦ "
-          : "";
-
-    const titleEl = document.createElement("p");
-    titleEl.classList.add("noteTitle");
-    titleEl.textContent = typePrefix + (note.title || "Untitled");
-
-    const previewEl = document.createElement("span");
-    previewEl.classList.add("notePreview");
-    previewEl.textContent =
-      note.note_type === "sketch"
-        ? "Sketch note"
-        : note.note_type === "table"
-          ? note.table_data?.[0]?.cols?.length
-            ? `${note.table_data[0].cols.length} columns · ${note.table_data[0].rows?.length || 0} rows`
-            : "Table note"
-          : getPlainPreview(note.content);
-
-    const metaEl = document.createElement("span");
-    metaEl.classList.add("noteMeta");
-    metaEl.textContent = formatDateTimeRelatively(note.updated_at);
-
-    content.append(titleEl, previewEl, metaEl);
-
-    const deleteBtn = document.createElement("button");
-    deleteBtn.type = "button";
-    deleteBtn.classList.add("deleteBtn", "tooltip");
-    deleteBtn.setAttribute("data-title", "Delete note");
-    deleteBtn.setAttribute("aria-label", "Delete note");
-    deleteBtn.title = "Delete note";
-    deleteBtn.innerHTML = `
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="3 6 5 6 21 6" />
-        <path d="M19 6l-1 14H6L5 6" />
-        <path d="M10 11v6" />
-        <path d="M14 11v6" />
-        <path d="M9 6V4h6v2" />
+    const header = document.createElement("div");
+    header.classList.add("noteFolderHeader");
+    header.innerHTML = `
+      <svg class="folderChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9" />
       </svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M3 7h6l2 2h10v10H3z" />
+      </svg>
+      <span class="noteFolderName">${folder.name}</span>
+      <span class="noteFolderCount">${folderNotes.length}</span>
+      <button type="button" class="deleteFolderBtn tooltip" data-title="Delete folder" aria-label="Delete folder">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6" />
+          <path d="M19 6l-1 14H6L5 6" />
+          <path d="M10 11v6" />
+          <path d="M14 11v6" />
+          <path d="M9 6V4h6v2" />
+        </svg>
+      </button>
     `;
 
-    item.append(content, deleteBtn);
-    item.onclick = () => openNote(note);
+    header.addEventListener("click", (e) => {
+      if (e.target.closest(".deleteFolderBtn")) return;
+      toggleFolderCollapse(folder.id);
+    });
 
-    notesList.appendChild(item);
+    header.querySelector(".deleteFolderBtn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      confirmDeleteFolder(folder.id, folder.name);
+    });
+
+    const notesWrap = document.createElement("div");
+    notesWrap.classList.add("noteFolderNotes");
+
+    if (folderNotes.length === 0) {
+      notesWrap.innerHTML = `<p class="placeholderText folderEmpty">No notes here.</p>`;
+    } else {
+      folderNotes.forEach((note) => notesWrap.appendChild(buildNoteItem(note)));
+    }
+
+    folderEl.append(header, notesWrap);
+    notesList.appendChild(folderEl);
   });
 
+  const unfiled = notes.filter((n) => !n.folder_id);
+  unfiled.forEach((note) => notesList.appendChild(buildNoteItem(note)));
+
   highlightActiveNote(currentNoteId);
+}
+
+function buildNoteItem(note) {
+  const item = document.createElement("div");
+  item.classList.add("noteItem");
+  if (note.note_type === "sketch") item.classList.add("noteItemSketch");
+  if (note.note_type === "table") item.classList.add("noteItemTable");
+  item.dataset.id = note.id;
+
+  const content = document.createElement("div");
+  content.classList.add("noteItemContent");
+
+  const typePrefix =
+    note.note_type === "sketch"
+      ? "🖊 "
+      : note.note_type === "table"
+        ? "▦ "
+        : "";
+
+  //DROPDOWN DIVIDER
+  const dropdownDivider = document.createElement("div");
+  dropdownDivider.classList.add("dropdown-divider");
+
+  const titleEl = document.createElement("p");
+  titleEl.classList.add("noteTitle");
+  titleEl.textContent = typePrefix + (note.title || "Untitled");
+
+  const previewEl = document.createElement("span");
+  previewEl.classList.add("notePreview");
+  previewEl.textContent =
+    note.note_type === "sketch"
+      ? "Sketch note"
+      : note.note_type === "table"
+        ? note.table_data?.[0]?.cols?.length
+          ? `${note.table_data[0].cols.length} columns · ${note.table_data[0].rows?.length || 0} rows`
+          : "Table note"
+        : getPlainPreview(note.content);
+
+  const metaEl = document.createElement("span");
+  metaEl.classList.add("noteMeta");
+  metaEl.textContent = formatDateTimeRelatively(note.updated_at);
+
+  content.append(titleEl, previewEl, metaEl);
+
+  const actionsBtn = document.createElement("button");
+  actionsBtn.type = "button";
+  actionsBtn.classList.add("noteActionsBtn", "tooltip");
+  actionsBtn.setAttribute("data-title", "Note actions");
+  actionsBtn.setAttribute("aria-label", "Note actions");
+  actionsBtn.innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="5" r="1.3" />
+      <circle cx="12" cy="12" r="1.3" />
+      <circle cx="12" cy="19" r="1.3" />
+    </svg>
+  `;
+
+  const actionsMenu = document.createElement("div");
+  actionsMenu.classList.add("dropdown", "noteActionsMenu");
+  actionsMenu.hidden = true;
+
+  const actionsMenuList = document.createElement("div");
+  actionsMenuList.classList.add("dropdown-list");
+  actionsMenu.append(actionsMenuList);
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.type = "button";
+  deleteBtn.classList.add("btn", "danger", "btn-sm");
+  deleteBtn.textContent = "Delete";
+  deleteBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    actionsMenu.hidden = true;
+    confirmAction("Delete Note", "Delete this note?", [
+      { label: "Cancel", type: "cancel" },
+      {
+        label: "Delete",
+        type: "confirm",
+        onClick: () => attachDeleteNoteEvent(item, note.id),
+      },
+    ]);
+  });
+  actionsMenuList.append(deleteBtn);
+
+  if (note.folder_id) {
+    actionsMenuList.append(dropdownDivider);
+
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.classList.add("btn", "btn-sm");
+    removeBtn.textContent = "Remove from folder";
+    removeBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      actionsMenu.hidden = true;
+      removeNoteFromFolder(note.id);
+    });
+    actionsMenuList.append(removeBtn);
+  } else if (savedFolders.length > 0) {
+    actionsMenuList.append(dropdownDivider);
+
+    const label = document.createElement("div");
+    label.classList.add("dropdown-sectionLabel");
+    label.textContent = "Add to folder";
+    actionsMenuList.append(label);
+
+    savedFolders.forEach((folder) => {
+      const folderBtn = document.createElement("button");
+      folderBtn.type = "button";
+      folderBtn.classList.add("btn", "btn-sm");
+      folderBtn.textContent = folder.name;
+      folderBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        actionsMenu.hidden = true;
+        assignNoteToFolder(note.id, folder.id);
+      });
+      actionsMenuList.append(folderBtn);
+    });
+  }
+
+  actionsBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    document
+      .querySelectorAll(".noteActionsMenu:not([hidden])")
+      .forEach((el) => {
+        if (el !== actionsMenu) el.hidden = true;
+      });
+    actionsMenu.hidden = !actionsMenu.hidden;
+  });
+
+  item.append(content, actionsBtn, actionsMenu);
+  item.onclick = () => openNote(note);
+
+  return item;
+}
+
+function attachNoteMenuOutsideClickHandler() {
+  if (noteMenuOutsideClickAttached) return;
+  document.addEventListener("click", (e) => {
+    if (
+      e.target.closest(".noteActionsBtn") ||
+      e.target.closest(".noteActionsMenu")
+    )
+      return;
+    document
+      .querySelectorAll(".noteActionsMenu:not([hidden])")
+      .forEach((el) => (el.hidden = true));
+  });
+  noteMenuOutsideClickAttached = true;
 }
 
 function highlightActiveNote(id) {
@@ -800,11 +906,7 @@ function highlightActiveNote(id) {
   });
 }
 
-/*
- 
-PANE SWITCHING
- 
-*/
+// Pane switching
 function showTextPane() {
   document.getElementById("textEditorPane")?.removeAttribute("hidden");
   document.getElementById("sketchEditorPane")?.setAttribute("hidden", "");
@@ -824,11 +926,7 @@ function showTablePane() {
   document.getElementById("sketchEditorPane")?.setAttribute("hidden", "");
 }
 
-/*
- 
-OPEN NOTE IN EDITOR
- 
-*/
+// Open note in editor
 async function openNoteById(noteId, userId) {
   const noteData = await fetchNoteById(noteId, userId);
   openNote(noteData);
@@ -867,29 +965,20 @@ function openNote(note) {
     lastSavedTableSnapshot = title + JSON.stringify(currentTables);
     setTableSaveStatus("");
   } else {
-    // ---------- TEXT NOTE (with possible inline tables) ----------
     showTextPane();
     const title = note.title || "Untitled";
     const content = sanitizeHTML(note.content || "");
     currentTables = Array.isArray(note.table_data) ? note.table_data : [];
 
     document.getElementById("noteTitle").value = title;
-
-    // Put the raw placeholders into the editor
     quill.root.innerHTML = content || "";
 
-    // Heal any leftover data-mounted attributes from older saves
     quill.root
       .querySelectorAll(".ql-table-embed[data-mounted]")
       .forEach((n) => n.removeAttribute("data-mounted"));
-
-    // Force Quill to notice the new nodes
     quill.update("silent");
 
-    // Mount the interactive widgets after the browser has painted
-    requestAnimationFrame(() => {
-      mountTableEmbeds(quill.root);
-    });
+    requestAnimationFrame(() => mountTableEmbeds(quill.root));
 
     lastSavedSnapshot = title + content + JSON.stringify(currentTables);
     setSaveStatus("");
@@ -898,11 +987,7 @@ function openNote(note) {
   fetchLinkedTasks(note.id).then(renderLinkedTasksChip);
 }
 
-/*
- 
-CREATE NOTE (text)
- 
-*/
+// Create note (text)
 async function createNote() {
   setLoading(true);
 
@@ -936,18 +1021,13 @@ async function createNote() {
         detail: { noteId: data.id },
       }),
     );
-
     actionMsg("Note created. Start typing!", "success");
   } finally {
     setLoading(false);
   }
 }
 
-/*
- 
-CREATE NOTE (sketch)
- 
-*/
+// Create note (sketch)
 async function createSketchNote() {
   setLoading(true);
 
@@ -982,32 +1062,13 @@ async function createSketchNote() {
         detail: { noteId: data.id },
       }),
     );
-
     actionMsg("Sketch created!", "success");
   } finally {
     setLoading(false);
   }
 }
 
-// "createNote" = New Note dropdown option, "createSketch" = New Sketch dropdown option
-document.getElementById("createNote").addEventListener("click", () => {
-  notesTypeSelectContainer.hidden = true;
-  createNote();
-});
-document.getElementById("createSketch").addEventListener("click", () => {
-  notesTypeSelectContainer.hidden = true;
-  createSketchNote();
-});
-document.getElementById("createTable").addEventListener("click", () => {
-  notesTypeSelectContainer.hidden = true;
-  createTableNote();
-});
-
-/*
- 
-CREATE NOTE (standalone table)
- 
-*/
+// Create note (standalone table)
 async function createTableNote() {
   setLoading(true);
 
@@ -1042,18 +1103,13 @@ async function createTableNote() {
         detail: { noteId: data.id },
       }),
     );
-
     actionMsg("Table created!", "success");
   } finally {
     setLoading(false);
   }
 }
 
-/*
- 
-SAVE NOTE (standalone table)
- 
-*/
+// Save note (standalone table)
 async function saveTableNote() {
   if (isSavingTableNote) return;
 
@@ -1091,14 +1147,7 @@ async function saveTableNote() {
   }
 }
 
-/*
- 
-INLINE TABLES (inside text notes)
-A table-embed blot is an opaque placeholder inside Quill's content; the
-actual interactive widget is mounted into it here, outside Quill's own
-diffing, so cell edits never get interpreted as text changes.
- 
-*/
+// Inline tables inside text notes
 function insertInlineTable() {
   if (!quill) return;
   const range = quill.getSelection(true) || {
@@ -1130,16 +1179,12 @@ function mountTableEmbeds(root) {
 
     let table = currentTables.find((t) => String(t.id) === String(tableId));
 
-    // Orphan placeholder from an old buggy save → create a new empty table
-    // with the exact same id so the slot is filled and can be edited again.
     if (!table) {
-      console.warn("orphan table-embed, creating fresh table for id", tableId);
       table = createTable("Table (recovered)");
-      table.id = tableId; // keep the original id
+      table.id = tableId;
       currentTables.push(table);
     }
 
-    // Always remove any previous mount flag so we can re-mount cleanly
     node.removeAttribute("data-mounted");
     node.setAttribute("data-mounted", "1");
 
@@ -1162,35 +1207,25 @@ function mountTableEmbeds(root) {
   isMountingEmbeds = false;
 }
 
-// Quill's content field must only ever store empty table-embed placeholders
-// (never the live mounted widget markup) so sanitizeHTML doesn't flatten
-// table/tr/td/input/button into plain text. Actual table data lives in
-// currentTables / table_data, not in this HTML.
 function getSavableContentHTML() {
   const clone = quill.root.cloneNode(true);
   clone.querySelectorAll(".ql-table-embed").forEach((node) => {
     const id = node.getAttribute("data-table-id");
     node.innerHTML = "";
     node.setAttribute("data-table-id", id);
-    node.removeAttribute("data-mounted"); // must not persist, or reload skips mounting
+    node.removeAttribute("data-mounted");
   });
   return clone.innerHTML;
 }
 
-/*
- 
-SAVE NOTE (text)
- 
-*/
+// Save note (text)
 async function persistNote(title, content, tableData = []) {
   if (!currentNoteId) {
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) {
-      return { error: new Error("Not authenticated") };
-    }
+    if (!user) return { error: new Error("Not authenticated") };
 
     const { data, error } = await supabase
       .from("personal_notes")
@@ -1207,7 +1242,6 @@ async function persistNote(title, content, tableData = []) {
     if (error) return { error };
 
     currentNoteId = data.id;
-
     document.dispatchEvent(
       new CustomEvent("onboarding:note_created", {
         detail: { noteId: data.id },
@@ -1219,12 +1253,7 @@ async function persistNote(title, content, tableData = []) {
 
   const { error } = await supabase
     .from("personal_notes")
-    .update({
-      title,
-      content,
-      table_data: tableData,
-      updated_at: new Date(),
-    })
+    .update({ title, content, table_data: tableData, updated_at: new Date() })
     .eq("id", currentNoteId);
 
   if (error) return { error };
@@ -1294,39 +1323,7 @@ async function saveNote() {
   }
 }
 
-function attachDeleteNoteListener() {
-  const notesList = document.getElementById("notesList");
-  if (!notesList) return;
-
-  notesList.addEventListener("click", (e) => {
-    const btn = e.target.closest(".deleteBtn");
-    if (!btn) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    const noteToDelete = btn.closest(".noteItem");
-    const id = noteToDelete.dataset.id;
-
-    confirmAction("Delete Note", "Delete this note?", [
-      { label: "Cancel", type: "cancel" },
-      {
-        label: "Delete",
-        type: "confirm",
-        onClick: () => attachDeleteNoteEvent(noteToDelete, id),
-      },
-    ]);
-  });
-}
-
-/*
- 
-SKETCH BOARD
-Built on the working freehand-draw prototype: pointer events directly
-drive a 2D context path (raster, not vector). Extended with a text tool,
-snapshot-based undo, and Supabase persistence.
- 
-*/
+// Sketch board
 function initSketchBoard() {
   board = document.getElementById("board");
   if (!board) return;
@@ -1336,7 +1333,6 @@ function initSketchBoard() {
   const brushSize = document.getElementById("brush-size");
   const penToolBtn = document.getElementById("pen-tool-button");
   const eraserToolBtn = document.getElementById("eraser-tool-button");
-  //const textToolBtn = document.getElementById("text-tool-button");
   const undoBtn = document.getElementById("undo-button");
   const clearBtn = document.getElementById("clear-button");
   const fillBtn = document.getElementById("fill-button");
@@ -1379,13 +1375,10 @@ function initSketchBoard() {
   downloadBtn.addEventListener("click", downloadBoard);
   undoBtn.addEventListener("click", undoSketch);
 
-  penToolBtn.addEventListener("click", () => {
-    setSketchTool("pen");
-  });
-
-  eraserToolBtn.addEventListener("click", () => {
-    setSketchTool(sketchTool === "eraser" ? "pen" : "eraser");
-  });
+  penToolBtn.addEventListener("click", () => setSketchTool("pen"));
+  eraserToolBtn.addEventListener("click", () =>
+    setSketchTool(sketchTool === "eraser" ? "pen" : "eraser"),
+  );
 
   function drawOnBoard(e) {
     if (!isdrawing) return;
@@ -1417,7 +1410,7 @@ function getBoardPos(e) {
 
 function ensureBoardSized() {
   if (!board) return;
-  if (board.width === BOARD_WIDTH && board.height === BOARD_HEIGHT) return; // already sized, don't touch it
+  if (board.width === BOARD_WIDTH && board.height === BOARD_HEIGHT) return;
   board.width = BOARD_WIDTH;
   board.height = BOARD_HEIGHT;
 }
@@ -1455,9 +1448,9 @@ function setSketchTool(tool) {
 
 function placeSketchText(e) {
   const rect = board.getBoundingClientRect();
-  const displayX = e.clientX - rect.left; // CSS pixels, for positioning the overlay
+  const displayX = e.clientX - rect.left;
   const displayY = e.clientY - rect.top;
-  const [boardX, boardY] = getBoardPos(e); // canvas pixels, for the actual drawing
+  const [boardX, boardY] = getBoardPos(e);
   const colorPicker = document.getElementById("color-picker");
 
   const editable = document.createElement("div");
@@ -1524,9 +1517,7 @@ function loadImageOntoBoard(dataUrl) {
   img.src = dataUrl;
 }
 
-// EXPORT (text notes)
-
-//HTML TO MARKDOWN
+// Export: HTML to Markdown
 function htmlToMarkdown(html) {
   const container = document.createElement("div");
   container.innerHTML = html;
@@ -1595,15 +1586,12 @@ function htmlToMarkdown(html) {
           const parent = child.parentElement;
           const isOrdered = parent && parent.tagName.toLowerCase() === "ol";
 
-          if (child.dataset.list === "checked") {
+          if (child.dataset.list === "checked")
             out += `- [x] ${inner.trim()}\n`;
-          } else if (child.dataset.list === "unchecked") {
+          else if (child.dataset.list === "unchecked")
             out += `- [ ] ${inner.trim()}\n`;
-          } else if (isOrdered) {
-            out += `1. ${inner.trim()}\n`;
-          } else {
-            out += `- ${inner.trim()}\n`;
-          }
+          else if (isOrdered) out += `1. ${inner.trim()}\n`;
+          else out += `- ${inner.trim()}\n`;
           break;
         }
         case "ol":
@@ -1645,9 +1633,6 @@ function exportFile(filename, content, type = "text/plain") {
   URL.revokeObjectURL(url);
 }
 
-// Replaces each inline table-embed placeholder in Quill's HTML with a real,
-// styled <table> so exports don't ship an empty div. Only used for the
-// html/pdf export paths — docx/txt/md still drop tables for now.
 function resolveInlineTablesHTML(rawHtml) {
   const container = document.createElement("div");
   container.innerHTML = rawHtml;
@@ -1663,8 +1648,160 @@ function resolveInlineTablesHTML(rawHtml) {
   return container.innerHTML;
 }
 
-// Shared html/pdf export renderer, used by both text notes (with inline
-// tables already substituted in) and standalone table notes.
+// Folders
+function openCreateFolderRow() {
+  if (document.getElementById("newFolderModal")) return;
+
+  const notesList = document.getElementById("notesList");
+  const row = document.createElement("div");
+  row.id = "newFolderModal";
+  row.classList.add("newFolderModal");
+  row.innerHTML = `
+    <input type="text" id="newFolderNameInput" class="inputField" placeholder="Folder name" />
+    <button type="button" id="confirmCreateFolderBtn" class="btn-sm btn">Create</button>
+    <button type="button" id="cancelCreateFolderBtn" class="btn-sm btn btn-secondary">Cancel</button>
+  `;
+  notesList.prepend(row);
+
+  const input = row.querySelector("#newFolderNameInput");
+  input.focus();
+
+  const cleanup = () => row.remove();
+
+  row
+    .querySelector("#cancelCreateFolderBtn")
+    .addEventListener("click", cleanup);
+
+  const submit = () => {
+    const name = input.value.trim();
+    if (!name) return cleanup();
+    cleanup();
+    createFolder(name);
+  };
+
+  row
+    .querySelector("#confirmCreateFolderBtn")
+    .addEventListener("click", submit);
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") submit();
+    if (e.key === "Escape") cleanup();
+  });
+}
+
+async function createFolder(name) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { data, error } = await supabase
+    .from("note_folders")
+    .insert({ user_id: user.id, name })
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error);
+    actionMsg("Failed to create folder.", "error");
+    return;
+  }
+
+  savedFolders.push(data);
+  renderNotesList(savedNoteDetails);
+  actionMsg("Folder created", "success");
+}
+
+function confirmDeleteFolder(folderId, folderName) {
+  confirmAction(
+    "Delete Folder",
+    `Delete "${folderName}"? Notes inside won't be deleted, they'll just be removed from this folder.`,
+    [
+      { label: "Cancel", type: "cancel" },
+      {
+        label: "Delete",
+        type: "confirm",
+        onClick: () => deleteFolder(folderId),
+      },
+    ],
+  );
+}
+
+async function deleteFolder(folderId) {
+  const { error: detachError } = await supabase
+    .from("personal_notes")
+    .update({ folder_id: null })
+    .eq("folder_id", folderId);
+
+  if (detachError) {
+    console.error(detachError);
+    actionMsg("Failed to remove notes from folder.", "error");
+    return;
+  }
+
+  const { error } = await supabase
+    .from("note_folders")
+    .delete()
+    .eq("id", folderId);
+
+  if (error) {
+    console.error(error);
+    actionMsg("Failed to delete folder.", "error");
+    return;
+  }
+
+  savedFolders = savedFolders.filter((f) => f.id !== folderId);
+  savedNoteDetails.forEach((n) => {
+    if (n.folder_id === folderId) n.folder_id = null;
+  });
+  delete folderCollapseState[folderId];
+  persistFolderCollapseState();
+  renderNotesList(savedNoteDetails);
+  actionMsg("Folder deleted", "success");
+}
+
+async function assignNoteToFolder(noteId, folderId) {
+  const { error } = await supabase
+    .from("personal_notes")
+    .update({ folder_id: folderId })
+    .eq("id", noteId);
+
+  if (error) {
+    console.error(error);
+    actionMsg("Failed to add note to folder.", "error");
+    return;
+  }
+
+  const note = savedNoteDetails.find((n) => String(n.id) === String(noteId));
+  if (note) note.folder_id = folderId;
+  renderNotesList(savedNoteDetails);
+  actionMsg("Note added to folder", "success");
+}
+
+async function removeNoteFromFolder(noteId) {
+  const { error } = await supabase
+    .from("personal_notes")
+    .update({ folder_id: null })
+    .eq("id", noteId);
+
+  if (error) {
+    console.error(error);
+    actionMsg("Failed to remove note from folder.", "error");
+    return;
+  }
+
+  const note = savedNoteDetails.find((n) => String(n.id) === String(noteId));
+  if (note) note.folder_id = null;
+  renderNotesList(savedNoteDetails);
+  actionMsg("Note removed from folder", "success");
+}
+
+function toggleFolderCollapse(folderId) {
+  folderCollapseState[folderId] = !folderCollapseState[folderId];
+  persistFolderCollapseState();
+  renderNotesList(savedNoteDetails);
+}
+
+// Export: shared html/pdf renderer
 async function exportRenderedNote(type, title, safeTitle, htmlContent) {
   const planName = (sessionState?.plan?.name || "").toLowerCase();
 
@@ -1854,15 +1991,10 @@ async function exportCurrentNote(type, skipTableWarning = false) {
       const { Document, Packer, Paragraph } = window.docx;
       const doc = new Document({
         sections: [
-          {
-            properties: {},
-            children: [new Paragraph({ text: plainText })],
-          },
+          { properties: {}, children: [new Paragraph({ text: plainText })] },
         ],
       });
-      Packer.toBlob(doc).then((blob) => {
-        saveAs(blob, `${safeTitle}.docx`);
-      });
+      Packer.toBlob(doc).then((blob) => saveAs(blob, `${safeTitle}.docx`));
       didExport = true;
       break;
     }
@@ -1894,7 +2026,6 @@ async function exportCurrentNote(type, skipTableWarning = false) {
   }
 }
 
-//Fetch linked tasks
 async function fetchLinkedTasks(noteId) {
   const { data, error } = await supabase
     .from("personal_tasks")
@@ -1928,11 +2059,7 @@ function renderLinkedTasksChip(tasks) {
   activePane?.appendChild(chip);
 }
 
-/*
- 
-DELETE
- 
-*/
+// Delete
 async function attachDeleteNoteEvent(noteToDelete, id) {
   setLoading(true);
 
@@ -1960,9 +2087,7 @@ async function attachDeleteNoteEvent(noteToDelete, id) {
 
   await loadNotes();
 
-  setTimeout(() => {
-    noteToDelete.remove();
-  }, 400);
+  setTimeout(() => noteToDelete.remove(), 400);
 
   setLoading(false);
   actionMsg("Note deleted", "success");
