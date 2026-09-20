@@ -422,6 +422,7 @@ input.error {
   margin: 0 var(--space-md);
 }
 #notificationsContainer {
+  border: 1px solid var(--border-secondary);
   border-radius: var(--radius-md);
   position: fixed;
     top: 50px;
