@@ -35,6 +35,8 @@ body {
 --primary: #1565C0; 
   --primary-light: #1976D2;
   
+  --brightness: 60%;
+
   --secondary: #334155;
   --secondary-light: #475569; 
   --card-bg: #111;
