@@ -551,6 +551,10 @@ max-width: 200px;
   background: var(--card-bg);
   */
 }
+.dropdown-divider {
+  border-top: 1px solid var(--border-primary);
+  margin: 4px 0;
+}
 .dropdown-list .btn {
   color: var(--text-secondary);
   font-weight: 500;

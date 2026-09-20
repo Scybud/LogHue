@@ -141,11 +141,6 @@
 }
 
 
-.dropdown-divider {
-  border-top: 1px solid var(--border-primary);
-  margin: 4px 0;
-}
-
 /* Folder groups */
 .noteFolder {
   margin-bottom: 2px;

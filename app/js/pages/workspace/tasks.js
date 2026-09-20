@@ -15,11 +15,7 @@ import {
 
 let outsideClickHandlerAttached = false;
 
-/**
- * Creator of the task, or the workspace owner, may delete a task.
- * Assumed columns: workspace_tasks.created_by, workspace.owner_id.
- * Adjust here if either name differs.
- */
+
 function canDeleteTask(tsk) {
   if (!user) return false;
   const isCreator = String(tsk.created_by) === String(user.id);
@@ -27,8 +23,8 @@ function canDeleteTask(tsk) {
   return isCreator || isOwner;
 }
 
-/**
- * Admin / Owner task list with Assign / Ping / Delete actions.
+/*
+  Admin / Owner task list with Assign / Ping / Delete actions.
  */
 export function loadTasks(title, tasks, container) {
   const sectionTitle = document.createElement("h2");
@@ -158,6 +154,10 @@ export function loadTasks(title, tasks, container) {
     }
 
     if (canDeleteTask(tsk)) {
+        //DROPDOWN DIVIDER
+  const dropdownDivider = document.createElement("div");
+  dropdownDivider.classList.add("dropdown-divider");
+
       const deleteBtn = document.createElement("button");
       deleteBtn.type = "button";
       deleteBtn.classList.add("btn", "danger", "btn-sm");
@@ -178,7 +178,7 @@ export function loadTasks(title, tasks, container) {
           ],
         );
       });
-      actionMenuList.append(deleteBtn);
+      actionMenuList.append(dropdownDivider, deleteBtn);
     }
 
     divGrid.prepend(taskCard);

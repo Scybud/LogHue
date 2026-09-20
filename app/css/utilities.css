@@ -434,10 +434,10 @@ input.error {
   overflow: auto;
   padding: var(--space-md) 0;
   pointer-events: auto;
-  background: var(--card-bg);
   /*
-  backdrop-filter: var(--filter);
+  background: var(--card-bg);
   */
+  backdrop-filter: var(--filter);
   animation: fadeIn .18s ease-out;
   }
 
