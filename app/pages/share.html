@@ -107,8 +107,9 @@
     .shareMain {
       flex: 1;
       width: 100%;
-      max-width: 720px;
+      max-width: 900px;
       margin: 0 auto;
+      overflow-x: auto;
       padding: 48px 20px 64px;
     }
 
@@ -171,27 +172,45 @@
     }
 
     /* Tables scroll inside themselves on small screens */
-    #shareRoot table {
-      display: block;
-      max-width: 100%;
-      overflow-x: auto;
-      border-collapse: collapse;
-      margin: 16px 0;
-      font-size: 15px;
-    }
+.shareTableWrap {
+  overflow-x: auto;
+  margin: 16px 0;
+}
 
-    #shareRoot th,
-    #shareRoot td {
-      border: 1px solid var(--line);
-      padding: 8px 12px;
-      text-align: left;
-      vertical-align: top;
-    }
+#shareRoot table {
+  width: 100%;
+  min-width: 640px;
+  
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin: 0 !important;
+  font-size: 15px;
+  background: transparent !important;
+}
 
-    #shareRoot th {
-      background: var(--surface);
-      font-weight: 600;
-    }
+#shareRoot table + table {
+  margin-top: -1px !important;
+
+}
+
+#shareRoot th,
+#shareRoot td {
+  position: sticky;
+  top: 0;
+  border: 1px solid var(--line) !important;
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: top;
+  color: var(--text) !important;
+  background: transparent !important;
+  overflow-wrap: anywhere;
+}
+
+#shareRoot th,
+#shareRoot thead td {
+  background: var(--surface) !important;
+  font-weight: 600;
+}
 
     /* Sketch notes: white backing so dark strokes stay visible in dark mode */
     .shareSketch {

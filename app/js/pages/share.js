@@ -15,31 +15,38 @@ function renderBody(note) {
   const body = document.createElement("div");
   const tables = Array.isArray(note.table_data) ? note.table_data : [];
 
-  if (note.note_type === "sketch") {
-    if (note.canvas_data?.startsWith("data:image/")) {
-      const img = document.createElement("img");
-      img.src = note.canvas_data;
-      img.alt = note.title || "Sketch";
-      img.className = "shareSketch";
-      body.append(img);
+    if (note.note_type === "sketch") {
+      if (note.canvas_data?.startsWith("data:image/")) {
+        const img = new Image();
+        img.className = "shareSketch";
+        img.alt = note.title || "Sketch";
+        img.onerror = () => {
+          body.innerHTML = `<p class="shareMsg">The sketch could not be loaded.</p>`;
+        };
+        img.src = note.canvas_data;
+        body.append(img);
+      } else {
+        body.innerHTML = `<p class="shareMsg">This sketch has no saved drawing.</p>`;
+      }
+    } else if (note.note_type === "table") {
+      body.className = "shareTableWrap";
+      body.innerHTML = tables[0] ? clean(renderTableToHTML(tables[0])) : "";
+    } else {
+      // Sanitize first, then swap inline table embeds for real tables
+      const box = document.createElement("div");
+      box.innerHTML = clean(note.content || "");
+      box.querySelectorAll(".ql-table-embed").forEach((node) => {
+        const table = tables.find(
+          (t) => String(t.id) === node.getAttribute("data-table-id"),
+        );
+        const wrap = document.createElement("div");
+        wrap.className = "shareTableWrap";
+        wrap.innerHTML = table ? clean(renderTableToHTML(table)) : "";
+        node.replaceWith(wrap);
+      });
+      body.className = "ql-editor";
+      body.append(...box.childNodes);
     }
-  } else if (note.note_type === "table") {
-    body.innerHTML = tables[0] ? clean(renderTableToHTML(tables[0])) : "";
-  } else {
-    // Sanitize first, then swap inline table embeds for real tables
-    const box = document.createElement("div");
-    box.innerHTML = clean(note.content || "");
-    box.querySelectorAll(".ql-table-embed").forEach((node) => {
-      const table = tables.find(
-        (t) => String(t.id) === node.getAttribute("data-table-id"),
-      );
-      const wrap = document.createElement("div");
-      wrap.innerHTML = table ? clean(renderTableToHTML(table)) : "";
-      node.replaceWith(wrap);
-    });
-    body.className = "ql-editor";
-    body.append(...box.childNodes);
-  }
 
   return body;
 }
