@@ -442,8 +442,14 @@ gap: var(--space-sm);
   position: sticky;
   top: 0;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: visible;
   backdrop-filter: var(--filter);
+}
+.editorTop:has(.sketchToolbarContainer) {
+  overflow-x: visible;
+}
+.editorTop .sketchToolbarContainer {
+  background: var(--card-bg);
 }
 
 #noteTitle, #sketchTitle, #tableTitle {
