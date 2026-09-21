@@ -140,6 +140,9 @@
   border: 1px solid var(--border-primary);
 }
 
+.noteItemPublic .noteMeta::after {
+  content: " · Public";
+}
 
 /* Folder groups */
 .noteFolder {
@@ -210,14 +213,14 @@
 
 .noteFolderNotes {
   padding-left: 20px;
-  overflow-y: auto;
-  overflow-x: hidden;
   max-height: 3000px;
   transition: max-height 0.25s ease;
+  overflow: visible;
 }
 
 .noteFolder.collapsed .noteFolderNotes {
   max-height: 0;
+  overflow-y: auto;
 }
 
 .folderEmpty {

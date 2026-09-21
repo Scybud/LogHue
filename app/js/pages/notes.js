@@ -758,6 +758,8 @@ function buildNoteItem(note) {
   item.classList.add("noteItem");
   if (note.note_type === "sketch") item.classList.add("noteItemSketch");
   if (note.note_type === "table") item.classList.add("noteItemTable");
+  if (note.is_public) item.classList.add("noteItemPublic");
+
   item.dataset.id = note.id;
 
   const content = document.createElement("div");
@@ -868,6 +870,35 @@ function buildNoteItem(note) {
       actionsMenuList.append(folderBtn);
     });
   }
+
+    const shareDivider = document.createElement("div");
+    shareDivider.classList.add("dropdown-divider");
+    actionsMenuList.append(shareDivider);
+
+    const shareActions = note.is_public
+      ? [
+          ["Copy public link", () => copyShareLink(note)],
+          [
+            note.show_author ? "Hide my name" : "Show my name",
+            () => updateShareFields(note, { show_author: !note.show_author }),
+          ],
+          ["Regenerate link", () => regenerateShareLink(note)],
+          ["Stop sharing", () => disableSharing(note)],
+        ]
+      : [["Share publicly", () => enableSharing(note)]];
+
+    shareActions.forEach(([label, handler]) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.classList.add("btn", "btn-sm");
+      btn.textContent = label;
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        actionsMenu.hidden = true;
+        handler();
+      });
+      actionsMenuList.append(btn);
+    });
 
   actionsBtn.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -1891,6 +1922,82 @@ async function exportRenderedNote(type, title, safeTitle, htmlContent) {
   }
 
   return false;
+}
+
+// Public sharing
+const shareUrl = (note) =>
+  `${location.origin}/pages/share?id=${note.share_id}`;
+
+async function updateShareFields(note, fields) {
+  const { data, error } = await supabase
+    .from("personal_notes")
+    .update(fields)
+    .eq("id", note.id)
+    .select("is_public, share_id, show_author")
+    .single();
+
+  if (error) {
+    console.error(error);
+    actionMsg("Sharing update failed.", "error");
+    return false;
+  }
+
+  Object.assign(note, data);
+  renderNotesList(savedNoteDetails);
+  return true;
+}
+
+async function copyShareLink(note) {
+  try {
+    await navigator.clipboard.writeText(shareUrl(note));
+    actionMsg("Link copied", "success");
+  } catch {
+    prompt("Copy this link:", shareUrl(note));
+  }
+}
+
+function enableSharing(note) {
+  confirmAction(
+    "Share note publicly",
+    "Anyone with the link can view this note without logging in, and links can be forwarded. You can stop sharing or regenerate the link at any time.",
+    [
+      { label: "Cancel", type: "cancel" },
+      {
+        label: "Make public",
+        type: "confirm",
+        onClick: async () => {
+          if (await updateShareFields(note, { is_public: true })) {
+            copyShareLink(note);
+          }
+        },
+      },
+    ],
+  );
+}
+
+async function disableSharing(note) {
+  if (await updateShareFields(note, { is_public: false, show_author: false })) {
+    actionMsg("Sharing turned off", "success");
+  }
+}
+
+function regenerateShareLink(note) {
+  confirmAction(
+    "Regenerate link",
+    "The old link will stop working. Anyone who has it will lose access.",
+    [
+      { label: "Cancel", type: "cancel" },
+      {
+        label: "Regenerate",
+        type: "confirm",
+        onClick: async () => {
+          if (await updateShareFields(note, { share_id: crypto.randomUUID() })) {
+            copyShareLink(note);
+          }
+        },
+      },
+    ],
+  );
 }
 
 async function exportCurrentNote(type, skipTableWarning = false) {
