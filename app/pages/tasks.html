@@ -6,45 +6,35 @@
     <title>Tasks | LogHue</title>
 
     <!-- CSS LINKS (reuse dashboard CSS) -->
-     <!--SCYBUD UI-->
+    <!--SCYBUD UI-->
+    <link rel="stylesheet" href="https://ui.scybud.com/css/variables.css" />
+    <link rel="stylesheet" href="https://ui.scybud.com/css/layout.css" />
     <link
       rel="stylesheet"
-      href="https://scybud.github.io/scybud-ui/css/variables.css"
+      href="https://ui.scybud.com/components/sidebar/sidebar.css"
     />
     <link
       rel="stylesheet"
-      href="https://scybud.github.io/scybud-ui/css/layout.css"
+      href="https://ui.scybud.com/components/buttons/nav-buttons.css"
     />
-    <link
-      rel="stylesheet"
-      href="https://scybud.github.io/scybud-ui/components/sidebar/sidebar.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://scybud.github.io/scybud-ui/components/buttons/nav-buttons.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://scybud.github.io/scybud-ui/css/typography.css"
-    />
-    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/animations.css">
-
+    <link rel="stylesheet" href="https://ui.scybud.com/css/typography.css" />
+    <link rel="stylesheet" href="https://ui.scybud.com/css/animations.css" />
 
     <link rel="stylesheet" href="../css/base.css" />
     <link rel="stylesheet" href="../css/layout.css" />
     <link rel="stylesheet" href="../css/component.css" />
-    <link rel="stylesheet" href="../css/tasks.css">
-    <link rel="stylesheet" href="../css/components/tasks-calendar.css">
+    <link rel="stylesheet" href="../css/tasks.css" />
+    <link rel="stylesheet" href="../css/components/tasks-calendar.css" />
     <link rel="stylesheet" href="../css/dashboard.css" />
     <link rel="stylesheet" href="../css/theme.css" />
-    <link rel="stylesheet" href="../css/components/sidebar.css">
+    <link rel="stylesheet" href="../css/components/sidebar.css" />
     <link rel="stylesheet" href="../css/pages.css" />
     <link rel="stylesheet" href="../css/utilities.css" />
-    <link rel="stylesheet" href="../css/components/forms.css">
-        <link rel="stylesheet" href="../css/components/search.css">
-        <link rel="stylesheet" href="../css/components/command-palette.css">
-  <link rel="stylesheet" href="../css/components/tags.css">
-<link rel="stylesheet" href="../css/components/onboarding.css">
+    <link rel="stylesheet" href="../css/components/forms.css" />
+    <link rel="stylesheet" href="../css/components/search.css" />
+    <link rel="stylesheet" href="../css/components/command-palette.css" />
+    <link rel="stylesheet" href="../css/components/tags.css" />
+    <link rel="stylesheet" href="../css/components/onboarding.css" />
 
     <link
       rel="icon"
@@ -62,83 +52,73 @@
     </div>
     -->
 
-    
     <main class="main">
       <!-- SIDEBAR -->
-<aside class="sidebar" id="sidebarContainer">
+      <aside class="sidebar" id="sidebarContainer">
+        <div id="sidebarSkeleton" class="sidebarSkeleton">
+          <!-- Main navigation -->
+          <div class="sidebarSkeletonNav">
+            <div class="sidebarSkeletonItem">
+              <span class="skeletonSidebarIcon"></span>
+              <span class="skeletonSidebarText skeletonSidebarTextLong"></span>
+            </div>
 
-  <div id="sidebarSkeleton" class="sidebarSkeleton">
+            <div class="sidebarSkeletonItem">
+              <span class="skeletonSidebarIcon"></span>
+              <span
+                class="skeletonSidebarText skeletonSidebarTextMedium"
+              ></span>
+            </div>
 
-    <!-- Main navigation -->
-    <div class="sidebarSkeletonNav">
+            <div class="sidebarSkeletonItem">
+              <span class="skeletonSidebarIcon"></span>
+              <span class="skeletonSidebarText skeletonSidebarTextShort"></span>
+            </div>
 
-      <div class="sidebarSkeletonItem">
-        <span class="skeletonSidebarIcon"></span>
-        <span class="skeletonSidebarText skeletonSidebarTextLong"></span>
-      </div>
+            <div class="sidebarSkeletonItem">
+              <span class="skeletonSidebarIcon"></span>
+              <span
+                class="skeletonSidebarText skeletonSidebarTextMedium"
+              ></span>
+            </div>
 
-      <div class="sidebarSkeletonItem">
-        <span class="skeletonSidebarIcon"></span>
-        <span class="skeletonSidebarText skeletonSidebarTextMedium"></span>
-      </div>
+            <div class="sidebarSkeletonItem">
+              <span class="skeletonSidebarIcon"></span>
+              <span class="skeletonSidebarText skeletonSidebarTextShort"></span>
+            </div>
+          </div>
 
-      <div class="sidebarSkeletonItem">
-        <span class="skeletonSidebarIcon"></span>
-        <span class="skeletonSidebarText skeletonSidebarTextShort"></span>
-      </div>
+          <!-- Workspace heading -->
+          <div class="skeletonSidebarHeading"></div>
 
-      <div class="sidebarSkeletonItem">
-        <span class="skeletonSidebarIcon"></span>
-        <span class="skeletonSidebarText skeletonSidebarTextMedium"></span>
-      </div>
+          <!-- Workspace -->
+          <div class="sidebarSkeletonItem">
+            <span class="skeletonSidebarIcon"></span>
+            <span class="skeletonSidebarText skeletonSidebarTextMedium"></span>
+          </div>
 
-      <div class="sidebarSkeletonItem">
-        <span class="skeletonSidebarIcon"></span>
-        <span class="skeletonSidebarText skeletonSidebarTextShort"></span>
-      </div>
+          <div class="sidebarSkeletonItem">
+            <span class="skeletonSidebarIcon"></span>
+            <span class="skeletonSidebarText skeletonSidebarTextShort"></span>
+          </div>
 
-    </div>
+          <!-- Create workspace -->
+          <div class="skeletonSidebarCreate"></div>
 
+          <!-- User section -->
+          <div class="sidebarSkeletonUser">
+            <div class="skeletonSidebarAvatar"></div>
 
-    <!-- Workspace heading -->
-    <div class="skeletonSidebarHeading"></div>
-
-
-    <!-- Workspace -->
-    <div class="sidebarSkeletonItem">
-      <span class="skeletonSidebarIcon"></span>
-      <span class="skeletonSidebarText skeletonSidebarTextMedium"></span>
-    </div>
-
-    <div class="sidebarSkeletonItem">
-      <span class="skeletonSidebarIcon"></span>
-      <span class="skeletonSidebarText skeletonSidebarTextShort"></span>
-    </div>
-
-
-    <!-- Create workspace -->
-    <div class="skeletonSidebarCreate"></div>
-
-
-    <!-- User section -->
-    <div class="sidebarSkeletonUser">
-
-      <div class="skeletonSidebarAvatar"></div>
-
-      <div class="skeletonSidebarUserInfo">
-        <div class="skeletonSidebarUsername"></div>
-        <div class="skeletonSidebarPlan"></div>
-      </div>
-
-    </div>
-
-  </div>
-
-</aside>
+            <div class="skeletonSidebarUserInfo">
+              <div class="skeletonSidebarUsername"></div>
+              <div class="skeletonSidebarPlan"></div>
+            </div>
+          </div>
+        </div>
+      </aside>
 
       <!-- MAIN CONTENT -->
       <article class="mainContent">
-
         <!-- HEADER -->
         <div class="contentHeader">
           <div class="headerLeft">
@@ -156,7 +136,7 @@
             </button>
             <h1 class="pageTitle">Tasks</h1>
           </div>
-    
+
           <div class="headerRight">
             <button
               type="button"
@@ -184,9 +164,9 @@
               </svg>
               <span>Create task</span>
             </button>
-    
+
             <button
-            onclick="notificationsContainer.hidden ^= 1"
+              onclick="notificationsContainer.hidden ^= 1"
               id="notificationToggleBtn"
               title="Notifications"
               class="actionBtn"
@@ -206,11 +186,9 @@
                 <path d="M18 16v-5a6 6 0 10-12 0v5l-1.5 2h15L18 16z" />
               </svg>
             </button>
-    
           </div>
         </div>
 
-        
         <div id="modalContainer"></div>
         <div id="actionsMessage"></div>
         <!--INFO DISPLAY-->
@@ -226,18 +204,29 @@
 
         <!-- PERSONAL TASKS SECTION -->
         <section class="personalCreatedTasksContainer">
-
           <div class="taskViewControls">
             <div class="taskModeToggle" id="taskModeToggle">
-              <button type="button" id="modeListBtn" class="active">List</button>
+              <button type="button" id="modeListBtn" class="active">
+                List
+              </button>
               <button type="button" id="modeCalendarBtn">Calendar</button>
             </div>
             <div class="taskViewPills hide" id="calendarViewPills">
-              <button type="button" class="viewPill" data-view="year">Year</button>
-              <button type="button" class="viewPill" data-view="month">Month</button>
-              <button type="button" class="viewPill active" data-view="week">Week</button>
-              <button type="button" class="viewPill" data-view="day">Day</button>
-              <button type="button" class="viewPill" data-view="hour">Hour</button>
+              <button type="button" class="viewPill" data-view="year">
+                Year
+              </button>
+              <button type="button" class="viewPill" data-view="month">
+                Month
+              </button>
+              <button type="button" class="viewPill active" data-view="week">
+                Week
+              </button>
+              <button type="button" class="viewPill" data-view="day">
+                Day
+              </button>
+              <button type="button" class="viewPill" data-view="hour">
+                Hour
+              </button>
             </div>
             <div class="calendarNav hide" id="calendarNav">
               <div class="navBtns">
@@ -253,115 +242,113 @@
           </div>
 
           <div id="tasksSkeleton" class="tasksSkeleton" aria-hidden="true">
+            <!-- Incomplete tasks -->
+            <div class="skeletonGroup">
+              <div class="skeleton skeletonGroupTitle"></div>
 
+              <div class="skeletonTask">
+                <div class="skeleton skeletonCheckbox"></div>
 
-  <!-- Incomplete tasks -->
-  <div class="skeletonGroup">
+                <div class="skeletonTaskContent">
+                  <div class="skeleton skeletonTaskTitle"></div>
+                  <div class="skeleton skeletonTaskDate"></div>
+                </div>
 
-    <div class="skeleton skeletonGroupTitle"></div>
+                <div class="skeletonTaskActions">
+                  <div class="skeleton skeletonIcon"></div>
+                  <div class="skeleton skeletonIcon"></div>
+                  <div class="skeleton skeletonIcon"></div>
+                </div>
+              </div>
 
-    <div class="skeletonTask">
-      <div class="skeleton skeletonCheckbox"></div>
+              <div class="skeletonTask">
+                <div class="skeleton skeletonCheckbox"></div>
 
-      <div class="skeletonTaskContent">
-        <div class="skeleton skeletonTaskTitle"></div>
-        <div class="skeleton skeletonTaskDate"></div>
-      </div>
+                <div class="skeletonTaskContent">
+                  <div
+                    class="skeleton skeletonTaskTitle skeletonWidthLong"
+                  ></div>
+                  <div class="skeleton skeletonTaskDate"></div>
+                </div>
 
-      <div class="skeletonTaskActions">
-        <div class="skeleton skeletonIcon"></div>
-        <div class="skeleton skeletonIcon"></div>
-        <div class="skeleton skeletonIcon"></div>
-      </div>
-    </div>
+                <div class="skeletonTaskActions">
+                  <div class="skeleton skeletonIcon"></div>
+                  <div class="skeleton skeletonIcon"></div>
+                  <div class="skeleton skeletonIcon"></div>
+                </div>
+              </div>
 
-    <div class="skeletonTask">
-      <div class="skeleton skeletonCheckbox"></div>
+              <div class="skeletonTask">
+                <div class="skeleton skeletonCheckbox"></div>
 
-      <div class="skeletonTaskContent">
-        <div class="skeleton skeletonTaskTitle skeletonWidthLong"></div>
-        <div class="skeleton skeletonTaskDate"></div>
-      </div>
+                <div class="skeletonTaskContent">
+                  <div
+                    class="skeleton skeletonTaskTitle skeletonWidthMedium"
+                  ></div>
+                  <div class="skeleton skeletonTaskDate"></div>
+                </div>
 
-      <div class="skeletonTaskActions">
-        <div class="skeleton skeletonIcon"></div>
-        <div class="skeleton skeletonIcon"></div>
-        <div class="skeleton skeletonIcon"></div>
-      </div>
-    </div>
+                <div class="skeletonTaskActions">
+                  <div class="skeleton skeletonIcon"></div>
+                  <div class="skeleton skeletonIcon"></div>
+                  <div class="skeleton skeletonIcon"></div>
+                </div>
+              </div>
 
-    <div class="skeletonTask">
-      <div class="skeleton skeletonCheckbox"></div>
+              <div class="skeletonTask">
+                <div class="skeleton skeletonCheckbox"></div>
 
-      <div class="skeletonTaskContent">
-        <div class="skeleton skeletonTaskTitle skeletonWidthMedium"></div>
-        <div class="skeleton skeletonTaskDate"></div>
-      </div>
+                <div class="skeletonTaskContent">
+                  <div
+                    class="skeleton skeletonTaskTitle skeletonWidthLong"
+                  ></div>
+                  <div class="skeleton skeletonTaskDate"></div>
+                </div>
 
-      <div class="skeletonTaskActions">
-        <div class="skeleton skeletonIcon"></div>
-        <div class="skeleton skeletonIcon"></div>
-        <div class="skeleton skeletonIcon"></div>
-      </div>
-    </div>
+                <div class="skeletonTaskActions">
+                  <div class="skeleton skeletonIcon"></div>
+                  <div class="skeleton skeletonIcon"></div>
+                  <div class="skeleton skeletonIcon"></div>
+                </div>
+              </div>
 
-    <div class="skeletonTask">
-      <div class="skeleton skeletonCheckbox"></div>
+              <div class="skeletonTask">
+                <div class="skeleton skeletonCheckbox"></div>
 
-      <div class="skeletonTaskContent">
-        <div class="skeleton skeletonTaskTitle skeletonWidthLong"></div>
-        <div class="skeleton skeletonTaskDate"></div>
-      </div>
+                <div class="skeletonTaskContent">
+                  <div
+                    class="skeleton skeletonTaskTitle skeletonWidthShort"
+                  ></div>
+                  <div class="skeleton skeletonTaskDate"></div>
+                </div>
 
-      <div class="skeletonTaskActions">
-        <div class="skeleton skeletonIcon"></div>
-        <div class="skeleton skeletonIcon"></div>
-        <div class="skeleton skeletonIcon"></div>
-      </div>
-    </div>
+                <div class="skeletonTaskActions">
+                  <div class="skeleton skeletonIcon"></div>
+                  <div class="skeleton skeletonIcon"></div>
+                  <div class="skeleton skeletonIcon"></div>
+                </div>
+              </div>
+            </div>
 
-    <div class="skeletonTask">
-      <div class="skeleton skeletonCheckbox"></div>
+            <!-- Recurring tasks -->
+            <div class="skeletonRecurring">
+              <div class="skeleton skeletonRecurringTitle"></div>
+            </div>
+          </div>
 
-      <div class="skeletonTaskContent">
-        <div class="skeleton skeletonTaskTitle skeletonWidthShort"></div>
-        <div class="skeleton skeletonTaskDate"></div>
-      </div>
-
-      <div class="skeletonTaskActions">
-        <div class="skeleton skeletonIcon"></div>
-        <div class="skeleton skeletonIcon"></div>
-        <div class="skeleton skeletonIcon"></div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Recurring tasks -->
-  <div class="skeletonRecurring">
-    <div class="skeleton skeletonRecurringTitle"></div>
-  </div>
-
-</div>
-
-
-<!-- Actual tasks -->
-<div id="personalCreatedTasks" hidden>
-  <div class="taskGroup" id="incompleteGroup"></div>
-  <div class="taskGroup" id="completedGroup"></div>
-</div>
+          <!-- Actual tasks -->
+          <div id="personalCreatedTasks" hidden>
+            <div class="taskGroup" id="incompleteGroup"></div>
+            <div class="taskGroup" id="completedGroup"></div>
+          </div>
 
           <div id="personalTasksCalendar" hidden></div>
-
         </section>
       </article>
     </main>
 
     <!-- JS -->
-    <script
-    type="module"
-    src="../js/utils/noAuthSessionProtect.js"
-    ></script>
+    <script type="module" src="../js/utils/noAuthSessionProtect.js"></script>
     <script type="module" src="../js/session.js" defer></script>
     <script type="module" src="../js/app.js" defer></script>
     <script type="module" src="../js/pages/tasks.js" defer></script>
@@ -369,6 +356,5 @@
       import { initCalendarView } from "../js/components/calendarView.js";
       window.addEventListener("DOMContentLoaded", initCalendarView);
     </script>
-
-</body>
+  </body>
 </html>

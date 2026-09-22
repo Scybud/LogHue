@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -6,12 +6,18 @@
     <title>Workspace Dashboard</title>
 
     <!-- SCYBUD UI -->
-    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/variables.css" />
-    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/layout.css" />
-    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/components/sidebar/sidebar.css" />
-    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/components/buttons/nav-buttons.css" />
-    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/typography.css" />
-    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/animations.css" />
+    <link rel="stylesheet" href="https://ui.scybud.com/css/variables.css" />
+    <link rel="stylesheet" href="https://ui.scybud.com/css/layout.css" />
+    <link
+      rel="stylesheet"
+      href="https://ui.scybud.com/components/sidebar/sidebar.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://ui.scybud.com/components/buttons/nav-buttons.css"
+    />
+    <link rel="stylesheet" href="https://ui.scybud.com/css/typography.css" />
+    <link rel="stylesheet" href="https://ui.scybud.com/css/animations.css" />
 
     <!-- App CSS -->
     <link rel="stylesheet" href="../css/base.css" />
@@ -25,14 +31,28 @@
     <link rel="stylesheet" href="../css/components/search.css" />
     <link rel="stylesheet" href="../css/components/command-palette.css" />
     <link rel="stylesheet" href="../css/components/sidebar.css" />
-<link rel="stylesheet" href="../css/components/onboarding.css">
-<link rel="stylesheet" href="../css/components/table.css">
-<link rel="stylesheet" href="../css/components/tags.css">
+    <link rel="stylesheet" href="../css/components/onboarding.css" />
+    <link rel="stylesheet" href="../css/components/table.css" />
+    <link rel="stylesheet" href="../css/components/tags.css" />
 
     <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/favicons/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/favicons/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="../assets/icons/favicons/favicon-16x16.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="../assets/icons/favicons/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../assets/icons/favicons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="../assets/icons/favicons/favicon-16x16.png"
+    />
 
     <style>
       #workspaceDashboardContent {
@@ -60,77 +80,68 @@
 
     <main class="main">
       <!-- Single shared sidebar – role‑based visibility handled by applySidebarRole() -->
-<aside class="sidebar" id="workspaceSidebarContainer">
+      <aside class="sidebar" id="workspaceSidebarContainer">
+        <div id="sidebarSkeleton" class="sidebarSkeleton">
+          <!-- Main navigation -->
+          <div class="sidebarSkeletonNav">
+            <div class="sidebarSkeletonItem">
+              <span class="skeletonSidebarIcon"></span>
+              <span class="skeletonSidebarText skeletonSidebarTextLong"></span>
+            </div>
 
-  <div id="sidebarSkeleton" class="sidebarSkeleton">
+            <div class="sidebarSkeletonItem">
+              <span class="skeletonSidebarIcon"></span>
+              <span
+                class="skeletonSidebarText skeletonSidebarTextMedium"
+              ></span>
+            </div>
 
-    <!-- Main navigation -->
-    <div class="sidebarSkeletonNav">
+            <div class="sidebarSkeletonItem">
+              <span class="skeletonSidebarIcon"></span>
+              <span class="skeletonSidebarText skeletonSidebarTextShort"></span>
+            </div>
 
-      <div class="sidebarSkeletonItem">
-        <span class="skeletonSidebarIcon"></span>
-        <span class="skeletonSidebarText skeletonSidebarTextLong"></span>
-      </div>
+            <div class="sidebarSkeletonItem">
+              <span class="skeletonSidebarIcon"></span>
+              <span
+                class="skeletonSidebarText skeletonSidebarTextMedium"
+              ></span>
+            </div>
 
-      <div class="sidebarSkeletonItem">
-        <span class="skeletonSidebarIcon"></span>
-        <span class="skeletonSidebarText skeletonSidebarTextMedium"></span>
-      </div>
+            <div class="sidebarSkeletonItem">
+              <span class="skeletonSidebarIcon"></span>
+              <span class="skeletonSidebarText skeletonSidebarTextShort"></span>
+            </div>
+          </div>
 
-      <div class="sidebarSkeletonItem">
-        <span class="skeletonSidebarIcon"></span>
-        <span class="skeletonSidebarText skeletonSidebarTextShort"></span>
-      </div>
+          <!-- Workspace heading -->
+          <div class="skeletonSidebarHeading"></div>
 
-      <div class="sidebarSkeletonItem">
-        <span class="skeletonSidebarIcon"></span>
-        <span class="skeletonSidebarText skeletonSidebarTextMedium"></span>
-      </div>
+          <!-- Workspace -->
+          <div class="sidebarSkeletonItem">
+            <span class="skeletonSidebarIcon"></span>
+            <span class="skeletonSidebarText skeletonSidebarTextMedium"></span>
+          </div>
 
-      <div class="sidebarSkeletonItem">
-        <span class="skeletonSidebarIcon"></span>
-        <span class="skeletonSidebarText skeletonSidebarTextShort"></span>
-      </div>
+          <div class="sidebarSkeletonItem">
+            <span class="skeletonSidebarIcon"></span>
+            <span class="skeletonSidebarText skeletonSidebarTextShort"></span>
+          </div>
 
-    </div>
+          <!-- Create workspace -->
+          <div class="skeletonSidebarCreate"></div>
 
+          <!-- User section -->
+          <div class="sidebarSkeletonUser">
+            <div class="skeletonSidebarAvatar"></div>
 
-    <!-- Workspace heading -->
-    <div class="skeletonSidebarHeading"></div>
-
-
-    <!-- Workspace -->
-    <div class="sidebarSkeletonItem">
-      <span class="skeletonSidebarIcon"></span>
-      <span class="skeletonSidebarText skeletonSidebarTextMedium"></span>
-    </div>
-
-    <div class="sidebarSkeletonItem">
-      <span class="skeletonSidebarIcon"></span>
-      <span class="skeletonSidebarText skeletonSidebarTextShort"></span>
-    </div>
-
-
-    <!-- Create workspace -->
-    <div class="skeletonSidebarCreate"></div>
-
-
-    <!-- User section -->
-    <div class="sidebarSkeletonUser">
-
-      <div class="skeletonSidebarAvatar"></div>
-
-      <div class="skeletonSidebarUserInfo">
-        <div class="skeletonSidebarUsername"></div>
-        <div class="skeletonSidebarPlan"></div>
-      </div>
-
-    </div>
-
-  </div>
-
-</aside>
-
+            <div class="skeletonSidebarUserInfo">
+              <div class="skeletonSidebarUsername"></div>
+              <div class="skeletonSidebarPlan"></div>
+            </div>
+          </div>
+        </div>
+      </aside>
 
       <article class="mainContent">
         <div class="contentHeader">
@@ -138,22 +149,45 @@
             <button class="menuBtn" id="toggleSidebar">
               <span class="menuIcon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  <path
+                    d="M4 6H20M4 12H20M4 18H20"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
                 </svg>
               </span>
             </button>
             <h2 id="workspaceName"></h2>
           </div>
           <div class="headerRight">
-            <button onclick="notificationsContainer.hidden ^= 1" id="notificationToggleBtn" title="Notifications" class="actionBtn">
+            <button
+              onclick="notificationsContainer.hidden ^= 1"
+              id="notificationToggleBtn"
+              title="Notifications"
+              class="actionBtn"
+            >
               <span id="notifBadge" class="badge">0</span>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <path d="M12 22c1.1 0 2-.9 2-2H10c0 1.1.9 2 2 2z" />
                 <path d="M18 16v-5a6 6 0 10-12 0v5l-1.5 2h15L18 16z" />
               </svg>
             </button>
             <div class="profileAvatarContainer">
-              <img src="../assets/images/default_profile.png" alt="profile Image" class="profileAvatar" />
+              <img
+                src="../assets/images/default_profile.png"
+                alt="profile Image"
+                class="profileAvatar"
+              />
             </div>
           </div>
         </div>
@@ -172,8 +206,24 @@
               <span class="urlText"></span>
               <button class="copyBtn" title="Copy">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                  <rect x="9" y="9" width="10" height="10" rx="2" stroke="currentColor" stroke-width="2" />
-                  <rect x="5" y="5" width="10" height="10" rx="2" stroke="currentColor" stroke-width="2" />
+                  <rect
+                    x="9"
+                    y="9"
+                    width="10"
+                    height="10"
+                    rx="2"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <rect
+                    x="5"
+                    y="5"
+                    width="10"
+                    height="10"
+                    rx="2"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
                 </svg>
               </button>
             </div>
@@ -186,18 +236,17 @@
       </template>
     </main>
 
-     <script
-      type="module"
-      src="../js/utils/noAuthSessionProtect.js"
-    ></script>
+    <script type="module" src="../js/utils/noAuthSessionProtect.js"></script>
     <script type="module" src="../js/app.js" defer></script>
-<script type="module">
-  import { initWorkspaceDashboard } from "../js/pages/workspace/index.js";
-  initWorkspaceDashboard();
-</script>
-    
-    <!-- QR Code library (used in invite flow) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+    <script type="module">
+      import { initWorkspaceDashboard } from "../js/pages/workspace/index.js";
+      initWorkspaceDashboard();
+    </script>
 
+    <!-- QR Code library (used in invite flow) -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+      defer
+    ></script>
   </body>
 </html>

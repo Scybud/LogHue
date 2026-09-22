@@ -2,7 +2,7 @@ import {
   loadComponent,
   createEmptyState,
   closeModal,
-} from "https://scybud.github.io/scybud-ui/js/ui.js";
+} from "https://ui.scybud.com/js/ui.js";
 import { supabase } from "../supabase.js";
 import { sessionState, sessionReady } from "../session.js";
 import {
@@ -11,7 +11,7 @@ import {
   openUpgradeModal,
 } from "../../js/utils/modals.js";
 import { createDropdown } from "../ui.js";
-import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
+import { setButtonLoading } from "https://ui.scybud.com/js/ui.js";
 import { formatDateTimeRelatively } from "../utils/time.js";
 
 if (window.__workspaceInit) {
@@ -49,7 +49,10 @@ function getWorkspaceDropdown(ws) {
   }
   if (ws.role === "member") {
     return createDropdown([
-      { label: "Leave Workspace", action: () => leaveWorkspace(user.id, ws.id) },
+      {
+        label: "Leave Workspace",
+        action: () => leaveWorkspace(user.id, ws.id),
+      },
       { label: "Open Workspace", action: () => openWorkspace(ws.id) },
     ]);
   }

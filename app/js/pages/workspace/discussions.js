@@ -2,10 +2,7 @@ import { formatDateTime } from "../../utils/time.js";
 import { supabase } from "../../supabase.js";
 import { actionMsg } from "../../utils/modals.js";
 import { notifyWorkspace } from "../../utils/notifications.js";
-import {
-  setButtonLoading,
-  closeModal,
-} from "https://scybud.github.io/scybud-ui/js/ui.js";
+import { setButtonLoading, closeModal } from "https://ui.scybud.com/js/ui.js";
 
 /**
  * Shared discussions list (works for admin, owner and member).
@@ -89,8 +86,13 @@ export function loadDiscussions(
       window.location.href = `discussion-view?dcn=${dcn.id}`;
     });
 
-
-    discussionCard.append(dcnHeader, dcnTitle, descriptionText, dcnMeta, viewBtn);
+    discussionCard.append(
+      dcnHeader,
+      dcnTitle,
+      descriptionText,
+      dcnMeta,
+      viewBtn,
+    );
     divGrid.append(discussionCard);
   });
 
