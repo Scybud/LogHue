@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="https://ui.scybud.com/css/animations.css" />
 
     <!--APP SPECIFIC CSS-->
-    <!--APP SPECIFIC CSS-->
     <link rel="stylesheet" href="../app/css/base.css" />
     <link rel="stylesheet" href="../app/css/theme.css" />
 
@@ -36,9 +35,9 @@
     <style>
       main {
         max-width: 900px;
-        margin: 40px auto;
-        padding: 0 20px;
-        line-height: 1.65;
+        margin: 48px auto 0;
+        padding: 0 20px 40px;
+        line-height: 1.7;
         color: var(--text-primary);
       }
 
@@ -46,52 +45,66 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        gap: 6px;
         position: fixed;
-        top: 30px;
+        top: 24px;
         left: 20px;
-        padding: 0 auto;
+        z-index: 10;
+        padding: 8px 12px;
         width: fit-content;
-        background: none;
+        background: var(--hover-bg);
         color: var(--link);
-        border: none;
+        border: 1px solid var(--border-primary);
+        border-radius: 6px;
         font-weight: 600;
+        font-size: 0.9rem;
         cursor: pointer;
-        background: var(--bg-hover);
         transition: all 0.2s ease;
       }
       .backBtn:hover {
-        opacity: 0.8;
-        transform: translate(-2px);
+        opacity: 0.85;
+        transform: translateX(-2px);
       }
       .backBtn:active {
-        transform: translate(-10px);
+        transform: translateX(-6px);
       }
+
       h1 {
         font-size: 2.2rem;
-        margin-bottom: 0.4em;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.5em;
       }
 
       h2 {
-        margin-top: 2rem;
-        font-size: 1.35rem;
+        margin-top: 2.2rem;
+        margin-bottom: 0.6rem;
+        font-size: 1.3rem;
         font-weight: 600;
         text-align: left;
+        letter-spacing: -0.01em;
       }
 
       .lang-toggle {
         display: inline-flex;
         gap: 8px;
-        margin-bottom: 20px;
+        margin-bottom: 28px;
       }
 
       .lang-toggle button {
-        padding: 6px 14px;
+        padding: 7px 16px;
         border: 1px solid var(--border-primary);
         background: var(--bg-secondary);
         color: var(--text-primary);
         border-radius: 6px;
         cursor: pointer;
         font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.15s ease;
+      }
+
+      .lang-toggle button:hover {
+        opacity: 0.9;
       }
 
       .lang-toggle button.active {
@@ -111,17 +124,19 @@
       a {
         color: var(--link);
         text-decoration: none;
+        transition: opacity 0.15s ease;
       }
 
       a:hover {
         text-decoration: underline;
+        opacity: 0.85;
       }
 
       .legal-footer {
         width: 100%;
         border-top: 1px solid var(--border-primary);
-        margin-top: 60px;
-        padding: 32px 20px;
+        margin-top: 64px;
+        padding: 36px 20px;
         color: var(--text-muted);
         display: flex;
         justify-content: center;
@@ -132,7 +147,7 @@
         max-width: 900px;
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 18px;
       }
 
       .footer-brand {
@@ -146,18 +161,20 @@
         font-size: 0.85rem;
         font-weight: 400;
         opacity: 0.7;
+        margin-top: 4px;
       }
 
       .footer-links {
         display: flex;
         flex-wrap: wrap;
         gap: 16px;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
       }
 
       .footer-links a {
         color: var(--text-muted);
         text-decoration: none;
+        transition: color 0.15s ease;
       }
 
       .footer-links a:hover {
@@ -167,7 +184,7 @@
 
       .footer-meta {
         font-size: 0.85rem;
-        opacity: 0.8;
+        opacity: 0.75;
       }
     </style>
   </head>

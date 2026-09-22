@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="https://ui.scybud.com/css/animations.css" />
 
     <!--APP SPECIFIC CSS-->
-    <!--APP SPECIFIC CSS-->
     <link rel="stylesheet" href="../app/css/base.css" />
     <link rel="stylesheet" href="../app/css/theme.css" />
 
@@ -46,88 +45,108 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        gap: 6px;
         position: fixed;
-        top: 30px;
+        top: 24px;
         left: 20px;
-        padding: 0 auto;
+        z-index: 10;
+        padding: 8px 12px;
         width: fit-content;
-        background: none;
+        background: var(--hover-bg);
         color: var(--link);
-        border: none;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
         font-weight: 600;
+        font-size: 0.9rem;
         cursor: pointer;
-        background: var(--bg-hover);
         transition: all 0.2s ease;
       }
       .backBtn:hover {
-        opacity: 0.8;
-        transform: translate(-2px);
+        opacity: 0.85;
+        transform: translateX(-2px);
       }
       .backBtn:active {
-        transform: translate(-10px);
+        transform: translateX(-6px);
       }
+
       header {
         width: 100%;
         max-width: 900px;
-        margin-bottom: 40px;
-        margin-top: 40px;
+        margin-bottom: 32px;
+        margin-top: 48px;
         border-bottom: 1px solid var(--border);
-        padding-bottom: 20px;
+        padding-bottom: 24px;
       }
 
       header h1 {
         margin: 0;
         font-size: 2.4rem;
         font-weight: 600;
+        letter-spacing: -0.02em;
       }
 
       header p {
-        margin: 6px 0 0;
+        margin: 8px 0 0;
+        color: var(--muted);
       }
 
       nav {
-        margin-top: 16px;
+        margin-top: 20px;
         display: flex;
         flex-wrap: wrap;
-        gap: 12px;
-        font-size: 0.95rem;
+        gap: 10px 16px;
+        font-size: 0.9rem;
       }
 
       nav a {
         color: var(--link);
         text-decoration: none;
+        transition: opacity 0.15s ease;
       }
 
       nav a:hover {
         text-decoration: underline;
+        opacity: 0.85;
       }
 
       main {
         max-width: 900px;
         width: 100%;
-        line-height: 1.65;
+        line-height: 1.7;
         background: var(--surface-primary);
-        padding: var(--space-sm) var(--space-md);
+        padding: var(--space-md) var(--space-md);
         border-radius: var(--radius-md);
         border: 1px solid var(--border);
       }
 
       h2 {
-        margin-top: 2.4rem;
-        font-size: 1.4rem;
+        margin-top: 2.6rem;
+        margin-bottom: 0.75rem;
+        font-size: 1.35rem;
         font-weight: 600;
         text-align: left;
+        letter-spacing: -0.01em;
+      }
+
+      h2:first-child {
+        margin-top: 0;
       }
 
       h3 {
-        margin-top: 1.4rem;
+        margin-top: 1.5rem;
+        margin-bottom: 0.4rem;
         font-size: 1.1rem;
         font-weight: 600;
       }
 
       ul {
-        padding-left: 20px;
+        padding-left: 1.25rem;
         margin-top: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      li {
+        margin-bottom: 0.35rem;
       }
 
       a {
@@ -137,8 +156,8 @@
       .legal-footer {
         width: 100%;
         border-top: 1px solid var(--border);
-        margin-top: 60px;
-        padding: 32px 20px;
+        margin-top: 64px;
+        padding: 36px 20px;
         color: var(--muted);
         display: flex;
         justify-content: center;
@@ -149,7 +168,7 @@
         max-width: 900px;
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 18px;
       }
 
       .footer-brand {
@@ -163,18 +182,20 @@
         font-size: 0.85rem;
         font-weight: 400;
         opacity: 0.7;
+        margin-top: 4px;
       }
 
       .footer-links {
         display: flex;
         flex-wrap: wrap;
         gap: 16px;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
       }
 
       .footer-links a {
-        color: rgba(255, 255, 255, 0.6);
+        color: var(--muted);
         text-decoration: none;
+        transition: color 0.15s ease;
       }
 
       .footer-links a:hover {
@@ -184,7 +205,7 @@
 
       .footer-meta {
         font-size: 0.85rem;
-        opacity: 0.8;
+        opacity: 0.75;
       }
     </style>
   </head>
