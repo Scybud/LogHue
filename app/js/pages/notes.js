@@ -2168,7 +2168,6 @@ function renderLinkedTasksChip(tasks) {
 
 // Delete
 async function attachDeleteNoteEvent(noteToDelete, id) {
-  setLoading(true);
 
   if (String(id) === String(currentNoteId)) {
     clearAutosaveTimer();
@@ -2196,7 +2195,6 @@ async function attachDeleteNoteEvent(noteToDelete, id) {
 
   setTimeout(() => noteToDelete.remove(), 400);
 
-  setLoading(false);
   actionMsg("Note deleted", "success");
 }
 
