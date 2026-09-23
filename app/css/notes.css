@@ -296,7 +296,9 @@
 
 #notesList {
   overflow-y: auto;
+  overflow-x: hidden;
   min-height: 0;
+  height: 100%;
 }
 
 #notesList::-webkit-scrollbar {

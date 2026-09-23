@@ -58,14 +58,12 @@
     /* Task card                       */
     
     .taskCard {
-      
       background: var(--card-bg);
-  border: 1px solid var(--border-primary);
   border-radius: var(--radius-lg);
   padding: var(--space-md);
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm, 8px);
+  gap: var(--space-sm);
 
   opacity: 0;
   transform: translateY(6px);
@@ -138,9 +136,9 @@
   -webkit-appearance: none;
   width: 20px;
   height: 20px;
-  border-radius: 50%;
+  border-radius: 6px;
   background: var(--input-bg);
-  border: 1.5px solid var(--border-primary);
+  border: 1px solid var(--border-primary);
   flex-shrink: 0;
   cursor: pointer !important;
   position: relative;
@@ -184,8 +182,11 @@ line-height: var(--space-md);
 .taskActions {
   display: flex;
   align-items: center;
-  gap: var(--space-xs, 4px);
+  gap: var(--space-xs);
   flex-shrink: 0;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-sm);
+  background: var(--surface-primary);
 }
 
 .taskActions button {
@@ -196,14 +197,14 @@ line-height: var(--space-md);
   height: 30px;
   border: none;
   background: transparent;
-  border-radius: var(--radius-md, 6px);
-  color: var(--text-secondary, gray);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
 
 .taskActions button:hover {
-  background: var(--surface-hover, rgba(0, 0, 0, 0.06));
+  background: var(--hover-bg);
 }
 
 .duplicateBtn:hover {

@@ -42,7 +42,7 @@ export async function loadPersonalTasks(userId) {
   const { data, error } = await supabase
     .from("personal_tasks")
     .select("*")
-    .eq("user_id", user.id);
+    .eq("user_id", userId);
 
   if (error) {
     console.error(error);
