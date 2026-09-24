@@ -148,12 +148,20 @@ function fmtTime(d) {
   return `${hh}:${m.toString().padStart(2, "0")} ${ap}`;
 }
 
-
 function scheduledTasks() {
   return savedTaskDetails.filter((t) => t.task_deadline && !t.is_template);
 }
 function deadlineDate(t) {
   return new Date(t.task_deadline);
+}
+// Real start/end when the task has them, falling back to the deadline as a
+// point in time for tasks that don't set start/end.
+function taskStart(t) {
+  return t.start_time ? new Date(t.start_time) : deadlineDate(t);
+}
+function taskEnd(t) {
+  if (t.end_time) return new Date(t.end_time);
+  return new Date(taskStart(t).getTime() + VISUAL_DURATION_MIN * 60000);
 }
 function isOverdue(t) {
   return !t.is_completed && deadlineDate(t) < new Date() && !t.is_template;
@@ -166,22 +174,27 @@ function taskState(t) {
   return t.is_completed ? "done" : isOverdue(t) ? "overdue" : "pending";
 }
 
-// Tasks are single points in time, not durations, but their chips still
-// take up real vertical space (ROW_H - 6 px) in the grid view. Two tasks
-// close enough together that their chips would visually overlap need to
-// sit side by side instead of stacked on top of each other. This assigns
-// each task a synthetic "visual duration" equal to its chip height, then
-// packs overlapping tasks into columns the same way calendar apps lay out
-// concurrent events: sort by start, group anything whose synthetic window
-// overlaps the running group end into a cluster, then within each cluster
-// greedily assign the first free column.
+// Tasks with a real start_time/end_time render as an actual duration block.
+// Tasks without one are still just a point in time (the deadline), but their
+// chip needs real vertical space to be visible, so it gets a synthetic
+// "visual duration" equal to one chip height. Either way, two tasks close
+// enough together that their blocks would visually overlap need to sit side
+// by side instead of stacked on top of each other. This packs overlapping
+// tasks into columns the same way calendar apps lay out concurrent events:
+// sort by start, group anything whose window overlaps the running group end
+// into a cluster, then within each cluster greedily assign the first free
+// column.
 const VISUAL_DURATION_MIN = (ROW_H - 6) * (60 / ROW_H);
+const MIN_CHIP_MIN = VISUAL_DURATION_MIN; // floor so a short real duration stays readable
 
 function layoutDayEvents(tasks) {
   const events = tasks
     .map((t) => {
-      const start = deadlineDate(t);
-      const end = new Date(start.getTime() + VISUAL_DURATION_MIN * 60000);
+      const start = taskStart(t);
+      let end = taskEnd(t);
+      if (end - start < MIN_CHIP_MIN * 60000) {
+        end = new Date(start.getTime() + MIN_CHIP_MIN * 60000);
+      }
       return { task: t, start, end, col: 0, totalCols: 1 };
     })
     .sort((a, b) => a.start - b.start || a.end - b.end);
@@ -325,22 +338,28 @@ function renderGrid(numDays) {
   els.calContainer.querySelectorAll(".calDayCol").forEach((col) => {
     const colDate = new Date(col.dataset.date);
     const dayTasks = scheduledTasks().filter((t) =>
-      sameDay(deadlineDate(t), colDate),
+      sameDay(taskStart(t), colDate),
     );
     const laidOut = layoutDayEvents(dayTasks);
 
-    laidOut.forEach(({ task: t, start: d, col: colIdx, totalCols }) => {
+    laidOut.forEach(({ task: t, start: d, end, col: colIdx, totalCols }) => {
       const el = document.createElement("div");
-      el.className = `calTask ${stateClass(t)}`;
-  el.title = t.name;
+      const hasRealDuration = Boolean(t.start_time && t.end_time);
+      el.className = `calTask ${stateClass(t)} ${hasRealDuration ? "hasDuration" : ""}`;
+      el.title = t.name;
       const widthPct = 100 / totalCols;
-      el.style.top =
-        d.getHours() * ROW_H + (d.getMinutes() / 60) * ROW_H + 2 + "px";
-      el.style.height = ROW_H - 6 + "px";
+      const top = d.getHours() * ROW_H + (d.getMinutes() / 60) * ROW_H + 2;
+      const durationMin = (end - d) / 60000;
+      const height = Math.min((durationMin / 60) * ROW_H - 6, 24 * ROW_H - top);
+      el.style.top = top + "px";
+      el.style.height = height + "px";
       el.style.left = `calc(${colIdx * widthPct}% + 2px)`;
       el.style.width = `calc(${widthPct}% - 4px)`;
       el.dataset.id = t.id;
-      el.innerHTML = `<span class="calTaskTime">${fmtTime(d)}</span><span class="calTaskTitle">${escapeHtml(t.name)}</span>`;
+      const timeLabel = hasRealDuration
+        ? `${fmtTime(d)} – ${fmtTime(end)}`
+        : fmtTime(d);
+      el.innerHTML = `<span class="calTaskTime">${timeLabel}</span><span class="calTaskTitle">${escapeHtml(t.name)}</span>`;
       el.addEventListener("click", () => handleTaskClick(t));
       col.appendChild(el);
     });

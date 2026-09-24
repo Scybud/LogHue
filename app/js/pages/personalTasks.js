@@ -51,6 +51,7 @@ export async function initPersonalTasks() {
     attachToggleCompleteEvent(personalCreatedTasks);
     attachDuplicateTaskEvent(personalCreatedTasks, user.id);
     attachLinkNoteEvent(personalCreatedTasks);
+    attachEditTaskEvent(personalCreatedTasks);
     openLogPersonalTaskModal();
 }
 // Empty State
@@ -110,6 +111,12 @@ const duplicateIconPaths = [
         attrs: { d: "M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" },
     },
 ];
+const editIconPaths = [
+    {
+        tag: "path",
+        attrs: { d: "M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" },
+    },
+];
 const linkNoteIconPaths = [
     {
         tag: "path",
@@ -151,6 +158,11 @@ export function createTaskElement(task) {
     }
     const actionsGroup = document.createElement("div");
     actionsGroup.classList.add("taskActions");
+    const editBtn = document.createElement("button");
+    editBtn.type = "button";
+    editBtn.classList.add("editBtn", "tooltip");
+    editBtn.setAttribute("data-title", "Edit Task");
+    editBtn.appendChild(createSvgIcon(editIconPaths));
     const duplicateBtn = document.createElement("button");
     duplicateBtn.type = "button";
     duplicateBtn.classList.add("duplicateBtn", "tooltip");
@@ -166,7 +178,7 @@ export function createTaskElement(task) {
     deleteBtn.classList.add("deleteBtn", "tooltip");
     deleteBtn.setAttribute("data-title", "Delete Task");
     deleteBtn.appendChild(createSvgIcon(deleteIconPaths));
-    actionsGroup.append(linkNoteBtn, duplicateBtn, deleteBtn);
+    actionsGroup.append(editBtn, linkNoteBtn, duplicateBtn, deleteBtn);
     topRow.append(checkbox, nameLabel, actionsGroup);
     el.append(topRow);
     // Description
@@ -391,6 +403,74 @@ async function performTaskDelete(btn, userId) {
     actionMsg("Task deleted successfully!", "success");
     checkIfEmpty();
 }
+// Edit Task (Delegated)
+// Converts an ISO timestamp to the local value a datetime-local input expects.
+function toLocalInputValue(iso) {
+    if (!iso)
+        return "";
+    const d = new Date(iso);
+    const pad = (n) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+async function openEditTaskModal(task) {
+    await loadComponent("../components/modals/personal-task-entry", "modalContainer");
+    const titleEl = document.querySelector("#inputContainer h2");
+    if (titleEl)
+        titleEl.textContent = "Edit Task";
+    const taskEl = document.getElementById("task");
+    const timeEl = document.getElementById("taskTime");
+    const noteEl = document.getElementById("note");
+    const isRecurring = document.getElementById("isRecurring");
+    const isOneOff = document.getElementById("isOneOff");
+    const startTimeEl = document.getElementById("taskStartTime");
+    const endTimeEl = document.getElementById("taskEndTime");
+    const logTaskBtn = document.getElementById("logTask");
+    taskEl.value = task.name;
+    timeEl.value = toLocalInputValue(task.task_deadline);
+    noteEl.value = task.description || "";
+    isRecurring.checked = Boolean(task.is_template);
+    isOneOff.checked = !task.is_template;
+    // Switching a task between recurring and one-off changes how instances get
+    // spawned, that's a bigger structural move than "edit", so lock the choice here.
+    isRecurring.disabled = true;
+    isOneOff.disabled = true;
+    const lockedReason = "Can't change task type after creation, delete and recreate the task instead.";
+    isRecurring.closest("label")?.setAttribute("title", lockedReason);
+    isOneOff.closest("label")?.setAttribute("title", lockedReason);
+    if (startTimeEl)
+        startTimeEl.value = toLocalInputValue(task.start_time);
+    if (endTimeEl)
+        endTimeEl.value = toLocalInputValue(task.end_time);
+    if (task.is_template) {
+        document
+            .querySelectorAll(".reminderDayCheck")
+            .forEach((el) => {
+            el.checked = task.reminder_days
+                ? task.reminder_days.includes(Number(el.value))
+                : true;
+        });
+    }
+    if (logTaskBtn)
+        logTaskBtn.textContent = "Save changes";
+    await attachCreatePersonalTaskEvent(task.id);
+}
+export function attachEditTaskEvent(container) {
+    if (!container)
+        return;
+    container.addEventListener("click", async (e) => {
+        const btn = e.target.closest(".editBtn");
+        if (!btn)
+            return;
+        const card = btn.closest(".taskCard");
+        const taskId = card?.dataset.id;
+        const task = taskId
+            ? savedTaskDetails.find((t) => String(t.id) === String(taskId))
+            : undefined;
+        if (!task)
+            return;
+        await openEditTaskModal(task);
+    });
+}
 // Duplicate Task (Delegated)
 export function attachDuplicateTaskEvent(container, userId) {
     if (!container)
@@ -478,7 +558,9 @@ async function updateTaskLinkedNote(taskId, noteId) {
     if (taskRecord) {
         taskRecord.linked_note_id = noteId;
         const note = userNotes.find((n) => n.id === noteId);
-        taskRecord.personal_notes = note ? { id: note.id, title: note.title } : null;
+        taskRecord.personal_notes = note
+            ? { id: note.id, title: note.title }
+            : null;
     }
     renderExistingTasks();
 }

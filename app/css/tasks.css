@@ -1,6 +1,4 @@
-/* ------------------------------- */
 /* Task list container             */
-/* ------------------------------- */
 #personalCreatedTasks {
   display: flex;
   flex-direction: column;
@@ -121,9 +119,7 @@
   transform: translateY(-6px) scale(0.6);
 }
 
-/* ------------------------------- */
 /* Top row: checkbox + name + actions */
-/* ------------------------------- */
 .taskTopRow {
   display: flex;
   align-items: center;
@@ -176,9 +172,7 @@
 line-height: var(--space-md);
 }
 
-/* ------------------------------- */
 /* Action buttons (duplicate/delete) */
-/* ------------------------------- */
 .taskActions {
   display: flex;
   align-items: center;
@@ -207,6 +201,10 @@ line-height: var(--space-md);
   background: var(--hover-bg);
 }
 
+.editBtn:hover {
+  color: var(--primary-light);
+}
+
 .duplicateBtn:hover {
   color: var(--color);
 }
@@ -216,9 +214,7 @@ line-height: var(--space-md);
 }
 
 
-/* ------------------------------- */
 /* Description (only rendered when present) */
-/* ------------------------------- */
 .taskDescription {
   color: var(--text-secondary);
   font-size: 0.9rem;
@@ -227,9 +223,7 @@ line-height: var(--space-md);
   padding-left: calc(18px + var(--space-sm, 10px)); /* aligns under the name, past the checkbox */
 }
 
-/* ------------------------------- */
-/* Date                             */
-/* ------------------------------- */
+/* Date */
 .taskDate {
   display: inline-block;
   font-size: var(--text-xs);

@@ -583,7 +583,38 @@ export async function attachAddMemberEvents(workspaceId: string) {
   });
 }
 
-export async function attachCreatePersonalTaskEvent() {
+// Task settings panel toggle + reminder-days visibility. Wired fresh every
+// time the modal is opened, for both create and edit.
+function attachTaskSettingsToggle() {
+  const settingsBtn = document.getElementById("taskSettingsToggle");
+  const panel = document.getElementById("taskSettingsPanel");
+  const isRecurring = document.getElementById(
+    "isRecurring",
+  ) as HTMLInputElement;
+  const isOneOff = document.getElementById("isOneOff") as HTMLInputElement;
+  const reminderGroup = document.getElementById(
+    "reminderDaysGroup",
+  ) as HTMLElement;
+  if (!settingsBtn || !panel || !isRecurring || !isOneOff || !reminderGroup)
+    return;
+
+  settingsBtn.addEventListener("click", () => {
+    panel.hidden = !panel.hidden;
+  });
+
+  const syncReminderVisibility = () => {
+    reminderGroup.hidden = !isRecurring.checked;
+  };
+  isRecurring.addEventListener("change", syncReminderVisibility);
+  isOneOff.addEventListener("change", syncReminderVisibility);
+  syncReminderVisibility(); // initial state on open
+}
+
+export async function attachCreatePersonalTaskEvent(
+  editingTaskId: string | null = null,
+) {
+  attachTaskSettingsToggle();
+
   const taskEl = document.getElementById("task") as HTMLInputElement;
   const timeEl = document.getElementById("taskTime") as HTMLInputElement;
   const noteEl = document.getElementById("note") as HTMLInputElement;
@@ -648,6 +679,45 @@ export async function attachCreatePersonalTaskEvent() {
     const reminderDaysValue = recurringValue
       ? reminderDayEls.filter((el) => el.checked).map((el) => Number(el.value))
       : null;
+
+    // EDIT MODE: update the existing row in place. Recurring/oneoff type is
+    // locked in the UI during edit, so is_template is never part of this update.
+    if (editingTaskId) {
+      const updatePayload: Record<string, unknown> = {
+        name: taskValue,
+        description: noteValue || "",
+        task_deadline: timeValue,
+        start_time: startTimeValue,
+        end_time: endTimeValue,
+      };
+      if (recurringValue) updatePayload.reminder_days = reminderDaysValue;
+
+      const { data: updated, error: updateError } = await supabase
+        .from("personal_tasks")
+        .update(updatePayload)
+        .eq("id", editingTaskId)
+        .select()
+        .single();
+
+      if (updateError) {
+        console.error(updateError);
+        actionMsg("Failed to update task.", "error");
+        setButtonLoading(logTaskBtn, false);
+        return;
+      }
+
+      const idx = savedTaskDetails.findIndex(
+        (t) => String(t.id) === String(editingTaskId),
+      );
+      if (idx !== -1)
+        savedTaskDetails[idx] = { ...savedTaskDetails[idx], ...updated };
+
+      renderExistingTasks();
+      closeModal();
+      actionMsg("Task updated successfully.", "success");
+      setButtonLoading(logTaskBtn, false);
+      return;
+    }
 
     const { data, error } = await supabase
       .from("personal_tasks")

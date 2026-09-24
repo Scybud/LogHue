@@ -12,16 +12,15 @@ export function attachSidebarToggle() {
   if (toggleBtn) {
     toggleBtn.addEventListener("click", sidebarToggle);
   }
-  const closeSidebar = document.getElementById("closeSidebar")
-  if(closeSidebar) {
+  const closeSidebar = document.getElementById("closeSidebar");
+  if (closeSidebar) {
     closeSidebar.addEventListener("click", sidebarToggle);
-
   }
 
   //ACTION BUTTONS
-  if(sidebar) {
+  if (sidebar) {
     const actionBtns = sidebar.querySelectorAll(".actionBtn");
-    if(actionBtns) {
+    if (actionBtns) {
       actionBtns.forEach((actionBtn) => {
         if (actionBtn) {
           actionBtn.addEventListener("click", sidebarToggle);
@@ -33,32 +32,30 @@ export function attachSidebarToggle() {
   //NAV BUTTONS AND LINKS
   const navBtns = document.querySelectorAll(".navBtn");
   navBtns.forEach((navBtn) => {
-    if(navBtn) {
+    if (navBtn) {
       navBtn.addEventListener("click", sidebarToggle);
     }
   });
-  }
-
+}
 
 export function toggleSearchBar() {
-const searchBarOpen = document.getElementById("searchBarOpen");
-const searchContainer = document.querySelector(".searchContainer");
+  const searchBarOpen = document.getElementById("searchBarOpen");
+  const searchContainer = document.querySelector(".searchContainer");
 
-if (!searchBarOpen || !searchContainer) return;
+  if (!searchBarOpen || !searchContainer) return;
 
-searchBarOpen.addEventListener("click", () => {
-searchContainer.classList.add("showFlex");
-document.getElementById("searchInput")?.focus();
-})
+  searchBarOpen.addEventListener("click", () => {
+    searchContainer.classList.add("showFlex");
+    document.getElementById("searchInput")?.focus();
+  });
 
-searchContainer.addEventListener("click", (e) => {
-  if (e.target === searchContainer) {
-    searchContainer.classList.remove("showFlex");
-  }
-});
+  searchContainer.addEventListener("click", (e) => {
+    if (e.target === searchContainer) {
+      searchContainer.classList.remove("showFlex");
+    }
+  });
+}
 
-<<<<<<< Updated upstream
-=======
 export function makeCollapsible(element, maxHeight = 220) {
   if (!element) return;
 
@@ -88,25 +85,4 @@ export function makeCollapsible(element, maxHeight = 220) {
       }
     });
   });
-}
-
-// Task settings panel toggle + reminder-days visibility.
-export function attachTaskSettingsToggle() {
-  const settingsBtn = document.getElementById("taskSettingsToggle");
-  const panel = document.getElementById("taskSettingsPanel");
-  const isRecurring = document.getElementById("isRecurring");
-  const isOneOff = document.getElementById("isOneOff");
-  const reminderGroup = document.getElementById("reminderDaysGroup");
-
-  settingsBtn?.addEventListener("click", () => {
-    panel.hidden = !panel.hidden;
-  });
-
-  const syncReminderVisibility = () => {
-    reminderGroup.hidden = !isRecurring.checked;
-  };
-  isRecurring?.addEventListener("change", syncReminderVisibility);
-  isOneOff?.addEventListener("change", syncReminderVisibility);
-  syncReminderVisibility(); // initial state on open
->>>>>>> Stashed changes
 }
