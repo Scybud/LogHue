@@ -15,6 +15,7 @@ import { notifyUser } from "./notifications.js";
 import bcrypt from "https://esm.sh/bcryptjs@2.4.3";
 
 export function attachCreateTaskEvent(workspaceId) {
+<<<<<<< Updated upstream
   const createTaskBtn = document.getElementById("createTaskBtn");
   if (!createTaskBtn) return;
 
@@ -135,6 +136,99 @@ export function attachCreateTaskEvent(workspaceId) {
     // Close the modal after task creation
     closeModal();
   });
+=======
+    const createTaskBtn = document.getElementById("createTaskBtn");
+    if (!createTaskBtn)
+        return;
+    const assignedTo = document.getElementById("assignToDropdown");
+    populateAssignDropdown(assignedTo);
+    // When create task button is clicked to create a new task
+    createTaskBtn.addEventListener("click", async () => {
+        setButtonLoading(createTaskBtn, true);
+        const taskTitleEl = document.getElementById("taskTitle");
+        const taskTitle = taskTitleEl.value.trim() || null;
+        const taskDueDateEl = document.getElementById("taskDueDate");
+        const taskDueDate = taskDueDateEl.value
+            ? new Date(taskDueDateEl.value).toISOString()
+            : null;
+        const taskDescriptionEl = document.getElementById("taskDescription");
+        const taskDescription = taskDescriptionEl.value.trim() || null;
+        const assignedToValue = assignedTo.value || null;
+        if (!taskTitle) {
+            actionMsg("Title required", "error");
+            setButtonLoading(createTaskBtn, false);
+            return;
+        }
+        // Get the authenticated user ID
+        const { data: { user }, } = await supabase.auth.getUser();
+        const taskData = {
+            workspace_id: workspaceId,
+            created_by: user.id,
+            title: taskTitle,
+            task_deadline: taskDueDate,
+            status: "in progress",
+            assigned_to: assignedToValue || null, // Assign to empty if no one is selected
+            description: taskDescription || "",
+        };
+        // Insert task into the database
+        const { data, error } = await supabase
+            .from("workspace_tasks")
+            .insert(taskData)
+            .select()
+            .single();
+        if (error) {
+            console.error(error);
+            actionMsg("Failed to create task!", "error");
+            setButtonLoading(createTaskBtn, false);
+            return;
+        }
+        setButtonLoading(createTaskBtn, false);
+        await actionMsg("Task created!", "success");
+        // Only one task is created, use the first item
+        const createdTask = data;
+        if (createdTask?.assigned_to != null) {
+            await notifyUser({
+                workspaceId,
+                receiverUserId: createdTask.assigned_to,
+                actorId: user.id,
+                type: "task_assigned",
+                entityId: createdTask.id,
+                entityType: "task",
+            });
+            // Onboarding: assigning at creation time satisfies the
+            // "assign a task" step, same event as reassigning an
+            // existing task later (see performTaskAssign in tasks.js).
+            document.dispatchEvent(new CustomEvent("onboarding:task_assigned", {
+                detail: { taskId: createdTask.id, workspaceId },
+            }));
+        }
+        // Render the task in the UI
+        const taskCard = document.createElement("div");
+        taskCard.classList.add("card", "taskCard");
+        const taskTitleElem = document.createElement("h3");
+        taskTitleElem.classList.add("taskTitle");
+        taskTitleElem.textContent = createdTask?.title;
+        const taskMeta = document.createElement("p");
+        taskMeta.classList.add("taskMeta", "meta");
+        const assignToMemberBtn = document.createElement("button");
+        assignToMemberBtn.classList.add("btn", "btn-primary", "btn-sm", "assignToMemberBtn");
+        assignToMemberBtn.textContent = "Assign to Member";
+        const assignee = loadedMembers.find((m) => m.profiles.id === createdTask.assigned_to);
+        taskMeta.textContent = assignee
+            ? `Assigned to: ${assignee.profiles.full_name}`
+            : "Unassigned";
+        taskCard.append(taskTitleElem, taskMeta);
+        if (!assignee)
+            taskCard.append(assignToMemberBtn);
+        // Prepend the new task card to the grid
+        const container = document.querySelector(".grid");
+        if (container) {
+            container.prepend(taskCard);
+        }
+        // Close the modal after task creation
+        closeModal();
+    });
+>>>>>>> Stashed changes
 }
 
 export function populateAssignDropdown(selectEl) {
@@ -237,6 +331,7 @@ if (!ownerUpdateData || ownerUpdateData.length === 0) {
 
 //CREATE API EVENTS
 export function attachCreateApiKeyEvents(workspaceId) {
+<<<<<<< Updated upstream
   const modal = document.querySelector(".api-key-modal");
   if (!modal) return;
 
@@ -281,6 +376,44 @@ export function attachCreateApiKeyEvents(workspaceId) {
 
     // 4. Replace modal with "copy key" screen
     modal.innerHTML = `
+=======
+    const modal = document.querySelector(".api-key-modal");
+    if (!modal)
+        return;
+    // Generate button
+    const generateBtn = modal.querySelector("#generate-api-key-btn");
+    if (!generateBtn)
+        return;
+    generateBtn.onclick = async () => {
+        const nameInput = modal.querySelector("#api-key-name");
+        const name = nameInput.value.trim();
+        if (!name) {
+            actionMsg("Please enter a name for the API key.", "error");
+            return;
+        }
+        // Collect permissions
+        const permissionsEl = modal.querySelectorAll('input[type="checkbox"]:checked"');
+        const permissions = [...permissionsEl].map((c) => c.value);
+        // 1. Generate raw key
+        const rawKey = `lh_live_${crypto.randomUUID().replace(/-/g, "")}`;
+        // 2. Hash key
+        const hash = await bcrypt.hash(rawKey, 10);
+        // 3. Store in DB
+        const { error } = await supabase.from("api_keys").insert({
+            workspace_id: workspaceId,
+            name,
+            key_hash: hash,
+            prefix: rawKey.slice(0, 8),
+            permissions,
+        });
+        if (error) {
+            console.error(error);
+            actionMsg("Failed to create API key.", "error");
+            return;
+        }
+        // 4. Replace modal with "copy key" screen
+        modal.innerHTML = `
+>>>>>>> Stashed changes
       <svg class="closeModalBtn" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3.5" y="3.5" width="17" height="17" rx="6" ry="6" fill="currentColor" opacity="0.06"/>
         <path d="M9 9l6 6M15 9l-6 6"/>
@@ -342,6 +475,7 @@ export async function attachAddMemberEvents(workspaceId) {
       setButtonLoading(inviteBtn, false);
       return actionMsg("Please enter an email.", "error");
     }
+<<<<<<< Updated upstream
     if (!email.includes("@")) {
       setButtonLoading(inviteBtn, false);
       return actionMsg("Please enter a valid email.", "error");
@@ -482,6 +616,139 @@ export async function attachAddMemberEvents(workspaceId) {
           actionMsg("Shared successfully", "success");
         } else {
           actionMsg("Sharing is not supported on this browser.");
+=======
+    // SEND EMAIL INVITE
+    const sendEmailInviteBtn = document.getElementById("send-email-invite-btn");
+    sendEmailInviteBtn.onclick = async () => {
+        const inviteBtn = document.getElementById("send-email-invite-btn");
+        setButtonLoading(inviteBtn, true);
+        const emailEl = document.getElementById("invite-email-input");
+        const email = emailEl.value || null;
+        const roleEl = document.getElementById("invite-role-email");
+        const role = roleEl.value || null;
+        if (!email) {
+            setButtonLoading(inviteBtn, false);
+            return actionMsg("Please enter an email.", "error");
+        }
+        if (!email.includes("@")) {
+            setButtonLoading(inviteBtn, false);
+            return actionMsg("Please enter a valid email.", "error");
+        }
+        if (count >= sessionState.plan.max_members &&
+            sessionState.plan.max_members !== null) {
+            await openUpgradeModal("memberLimit");
+            return;
+        }
+        const invite = await createWorkspaceInvite({
+            workspaceId,
+            role,
+            email,
+        });
+        if (!invite?.token) {
+            actionMsg("Invite creation failed. No token returned.", "error");
+            console.error("Invite creation failed. No token returned");
+            setButtonLoading(inviteBtn, false);
+            return;
+        }
+        const inviteUrl = `${window.location.origin}/pages/invite?token=${invite.token}`;
+        const { data: { session }, } = await supabase.auth.getSession();
+        const { data, error } = await supabase.functions.invoke("send-invite", {
+            body: { email, inviteUrl },
+            headers: {
+                Authorization: `Bearer ${session?.access_token}`,
+            },
+        });
+        if (error) {
+            console.error(error);
+            actionMsg("Failed to send invite.", "error");
+            setButtonLoading(inviteBtn, false);
+            return;
+        }
+        actionMsg("Invite sent!", "success");
+        setButtonLoading(inviteBtn, false);
+        document.dispatchEvent(new CustomEvent("onboarding:member_invited", {
+            detail: { workspaceId },
+        }));
+    };
+    // GENERATE QR INVITE
+    const generateQrBtn = document.getElementById("generate-qr-btn");
+    generateQrBtn.onclick = async () => {
+        setButtonLoading(generateQrBtn, true);
+        const roleEl = document.getElementById("invite-role-qr");
+        const role = roleEl.value;
+        if (count >= sessionState.plan.max_members &&
+            sessionState.plan.max_members !== null) {
+            actionMsg("You have exceeded the limit for adding members to this workspace on your current plan. Upgrade to a new plan to add more members!", "error");
+            return;
+        }
+        const invite = await createWorkspaceInvite({ workspaceId, role });
+        if (!invite || !invite.token) {
+            actionMsg("Error: Invite token was not generated.", "error");
+            setButtonLoading(generateQrBtn, false);
+            return;
+        }
+        const baseUrl = window.location.origin; // Automatically uses localhost or app.loghue.com
+        const inviteUrl = `${baseUrl}/pages/invite?token=${invite.token}`;
+        const inviteLinkInput = document.getElementById("invite-link-input");
+        inviteLinkInput.value = inviteUrl;
+        const qrContainer = document.getElementById("qr-container");
+        qrContainer.innerHTML = "";
+        new QRCode(qrContainer, {
+            text: inviteUrl,
+            width: 180,
+            height: 180,
+        });
+        setButtonLoading(generateQrBtn, false);
+        document.dispatchEvent(new CustomEvent("onboarding:member_invited", {
+            detail: { workspaceId },
+        }));
+    };
+    // COPY INVITE LINK
+    const copyInviteLinkBtn = document.getElementById("copy-invite-link-btn");
+    copyInviteLinkBtn.onclick = async () => {
+        setButtonLoading(copyInviteLinkBtn, true);
+        const linkEl = document.getElementById("invite-link-input");
+        const link = linkEl.value;
+        try {
+            await navigator.clipboard.writeText(link);
+            actionMsg("Invite link copied!", "success");
+        }
+        catch (err) {
+            console.error("Copy failed", err);
+            actionMsg("Failed to copy link.", "error");
+        }
+        finally {
+            setButtonLoading(copyInviteLinkBtn, false);
+        }
+    };
+    //SHARE INVITE LINK
+    const shareInviteLinkBtn = document.getElementById("share-invite-link-btn");
+    shareInviteLinkBtn.addEventListener("click", async () => {
+        const shareBtn = document.getElementById("share-invite-link-btn");
+        setButtonLoading(shareBtn, true);
+        const linkEl = document.getElementById("invite-link-input");
+        const link = linkEl.value;
+        const data = {
+            title: "Special invite to join my workspace",
+            text: "Click this invite link to join my workspace on LogHue:",
+            url: link,
+        };
+        try {
+            if (navigator.share) {
+                await navigator.share(data);
+                actionMsg("Shared successfully", "success");
+            }
+            else {
+                actionMsg("Sharing is not supported on this browser.");
+            }
+        }
+        catch (err) {
+            console.error("Share failed:", err);
+            actionMsg("Failed to share", "error");
+        }
+        finally {
+            setButtonLoading(shareBtn, false);
+>>>>>>> Stashed changes
         }
       } catch (err) {
         console.error("Share failed:", err);
@@ -493,6 +760,7 @@ export async function attachAddMemberEvents(workspaceId) {
 }
 
 export async function attachCreatePersonalTaskEvent() {
+<<<<<<< Updated upstream
   const taskEl = document.getElementById("task");
   const timeEl = document.getElementById("taskTime");
   const noteEl = document.getElementById("note");
@@ -569,6 +837,126 @@ const recurringValue = recurringEl.checked ? true : false;
     actionMsg("Task created successfully.", "success");
     setButtonLoading(logTaskBtn, false);
   });
+=======
+    const taskEl = document.getElementById("task");
+    const timeEl = document.getElementById("taskTime");
+    const noteEl = document.getElementById("note");
+    const recurringEl = document.getElementById("isRecurring");
+    const startTimeEl = document.getElementById("taskStartTime");
+    const endTimeEl = document.getElementById("taskEndTime");
+    const reminderDayEls = Array.from(document.querySelectorAll(".reminderDayCheck"));
+    const logTaskBtn = document.getElementById("logTask");
+    if (!logTaskBtn || !taskEl || !timeEl || !noteEl || !recurringEl)
+        return;
+    const { data: { session }, } = await supabase.auth.getSession();
+    const user = session.user;
+    logTaskBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setButtonLoading(logTaskBtn, true);
+        const taskValue = taskEl.value.trim();
+        const timeValue = timeEl.value
+            ? new Date(timeEl.value).toISOString()
+            : null;
+        const noteValue = noteEl.value.trim();
+        const recurringValue = recurringEl.checked ? true : false;
+        // Start/end are available regardless of recurring status.
+        const startTimeValue = startTimeEl?.value
+            ? new Date(startTimeEl.value).toISOString()
+            : null;
+        const endTimeValue = endTimeEl?.value
+            ? new Date(endTimeEl.value).toISOString()
+            : null;
+        if (!taskValue || !timeValue) {
+            taskEl.classList.add("error");
+            timeEl.classList.add("error");
+            actionMsg("Task and due date are required.", "error");
+            setButtonLoading(logTaskBtn, false);
+            return;
+        }
+        if (startTimeValue && endTimeValue && endTimeValue < startTimeValue) {
+            endTimeEl.classList.add("error");
+            actionMsg("End time can't be before start time.", "error");
+            setButtonLoading(logTaskBtn, false);
+            return;
+        }
+        // Reminder days only apply to recurring tasks (the template row).
+        // Default is every day (0=Sun..6=Sat) when the user hasn't unchecked any.
+        const reminderDaysValue = recurringValue
+            ? reminderDayEls.filter((el) => el.checked).map((el) => Number(el.value))
+            : null;
+        const { data, error } = await supabase
+            .from("personal_tasks")
+            .insert({
+            name: taskValue,
+            description: noteValue || "",
+            task_deadline: timeValue,
+            start_time: startTimeValue,
+            end_time: endTimeValue,
+            reminder_days: reminderDaysValue,
+            user_id: user.id,
+            is_template: recurringValue,
+        })
+            .select()
+            .single();
+        if (error) {
+            console.error(error);
+            actionMsg("Failed to create Task.", "error");
+            setButtonLoading(logTaskBtn, false);
+            return;
+        }
+        // The row the user actually sees and can complete. For a one-off task
+        // this is just the row we already inserted. For a recurring task, we
+        // additionally spawn today's real instance now instead of waiting for
+        // the nightly ensure-recurring-instances cron, so the user sees their
+        // task immediately instead of it appearing up to a day later.
+        let visibleTask = data;
+        if (recurringValue) {
+            const { data: instance, error: instanceError } = await supabase
+                .from("personal_tasks")
+                .insert({
+                name: taskValue,
+                description: noteValue || "",
+                task_deadline: timeValue,
+                start_time: startTimeValue,
+                end_time: endTimeValue,
+                user_id: user.id,
+                is_template: false,
+                parent_task_id: data.id,
+            })
+                .select()
+                .single();
+            if (instanceError) {
+                console.error(instanceError);
+                actionMsg("Task series created, but today's task failed to appear.", "error");
+            }
+            else {
+                visibleTask = instance;
+            }
+        }
+        // Update in-memory state
+        savedTaskDetails.unshift(visibleTask);
+        document.dispatchEvent(new CustomEvent("onboarding:task_created", {
+            detail: { taskId: visibleTask.id },
+        }));
+        // Re-render UI
+        renderExistingTasks();
+        checkIfEmpty();
+        // Clear inputs
+        taskEl.value = "";
+        timeEl.value = "";
+        noteEl.value = "";
+        if (startTimeEl)
+            startTimeEl.value = "";
+        if (endTimeEl)
+            endTimeEl.value = "";
+        reminderDayEls.forEach((el) => (el.checked = true));
+        // Close modal
+        closeModal();
+        actionMsg("Task created successfully.", "success");
+        setButtonLoading(logTaskBtn, false);
+    });
+>>>>>>> Stashed changes
 }
 
 //POPULATE TASK LIST

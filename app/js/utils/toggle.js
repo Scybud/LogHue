@@ -57,4 +57,56 @@ searchContainer.addEventListener("click", (e) => {
   }
 });
 
+<<<<<<< Updated upstream
+=======
+export function makeCollapsible(element, maxHeight = 220) {
+  if (!element) return;
+
+  requestAnimationFrame(() => {
+    if (element.scrollHeight <= maxHeight) return;
+
+    element.classList.add("isCollapsible");
+    element.style.maxHeight = `${maxHeight}px`;
+    element.style.overflow = "hidden";
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "contentToggle";
+    button.textContent = "Show more";
+
+    element.append(button);
+
+    button.addEventListener("click", () => {
+      const expanded = element.classList.toggle("expanded");
+
+      if (expanded) {
+        element.style.maxHeight = `${element.scrollHeight}px`;
+        button.textContent = "Show less";
+      } else {
+        element.style.maxHeight = `${maxHeight}px`;
+        button.textContent = "Show more";
+      }
+    });
+  });
+}
+
+// Task settings panel toggle + reminder-days visibility.
+export function attachTaskSettingsToggle() {
+  const settingsBtn = document.getElementById("taskSettingsToggle");
+  const panel = document.getElementById("taskSettingsPanel");
+  const isRecurring = document.getElementById("isRecurring");
+  const isOneOff = document.getElementById("isOneOff");
+  const reminderGroup = document.getElementById("reminderDaysGroup");
+
+  settingsBtn?.addEventListener("click", () => {
+    panel.hidden = !panel.hidden;
+  });
+
+  const syncReminderVisibility = () => {
+    reminderGroup.hidden = !isRecurring.checked;
+  };
+  isRecurring?.addEventListener("change", syncReminderVisibility);
+  isOneOff?.addEventListener("change", syncReminderVisibility);
+  syncReminderVisibility(); // initial state on open
+>>>>>>> Stashed changes
 }

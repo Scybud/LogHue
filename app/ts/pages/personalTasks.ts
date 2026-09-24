@@ -146,8 +146,17 @@ type Task = {
   description: string;
   is_completed: boolean;
   task_deadline: string | null;
+  start_time: string | null;
+  end_time: string | null;
+  reminder_days: number[] | null; // 0=Sun..6=Sat, only meaningful when is_template
   created_at: string;
   is_recurring: boolean | null;
+<<<<<<< Updated upstream
+=======
+  is_template: boolean | null;
+  linked_note_id: string | null;
+  personal_notes?: { id: string; title: string } | null;
+>>>>>>> Stashed changes
 };
 
 // Create Task Element
