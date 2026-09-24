@@ -2,6 +2,7 @@ import { sessionState } from "../session.js";
 import { supabase } from "../supabase.js";
 import { actionMsg, confirmAction } from "../utils/modals.js";
 import { registerPush } from "../push.js";
+import { loadComponent } from "https://ui.scybud.com/js/ui.js";
 
 const DEFAULT_AVATAR = "https://loghue.com/assets/images/default_profile.png";
 
@@ -14,9 +15,7 @@ const saveBtn = document.querySelector(".settingsSaveBtn");
 
 let pendingAvatarProfile = null;
 
-// =========================
 // INIT
-// =========================
 async function initUserSettingsData() {
   try {
     const {
@@ -54,6 +53,7 @@ async function initUserSettingsData() {
 
     loadData();
     initNotificationPreference();
+    initProductUpdatesPreference();
   } catch (err) {
     console.error(err);
     actionMsg("Something went wrong.", "error");
@@ -62,9 +62,7 @@ async function initUserSettingsData() {
 
 initUserSettingsData();
 
-// =========================
 // LOAD UI DATA
-// =========================
 function loadData() {
   const accNameEl = document.getElementById("accName");
   const accEmailEl = document.getElementById("accEmail");
@@ -84,9 +82,7 @@ function loadData() {
   };
 }
 
-// =========================
 // AVATAR UPLOAD
-// =========================
 profileUploadBtn?.addEventListener("click", () => {
   profilePhotoInput.click();
 });
@@ -170,9 +166,7 @@ async function compressImage(img) {
   return null;
 }
 
-// =========================
 // SAVE SETTINGS
-// =========================
 saveBtn?.addEventListener("click", async () => {
   saveBtn.disabled = true;
 
@@ -188,16 +182,14 @@ saveBtn?.addEventListener("click", async () => {
       return;
     }
 
-    // =========================
     // NAME UPDATE
-    // =========================
+
     if (newName !== sessionState.originalName) {
       updates.full_name = newName;
     }
 
-    // =========================
     // EMAIL UPDATE
-    // =========================
+
     if (newEmail !== sessionState.originalEmail) {
       const { error } = await supabase.auth.updateUser({
         email: newEmail,
@@ -211,9 +203,8 @@ saveBtn?.addEventListener("click", async () => {
       actionMsg("Check your inbox to confirm the new email.", "success");
     }
 
-    // =========================
     // AVATAR UPDATE
-    // =========================
+
     if (pendingAvatarProfile) {
       const oldPath = extractFilePath(sessionState.originalAvatar);
 
@@ -268,9 +259,8 @@ saveBtn?.addEventListener("click", async () => {
       sessionState.originalAvatar = urlData.publicUrl;
     }
 
-    // =========================
     // SAVE PROFILE CHANGES
-    // =========================
+
     if (Object.keys(updates).length > 0 && !updates.avatar_url) {
       const { error } = await supabase
         .from("profiles")
@@ -298,9 +288,7 @@ saveBtn?.addEventListener("click", async () => {
   }
 });
 
-// =========================
 // HELPERS
-// =========================
 function extractFilePath(publicUrl) {
   if (!publicUrl) return null;
 
@@ -315,9 +303,53 @@ function extractFilePath(publicUrl) {
   }
 }
 
-// =========================
+// PRODUCT UPDATES PREFERENCE
+function initProductUpdatesPreference() {
+  const checkbox = document.getElementById("productUpdatesToggle");
+
+  if (!checkbox) return;
+
+  checkbox.checked = sessionState.profile.product_updates_opted_in ?? true;
+
+  checkbox.addEventListener("change", async (e) => {
+    const optedIn = e.target.checked;
+
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          product_updates_opted_in: optedIn,
+        })
+        .eq("id", sessionState.user.id);
+
+      if (error) {
+        console.error(error);
+
+        checkbox.checked = !optedIn;
+
+        actionMsg("Could not update preference.", "error");
+        return;
+      }
+
+      sessionState.profile.product_updates_opted_in = optedIn;
+
+      actionMsg(
+        optedIn
+          ? "Subscribed to product updates"
+          : "Unsubscribed from product updates",
+        "success",
+      );
+    } catch (err) {
+      console.error(err);
+
+      checkbox.checked = !optedIn;
+
+      actionMsg("Something went wrong.", "error");
+    }
+  });
+}
+
 // PUSH NOTIFICATIONS
-// =========================
 function initNotificationPreference() {
   const checkbox = document.getElementById("enablePush");
 
@@ -407,16 +439,15 @@ async function disablePushNotifications() {
   }
 }
 
-// =========================
 // ACCOUNT DELETION
-// =========================
 export function requestAccountDeletion() {
   const deleteAccountBtn = document.getElementById("deleteAccount");
 
   if (!deleteAccountBtn) return;
 
   deleteAccountBtn.addEventListener("click", () => {
-    confirmAction("Delete Account",
+    confirmAction(
+      "Delete Account",
       "Are you sure you want to delete this account? We will send a confirmation email.",
       [
         {
@@ -505,4 +536,236 @@ async function performAccountDeletionProcess() {
   } finally {
     deleteAccountBtn.disabled = false;
   }
+}
+
+const viewSessionsBtn = document.getElementById("viewSessions");
+
+viewSessionsBtn?.addEventListener("click", openActiveSessions);
+
+async function openActiveSessions() {
+  if (viewSessionsBtn.disabled) return;
+
+  viewSessionsBtn.disabled = true;
+
+  try {
+    await loadComponent(
+      "../components/modals/active-sessions",
+      "modalContainer",
+    );
+
+    await initActiveSessions();
+  } catch (err) {
+    console.error("Could not open active sessions:", err);
+    actionMsg("Could not load active sessions.", "error");
+  } finally {
+    viewSessionsBtn.disabled = false;
+  }
+}
+
+async function initActiveSessions() {
+  const list = document.getElementById("activeSessionsList");
+
+  if (!list) return;
+
+  list.innerHTML = `
+    <p class="descText">Loading sessions...</p>
+  `;
+
+  const { data, error } = await supabase.functions.invoke("active-sessions");
+
+  if (error) {
+    console.error("Active sessions error:", error);
+
+    list.innerHTML = `
+      <p class="descText">
+        Could not load your active sessions.
+      </p>
+    `;
+    actionMsg("Could not load your active sessions", "error");
+    return;
+  }
+
+  renderActiveSessions(data.sessions || []);
+
+  initActiveSessionsActions();
+}
+
+function renderActiveSessions(sessions) {
+  const list = document.getElementById("activeSessionsList");
+
+  if (!list) return;
+
+  if (!sessions.length) {
+    list.innerHTML = `
+      <p class="descText">
+        No active sessions found.
+      </p>
+    `;
+
+    return;
+  }
+
+  list.innerHTML = sessions
+    .map((session) => {
+      const created = formatSessionDate(session.created_at);
+      const updated = formatSessionDate(session.updated_at);
+
+      return `
+        <div class="activeSessionItem">
+
+          <div class="activeSessionInfo">
+
+            <strong>
+              ${session.current ? "This device" : "Active session"}
+            </strong>
+
+            <span>
+              Signed in: ${created}
+            </span>
+
+            <span>
+              Last active: ${updated}
+            </span>
+
+          </div>
+
+          <div class="activeSessionActions">
+
+            ${
+              session.current
+                ? `
+                  <span class="activeSessionCurrent">
+                    Current
+                  </span>
+                `
+                : `
+                  <button
+                    type="button"
+                    class="btn btn-sm danger sessionRevokeBtn"
+                    data-session-id="${session.id}"
+                  >
+                    Sign out
+                  </button>
+                `
+            }
+
+          </div>
+
+        </div>
+      `;
+    })
+    .join("");
+}
+function formatSessionDate(date) {
+  if (!date) return "Unknown";
+
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(date));
+}
+function initActiveSessionsActions() {
+  const signOutOthersBtn = document.getElementById("signOutOtherSessions");
+
+  signOutOthersBtn?.addEventListener("click", signOutOtherSessions);
+
+  document.querySelectorAll(".sessionRevokeBtn").forEach((button) => {
+    button.addEventListener("click", () => {
+      revokeSession(button.dataset.sessionId);
+    });
+  });
+}
+
+async function signOutOtherSessions() {
+  await confirmAction(
+    "Sign out all other devices?",
+    "All other active sessions will be signed out.",
+    [
+      {
+        label: "Cancel",
+        type: "cancel",
+      },
+      {
+        label: "Sign out",
+        type: "confirm",
+        onClick: async () => {
+          const { error } = await supabase.auth.signOut({
+            scope: "others",
+          });
+
+          if (error) {
+            console.error(error);
+            actionMsg("Could not sign out other devices.", "error");
+            return;
+          }
+
+          actionMsg("All other devices have been signed out.", "success");
+
+          await initActiveSessions();
+        },
+      },
+    ],
+  );
+}
+
+async function revokeSession(sessionId) {
+  if (!sessionId) return;
+
+  await confirmAction(
+    "Sign out this device?",
+    "This device will no longer be able to refresh its session.",
+    [
+      {
+        label: "Cancel",
+        type: "cancel",
+      },
+      {
+        label: "Sign out",
+        type: "confirm",
+        onClick: async () => {
+          const button = document.querySelector(
+            `.sessionRevokeBtn[data-session-id="${sessionId}"]`,
+          );
+
+          if (button) {
+            button.disabled = true;
+            button.textContent = "Signing out...";
+          }
+
+          try {
+            const { data, error } = await supabase.functions.invoke(
+              "active-sessions",
+              {
+                body: {
+                  action: "revoke",
+                  session_id: sessionId,
+                },
+              },
+            );
+
+            if (error) {
+              console.error("Revoke session error:", error);
+              actionMsg("Could not sign out this device.", "error");
+              return;
+            }
+
+            if (!data?.success) {
+              actionMsg(
+                data?.error || "Could not sign out this device.",
+                "error",
+              );
+              return;
+            }
+
+            actionMsg("Device signed out.", "success");
+
+            await initActiveSessions();
+          } catch (err) {
+            console.error("Revoke session error:", err);
+            actionMsg("Could not sign out this device.", "error");
+          }
+        },
+      },
+    ],
+  );
 }

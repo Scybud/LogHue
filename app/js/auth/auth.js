@@ -3,7 +3,7 @@
 
 import { supabase } from "../supabase.js";
 import { actionMsg } from "../utils/modals.js";
-import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
+import { setButtonLoading } from "https://ui.scybud.com/js/ui.js";
 
 //Signup funtion
 async function signup(name, email, password) {
@@ -36,8 +36,17 @@ if (signupForm) {
       .getElementById("userSignupConfirmPasswordInput")
       .value.trim();
 
-    if (!name || !password || !email || !confirmPassword) {
-      actionMsg("All fields must not be empty", "error");
+    if (!name) {
+      actionMsg("Username is required", "warning");
+      return;
+    } else if (!password) {
+      actionMsg("Password is required", "warning");
+      return;
+    } else if (!email) {
+      actionMsg("Email is required", "warning");
+      return;
+    } else if (!confirmPassword) {
+      actionMsg("Confirm your password", "warning");
       return;
     } else if (!email.includes("@")) {
       actionMsg("Please enter a valid email", "error");
@@ -46,7 +55,7 @@ if (signupForm) {
       actionMsg("Passwords do not match", "error");
       return;
     } else if (password.length < 6) {
-      actionMsg("Password must be at least 6 characters", "error");
+      actionMsg("Password must be at least 6 characters", "warning");
       return;
     }
 
@@ -102,8 +111,12 @@ export function loginFuntion() {
         .getElementById("userLoginPasswordInput")
         .value.trim();
 
-      if (!password || !email) {
-        actionMsg("All fields must not be empty", "error");
+      if (!email) {
+        actionMsg("Email is required", "warning");
+        return;
+      }
+      if (!password) {
+        actionMsg("Password is required", "warning");
         return;
       }
 

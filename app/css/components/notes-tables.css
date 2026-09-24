@@ -1,0 +1,324 @@
+/*
+   TABLE WIDGET
+   Shared between standalone table notes and inline embeds inside Quill.
+   */
+
+.tableWidget {
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  background: var(--card-bg);
+  margin: 0;
+}
+
+/* Inline embeds sit inside Quill's editor padding, so give them a little
+   breathing room and make sure they never inherit Quill's text styles */
+.ql-table-embed {
+  user-select: none;
+}
+.ql-table-embed .tableWidget {
+  margin: var(--space-sm) 0;
+}
+
+.tableWidgetHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-xs) var(--space-sm);
+  border-bottom: 1px solid var(--border-primary);
+  background: var(--bg-primary);
+}
+#insertTableBtn {
+    max-width: fit-content;
+}
+#exportTableBtn {
+    width: fit-content;
+}
+.tableWidgetName {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  width: 220px;
+  max-width: 50%;
+}
+.tableWidgetNameStatic {
+  padding: 4px 0;
+}
+
+.tableWidgetIconBtn {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.tableWidgetIconBtn:hover {
+  background: var(--hover-bg);
+  color: var(--danger);
+}
+
+.tableWidgetScroll {
+  overflow-x: auto;
+  padding: var(--space-sm);
+}
+
+table.tableWidgetGrid {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+table.tableWidgetGrid td,
+table.tableWidgetGrid th {
+  border: 1px solid var(--border-primary);
+  position: relative;
+  padding: 0;
+}
+table.tableWidgetGrid th {
+  background: var(--bg-primary);
+}
+
+.tableColHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 140px;
+  padding: 6px 4px 6px 10px;
+}
+.tableColLabel {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  width: 100%;
+  min-width: 0;
+}
+.tableColDel {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  visibility: hidden;
+}
+th:hover .tableColDel {
+  visibility: visible;
+}
+.tableColDel:hover {
+  color: var(--danger);
+}
+
+.tableRowHead {
+  width: 30px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  background: var(--bg-primary);
+  position: relative;
+}
+.tableRowDel {
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  visibility: hidden;
+}
+tr:hover .tableRowDel {
+  visibility: visible;
+}
+.tableRowDel:hover {
+  color: var(--danger);
+}
+
+.tableCellWrap {
+  display: flex;
+  align-items: flex-start;
+  min-width: 140px;
+ 
+}
+.tableCell {
+  flex: 1;
+  min-height: 34px;
+  overflow: hidden;
+  padding: 7px 8px;
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  outline: none;
+  cursor: text;
+}
+.tableCell:focus {
+  background: var(--hover-bg);
+}
+.tableCellExpandBtn {
+  width: 22px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+  visibility: hidden;
+}
+td:hover .tableCellExpandBtn {
+  visibility: visible;
+}
+.tableCellExpandBtn:hover {
+  color: var(--primary-light);
+}
+
+.tableAddColCell {
+  width: 28px;
+  background: var(--card-bg);
+}
+.tableAddColBtn {
+  width: 28px;
+  height: 100%;
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-left: 1px dashed var(--border-primary);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.tableAddColBtn:hover {
+  color: var(--primary-light);
+  background: var(--hover-bg);
+}
+
+.tableAddRowStrip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 7px 10px;
+  background: var(--card-bg);
+  border: none;
+  border-top: 1px dashed var(--border-primary);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.tableAddRowStrip:hover {
+  color: var(--primary-light);
+  background: var(--hover-bg);
+}
+.tableWidget button:active {
+background: var(--bg-primary);
+color: var(--text-primary);
+transform: scale(1) !important;
+}
+
+/* Cell expand modal */
+.tableCellModalVeil {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.tableCellModalVeil.open {
+  display: flex;
+}
+.tableCellModal {
+  background: var(--card-bg);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  width: 460px;
+  max-width: 90vw;
+  padding: var(--space-md);
+}
+.tableCellModalHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-sm);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+.tableCellModalTextarea {
+  width: 100%;
+  min-height: 140px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-family: inherit;
+  padding: var(--space-sm);
+  outline: none;
+  resize: vertical;
+}
+.tableCellModalTextarea:focus {
+  border-color: var(--primary-light);
+}
+.tableCellModalActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-sm);
+}
+
+/* Standalone table note pane reuses textEditorPane layout conventions */
+#tableEditorPane {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--mainContent-bg);
+}
+#standaloneTableWrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--space-md);
+}
+#tableEditorPane[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+    thead, tr, th, td {
+         display: flex; 
+    }
+}
+tr {
+    margin-bottom: 0;
+    padding: 0;
+}

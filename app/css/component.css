@@ -2,9 +2,9 @@
 #createApiKeyBtn {
   margin: var(--space-md) auto;
 }
-/*================= 
+/*
 PERSONAL LOGGED TASK SECTION
-===================*/
+*/
 
 /*PERSONAL INPUT CONTAINER IN DASHBOARD*/
 .personalLogInputContainer .container {
@@ -285,6 +285,17 @@ button.danger {
   border-bottom: 1px solid var(--warning);
   color: #ffdc2e;
   background: #352a01ca;
+  animation: expandTextField 2s ease;
+  max-height: fit-content;
+  overflow: hidden;
+}
+@keyframes expandTextField {
+from {
+  height: 0;
+
+} to {
+  height: 300px;
+}
 }
 .confirmActionModal p::before {
   content: "⚠️ ";
@@ -329,18 +340,7 @@ button.danger {
 .card:hover {
   background: var(--surface-primary);
 }
-.dropdown-list button.dropdown-item,
-button.dropdown-item {
-  background: none;
-  color: var(--text-primary);
-  text-align: left;
-}
-.dropdown-list button.dropdown-item:last-child {
-  color: #000;
-}
-.dropdown-list button.dropdown-item:last-child:hover {
-  background: rgb(255, 52, 52);
-}
+
 /*MODAL CONTAINER*/
 
 .modalContainer {
@@ -353,7 +353,7 @@ button.dropdown-item {
 
   top: 0;
   left: 0;
-  z-index: 4;
+  z-index: 5;
   width: 100%;
   height: 100%;
 
@@ -448,7 +448,7 @@ button.dropdown-item {
   border-radius: 12px;
   padding: 20px;
   box-shadow: var(--shadow);
-  z-index: 3;
+  z-index: 4;
 }
 
 .consent-content h3 {
@@ -659,7 +659,6 @@ button.dropdown-item {
 
 .logMarker {
   position: relative;
-  width: 32px;
   flex-shrink: 0;
   display: flex;
   justify-content: center;
@@ -686,9 +685,7 @@ button.dropdown-item {
 }
 
 .logHeadline {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+ margin-bottom: var(--space-xs);
 }
 
 .logAvatar {
@@ -699,7 +696,7 @@ button.dropdown-item {
 }
 
 .logText {
-  font-size: 0.9rem;
+  font-size: var(--text-sm);
   color: var(--text-primary);
   flex: 1;
   min-width: 0;

@@ -10,25 +10,25 @@
     <!--SCYBUD UI-->
     <link
       rel="stylesheet"
-      href="https://scybud.github.io/scybud-ui/css/variables.css"
+      href="https://ui.scybud.com/css/variables.css"
     />
     <link
       rel="stylesheet"
-      href="https://scybud.github.io/scybud-ui/css/layout.css"
+      href="https://ui.scybud.com/css/layout.css"
     />
     <link
       rel="stylesheet"
-      href="https://scybud.github.io/scybud-ui/components/sidebar/sidebar.css"
+      href="https://ui.scybud.com/components/sidebar/sidebar.css"
     />
     <link
       rel="stylesheet"
-      href="https://scybud.github.io/scybud-ui/components/buttons/nav-buttons.css"
+      href="https://ui.scybud.com/components/buttons/nav-buttons.css"
     />
     <link
       rel="stylesheet"
-      href="https://scybud.github.io/scybud-ui/css/typography.css"
+      href="https://ui.scybud.com/css/typography.css"
     />
-    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/animations.css">
+    <link rel="stylesheet" href="https://ui.scybud.com/css/animations.css">
 
     <!--APP SPECIFIC CSS-->
     <link rel="stylesheet" href="../css/base.css" />
@@ -89,8 +89,78 @@
     
     <main class="main">
       <!-- SIDEBAR -->
-      <aside class="sidebar" id="sidebarContainer"></aside>
-      
+<aside class="sidebar" id="sidebarContainer">
+
+  <div id="sidebarSkeleton" class="sidebarSkeleton">
+
+    <!-- Main navigation -->
+    <div class="sidebarSkeletonNav">
+
+      <div class="sidebarSkeletonItem">
+        <span class="skeletonSidebarIcon"></span>
+        <span class="skeletonSidebarText skeletonSidebarTextLong"></span>
+      </div>
+
+      <div class="sidebarSkeletonItem">
+        <span class="skeletonSidebarIcon"></span>
+        <span class="skeletonSidebarText skeletonSidebarTextMedium"></span>
+      </div>
+
+      <div class="sidebarSkeletonItem">
+        <span class="skeletonSidebarIcon"></span>
+        <span class="skeletonSidebarText skeletonSidebarTextShort"></span>
+      </div>
+
+      <div class="sidebarSkeletonItem">
+        <span class="skeletonSidebarIcon"></span>
+        <span class="skeletonSidebarText skeletonSidebarTextMedium"></span>
+      </div>
+
+      <div class="sidebarSkeletonItem">
+        <span class="skeletonSidebarIcon"></span>
+        <span class="skeletonSidebarText skeletonSidebarTextShort"></span>
+      </div>
+
+    </div>
+
+
+    <!-- Workspace heading -->
+    <div class="skeletonSidebarHeading"></div>
+
+
+    <!-- Workspace -->
+    <div class="sidebarSkeletonItem">
+      <span class="skeletonSidebarIcon"></span>
+      <span class="skeletonSidebarText skeletonSidebarTextMedium"></span>
+    </div>
+
+    <div class="sidebarSkeletonItem">
+      <span class="skeletonSidebarIcon"></span>
+      <span class="skeletonSidebarText skeletonSidebarTextShort"></span>
+    </div>
+
+
+    <!-- Create workspace -->
+    <div class="skeletonSidebarCreate"></div>
+
+
+    <!-- User section -->
+    <div class="sidebarSkeletonUser">
+
+      <div class="skeletonSidebarAvatar"></div>
+
+      <div class="skeletonSidebarUserInfo">
+        <div class="skeletonSidebarUsername"></div>
+        <div class="skeletonSidebarPlan"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+</aside>
+
+
       <!-- MAIN CONTENT -->
       <article class="mainContent" id="dashboardContent">
         <div class="contentHeader">
@@ -131,10 +201,6 @@
               </svg>
               
             </button>
-    
-            <div class="profileAvatarContainer">
-              <img src="../assets/images/default_profile.png" alt="profile Image" class="profileAvatar">
-            </div>
     
           </div>
         </div>
@@ -259,11 +325,11 @@
           </div>
 
           <!-- NOTIFICATIONS -->
-          <div class="settingsCard">
-            <h3 class="settingsCardTitle">Notifications</h3>
-            <p class="descText">Manage how you recieve updates.</p>
+<div class="settingsCard">
+  <h3 class="settingsCardTitle">Notifications</h3>
+  <p class="descText">Manage how you recieve updates.</p>
 
-            <div class="settingsToggleRow">
+  <div class="settingsToggleRow">
   <span>In-App Alerts</span>
   <label class="lh-switch">
     <input type="checkbox" checked disabled/>
@@ -271,7 +337,7 @@
   </label>
 </div>
 
-<div class="settingsToggleRow">
+<div id="notifications" class="settingsToggleRow">
   <span>Push & Email Notifications</span>
   <label for="enablePush" class="lh-switch"
     ><input type="checkbox" id="enablePush" />
@@ -279,7 +345,15 @@
   </label>
 </div>
 
-          </div>
+<div class="settingsToggleRow">
+  <span>Product Updates</span>
+  <label for="productUpdatesToggle" class="lh-switch"
+    ><input type="checkbox" id="productUpdatesToggle" />
+        <span class="lh-slider"></span>
+  </label>
+</div>
+
+</div>
 
           <!-- PRIVACY -->
           <div class="settingsCard">
@@ -300,12 +374,12 @@
           </div>
           
           <!-- SECURITY -->
-          <div class="settingsCard" style="display: none;">
+          <div id="security" class="settingsCard" >
             <h3 class="settingsCardTitle">Security</h3>
             <p class="descText">Keep your account secure.</p>
 
             <div class="settingsGrid">
-              <div class="settingsField">
+              <div class="settingsField" style="display: none;">
                 <label class="settingsLabel">Two-Factor Authentication</label>
                 <button class="btn settingsLongBtn">
                   Enable 2FA
@@ -314,8 +388,8 @@
 
               <div class="settingsField">
                 <label class="settingsLabel">Active Sessions</label>
-                <button class="btn settingsLongBtn">
-                  View Devices
+                <button id="viewSessions" class="btn settingsLongBtn">
+                  View Sessions
                 </button>
               </div>
             </div>
@@ -332,6 +406,7 @@
                 <select class="inputField">
                   <option value="en">English</option>
                   <option value="de">Deutsch</option>
+                  <option value="ru">Russian</option>
                 </select>
               </div>
 

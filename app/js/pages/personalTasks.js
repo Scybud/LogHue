@@ -1,19 +1,19 @@
-//LEAVE THIS FILE AS IS. IGNORE THE ERRORS.
-//THEY SHOW BECAUSE THE IMPORTS ARE NOT IN THE SAME FOLDER
-//THE ERRORS WON'T SHOW AFTER IT IS COMPILED AND CONVERTED TO JAVASCRIPT
 // Imports
 import { supabase } from "../../js/supabase.js";
 import { sessionState, sessionReady } from "../../js/session.js";
 import { actionMsg, openLogPersonalTaskModal, confirmAction, } from "../../js/utils/modals.js";
 import { setLoading, closeModal } from "../../js/ui.js";
-import { loadComponent, createEmptyState, } from "https://scybud.github.io/scybud-ui/js/ui.js";
+import { loadComponent, createEmptyState, } from "https://ui.scybud.com/js/ui.js";
 import { attachCreatePersonalTaskEvent } from "../../js/utils/modalEvents.js";
 import { formatDateTime } from "../../js/utils/time.js";
+import { linkify } from "../../js/utils/linkify.js";
+import { makeCollapsible } from "../../js/utils/toggle.js";
 // State
 let personalCreatedTasks;
 let loggedTasksCount;
 let selectedWorkspaceId = "";
 let taskIdToDuplicate = ""; // set when duplicateBtn is clicked, before the modal opens
+let userNotes = [];
 let user = null;
 export let savedTaskDetails = []; // exported for other modules
 // Initialization
@@ -25,9 +25,10 @@ export async function initPersonalTasks() {
     personalCreatedTasks = document.getElementById("personalCreatedTasks");
     loggedTasksCount = document.getElementById("loggedTasksCount");
     setLoading(true, personalCreatedTasks);
+    // Fetch both templates and instances in one call. Templates
     const { data, error } = await supabase
         .from("personal_tasks")
-        .select("*")
+        .select("*, personal_notes!linked_note_id(id, title)")
         .eq("user_id", user.id)
         .order("is_completed", { ascending: true })
         .order("created_at", { ascending: false });
@@ -38,11 +39,18 @@ export async function initPersonalTasks() {
         return;
     }
     savedTaskDetails = data || [];
+    const { data: notesData } = await supabase
+        .from("personal_notes")
+        .select("id, title")
+        .eq("user_id", user.id)
+        .order("updated_at", { ascending: false });
+    userNotes = notesData || [];
     renderExistingTasks();
     checkIfEmpty();
     attachDeleteTaskEvent(personalCreatedTasks, user.id);
     attachToggleCompleteEvent(personalCreatedTasks);
     attachDuplicateTaskEvent(personalCreatedTasks, user.id);
+    attachLinkNoteEvent(personalCreatedTasks);
     openLogPersonalTaskModal();
 }
 // Empty State
@@ -50,6 +58,7 @@ export async function checkIfEmpty() {
     if (!personalCreatedTasks)
         return;
     if (savedTaskDetails.length === 0) {
+        personalCreatedTasks.innerHTML = "";
         await createEmptyState({
             container: personalCreatedTasks,
             icon: "🎯",
@@ -101,6 +110,18 @@ const duplicateIconPaths = [
         attrs: { d: "M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" },
     },
 ];
+const linkNoteIconPaths = [
+    {
+        tag: "path",
+        attrs: { d: "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" },
+    },
+    {
+        tag: "path",
+        attrs: {
+            d: "M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71",
+        },
+    },
+];
 // Create Task Element
 export function createTaskElement(task) {
     const el = document.createElement("div");
@@ -120,6 +141,14 @@ export function createTaskElement(task) {
     nameLabel.htmlFor = checkbox.id;
     nameLabel.classList.add("personalTaskName");
     nameLabel.textContent = task.name;
+    topRow.append(checkbox, nameLabel);
+    if (task.is_template) {
+        const recurringBadge = document.createElement("span");
+        recurringBadge.classList.add("recurringBadge");
+        recurringBadge.title = "Recurring task";
+        recurringBadge.textContent = "↻";
+        topRow.append(recurringBadge);
+    }
     const actionsGroup = document.createElement("div");
     actionsGroup.classList.add("taskActions");
     const duplicateBtn = document.createElement("button");
@@ -127,20 +156,34 @@ export function createTaskElement(task) {
     duplicateBtn.classList.add("duplicateBtn", "tooltip");
     duplicateBtn.setAttribute("data-title", "Duplicate to Workspace");
     duplicateBtn.appendChild(createSvgIcon(duplicateIconPaths));
+    const linkNoteBtn = document.createElement("button");
+    linkNoteBtn.type = "button";
+    linkNoteBtn.classList.add("linkNoteBtn", "tooltip");
+    linkNoteBtn.setAttribute("data-title", "Link Note");
+    linkNoteBtn.appendChild(createSvgIcon(linkNoteIconPaths));
     const deleteBtn = document.createElement("button");
     deleteBtn.type = "button";
     deleteBtn.classList.add("deleteBtn", "tooltip");
     deleteBtn.setAttribute("data-title", "Delete Task");
     deleteBtn.appendChild(createSvgIcon(deleteIconPaths));
-    actionsGroup.append(duplicateBtn, deleteBtn);
+    actionsGroup.append(linkNoteBtn, duplicateBtn, deleteBtn);
     topRow.append(checkbox, nameLabel, actionsGroup);
     el.append(topRow);
     // Description
     if (task.description?.trim()) {
         const desc = document.createElement("p");
         desc.classList.add("taskDescription");
-        desc.textContent = task.description;
+        desc.innerHTML = linkify(task.description);
+        makeCollapsible(desc, 60);
         el.append(desc);
+    }
+    //notes badge(if linked to note)
+    if (task.personal_notes?.title) {
+        const noteBadge = document.createElement("a");
+        noteBadge.href = `notes?note=${task.personal_notes.id}`;
+        noteBadge.classList.add("linkedNoteBadge");
+        noteBadge.textContent = `📝 ${task.personal_notes.title}`;
+        el.append(noteBadge);
     }
     // Date
     const dateSpan = document.createElement("span");
@@ -152,38 +195,93 @@ export function createTaskElement(task) {
     el.append(dateSpan);
     return el;
 }
+// Date bucketing
+export function getDateBucket(deadline) {
+    if (!deadline)
+        return "later";
+    const now = new Date();
+    const due = new Date(deadline);
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startOfDue = new Date(due.getFullYear(), due.getMonth(), due.getDate());
+    const diffDays = Math.round((startOfDue.getTime() - startOfToday.getTime()) / 86400000);
+    if (diffDays < 0)
+        return "overdue";
+    if (diffDays === 0)
+        return "today";
+    if (diffDays <= 7)
+        return "week";
+    return "later";
+}
+function sortByDeadline(tasks) {
+    return [...tasks].sort((a, b) => {
+        if (!a.task_deadline)
+            return 1;
+        if (!b.task_deadline)
+            return -1;
+        return (new Date(a.task_deadline).getTime() - new Date(b.task_deadline).getTime());
+    });
+}
 // Render Tasks
 export function renderExistingTasks() {
     if (!personalCreatedTasks)
         return;
     personalCreatedTasks.innerHTML = "";
-    const incomplete = savedTaskDetails.filter((t) => !t.is_completed && !t.is_recurring);
-    const recurring = savedTaskDetails.filter((t) => t.is_recurring);
+    const incomplete = savedTaskDetails.filter((t) => !t.is_completed && !t.is_template);
     const completed = savedTaskDetails.filter((t) => t.is_completed);
-    // Create collapsible groups
-    const incompleteGroup = createCollapsibleGroup("Incomplete Tasks", incomplete.length, true);
-    const recurringGroup = createCollapsibleGroup("Recurring Tasks", recurring.length, false);
-    const completedGroup = createCollapsibleGroup("Completed Tasks", completed.length, false);
-    // Render incomplete tasks
+    const recurring = savedTaskDetails.filter((t) => t.is_template && !t.is_completed);
+    const buckets = {
+        overdue: [],
+        today: [],
+        week: [],
+        later: [],
+    };
     incomplete.forEach((task) => {
-        const el = createTaskElement(task);
-        incompleteGroup.body.append(el);
-        requestAnimationFrame(() => el.classList.add("show"));
+        buckets[getDateBucket(task.task_deadline)].push(task);
     });
-    //Render recurring tasks
-    recurring.forEach((task) => {
-        const el = createTaskElement(task);
-        recurringGroup.body.append(el);
-        requestAnimationFrame(() => el.classList.add("show"));
+    const bucketLabels = [
+        ["overdue", "Overdue"],
+        ["today", "Today"],
+        ["week", "This week"],
+        ["later", "Later"],
+    ];
+    bucketLabels.forEach(([key, label]) => {
+        const tasks = sortByDeadline(buckets[key]);
+        if (tasks.length === 0)
+            return;
+        const group = createCollapsibleGroup(label, tasks.length, true);
+        tasks.forEach((task) => {
+            const el = createTaskElement(task);
+            if (key === "overdue")
+                el.classList.add("overdue");
+            group.body.append(el);
+            requestAnimationFrame(() => el.classList.add("show"));
+        });
+        personalCreatedTasks.append(group.wrapper);
     });
-    // Render completed tasks
-    completed.forEach((task) => {
-        const el = createTaskElement(task);
-        completedGroup.body.append(el);
-        requestAnimationFrame(() => el.classList.add("show"));
-    });
-    // Append groups to main container
-    personalCreatedTasks.append(incompleteGroup.wrapper, recurringGroup.wrapper, completedGroup.wrapper);
+    if (recurring.length > 0) {
+        const recurringGroup = createCollapsibleGroup("Recurring series", recurring.length, false);
+        recurring.forEach((task) => {
+            const el = createTaskElement(task);
+            recurringGroup.body.append(el);
+            requestAnimationFrame(() => el.classList.add("show"));
+        });
+        personalCreatedTasks.append(recurringGroup.wrapper);
+    }
+    const completedGroup = createCollapsibleGroup("Completed Tasks", completed.length, false);
+    if (completed.length > 0) {
+        completed.forEach((task) => {
+            const el = createTaskElement(task);
+            completedGroup.body.append(el);
+            requestAnimationFrame(() => el.classList.add("show"));
+        });
+    }
+    else {
+        const emptySateText = document.createElement("p");
+        emptySateText.classList.add("placeholderText");
+        emptySateText.textContent = "No completed tasks yet";
+        completedGroup.body.append(emptySateText);
+    }
+    personalCreatedTasks.append(completedGroup.wrapper);
 }
 // Toggle Complete (Delegated)
 export function attachToggleCompleteEvent(container) {
@@ -195,32 +293,74 @@ export function attachToggleCompleteEvent(container) {
             return;
         const taskId = checkbox.id.replace("task-", "");
         const isCompleted = checkbox.checked;
-        const previousChecked = !isCompleted; // for rollback on failure
-        const { error } = await supabase
+        const previousChecked = !isCompleted;
+        const { data: task, error: taskError } = await supabase
             .from("personal_tasks")
-            .update({ is_completed: isCompleted })
-            .eq("id", taskId);
-        if (error) {
-            console.error(error);
-            actionMsg("Failed to update task", "error");
+            .select("is_template, is_completed")
+            .eq("id", taskId)
+            .single();
+        if (taskError) {
             checkbox.checked = previousChecked;
+            actionMsg("Sorry, something went wrong", "error");
             return;
         }
-        const taskRecord = savedTaskDetails.find((t) => String(t.id) === String(taskId));
-        if (taskRecord)
-            taskRecord.is_completed = isCompleted;
-        renderExistingTasks();
+        // Only confirm when an incomplete TEMPLATE is being marked done.
+        if (task.is_template && !task.is_completed && isCompleted) {
+            // Immediately undo the checkbox change.
+            checkbox.checked = false;
+            confirmAction("Stop Recurring Task", "Marking this recurring task as done will stop new occurrences from being created. Past occurrences already created won't be affected.", [
+                {
+                    label: "Cancel",
+                    type: "cancel",
+                },
+                {
+                    label: "Stop series",
+                    type: "confirm",
+                    onClick: async () => {
+                        await updateTaskCompletion(taskId, true);
+                    },
+                },
+            ]);
+            return;
+        }
+        // Normal check/uncheck
+        await updateTaskCompletion(taskId, isCompleted);
     });
+}
+async function updateTaskCompletion(taskId, isCompleted) {
+    const { error } = await supabase
+        .from("personal_tasks")
+        .update({ is_completed: isCompleted })
+        .eq("id", taskId);
+    if (error) {
+        console.error(error);
+        actionMsg("Failed to update task", "error");
+        return;
+    }
+    const taskRecord = savedTaskDetails.find((t) => String(t.id) === String(taskId));
+    if (taskRecord) {
+        taskRecord.is_completed = isCompleted;
+    }
+    renderExistingTasks();
 }
 // Delete Task
 export function attachDeleteTaskEvent(container, userId) {
     if (!container)
         return;
-    container.addEventListener("click", (e) => {
+    container.addEventListener("click", async (e) => {
         const btn = e.target.closest(".deleteBtn");
         if (!btn)
             return;
-        confirmAction("Delete Task", "Delete this task?", [
+        const card = btn.closest(".taskCard");
+        const taskId = card?.dataset.id;
+        const taskRecord = taskId
+            ? savedTaskDetails.find((t) => String(t.id) === String(taskId))
+            : undefined;
+        // stops the series going forward. Instances it already spawned stay
+        const message = taskRecord?.is_template
+            ? "Deleting this recurring task will stop future occurrences. Tasks it already created will stay in your list."
+            : "Delete this task?";
+        confirmAction("Delete Task", message, [
             { label: "Cancel", type: "cancel" },
             {
                 label: "Delete",
@@ -255,8 +395,6 @@ async function performTaskDelete(btn, userId) {
 export function attachDuplicateTaskEvent(container, userId) {
     if (!container)
         return;
-    // Registered once here instead of inside renderExistingTasks() — see the
-    // NOTE in that function for why that mattered.
     container.addEventListener("click", async (e) => {
         const btn = e.target.closest(".duplicateBtn");
         if (!btn)
@@ -271,9 +409,6 @@ export function attachDuplicateTaskEvent(container, userId) {
         await loadComponent("../components/modals/duplicate-task", "modalContainer");
         const workspaceListContainer = document.getElementById("workspaceListContainer");
         await populateWorkspaceList(workspaceListContainer, userId);
-        // The modal's content is replaced fresh by loadComponent() on every open,
-        // so #duplicateTaskToWorkspaceBtn is a new DOM node each time — safe to
-        // attach a listener here without the stacking issue this file had before.
         const confirmBtn = document.getElementById("duplicateTaskToWorkspaceBtn");
         if (confirmBtn) {
             confirmBtn.addEventListener("click", async (evt) => {
@@ -282,6 +417,70 @@ export function attachDuplicateTaskEvent(container, userId) {
             });
         }
     });
+}
+//link task to note
+function createNoteLinkSelect(task) {
+    const wrapper = document.createElement("div");
+    wrapper.classList.add("linkNoteSelect");
+    const select = document.createElement("select");
+    select.classList.add("linkNoteDropdown");
+    const noneOpt = document.createElement("option");
+    noneOpt.value = "";
+    noneOpt.textContent = "No linked note";
+    select.appendChild(noneOpt);
+    userNotes.forEach((note) => {
+        const opt = document.createElement("option");
+        opt.value = note.id;
+        opt.textContent = note.title || "Untitled";
+        if (note.id === task.linked_note_id)
+            opt.selected = true;
+        select.appendChild(opt);
+    });
+    select.addEventListener("change", async () => {
+        await updateTaskLinkedNote(task.id, select.value || null);
+    });
+    wrapper.appendChild(select);
+    return wrapper;
+}
+export function attachLinkNoteEvent(container) {
+    if (!container)
+        return;
+    container.addEventListener("click", (e) => {
+        const btn = e.target.closest(".linkNoteBtn");
+        if (!btn)
+            return;
+        const card = btn.closest(".taskCard");
+        if (!card)
+            return;
+        const existing = card.querySelector(".linkNoteSelect");
+        if (existing) {
+            existing.remove();
+            return;
+        }
+        const taskId = card.dataset.id;
+        const task = savedTaskDetails.find((t) => String(t.id) === String(taskId));
+        if (!task)
+            return;
+        card.appendChild(createNoteLinkSelect(task));
+    });
+}
+async function updateTaskLinkedNote(taskId, noteId) {
+    const { error } = await supabase
+        .from("personal_tasks")
+        .update({ linked_note_id: noteId })
+        .eq("id", taskId);
+    if (error) {
+        console.error(error);
+        actionMsg("Failed to link note", "error");
+        return;
+    }
+    const taskRecord = savedTaskDetails.find((t) => String(t.id) === String(taskId));
+    if (taskRecord) {
+        taskRecord.linked_note_id = noteId;
+        const note = userNotes.find((n) => n.id === noteId);
+        taskRecord.personal_notes = note ? { id: note.id, title: note.title } : null;
+    }
+    renderExistingTasks();
 }
 async function performTaskDuplicate(btn, userId) {
     if (!selectedWorkspaceId) {
@@ -294,9 +493,6 @@ async function performTaskDuplicate(btn, userId) {
         return;
     }
     btn.disabled = true;
-    // Field mapping: personal_tasks (name/description) -> workspace_tasks
-    // (title/description/status/assigned_to/workspace_id/created_by), matching
-    // the shape used in attachCreateTaskEvent for workspace task creation.
     const { error } = await supabase.from("workspace_tasks").insert({
         workspace_id: selectedWorkspaceId,
         created_by: userId,
@@ -371,5 +567,21 @@ function createCollapsibleGroup(title, count, isOpen = true) {
     });
     wrapper.append(header, body);
     return { wrapper, body };
+}
+export async function toggleTaskCompletion(taskId, isCompleted) {
+    const { error } = await supabase
+        .from("personal_tasks")
+        .update({ is_completed: isCompleted })
+        .eq("id", taskId);
+    if (error) {
+        console.error(error);
+        actionMsg("Failed to update task", "error");
+        return;
+    }
+    const taskRecord = savedTaskDetails.find((t) => String(t.id) === String(taskId));
+    if (taskRecord)
+        taskRecord.is_completed = isCompleted;
+    renderExistingTasks();
+    document.dispatchEvent(new CustomEvent("personalTasksUpdated"));
 }
 //# sourceMappingURL=personalTasks.js.map

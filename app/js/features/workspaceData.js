@@ -1,15 +1,18 @@
-import { dataCount } from "../utils.js";
 import {
   loadComponent,
   createEmptyState,
   closeModal,
-} from "https://scybud.github.io/scybud-ui/js/ui.js";
+} from "https://ui.scybud.com/js/ui.js";
 import { supabase } from "../supabase.js";
 import { sessionState, sessionReady } from "../session.js";
-import { confirmAction, actionMsg, openUpgradeModal } from "../../js/utils/modals.js";
+import {
+  confirmAction,
+  actionMsg,
+  openUpgradeModal,
+} from "../../js/utils/modals.js";
 import { createDropdown } from "../ui.js";
-import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
-import { formatDateTime, formatDateTimeRelatively } from "../utils/time.js";
+import { setButtonLoading } from "https://ui.scybud.com/js/ui.js";
+import { formatDateTimeRelatively } from "../utils/time.js";
 
 if (window.__workspaceInit) {
   console.warn("workspaceData.js already initialized");
@@ -35,6 +38,10 @@ function getWorkspaceDropdown(ws) {
   }
   if (ws.role === "admin") {
     return createDropdown([
+      {
+        label: "Leave Workspace",
+        action: () => leaveWorkspace(user.id, ws.id),
+      },
       { label: "Archive Workspace", action: () => archiveWorkspace(ws.id) },
       { label: "Edit Workspace", action: () => editWorkspace(ws, ws.id) },
       { label: "Open Workspace", action: () => openWorkspace(ws.id) },
@@ -42,7 +49,10 @@ function getWorkspaceDropdown(ws) {
   }
   if (ws.role === "member") {
     return createDropdown([
-      { label: "Leave Workspace", action: () => leaveWorkspace(ws.id) },
+      {
+        label: "Leave Workspace",
+        action: () => leaveWorkspace(user.id, ws.id),
+      },
       { label: "Open Workspace", action: () => openWorkspace(ws.id) },
     ]);
   }
@@ -59,18 +69,25 @@ export function dropdownClick() {
     if (!btn) return;
 
     const card = btn.closest(".workspaceCard");
+    const cardHeaderRight = card.querySelector(".workspaceCardHeaderRight");
+    if (!cardHeaderRight) return;
+
+    // If a dropdown is already open in this card, close it and stop.
+    const existing = cardHeaderRight.querySelector(".dropdown");
+    if (existing) {
+      existing.remove();
+      return;
+    }
+
     const wsId = card.dataset.id;
     const ws = savedWorkspaceData.find((w) => w.id == wsId);
-
     if (!ws) return;
 
-    // Create dropdown on demand
     const dropdown = getWorkspaceDropdown(ws);
     if (!dropdown) return;
 
-    document.querySelector("main").append(dropdown);
-    dropdown.classList.add("show");
-    setTimeout(() => dropdown.classList.add("open"), 20);
+    dropdown.hidden = false;
+    cardHeaderRight.append(dropdown);
 
     dropdown.addEventListener("click", () => dropdown.remove(), { once: true });
   });
@@ -254,15 +271,14 @@ async function attachCreateWorkspaceEvent(container, workspaces) {
       return;
     }
 
-    
-  if (
-    workspaces.length >= sessionState.plan.max_workspaces &&
-    sessionState.plan.max_workspaces !== null
-  ) {
-    openUpgradeModal("unlimitedWorkspaces");
-    setButtonLoading(createWorkspaceBtn, false);
-    return;
-  }
+    if (
+      workspaces.length >= sessionState.plan.max_workspaces &&
+      sessionState.plan.max_workspaces !== null
+    ) {
+      openUpgradeModal("unlimitedWorkspaces");
+      setButtonLoading(createWorkspaceBtn, false);
+      return;
+    }
 
     //DEFINE DATA CONTENT
     const workspaceData = {
@@ -466,7 +482,7 @@ function attachOpenWorkspaceClickEvent() {
 export async function deleteWorkspace(id) {
   confirmAction(
     "Delete Workspace",
-    "Are you sure you want to delete this? All activites(Tasks, logs and discussions) related to this workspace will be deleted and members will be removed from the workspace permanently. It cannot be reversed",
+    "Are you sure you want to delete this? All Activities(Tasks, logs and discussions) related to this workspace will be deleted and members will be removed from the workspace permanently. It cannot be reversed",
     [
       { label: "Cancel", type: "cancel" },
       {
@@ -499,11 +515,51 @@ async function performWorkspaceDelete(id) {
   }, 2000);
 }
 
+//LEAVE WORKSPACE
+export async function leaveWorkspace(userId, wsId) {
+  confirmAction(
+    "Leave Workspace",
+    "Are you sure you want to leave this workspace? This action cannot be undone.",
+    [
+      { label: "Cancel", type: "cancel" },
+      {
+        label: "Leave",
+        type: "confirm",
+        onClick: () => performWorkspaceLeave(userId, wsId),
+      },
+    ],
+  );
+}
+
+//PERFORM WORKSPACE LEAVE
+async function performWorkspaceLeave(userId, wsId) {
+  const { data, error } = await supabase
+    .from("workspace_members")
+    .delete()
+    .eq("user_id", userId)
+    .eq("workspace_id", wsId)
+    .select("workspace:workspaces(name)")
+    .maybeSingle();
+
+  if (error) {
+    console.error(error);
+    actionMsg("Failed to delete workspace", "error");
+    return;
+  }
+
+  actionMsg(`You have left ${data.workspace.name}`, "success");
+
+  setTimeout(() => {
+    // Refresh UI
+    window.location.reload();
+  }, 2000);
+}
+
 //ARCHEIVE WORKSPACE
 export async function archiveWorkspace(id) {
   confirmAction(
     "Archive Workspace",
-    "Are you sure you want to Archeive this?",
+    "Are you sure you want to archeive this workspace?",
     [
       { label: "Cancel", type: "cancel" },
       {

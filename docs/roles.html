@@ -6,9 +6,9 @@
     <title>Roles & Permissions | LogHue Help</title>
 
     <!--SCYBUD UI-->
-    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/variables.css">
-    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/typography.css">
-    <link rel="stylesheet" href="https://scybud.github.io/scybud-ui/css/animations.css">
+    <link rel="stylesheet" href="https://ui.scybud.com/css/variables.css" />
+    <link rel="stylesheet" href="https://ui.scybud.com/css/typography.css" />
+    <link rel="stylesheet" href="https://ui.scybud.com/css/animations.css" />
 
     <!--APP SPECIFIC CSS-->
     <link rel="stylesheet" href="https://app.loghue.com/css/base.css" />
@@ -42,7 +42,7 @@
               LogHue uses a simple role system to keep workspaces organized:
             </p>
 
-                        <div class="role-card owner">
+            <div class="role-card owner">
               <h3>🌟 Owner <span class="role-badge owner">Owner</span></h3>
               <p>
                 Owners are workspace leaders. They have full control over the
@@ -61,13 +61,15 @@
             <div class="role-card admin">
               <h3>⭐ Admin <span class="role-badge admin">Admin</span></h3>
               <p>
-                Admins are workspace moderators. They have broad control over the
-                workspace and can:
+                Admins are workspace moderators. They have broad control over
+                the workspace and can:
               </p>
               <ul>
                 <li>Create, edit, and close tasks</li>
                 <li>Review all work and logs</li>
-                <li>Add and remove members except themselves and other admins</li>
+                <li>
+                  Add and remove members except themselves and other admins
+                </li>
                 <li>Update workspace settings</li>
               </ul>
             </div>
@@ -103,31 +105,31 @@
               </tr>
               <tr>
                 <td>Edit own tasks</td>
-                                <td class="check">✓</td>
+                <td class="check">✓</td>
                 <td class="check">✓</td>
                 <td class="check">✓</td>
               </tr>
               <tr>
                 <td>Edit any task</td>
-                                <td class="check">✓</td>
+                <td class="check">✓</td>
                 <td class="check">✓</td>
                 <td class="cross">✗</td>
               </tr>
               <tr>
                 <td>Close tasks</td>
-                                <td class="check">✓</td>
+                <td class="check">✓</td>
                 <td class="check">✓</td>
                 <td class="cross">✗</td>
               </tr>
               <tr>
                 <td>Add members</td>
-                                <td class="check">✓</td>
+                <td class="check">✓</td>
                 <td class="check">✓</td>
                 <td class="cross">✗</td>
               </tr>
               <tr>
                 <td>Remove members</td>
-                                <td class="check">✓</td>
+                <td class="check">✓</td>
                 <td class="check">✓</td>
                 <td class="cross">✗</td>
               </tr>
@@ -145,19 +147,19 @@
               </tr>
               <tr>
                 <td>Change roles</td>
-                                <td class="check">✓</td>
+                <td class="check">✓</td>
                 <td class="cross">✗</td>
                 <td class="cross">✗</td>
               </tr>
               <tr>
                 <td>Delete workspace</td>
-                                <td class="check">✓</td>
+                <td class="check">✓</td>
                 <td class="cross">✗</td>
                 <td class="cross">✗</td>
               </tr>
               <tr>
                 <td>Transfer Ownership</td>
-                                <td class="check">✓</td>
+                <td class="check">✓</td>
                 <td class="cross">✗</td>
                 <td class="cross">✗</td>
               </tr>
@@ -167,8 +169,8 @@
                 <strong>Note:</strong> The table above covers role-level
                 permissions. Deleting a specific task or discussion works
                 differently: it's allowed for whoever created it, or the
-                workspace owner, regardless of role. An admin can't delete
-                a member's task just for being an admin.
+                workspace owner, regardless of role. An admin can't delete a
+                member's task just for being an admin.
               </p>
             </div>
           </div>
@@ -179,9 +181,7 @@
             <ul>
               <li>Go to <strong>Members</strong></li>
               <li>Find the member you want to change</li>
-              <li>
-                Click <strong>"Change Role"</strong>
-              </li>
+              <li>Click <strong>"Change Role"</strong></li>
               <li>Confirm the change</li>
             </ul>
             <p>Every workspace should have at least one admin.</p>
@@ -209,7 +209,7 @@
         </div>
       </main>
     </div>
-   <script src="/components/sidebar.js"></script>
+    <script src="/components/sidebar.js"></script>
     <script src="/components/navbar.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {

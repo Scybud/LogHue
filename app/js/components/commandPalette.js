@@ -1,4 +1,5 @@
 import { loadComponent } from "../ui.js";
+import { logEvent } from "../utils/logEvent.js";
 
 export async function initCommandPalette() {
   document.addEventListener("keydown", async (e) => {
@@ -7,6 +8,7 @@ export async function initCommandPalette() {
 
     if (isCmdK) {
       e.preventDefault(); // stops browser's default (e.g. address bar focus)
+      logEvent("command_palette_opened", { trigger: "ctrl_k" });
 
       await loadComponent(
         "../components/modals/command-palette",

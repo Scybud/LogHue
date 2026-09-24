@@ -1,90 +1,89 @@
-/*LIGHT THEME SYSTEM*/
+/* LIGHT THEME SYSTEM */
 @media (prefers-color-scheme: light) {
-
   :root {
---bg-primary: #e9e9e9;
-    --bg-secondary: #d4d4d4;
-    --text-primary: #000000;
-    --text-secondary: #414141;
+  --bg-primary: #ffffed;
+    --bg-secondary: #ebebea;
+    --text-primary: #1c1c1c;
+    --text-secondary: #525252;
 
-    --active-color: #358cff;
+    --brightness: 90%;
 
-    --hover-bg: #d9d9d9;
+    --active-color: #000000; /* slightly deeper blue */
 
-    --surface-primary: #e8eaeb;
---surface-secondary: #E7EAED;
+    --hover-bg: #e7e7e5;
 
---border-primary: #c7c7c7;
---border-secondary: #b4b4b4;
---border: var(--border-primary);
+    --surface-primary: #fafafa;
+    --surface-secondary: #f0f0ef;
 
-  --muted: #5f5d5d;
-  --notif-bg-unread: #e6f7ff;
-  --notif-bg-read: #fff;
-  --notif-text: #000;
-  --notif-border: #ddd;
-  --header-bg: rgba(240, 240, 240, 0.8);
-  --mainContent-bg: #f7f7f7;
+    --border-primary: #e0e0de;
+    --border-secondary: #d4d4d2;
+    --border: var(--border-primary);
 
-  --navBtn-bg: #f0f0f0;
-  --active: #e6e6e6;
-  background-color: #e6f7ff; /* light blue for unread */
+    --muted: #737373;
+    --notif-bg-unread: #eff6ff;
+    --notif-bg-read: #ffffff;
+    --notif-text: #1c1c1c;
+    --notif-border: #e5e5e5;
+    --header-bg: rgba(250, 250, 249, 0.85);
+    --mainContent-bg: #f8f8f7;
 
-  --card-bg: #ffffff;
---success: #006239;
+    --navBtn-bg: #f0f0ef;
+    --active: #e8e8e6;
 
-  --form-bg: #ffffff;
-  --input-bg: #f2f2f2;
-  --input-color: #000000;
+    --card-bg: #ffffff;
+    --success: #047857;
 
-  --chevron-color: #555555;
-  
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  
+    --form-bg: #ffffff;
+    --input-bg: #f4f4f3;
+    --input-color: #1c1c1c;
+
+    --chevron-color: #737373;
+
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
+  }
 }
-}
 
-
-/*MANUALLY SELECTED LIGHT THEME*/
+/* MANUALLY SELECTED LIGHT THEME */
 :root[data-theme="light"] {
---bg-primary: #e9e9e9;
-    --bg-secondary: #d4d4d4;
-    --text-primary: #000000;
-    --text-secondary: #414141;
+  --bg-primary: #ffffed;
+  --bg-secondary: #ebebea;
+  --text-primary: #1c1c1c;
+  --text-secondary: #525252;
 
-    --active-color: #358cff;
+  --brightness: 90%;
 
-    --hover-bg: #d9d9d9;
+  --active-color: #000000;
 
-    --surface-primary: #e8eaeb;
---surface-secondary: #e8e8e8;
+  --hover-bg: #e7e7e5;
 
---border-primary: #c7c7c7;
---border-secondary: #b4b4b4;
---border: var(--border-primary);
+  --surface-primary: #fafafa;
+  --surface-secondary: #f0f0ef;
 
-  --muted: #5f5d5d;
-  --notif-bg-unread: #e6f7ff;
-  --notif-bg-read: #fff;
-  --notif-text: #000;
-  --notif-border: #ddd;
-  --header-bg: rgba(240, 240, 240, 0.8);
-  --mainContent-bg: #f7f7f7;
+  --border-primary: #e0e0de;
+  --border-secondary: #d4d4d2;
+  --border: var(--border-primary);
 
-  --navBtn-bg: #f0f0f0;
-  --active: #e6e6e6;
-  background-color: #e6f7ff; /* light blue for unread */
+  --muted: #737373;
+  --notif-bg-unread: #eff6ff;
+  --notif-bg-read: #ffffff;
+  --notif-text: #1c1c1c;
+  --notif-border: #e5e5e5;
+  --header-bg: rgba(250, 250, 249, 0.85);
+  --mainContent-bg: #f8f8f7;
+
+  --navBtn-bg: #f0f0ef;
+  --active: #e8e8e6;
 
   --card-bg: #ffffff;
---success: #006239;
+  --success: #047857;
 
   --form-bg: #ffffff;
-  --input-bg: #f2f2f2;
-  --input-color: #000000;
+  --input-bg: #f4f4f3;
+  --input-color: #1c1c1c;
 
-  --chevron-color: #555555;
-  
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  --chevron-color: #737373;
+
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
 /*MANUALLY SELECTED DARK THEME*/
@@ -94,8 +93,8 @@
   --header-bg: rgba(128, 128, 128, 0.258);
 
   --navBtn-bg: #222;
-  --notif-bg-unread: #1e3a5f;   /* dark blue for unread */
-  --notif-bg-read: #2c2c2c;     /* dark background for read */
+  --notif-bg-unread: #1e3a5f; /* dark blue for unread */
+  --notif-bg-read: #2c2c2c; /* dark background for read */
   --notif-text: #eee;
   --notif-border: #444;
   --card-bg: #111;
@@ -103,7 +102,7 @@
   --form-bg: #111;
   --input-bg: #1c1c1c;
   --input-color: #ffffff;
---chevron-color: #c5c5c5;
-  
---shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --chevron-color: #c5c5c5;
+
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }

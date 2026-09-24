@@ -26,9 +26,10 @@
   display: flex;
   gap: var(--space-sm);
   align-items: center;
-  max-width: fit-content;
+  max-width: 240px;
   background: var(--surface-primary);
-  padding: 10px 14px;
+  padding: calc(var(--space-sm) + 2px) var(--space-md);
+  margin-bottom: var(--space-sm);
   border-radius: var(--radius-lg);
   cursor: pointer;
   font-weight: 600;
@@ -57,14 +58,12 @@
     /* Task card                       */
     
     .taskCard {
-      
-      background: var(--surface-primary);
-  border: 1px solid var(--border-primary);
+      background: var(--card-bg);
   border-radius: var(--radius-lg);
   padding: var(--space-md);
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm, 8px);
+  gap: var(--space-sm);
 
   opacity: 0;
   transform: translateY(6px);
@@ -88,6 +87,25 @@
   border-color: var(--border-secondary, var(--color));
 }
 
+.recurringBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 13px;
+  color: var(--text-secondary, gray);
+  flex-shrink: 0;
+}
+
+.taskCard.overdue {
+  background: color-mix(in srgb, var(--danger) 5%, transparent);
+  border-color: color-mix(in srgb, var(--danger) 20%, transparent);}
+
+.taskCard.overdue .taskDate {
+  color: var(--danger);
+}
+
 /* Completed state — dim the card, strike through the name */
 .taskCard.completed {
   opacity: 0.6;
@@ -96,6 +114,11 @@
 .taskCard.completed .personalTaskName {
   text-decoration: line-through;
   color: var(--text-secondary, gray);
+}
+
+.taskCard.removing {
+  opacity: 0;
+  transform: translateY(-6px) scale(0.6);
 }
 
 /* ------------------------------- */
@@ -109,14 +132,44 @@
 }
 
 .taskCheckbox {
-  width: 18px;
-  height: 18px;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: var(--input-bg);
+  border: 1px solid var(--border-primary);
   flex-shrink: 0;
-  accent-color: var(--text-primary);
-  cursor: pointer;
+  cursor: pointer !important;
+  position: relative;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.taskCheckbox:checked {
+  background: var(--primary);
+  border-color: var(--primary-light);
+}
+
+.taskCheckbox:checked::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  width: 5px;
+  height: 9px;
+  border: solid var(--input-bg);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.taskCheckbox:hover {
+  border-color: var(--primary-light);
 }
 
 .personalTaskName {
+   hyphens: auto;
+   line-break: anywhere;
+  overflow-wrap: break-word;
       cursor: pointer;
   flex: 1;
   font-weight: 600;
@@ -129,8 +182,11 @@ line-height: var(--space-md);
 .taskActions {
   display: flex;
   align-items: center;
-  gap: var(--space-xs, 4px);
+  gap: var(--space-xs);
   flex-shrink: 0;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-sm);
+  background: var(--surface-primary);
 }
 
 .taskActions button {
@@ -141,14 +197,14 @@ line-height: var(--space-md);
   height: 30px;
   border: none;
   background: transparent;
-  border-radius: var(--radius-md, 6px);
-  color: var(--text-secondary, gray);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
 
 .taskActions button:hover {
-  background: var(--surface-hover, rgba(0, 0, 0, 0.06));
+  background: var(--hover-bg);
 }
 
 .duplicateBtn:hover {
@@ -175,9 +231,11 @@ line-height: var(--space-md);
 /* Date                             */
 /* ------------------------------- */
 .taskDate {
-  font-size: 0.75rem;
+  display: inline-block;
+  font-size: var(--text-xs);
   color: var(--muted);
-  padding-left: calc(18px + var(--space-sm, 10px));
+  padding: 0 var(--space-sm);
+  overflow: hidden;
 }
 
 .workspaceListContainer {
@@ -187,4 +245,287 @@ line-height: var(--space-md);
   max-height: 240px;
   overflow-y: auto;
   margin: var(--space-md) 0;
+}
+.hide {
+  display: none !important;
+}
+
+
+/* Linked note badge on task card */
+.linkedNoteBadge {
+  display: inline-block;
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-lg);
+  margin-top: var(--space-md);
+  width: fit-content;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.linkedNoteBadge:hover {
+  text-decoration: underline;
+}
+
+/* Note picker dropdown, injected into task card */
+.linkNoteSelect {
+  margin-top: 6px;
+  width: 100%;
+}
+
+.linkNoteDropdown {
+background: var(--surface-secondary);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  max-width: 600px;
+  cursor: pointer;
+}
+
+.linkNoteDropdown option {
+  background: var(--input-bg);
+  padding: var(--space-sm) var(--space-md);
+  font-size: 14px;
+  font-weight: 600;
+}
+.linkNoteDropdown option:hover {
+  background: var(--hover-bg);
+
+}
+.linkNoteDropdown:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+
+
+/* ========================================
+   TASKS PAGE SKELETON
+======================================== */
+
+.tasksSkeleton {
+  width: 100%;
+  padding-bottom: 40px;
+}
+
+/* Base skeleton */
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #1a1a1a;
+  border-radius: 6px;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.045) 45%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.045) 55%,
+    transparent 100%
+  );
+
+  transform: translateX(-100%);
+  animation: taskSkeletonShimmer 1.5s infinite;
+}
+
+@keyframes taskSkeletonShimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+
+/* ========================================
+   VIEW CONTROLS
+======================================== */
+
+.taskSkeletonControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin: 24px 0;
+}
+
+.skeletonToggle {
+  width: 164px;
+  height: 42px;
+  border-radius: 22px;
+}
+
+.skeletonCalendarPills {
+  width: 350px;
+  height: 42px;
+  border-radius: 22px;
+}
+
+
+/* ========================================
+   TASK GROUP
+======================================== */
+
+.skeletonGroup {
+  margin-top: 12px;
+}
+
+.skeletonGroupTitle {
+  width: 190px;
+  height: 40px;
+  border-radius: 22px;
+  margin-bottom: 18px;
+}
+
+
+/* ========================================
+   TASK CARD
+======================================== */
+
+.skeletonTask {
+  width: 100%;
+  min-height: 108px;
+
+  display: flex;
+  align-items: flex-start;
+
+  padding: 28px 20px;
+
+  margin-bottom: 10px;
+
+  background: #111111;
+  border: 1px solid #292929;
+  border-radius: 9px;
+}
+
+
+/* Checkbox */
+
+.skeletonCheckbox {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+
+  border-radius: 50%;
+
+  margin: 3px 10px 0 0;
+}
+
+
+/* Task content */
+
+.skeletonTaskContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.skeletonTaskTitle {
+  width: 58%;
+  height: 17px;
+  border-radius: 4px;
+
+  margin-bottom: 17px;
+}
+
+.skeletonTaskDate {
+  width: 180px;
+  height: 13px;
+  border-radius: 4px;
+}
+
+
+/* Different title lengths */
+
+.skeletonWidthLong {
+  width: 72%;
+}
+
+.skeletonWidthMedium {
+  width: 48%;
+}
+
+.skeletonWidthShort {
+  width: 35%;
+}
+
+
+/* ========================================
+   ACTION ICONS
+======================================== */
+
+.skeletonTaskActions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  margin-left: 20px;
+  padding-top: 1px;
+}
+
+.skeletonIcon {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+
+/* ========================================
+   RECURRING TASKS
+======================================== */
+
+.skeletonRecurring {
+  margin-top: 18px;
+}
+
+.skeletonRecurringTitle {
+  width: 195px;
+  height: 40px;
+  border-radius: 22px;
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 700px) {
+
+  .taskSkeletonControls {
+    gap: 10px;
+  }
+
+  .skeletonCalendarPills {
+    display: none;
+  }
+
+  .skeletonTask {
+    padding: 22px 15px;
+  }
+
+  .skeletonTaskActions {
+    gap: 10px;
+  }
+
+  .skeletonIcon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .skeletonTaskTitle {
+    width: 70%;
+  }
+
+  .skeletonWidthLong {
+    width: 82%;
+  }
 }

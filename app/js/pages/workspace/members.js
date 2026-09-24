@@ -1,13 +1,9 @@
 import { actionMsg, confirmAction } from "../../utils/modals.js";
 import { loadComponent, closeModal } from "../../ui.js";
-import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
+import { setButtonLoading } from "https://ui.scybud.com/js/ui.js";
 import { supabase } from "../../supabase.js";
 import { notifyUser } from "../../utils/notifications.js";
-import {
-  currentWorkspace,
-  loadedMembers,
-  user,
-} from "./state.js";
+import { currentWorkspace, loadedMembers, user } from "./state.js";
 
 /**
  * Admin / Owner members list with Assign Task + Remove actions.

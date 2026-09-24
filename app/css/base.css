@@ -35,6 +35,8 @@ body {
 --primary: #1565C0; 
   --primary-light: #1976D2;
   
+  --brightness: 60%;
+
   --secondary: #334155;
   --secondary-light: #475569; 
   --card-bg: #111;
@@ -52,7 +54,7 @@ body {
   --notif-text: #eee;
   --notif-border: #444;
   
---active-color: #a4ccff;
+--active-color: #fefefe;
 
   --tag: #130404;
 --tag-text: #cfcfcf;

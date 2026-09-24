@@ -1,6 +1,6 @@
 // focus-timer.js
 import { supabase } from "../supabase.js";
-import { loadComponent, closeModal } from "https://scybud.github.io/scybud-ui/js/ui.js";
+import { loadComponent, closeModal } from "https://ui.scybud.com/js/ui.js";
 import { actionMsg } from "../utils/modals.js";
 import { sessionState } from "../session.js";
 
@@ -256,7 +256,6 @@ async function refreshTodayTotal() {
   els.todayTotal.textContent =
     total >= 60 ? `${Math.round(total / 60)}h ${total % 60}m` : `${total}m`;
 }
-
 
 /** Write the current timer state to localStorage so it survives a refresh. */
 function persistState() {

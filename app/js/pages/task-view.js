@@ -1,13 +1,19 @@
 import { supabase } from "../supabase.js";
 import { actionMsg } from "../utils/modals.js";
 import { notifyUser } from "../utils/notifications.js";
-import { setButtonLoading, loadComponent, closeModal } from "https://scybud.github.io/scybud-ui/js/ui.js";
+import {
+  setButtonLoading,
+  loadComponent,
+  closeModal,
+} from "https://ui.scybud.com/js/ui.js";
 import { loadActivities } from "./workspace/activities.js";
 import { formatDateTime, formatDateTimeRelatively } from "../utils/time.js";
 import { populateAssignDropdown } from "../utils/modalEvents.js";
-import { loadedMembers, setLoadedMembers } from "./workspace/state.js"; 
+import { loadedMembers, setLoadedMembers } from "./workspace/state.js";
 import { loadWorkspaceMembersForTaskView } from "../data/tasksDb.js";
 import { openFocusTimerModal } from "../components/focus-timer.js";
+import { makeCollapsible } from "../utils/toggle.js";
+import { linkify } from "../utils/linkify.js";
 
 let currentTask = null;
 let currentWorkspace = null;
@@ -19,28 +25,28 @@ let isCreator;
 //GET USER ROLE
 async function getUserRole(workspaceId) {
   const { data: userData } = await supabase.auth.getUser();
-   userId = userData.user.id;
-   
-   const { data, error } = await supabase
-   .from("workspace_members")
-   .select("role")
-   .eq("workspace_id", workspaceId)
+  userId = userData.user.id;
+
+  const { data, error } = await supabase
+    .from("workspace_members")
+    .select("role")
+    .eq("workspace_id", workspaceId)
     .eq("user_id", userId)
     .maybeSingle();
 
-    if (error) return null;
-    return { userId, role: data.role };
-  }
-  
-  // INIT
-  document.addEventListener("DOMContentLoaded", initTaskView);
+  if (error) return null;
+  return { userId, role: data.role };
+}
+
+// INIT
+document.addEventListener("DOMContentLoaded", initTaskView);
 
 const workspaceActivities = document.getElementById("workspaceActivities");
 
 async function loadWorkspaceActivities() {
   const { data: logs, error } = await supabase
-  .from("workspace_task_logs")
-  .select(
+    .from("workspace_task_logs")
+    .select(
       `
     *,
     profiles:created_by (full_name, avatar_url),
@@ -60,17 +66,17 @@ async function loadWorkspaceActivities() {
     )
     .eq("workspace_id", currentWorkspace.id)
     .order("created_at", { ascending: false });
-    
-    const normalizedLogs = (logs || []).map((log) => ({
-      id: log.id,
-      type: "task_log",
-      actor: log.profiles,
-      title: log.workspace_tasks?.title,
-      note: log.log_note,
-      status: log.task_status,
-      created_at: log.created_at,
-    }));
-    
+
+  const normalizedLogs = (logs || []).map((log) => ({
+    id: log.id,
+    type: "task_log",
+    actor: log.profiles,
+    title: log.workspace_tasks?.title,
+    note: log.log_note,
+    status: log.task_status,
+    created_at: log.created_at,
+  }));
+
   const normalizedDiscussions = (actDcns || []).map((d) => ({
     id: d.id,
     type: "discussion",
@@ -92,7 +98,6 @@ const reloadBtn = document.querySelector(".reloadBtn");
 reloadBtn.addEventListener("click", () => {
   window.location.reload();
 });
-
 
 /* ---------------------------------------------
    LOAD TASK + LOGS + COMMENTS
@@ -135,9 +140,7 @@ async function loadTask(taskId) {
 
   currentTask = data;
   currentWorkspace = data?.workspace;
-
 }
-
 
 async function initTaskView() {
   const params = new URLSearchParams(window.location.search);
@@ -150,7 +153,7 @@ async function initTaskView() {
   }
   loadTask.remove;
   await loadTask(taskId);
-  await loadWorkspaceMembersForTaskView(currentWorkspace?.id)
+  await loadWorkspaceMembersForTaskView(currentWorkspace?.id);
   userRole = await getUserRole(currentWorkspace?.id);
 
   loadSidebar();
@@ -159,8 +162,8 @@ async function initTaskView() {
   loadWorkspaceActivities();
   attachLogSubmitHandler();
   attachMarkDoneHandler(taskId);
-  await attachEditTaskHandler(taskId)
-  
+  await attachEditTaskHandler(taskId);
+
   const focusTimerBtn = document.getElementById("focusTimerBtn");
   if (focusTimerBtn) {
     focusTimerBtn.addEventListener("click", async () => {
@@ -170,14 +173,14 @@ async function initTaskView() {
 }
 
 function loadSidebar() {
-  const workspacePageSidebar = document.getElementById("workspacePageSidebar");
+  const taskSidebar = document.getElementById("taskSidebar");
   let isAdmin;
   if (userRole) {
     isAdmin = userRole.role === "admin" || userRole.role === "owner";
   }
 
   if (!userRole || userRole === null)
-    return (workspacePageSidebar.innerHTML = `<nav><!-- DASHBOARD -->
+    return (taskSidebar.innerHTML = `<nav><!-- DASHBOARD -->
     <a href="dashboard" class="navBtn" data-section="index" id="dashboardLink">
       <span class="navIcon">
         <!-- Back / Dashboard Icon -->
@@ -201,7 +204,7 @@ function loadSidebar() {
     </a>
 </nav>`);
 
-  workspacePageSidebar.innerHTML = `<!--CLOSE BUTTON -->
+  taskSidebar.innerHTML = `<!--CLOSE BUTTON -->
   <button type="button" class="menuBtn" id="closeSidebar">
 
     <svg 
@@ -279,10 +282,92 @@ function loadSidebar() {
 `;
 
   document.getElementById("closeSidebar").addEventListener("click", () => {
-    workspacePageSidebar.classList.toggle("show");
+    taskSidebar.classList.toggle("slideShow");
   });
 }
 
+function renderFormattedText(text, container) {
+  container.innerHTML = "";
+
+  if (!text?.trim()) return;
+
+  const linkified = linkify(text); // escapes internally, then adds <a> tags
+
+  const lines = linkified.replace(/\r\n/g, "\n").split("\n");
+
+  let paragraph = [];
+  let currentList = null;
+  let currentListType = null;
+
+  const flushParagraph = () => {
+    if (!paragraph.length) return;
+
+    const p = document.createElement("p");
+
+    paragraph.forEach((line, index) => {
+      if (index > 0) p.appendChild(document.createElement("br"));
+      const span = document.createElement("span");
+      span.innerHTML = line;
+      p.appendChild(span);
+    });
+
+    container.appendChild(p);
+    paragraph = [];
+  };
+
+  const flushList = () => {
+    if (!currentList) return;
+    container.appendChild(currentList);
+    currentList = null;
+    currentListType = null;
+  };
+
+  lines.forEach((line) => {
+    const trimmed = line.trim();
+
+    if (!trimmed) {
+      flushParagraph();
+      flushList();
+      return;
+    }
+
+    const numberedMatch = trimmed.match(/^(\d+)\.\s+(.+)$/);
+
+    if (numberedMatch) {
+      flushParagraph();
+      if (currentListType !== "ol") {
+        flushList();
+        currentList = document.createElement("ol");
+        currentListType = "ol";
+      }
+      const li = document.createElement("li");
+      li.innerHTML = numberedMatch[2];
+      currentList.appendChild(li);
+      return;
+    }
+
+    const bulletMatch = trimmed.match(/^[-*]\s+(.+)$/);
+
+    if (bulletMatch) {
+      flushParagraph();
+      if (currentListType !== "ul") {
+        flushList();
+        currentList = document.createElement("ul");
+        currentListType = "ul";
+      }
+      const li = document.createElement("li");
+      li.innerHTML = bulletMatch[1];
+      currentList.appendChild(li);
+      return;
+    }
+
+    flushList();
+    paragraph.push(trimmed);
+  });
+
+  flushParagraph();
+  flushList();
+}
 
 /* ---------------------------------------------
    RENDER TASK HEADER
@@ -292,7 +377,7 @@ function renderTaskHeader() {
   if (!container) return;
 
   isAdmin = userRole?.role === "admin" || userRole.role === "owner";
- isCreator = currentTask?.created_by === userId;
+  isCreator = currentTask?.created_by === userId;
 
   container.innerHTML = `
     <div class="taskHeaderTop">
@@ -375,7 +460,7 @@ function renderTaskHeader() {
 
       <div class="metaItem">
         <span class="metaLabel">Status:</span>
-        <span class="statusBadge ${currentTask.status}">${currentTask.status}</span>
+<span class="statusBadge ${currentTask.status.replace(" ", "-")}">${currentTask.status}</span>
       </div>
 
       <div class="metaItem">
@@ -389,9 +474,18 @@ function renderTaskHeader() {
             </div>
     </div>
 
-    <p class="taskDescription">${currentTask.description || "No description provided."}</p>
   `;
+  const description = document.createElement("div");
+  description.className = "taskDescription";
 
+  if (currentTask.description?.trim()) {
+    renderFormattedText(currentTask.description, description);
+    makeCollapsible(description);
+  } else {
+    description.textContent = "No description provided.";
+  }
+
+  container.appendChild(description);
 }
 
 /* ---------------------------------------------
@@ -401,7 +495,7 @@ function renderLogs() {
   const feed = document.getElementById("logsFeed");
   feed.innerHTML = "";
 
-   isAdmin = userRole.role === "admin" || userRole.role === "owner";
+  isAdmin = userRole.role === "admin" || userRole.role === "owner";
 
   if (!currentTask.logs || currentTask.logs.length === 0) {
     feed.innerHTML = `<p class="placeholderText">No logs yet.</p>`;
@@ -411,7 +505,7 @@ function renderLogs() {
   currentTask.logs.forEach((log) => {
     const logCard = document.createElement("div");
     logCard.classList.add("logCard");
-    log.id ? logCard.id = log.id : "";
+    log.id ? (logCard.id = log.id) : "";
 
     const header = document.createElement("div");
     header.classList.add("logHeader");
@@ -434,9 +528,13 @@ function renderLogs() {
 
     const content = document.createElement("div");
     content.classList.add("logContent");
-    content.textContent = log.log_note;
 
-    const statusClass = log.task_status === "in progress" || "in_progress" ? "in-progress" : "completed";
+    renderFormattedText(log.log_note, content);
+    makeCollapsible(content);
+
+    const statusClass = ["in progress", "in_progress"].includes(log.task_status)
+      ? "in-progress"
+      : "completed";
 
     const meta = document.createElement("div");
     meta.classList.add("logMeta");
@@ -495,7 +593,10 @@ function appendLogComments(comments, container) {
     body.classList.add("commentBody");
 
     const text = document.createElement("div");
-    text.textContent = c.comment;
+    text.classList.add("commentText");
+
+    renderFormattedText(c.comment, text);
+    makeCollapsible(text);
 
     const time = document.createElement("div");
     time.className = "timestamp";
@@ -518,14 +619,14 @@ function attachLogSubmitHandler() {
   if (!btn || !input) return;
 
   // Only assigned member can write logs
-   const isAssignee = userId === currentTask.assigned_to;
-   const canLog = isAdmin || isAssignee || isCreator;
+  const isAssignee = userId === currentTask.assigned_to;
+  const canLog = isAdmin || isAssignee || isCreator;
 
-   if (!canLog || currentTask.status === "completed") {
-     btn.remove();
-     input.remove();
-     return;
-   }
+  if (!canLog || currentTask.status === "completed") {
+    btn.remove();
+    input.remove();
+    return;
+  }
 
   btn.addEventListener("click", async () => {
     const note = input.value.trim();
@@ -561,7 +662,6 @@ function attachLogSubmitHandler() {
         currentTask.created_by &&
         currentTask.created_by !== userData.user.id
       ) {
-        
         await notifyUser({
           workspaceId: currentWorkspace.id,
           receiverUserId: currentTask.created_by,
@@ -661,8 +761,8 @@ async function attachEditTaskHandler(taskId) {
     title.textContent = "Edit Task";
     editTaskTitleEl.value = ts.title;
     editTaskDeadline.value = ts.task_deadline
-    ? new Date(ts.task_deadline).toISOString().slice(0, 16)
-    : "";
+      ? new Date(ts.task_deadline).toISOString().slice(0, 16)
+      : "";
     editTaskDescriptionEl.value = ts.description || "";
     assignToDropdown.value = ts.assigned_to || "";
     updateTaskBtn.textContent = "Update Task";

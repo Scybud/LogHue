@@ -35,6 +35,25 @@ export function sanitizeHTML(html) {
     "ul",
   ]);
 
+  // only color/background-color survive, and only as hex or rgb()/rgba()
+  const allowedStyleProps = new Set(["color", "background-color"]);
+  const safeColorValue = /^(#[0-9a-f]{3,8}|rgba?\([\d.,\s%]+\))$/i;
+
+  function sanitizeStyleAttr(value) {
+    // parse via a detached element so the browser normalizes it for us
+    const probe = document.createElement("span");
+    probe.setAttribute("style", value);
+
+    const kept = [];
+    for (const prop of allowedStyleProps) {
+      const propValue = probe.style.getPropertyValue(prop).trim();
+      if (propValue && safeColorValue.test(propValue)) {
+        kept.push(`${prop}: ${propValue}`);
+      }
+    }
+    return kept.join("; ");
+  }
+
   const elements = Array.from(template.content.querySelectorAll("*") || []);
   elements.forEach((element) => {
     const tagName = element.tagName.toLowerCase();
@@ -46,9 +65,19 @@ export function sanitizeHTML(html) {
     Array.from(element.attributes).forEach((attr) => {
       const name = attr.name.toLowerCase();
       const value = attr.value || "";
+
+      if (name === "style") {
+        const cleaned = sanitizeStyleAttr(value);
+        if (cleaned) {
+          element.setAttribute("style", cleaned);
+        } else {
+          element.removeAttribute("style");
+        }
+        return;
+      }
+
       if (
         name.startsWith("on") ||
-        name === "style" ||
         name === "srcdoc" ||
         /^javascript:/i.test(value)
       ) {

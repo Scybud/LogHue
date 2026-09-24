@@ -2,7 +2,7 @@
 //IT IS NOT TO BE REWRITTEN IN TYPESCRIPT
 
 import { supabase } from "../supabase.js";
-import { setButtonLoading } from "https://scybud.github.io/scybud-ui/js/ui.js";
+import { setButtonLoading } from "https://ui.scybud.com/js/ui.js";
 
 //PASSWORD RESET EMAIL FORM SUBMISSON FUNCTION
 async function sendPasswordResetEmail(email, redirectPage) {
@@ -44,7 +44,7 @@ if (passwordResetEmailForm) {
     try {
       const success = await sendPasswordResetEmail(
         email,
-        "https://app.loghue.com/auth/passwordChange",
+        "https://app.loghue.com/pages/auth/passwordChange",
       );
 
       if (!success) {

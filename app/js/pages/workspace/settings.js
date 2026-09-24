@@ -5,12 +5,18 @@ import {
   archiveWorkspace,
   deleteWorkspace,
   editWorkspace,
+  leaveWorkspace,
 } from "../../features/workspaceData.js";
 import { currentWorkspace, user } from "./state.js";
+import { sessionState } from "../../session.js";
 
 /**
  * Admin / Owner settings (full danger zone + edit).
  */
+let userId = null;
+
+userId = await sessionState?.user?.id;
+
 export async function loadSettingsAdmin(container, workspace, currentUserId) {
   container.innerHTML = "";
 
@@ -69,15 +75,17 @@ export async function loadSettingsAdmin(container, workspace, currentUserId) {
   apiCard.innerHTML = `
     <h3>API Keys</h3>
     <button class="btn-secondary btn" id="createApiKeyBtn">Create API Key</button>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Name</th><th>Prefix</th><th>Created</th>
-          <th>Last Used</th><th>Status</th><th>Permissions</th><th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="apiKeysTable"></tbody>
-    </table>
+  <div class="data-table-wrapper">
+  <table class="table">
+  <thead>
+  <tr>
+  <th>Name</th><th>Prefix</th><th>Created</th>
+  <th>Last Used</th><th>Status</th><th>Permissions</th><th>Actions</th>
+  </tr>
+  </thead>
+  <tbody id="apiKeysTable"></tbody>
+  </table>
+  </div>
   `;
   apiCard.querySelector("#createApiKeyBtn").onclick = async () => {
     await openApiKeyModal(workspace);
@@ -88,6 +96,15 @@ export async function loadSettingsAdmin(container, workspace, currentUserId) {
   const me = workspace.workspace_members.find(
     (m) => m.user_id === currentUserId || m.profiles?.id === currentUserId,
   );
+
+  const leaveWorkspaceCard = document.createElement("div");
+  leaveWorkspaceCard.classList.add("card");
+  leaveWorkspaceCard.innerHTML = `
+    <h3>Leave Workspace</h3>
+    <p class="tunedText">Leaving the workspace means you will no longer have access to anything shared in the workspace.</p>
+    <p class="text-muted text-center">This action cannot be undone.</p>
+    <button type="button" class="btn danger" id="leaveWorkspaceBtn">Leave Workspace</button>
+  `;
 
   const transferCard = document.createElement("div");
   transferCard.classList.add("card");
@@ -156,7 +173,7 @@ Delete Workspace</h3>
     };
     section.append(sectionHeader, infoCard, apiCard, dangerContainer);
   } else {
-    section.append(sectionHeader, infoCard, apiCard);
+    section.append(sectionHeader, infoCard, apiCard, leaveWorkspaceCard);
   }
 
   container.append(section);
@@ -224,14 +241,27 @@ export async function loadSettingsMember(container, workspace) {
   `;
   loadApiKeys(apiCard.querySelector("#apiKeysTable"), workspace.id);
 
-  section.append(title, infoCard, apiCard);
+    const leaveWorkspaceCard = document.createElement("div");
+    leaveWorkspaceCard.classList.add("card");
+    leaveWorkspaceCard.innerHTML = `
+    <h3>Leave Workspace</h3>
+    <p class="tunedText">Leaving the workspace means you will no longer have access to anything shared in the workspace.</p>
+    <p class="text-muted text-center">This action cannot be undone.</p>
+    <button type="button" class="btn danger" id="leaveWorkspaceBtn">Leave Workspace</button>
+  `;
+
+  section.append(title, infoCard, apiCard, leaveWorkspaceCard);
   container.append(section);
+    await attachSettingsActions(workspace, workspace.id);
+
 }
+
 
 async function attachSettingsActions(ws, id) {
   const editBtn = document.querySelector("#editWorkspace");
   const archiveBtn = document.querySelector("#archiveWorkspace");
   const deleteBtn = document.querySelector("#deleteWorkspace");
+const leaveBtn = document.querySelector("#leaveWorkspaceBtn");
 
   if (editBtn) {
     editBtn.onclick = async () => editWorkspace(ws, id);
@@ -241,5 +271,8 @@ async function attachSettingsActions(ws, id) {
   }
   if (deleteBtn) {
     deleteBtn.onclick = async () => deleteWorkspace(id);
+  }
+  if(leaveBtn) {
+    leaveBtn.onclick = async () => leaveWorkspace(userId, id)
   }
 }

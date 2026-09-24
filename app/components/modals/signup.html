@@ -32,13 +32,13 @@ class="closeModalBtn "
 
 
          <h2>Signup</h2>
-         <label for="userSignupNameInput">Full Name</label>
+         <label for="userSignupNameInput">Full Name<span style="color: var(--danger);">*</span></label>
          <input type="text" name="userSignupNameInput" id="userSignupNameInput" class="inputField" placeholder="e.g. Abdulroqib Oladipo" required>
-         <label for="userSignupEmailInput">Email</label>
+         <label for="userSignupEmailInput">Email<span style="color: var(--danger);">*</span></label>
          <input type="email" name="userSignupEmailInput" id="userSignupEmailInput" class="inputField" placeholder="e.g. example@gmail.com" required>
-         <label for="userSignupPasswordInput">Password</label>
+         <label for="userSignupPasswordInput">Password<span style="color: var(--danger);">*</span></label>
          <input type="password" name="userSignupPasswordInput" id="userSignupPasswordInput" class="inputField" placeholder="Create a password for your account" required>
-                  <label for="userSignupConfirmPasswordInput">Confirm Password</label>
+                  <label for="userSignupConfirmPasswordInput">Confirm Password<span style="color: var(--danger);">*</span></label>
          <input type="password" name="userSignupConfirmPasswordInput" id="userSignupConfirmPasswordInput" class="inputField" placeholder="Confirm your password" required>
          <button class="btn btn-primary" id="signupBtn" type="submit">Signup</button>
          <p class="commonPlaceholderText show">Have an account? <a href="#loginForm" class="emailLogin">Login</a></p>

@@ -27,18 +27,18 @@
     </svg>
 
     <h2>Log Task Update</h2>
-    <label for="taskLists">Task Completed</label>
+    <label for="taskLists">Task Completed<span style="color: var(--danger);">*</span></label>
     <select name="taskLists" id="taskLists">
      <!--CONTENT LOADED DYNAMICALLY-->>
     </select>
 
-    <label for="taskLogUpdateStatus">Status</label>
+    <label for="taskLogUpdateStatus">Status<span style="color: var(--danger);">*</span></label>
     <select name="taskLogUpdateStatus" id="taskLogUpdateStatus">
       <option value="in_progress">In progress</option>
       <option value="completed">Completed</option>
     </select>
 
-    <label for="taskLogUpdateNote">Note</label>
+    <label for="taskLogUpdateNote">Note<span style="color: var(--danger);">*</span></label>
     <textarea
       id="taskLogUpdateNote"
       placeholder="Add details about what you finished…"

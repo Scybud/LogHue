@@ -15,11 +15,6 @@ import {
 
 let outsideClickHandlerAttached = false;
 
-/**
- * Creator of the task, or the workspace owner, may delete a task.
- * Assumed columns: workspace_tasks.created_by, workspace.owner_id.
- * Adjust here if either name differs.
- */
 function canDeleteTask(tsk) {
   if (!user) return false;
   const isCreator = String(tsk.created_by) === String(user.id);
@@ -27,8 +22,8 @@ function canDeleteTask(tsk) {
   return isCreator || isOwner;
 }
 
-/**
- * Admin / Owner task list with Assign / Ping / Delete actions.
+/*
+  Admin / Owner task list with Assign / Ping / Delete actions.
  */
 export function loadTasks(title, tasks, container) {
   const sectionTitle = document.createElement("h2");
@@ -80,7 +75,9 @@ export function loadTasks(title, tasks, container) {
 
     const deadline = document.createElement("p");
     deadline.classList.add("meta");
-    deadline.textContent = `Deadline: ${tsk.task_deadline ? formatDateTime(tsk.task_deadline) : "No deadline"}`;
+    deadline.textContent = `Deadline: ${
+      tsk.task_deadline ? formatDateTime(tsk.task_deadline) : "No deadline"
+    }`;
 
     const taskMeta = document.createElement("div");
     taskMeta.classList.add("taskMeta");
@@ -100,8 +97,12 @@ export function loadTasks(title, tasks, container) {
     `;
 
     const actionsMenu = document.createElement("div");
-    actionsMenu.classList.add("taskActionsMenu");
+    actionsMenu.classList.add("dropdown", "taskActionsMenu");
     actionsMenu.hidden = true;
+
+    const actionMenuList = document.createElement("div");
+    actionMenuList.classList.add("dropdown-list");
+    actionsMenu.append(actionMenuList);
 
     menuBtn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -121,7 +122,7 @@ export function loadTasks(title, tasks, container) {
       e.stopPropagation();
       window.location.href = `task-view?task=${tsk.id}`;
     });
-    actionsMenu.append(viewBtn);
+    actionMenuList.append(viewBtn);
 
     taskCard.append(taskTitle, taskMeta, menuBtn, actionsMenu);
 
@@ -130,7 +131,7 @@ export function loadTasks(title, tasks, container) {
       assignBtn.type = "button";
       assignBtn.classList.add("btn", "btn-secondary", "assignBtn", "btn-sm");
       assignBtn.textContent = "Assign";
-      actionsMenu.append(assignBtn);
+      actionMenuList.append(assignBtn);
     } else {
       const pingBtn = document.createElement("button");
       pingBtn.type = "button";
@@ -150,10 +151,13 @@ export function loadTasks(title, tasks, container) {
         });
         actionMsg("Assignee pinged!", "success");
       });
-      actionsMenu.append(pingBtn);
+      actionMenuList.append(pingBtn);
     }
 
     if (canDeleteTask(tsk)) {
+      const dropdownDivider = document.createElement("div");
+      dropdownDivider.classList.add("dropdown-divider");
+
       const deleteBtn = document.createElement("button");
       deleteBtn.type = "button";
       deleteBtn.classList.add("btn", "danger", "btn-sm");
@@ -174,7 +178,7 @@ export function loadTasks(title, tasks, container) {
           ],
         );
       });
-      actionsMenu.append(deleteBtn);
+      actionMenuList.append(dropdownDivider, deleteBtn);
     }
 
     divGrid.prepend(taskCard);
@@ -211,10 +215,7 @@ async function handleTaskDelete(tsk, taskCard) {
   taskCard.remove();
   actionMsg("Task deleted.", "success");
 }
-/**
- * Member view – tasks assigned to the current user, with Delete
- * available if the current user created the task or is the workspace owner.
- */
+
 export function loadAssignedTasks(sectionTitle, tasks, container) {
   if (!tasks || tasks.length === 0) {
     container.innerHTML = `<p class="placeholderText">No tasks assigned yet.</p>`;
@@ -228,14 +229,22 @@ export function loadAssignedTasks(sectionTitle, tasks, container) {
   title.classList.add("sectionTitle");
   title.textContent = sectionTitle;
 
+  const sectionHeader = document.createElement("div");
+  sectionHeader.classList.add("sectionHeader");
+  sectionHeader.append(title);
+
+  section.appendChild(sectionHeader);
+
   const grid = document.createElement("div");
   grid.classList.add("container", "double-grid");
 
   tasks.forEach((tsk) => {
     const card = document.createElement("div");
     card.classList.add("taskCard");
+    card.dataset.id = tsk.id;
 
     const taskTitle = document.createElement("h3");
+    taskTitle.classList.add("taskTitle");
     taskTitle.textContent = tsk.title;
 
     const meta = document.createElement("div");
@@ -251,17 +260,52 @@ export function loadAssignedTasks(sectionTitle, tasks, container) {
 
     meta.append(assignee, assignedOn);
 
+    // Menu button
+    const menuBtn = document.createElement("button");
+    menuBtn.type = "button";
+    menuBtn.classList.add("actionBtn", "taskMenuBtn");
+    menuBtn.title = "Task actions";
+    menuBtn.setAttribute("aria-label", "Task actions");
+    menuBtn.innerHTML = `
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="5" r="1.5" />
+        <circle cx="12" cy="12" r="1.5" />
+        <circle cx="12" cy="19" r="1.5" />
+      </svg>
+    `;
+
+    const actionsMenu = document.createElement("div");
+    actionsMenu.classList.add("dropdown", "taskActionsMenu");
+    actionsMenu.hidden = true;
+
+    const actionMenuList = document.createElement("div");
+    actionMenuList.classList.add("dropdown-list");
+    actionsMenu.append(actionMenuList);
+
+    menuBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      grid.querySelectorAll(".taskActionsMenu:not([hidden])").forEach((el) => {
+        if (el !== actionsMenu) el.hidden = true;
+      });
+      actionsMenu.hidden = !actionsMenu.hidden;
+    });
+
+    // View Task
     const viewBtn = document.createElement("button");
-    viewBtn.classList.add("btn", "btn-sm", "btn-primary");
+    viewBtn.type = "button";
+    viewBtn.classList.add("btn", "btn-primary", "btn-sm");
     viewBtn.textContent = "View Task";
     viewBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       window.location.href = `task-view?task=${tsk.id}`;
     });
+    actionMenuList.append(viewBtn);
 
-    card.append(taskTitle, meta, viewBtn);
-
+    // Delete (if allowed)
     if (canDeleteTask(tsk)) {
+      const dropdownDivider = document.createElement("div");
+      dropdownDivider.classList.add("dropdown-divider");
+
       const deleteBtn = document.createElement("button");
       deleteBtn.type = "button";
       deleteBtn.classList.add("btn", "danger", "btn-sm");
@@ -282,22 +326,41 @@ export function loadAssignedTasks(sectionTitle, tasks, container) {
           ],
         );
       });
-      card.append(deleteBtn);
+      actionMenuList.append(dropdownDivider, deleteBtn);
     }
 
+    card.append(taskTitle, meta, menuBtn, actionsMenu);
     grid.prepend(card);
   });
 
-  section.append(title, grid);
+  // Shared outside-click handler
+  if (!outsideClickHandlerAttached) {
+    document.addEventListener("click", (e) => {
+      if (
+        e.target.closest(".taskMenuBtn") ||
+        e.target.closest(".taskActionsMenu")
+      ) {
+        return;
+      }
+      document
+        .querySelectorAll(".taskActionsMenu:not([hidden])")
+        .forEach((el) => (el.hidden = true));
+    });
+    outsideClickHandlerAttached = true;
+  }
+
+  section.append(grid);
   container.append(section);
 }
 
 /**
- * Member view – all workspace tasks (read-only, no delete here by design).
+ * Member view – all workspace tasks (read-only for most members).
  */
 export function loadAllTasks(tasks, container) {
-  if (!tasks || tasks.length === 0) {
-    container.innerHTML = `<p class="placeholderText">No tasks created yet.</p>`;
+  const allIncompleteTasks = tasks.filter((t) => t.status !== "completed");
+
+  if (!allIncompleteTasks || allIncompleteTasks.length === 0) {
+    container.innerHTML = `<p class="placeholderText">No incompleted tasks.</p>`;
     return;
   }
 
@@ -308,14 +371,22 @@ export function loadAllTasks(tasks, container) {
   title.classList.add("sectionTitle");
   title.textContent = "All Tasks";
 
+  const sectionHeader = document.createElement("div");
+  sectionHeader.classList.add("sectionHeader");
+  sectionHeader.append(title);
+
+  section.appendChild(sectionHeader);
+
   const grid = document.createElement("div");
   grid.classList.add("container", "double-grid");
 
-  tasks.forEach((tsk) => {
+  allIncompleteTasks.forEach((tsk) => {
     const card = document.createElement("div");
     card.classList.add("taskCard");
+    card.dataset.id = tsk.id;
 
     const taskTitle = document.createElement("h3");
+    taskTitle.classList.add("taskTitle");
     taskTitle.textContent = tsk.title;
 
     const meta = document.createElement("div");
@@ -332,17 +403,82 @@ export function loadAllTasks(tasks, container) {
     assignedOn.textContent = `Assigned on: ${formatDateTime(tsk.created_at)}`;
 
     meta.append(assignee, assignedOn);
+
+    // Menu button
+    const menuBtn = document.createElement("button");
+    menuBtn.type = "button";
+    menuBtn.classList.add("actionBtn", "taskMenuBtn");
+    menuBtn.title = "Task actions";
+    menuBtn.setAttribute("aria-label", "Task actions");
+    menuBtn.innerHTML = `
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="5" r="1.5" />
+        <circle cx="12" cy="12" r="1.5" />
+        <circle cx="12" cy="19" r="1.5" />
+      </svg>
+    `;
+
+    const actionsMenu = document.createElement("div");
+    actionsMenu.classList.add("dropdown", "taskActionsMenu");
+    actionsMenu.hidden = true;
+
+    const actionMenuList = document.createElement("div");
+    actionMenuList.classList.add("dropdown-list");
+    actionsMenu.append(actionMenuList);
+
+    menuBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      grid.querySelectorAll(".taskActionsMenu:not([hidden])").forEach((el) => {
+        if (el !== actionsMenu) el.hidden = true;
+      });
+      actionsMenu.hidden = !actionsMenu.hidden;
+    });
+
+    // View Task
     const viewBtn = document.createElement("button");
-    viewBtn.classList.add("btn", "btn-sm", "btn-primary");
+    viewBtn.type = "button";
+    viewBtn.classList.add("btn", "btn-primary", "btn-sm");
     viewBtn.textContent = "View Task";
     viewBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       window.location.href = `task-view?task=${tsk.id}`;
     });
+    actionMenuList.append(viewBtn);
 
-    card.append(taskTitle, meta, viewBtn);
+    // Assign (when unassigned) or Ping (when assigned)
+    if (!tsk.assigned_to || !tsk.profiles) {
+      const assignBtn = document.createElement("button");
+      assignBtn.type = "button";
+      assignBtn.classList.add("btn", "btn-secondary", "assignBtn", "btn-sm");
+      assignBtn.textContent = "Assign";
+      actionMenuList.append(assignBtn);
+    } else {
+      const pingBtn = document.createElement("button");
+      pingBtn.type = "button";
+      pingBtn.classList.add("btn", "btn-secondary", "btn-sm");
+      pingBtn.textContent = "Ping Assignee";
+      pingBtn.title =
+        "Pinging assignee will send a notification to them asking for update on the task.";
+      pingBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        await notifyUser({
+          workspaceId: currentWorkspace.id,
+          receiverUserId: tsk.profiles.id,
+          actorId: user.id,
+          type: "task_ping",
+          entityId: tsk.id,
+          entityType: "task",
+        });
+        actionMsg("Assignee pinged!", "success");
+      });
+      actionMenuList.append(pingBtn);
+    }
 
+    // Delete (if allowed)
     if (canDeleteTask(tsk)) {
+      const dropdownDivider = document.createElement("div");
+      dropdownDivider.classList.add("dropdown-divider");
+
       const deleteBtn = document.createElement("button");
       deleteBtn.type = "button";
       deleteBtn.classList.add("btn", "danger", "btn-sm");
@@ -363,13 +499,33 @@ export function loadAllTasks(tasks, container) {
           ],
         );
       });
-      card.append(deleteBtn);
+      actionMenuList.append(dropdownDivider, deleteBtn);
     }
 
+    card.append(taskTitle, meta, menuBtn, actionsMenu);
     grid.prepend(card);
   });
 
-  section.append(title, grid);
+  // Attach assign handler once for the whole grid
+  attachAssignTaskEvent(grid);
+
+  // Shared outside-click handler
+  if (!outsideClickHandlerAttached) {
+    document.addEventListener("click", (e) => {
+      if (
+        e.target.closest(".taskMenuBtn") ||
+        e.target.closest(".taskActionsMenu")
+      ) {
+        return;
+      }
+      document
+        .querySelectorAll(".taskActionsMenu:not([hidden])")
+        .forEach((el) => (el.hidden = true));
+    });
+    outsideClickHandlerAttached = true;
+  }
+
+  section.append(grid);
   container.append(section);
 }
 

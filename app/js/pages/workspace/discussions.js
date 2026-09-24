@@ -2,10 +2,7 @@ import { formatDateTime } from "../../utils/time.js";
 import { supabase } from "../../supabase.js";
 import { actionMsg } from "../../utils/modals.js";
 import { notifyWorkspace } from "../../utils/notifications.js";
-import {
-  setButtonLoading,
-  closeModal,
-} from "https://scybud.github.io/scybud-ui/js/ui.js";
+import { setButtonLoading, closeModal } from "https://ui.scybud.com/js/ui.js";
 
 /**
  * Shared discussions list (works for admin, owner and member).
@@ -44,16 +41,12 @@ export function loadDiscussions(
   section.appendChild(sectionHeader);
 
   const divGrid = document.createElement("div");
-  divGrid.classList.add("container");
+  divGrid.classList.add("container", "double-grid");
 
   discussions.forEach((dcn) => {
     const discussionCard = document.createElement("div");
     discussionCard.classList.add("card", "discussionCard");
     discussionCard.dataset.id = dcn.id;
-
-    discussionCard.addEventListener("click", () => {
-      window.location.href = `discussion-view?dcn=${dcn.id}`;
-    });
 
     const dcnHeader = document.createElement("div");
     dcnHeader.classList.add("discussionHeader");
@@ -74,12 +67,8 @@ export function loadDiscussions(
     dcnTitle.classList.add("taskTitle");
     dcnTitle.textContent = dcn.title;
 
-    const details = document.createElement("details");
-    const summary = document.createElement("summary");
-    summary.textContent = "Content";
     const descriptionText = document.createElement("p");
     descriptionText.textContent = dcn.content;
-    details.append(summary, descriptionText);
 
     const createdOn = document.createElement("p");
     createdOn.classList.add("meta");
@@ -97,9 +86,13 @@ export function loadDiscussions(
       window.location.href = `discussion-view?dcn=${dcn.id}`;
     });
 
-    details.addEventListener("click", (e) => e.stopPropagation());
-
-    discussionCard.append(dcnHeader, dcnMeta, dcnTitle, details, viewBtn);
+    discussionCard.append(
+      dcnHeader,
+      dcnTitle,
+      descriptionText,
+      dcnMeta,
+      viewBtn,
+    );
     divGrid.append(discussionCard);
   });
 
