@@ -1,4 +1,6 @@
 form .btn {
+  position: sticky;
+  bottom: 0;
   width: 100%;
   margin-top: var(--space-sm);
 }
@@ -25,8 +27,8 @@ select {
 }
 
 input:read-only:focus {
-background: none;
-border: 1px solid var(--border-primary);
+  background: none;
+  border: 1px solid var(--border-primary);
 }
 .inputField:focus {
   border-color: var(--accent);
@@ -68,7 +70,7 @@ input[type="number"]::-webkit-inner-spin-button:hover {
   background-color: var(--form-bg);
   border: 1px solid var(--border-primary);
   background: var(--form-bg);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
 
   display: flex;
   flex-direction: column;
@@ -77,7 +79,7 @@ input[type="number"]::-webkit-inner-spin-button:hover {
   margin: auto;
   padding: calc(var(--space-md) + 4px) calc(var(--space-sm) + 2px);
   width: 95%;
-  max-width: 500px;
+  max-width: 600px;
 }
 .form h2 {
   margin-bottom: var(--space-md);
@@ -209,7 +211,7 @@ label {
 }
 .form .iconBtn.tooltip:hover::after {
   color: var(--text-primary);
-right: 0;
+  right: 0;
 }
 
 /* TASK SETTINGS: gear toggle next to the modal title, opens a panel with
@@ -238,7 +240,10 @@ right: 0;
   background: var(--surface-primary);
   color: var(--text-secondary);
   cursor: pointer;
-  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 #taskSettingsToggle:hover {
@@ -250,13 +255,28 @@ right: 0;
 .taskSettingsPanel {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   gap: var(--space-sm);
   margin: var(--space-sm) 0 var(--space-md);
   padding: var(--space-md);
   background: var(--surface-secondary);
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-md);
+  animation: expand 0.5s ease-out;
 }
+@keyframes expand {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+    height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    height: 180px;
+  }
+}
+
 .taskSettingsPanel[hidden] {
   display: none;
 }
