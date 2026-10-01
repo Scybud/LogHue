@@ -345,24 +345,36 @@ input.error {
 }
 
 /* ACTION MESSAGE */
-#actionsMessage{
-  position:fixed;
-  z-index:9999;
-  right:20px;
-  bottom:20px;
-  width:min(360px,calc(100vw - 32px));
-  transform:translateY(calc(100% + 30px));
-  opacity:0;
-  pointer-events:none;
-  transition:transform .35s cubic-bezier(.22,1,.36,1),opacity .25s ease;
+#actionsMessage {
+  position: fixed;
+  z-index: 9999;
+  right: 20px;
+  bottom: 20px;
+  width: min(360px, calc(100vw - 32px));
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
 }
 
-#actionsMessage.slideIn{
-  transform:translateY(0);
-  opacity:1;
+.actionMessageContainer {
+  width: 100%;
+  transform: translateY(calc(100% + 30px));
+  opacity: 0;
+  transition:
+    transform .35s cubic-bezier(.22,1,.36,1),
+    opacity .25s ease;
 }
 
-.actionMessageContainer{width:100%}
+.actionMessageContainer.slideIn {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.actionMessageContainer.slideOut {
+  transform: translateY(calc(100% + 30px));
+  opacity: 0;
+}
 
 #actionsMessage .actionMessageModal{
   position:relative;
@@ -399,16 +411,16 @@ input.error {
 }
 
 /* state variants */
-#actionsMessage.error .actionMessageModal{
-  background:rgba(127,29,29,.30);
-  border-color:rgba(251,113,133,.24);
-  color:#ffe4e6;
+#actionMessageModal.success {
+  background: rgba(6,95,70,.30);
+  border-color: rgba(52,211,153,.24);
+  color: #d1fae5;
 }
 
-#actionsMessage.success .actionMessageModal{
-  background:rgba(6,95,70,.30);
-  border-color:rgba(52,211,153,.24);
-  color:#d1fae5;
+#actionMessageModal.error {
+  background: rgba(127,29,29,.30);
+  border-color: rgba(251,113,133,.24);
+  color: #ffe4e6;
 }
 
 .am-text-error{color:var(--danger)}

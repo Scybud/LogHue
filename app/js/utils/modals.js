@@ -221,29 +221,32 @@ export async function confirmAction(header, message, actions = []) {
 }
 
 export async function actionMsg(message, typeClass) {
-  // Load modal only when needed
-  await loadComponent("/components/modals/action-message", "actionsMessage");
+  const html = await fetch("/components/modals/action-message.html").then((r) =>
+    r.text(),
+  );
 
-  const msg = document.querySelector(".modalMessage");
   const actionsMessage = document.getElementById("actionsMessage");
 
-  actionsMessage.classList.remove("success", "error", "warning", "info");
+  actionsMessage.insertAdjacentHTML("afterbegin", html);
 
-  actionsMessage.classList.add(typeClass);
+  const container = actionsMessage.firstElementChild;
+  const modal = container.querySelector(".actionMessageModal");
+  const msg = container.querySelector(".modalMessage");
 
-  actionsMessage.classList.remove("slideIn");
-  void actionsMessage.offsetWidth; // <-- reflow trick
-  actionsMessage.classList.add("slideIn");
-
+  modal.classList.add(typeClass);
   msg.textContent = message;
 
-  if (actionsMessage._timeout) {
-    clearTimeout(actionsMessage._timeout);
-  }
+  requestAnimationFrame(() => {
+    container.classList.add("slideIn");
+  });
 
-  // Set new timeout
-  actionsMessage._timeout = setTimeout(() => {
-    actionsMessage.classList.remove("slideIn");
+  setTimeout(() => {
+    container.classList.remove("slideIn");
+    container.classList.add("slideOut");
+
+    setTimeout(() => {
+      container.remove();
+    }, 350);
   }, 5000);
 }
 
