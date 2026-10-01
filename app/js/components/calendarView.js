@@ -3,6 +3,7 @@ import {
   toggleTaskCompletion,
 } from "../pages/personalTasks.js";
 import { logEvent } from "../utils/logEvent.js";
+import { actionMsg } from "../utils/modals.js";
 
 const ROW_H = 60;
 
@@ -148,8 +149,106 @@ function fmtTime(d) {
   return `${hh}:${m.toString().padStart(2, "0")} ${ap}`;
 }
 
+// Rebuilt on every render: real tasks plus virtual recurring occurrences
+let visibleTasks = [];
 function scheduledTasks() {
-  return savedTaskDetails.filter((t) => t.task_deadline && !t.is_template);
+  return visibleTasks;
+}
+
+// --- recurring tasks: virtual occurrences, never saved to the db ---
+// A template repeats weekly on reminder_days (0 = Sun to 6 = Sat).
+// null means every day, same as the edit modal.
+function startOfDay(d) {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+function dateKey(d) {
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+function occursOn(t, day) {
+  const days = Array.isArray(t.reminder_days)
+    ? t.reminder_days.map(Number)
+    : null;
+  return !days || days.includes(day.getDay());
+}
+
+// Same time of day as the template, moved onto the given day
+function moveToDay(iso, day) {
+  const o = new Date(iso);
+  const r = new Date(day);
+  r.setHours(o.getHours(), o.getMinutes(), 0, 0);
+  return r;
+}
+
+function makeOccurrence(t, day) {
+  const occ = {
+    ...t,
+    id: `virtual:${t.id}:${dateKey(day)}`,
+    template_id: t.id,
+    is_template: false,
+    is_completed: false,
+    isVirtual: true,
+    task_deadline: moveToDay(
+      t.task_deadline || t.start_time,
+      day,
+    ).toISOString(),
+  };
+  if (t.start_time) {
+    const s = moveToDay(t.start_time, day);
+    occ.start_time = s.toISOString();
+    if (t.end_time) {
+      const len = new Date(t.end_time) - new Date(t.start_time);
+      occ.end_time = new Date(s.getTime() + len).toISOString();
+    }
+  }
+  return occ;
+}
+
+// Date range the current view actually shows
+function visibleRange() {
+  if (view === "week") {
+    const s = getMonday(anchor);
+    return [s, addDays(s, 7)];
+  }
+  if (view === "day") {
+    const s = startOfDay(anchor);
+    return [s, addDays(s, 1)];
+  }
+  if (view === "month") {
+    const s = getMonday(new Date(anchor.getFullYear(), anchor.getMonth(), 1));
+    return [s, addDays(s, 42)];
+  }
+  if (view === "year") {
+    return [
+      new Date(anchor.getFullYear(), 0, 1),
+      new Date(anchor.getFullYear() + 1, 0, 1),
+    ];
+  }
+  const s = startOfDay(new Date());
+  return [s, addDays(s, 1)];
+}
+
+function buildVisibleTasks() {
+  const real = savedTaskDetails.filter(
+    (t) => t.task_deadline && !t.is_template,
+  );
+  // Instances already created by the backend, keyed by name and day
+  const taken = new Set(real.map((t) => `${t.name}|${dateKey(taskStart(t))}`));
+  const [from, to] = visibleRange();
+  const floor = startOfDay(new Date()); // past days come from the db only
+  const virtual = [];
+
+  savedTaskDetails
+    .filter((t) => t.is_template && !t.is_completed)
+    .forEach((t) => {
+      if (!t.task_deadline && !t.start_time) return;
+      for (let d = new Date(Math.max(from, floor)); d < to; d = addDays(d, 1)) {
+        if (!occursOn(t, d)) continue;
+        if (taken.has(`${t.name}|${dateKey(d)}`)) continue;
+        virtual.push(makeOccurrence(t, d));
+      }
+    });
+
+  return [...real, ...virtual];
 }
 function deadlineDate(t) {
   return new Date(t.task_deadline);
@@ -164,26 +263,23 @@ function taskEnd(t) {
   return new Date(taskStart(t).getTime() + VISUAL_DURATION_MIN * 60000);
 }
 function isOverdue(t) {
-  return !t.is_completed && deadlineDate(t) < new Date() && !t.is_template;
+  return (
+    !t.is_completed &&
+    !t.isVirtual &&
+    deadlineDate(t) < new Date() &&
+    !t.is_template
+  );
 }
 function stateClass(t) {
-  return t.is_completed ? "done" : isOverdue(t) ? "overdue" : "";
+  const state = t.is_completed ? "done" : isOverdue(t) ? "overdue" : "";
+  return t.isVirtual ? `${state} virtual` : state;
 }
 
 function taskState(t) {
   return t.is_completed ? "done" : isOverdue(t) ? "overdue" : "pending";
 }
 
-// Tasks with a real start_time/end_time render as an actual duration block.
-// Tasks without one are still just a point in time (the deadline), but their
-// chip needs real vertical space to be visible, so it gets a synthetic
-// "visual duration" equal to one chip height. Either way, two tasks close
-// enough together that their blocks would visually overlap need to sit side
-// by side instead of stacked on top of each other. This packs overlapping
-// tasks into columns the same way calendar apps lay out concurrent events:
-// sort by start, group anything whose window overlaps the running group end
-// into a cluster, then within each cluster greedily assign the first free
-// column.
+
 const VISUAL_DURATION_MIN = (ROW_H - 6) * (60 / ROW_H);
 const MIN_CHIP_MIN = VISUAL_DURATION_MIN; // floor so a short real duration stays readable
 
@@ -237,6 +333,13 @@ function layoutDayEvents(tasks) {
 }
 
 function handleTaskClick(t) {
+  if (t.isVirtual) {
+    actionMsg(
+      "Upcoming recurring task, it can only be marked done once created.",
+      "warning",
+    );
+    return;
+  }
   logEvent("calendar_task_clicked", { task_status: taskState(t) });
   toggleTaskCompletion(t.id, !t.is_completed);
 }
@@ -261,6 +364,7 @@ function escapeHtml(s) {
 
 // --- render dispatch ---
 function render() {
+  visibleTasks = buildVisibleTasks();
   const now = new Date();
   if (els.clockTime) {
     els.clockTime.textContent =

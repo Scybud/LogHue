@@ -423,6 +423,11 @@ input.error {
   color: #ffe4e6;
 }
 
+#actionMessageModal.warning {
+  background: rgba(255, 193, 7, 0.12);
+  border: 1px solid rgba(255, 214, 10, 0.35);
+}
+
 .am-text-error{color:var(--danger)}
 .am-text-success{color:var(--success)}
 
