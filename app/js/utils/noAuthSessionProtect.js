@@ -2,10 +2,10 @@ import { sessionState, sessionReady } from "../session.js";
 
 async function protectAppPage() {
   await sessionReady;
-const redirectUrl = window.location.href;
+const redirectUrl = encodeURIComponent(window.location.href);
 
   if (!sessionState.user) {
-    window.location.href = `auth?redirect=${redirectUrl}`;
+    window.location.href = `/pages/auth?redirect=${redirectUrl}`;
     return;
   }
 
