@@ -3,10 +3,8 @@ import { sessionState, sessionReady } from "../session.js";
 async function protectAppPage(): Promise<void> {
   await sessionReady;
 
-  const redirectUrl: string = window.location.href;
-
-  if (!sessionState.user) {
-    window.location.href = `auth?redirect=${redirectUrl}`;
+  if (sessionState.user) {
+    window.location.href = `/`;
     return;
   }
 
