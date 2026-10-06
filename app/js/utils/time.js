@@ -29,3 +29,11 @@ export function formatDateTime(isoString) {
     minute: "2-digit", // 27
   });
 }
+
+export function formatTime(isoString) {
+   const date = new Date(isoString);
+   return date.toLocaleTimeString("en-US", {
+     hour: "2-digit", // 12
+     minute: "2-digit", // 27
+   });
+}

@@ -1,4 +1,3 @@
-
 export async function loadComponent(path, containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
@@ -15,123 +14,120 @@ export function closeModal() {
   const modalContainer = document.getElementById("modalContainer");
 
   modalContainer.innerHTML = "";
-
 }
 
 function attachCloseModal() {
   //Close modal button
   const closeModalBtn = document.querySelector(".closeModalBtn");
 
-    if (closeModalBtn) {
-      closeModalBtn.addEventListener("click", () => {
-        closeModal();
-      });
-    }
+  if (closeModalBtn) {
+    closeModalBtn.addEventListener("click", () => {
+      closeModal();
+    });
+  }
 }
 
 //PRELOADER
 export function removeLoader() {
   const preLoaderContainer = document.querySelector(".preLoaderContainer");
 
-  if(preLoaderContainer) {
-
-    preLoaderContainer.remove()
+  if (preLoaderContainer) {
+    preLoaderContainer.remove();
   }
 }
 
 export function buttonLoading(container) {
-  if(container.dataset.loading === "true") {
-    container.classList.add("disabled")
-    container.innerHTML = container.dataset.originalText
-    container.dataset.loading = "false"; 
+  if (container.dataset.loading === "true") {
+    container.classList.add("disabled");
+    container.innerHTML = container.dataset.originalText;
+    container.dataset.loading = "false";
     return;
   }
 
-  container.dataset.originalText = container.innerHTML; 
+  container.dataset.originalText = container.innerHTML;
   container.dataset.loading = "true";
 
-const preLoaderContainer = document.createElement("div")
-preLoaderContainer.classList.add("btnLoaderContainer")
+  const preLoaderContainer = document.createElement("div");
+  preLoaderContainer.classList.add("btnLoaderContainer");
 
-const waveLoader = document.createElement("div")
-waveLoader.classList.add("tt-wave-loader");
+  const waveLoader = document.createElement("div");
+  waveLoader.classList.add("tt-wave-loader");
 
-for(let i = 1; i <= 3; i++) {
-  const span = document.createElement("span")
+  for (let i = 1; i <= 3; i++) {
+    const span = document.createElement("span");
 
-  waveLoader.append(span)
-}
-preLoaderContainer.append(waveLoader)
+    waveLoader.append(span);
+  }
+  preLoaderContainer.append(waveLoader);
 
-container.innerHTML = ""
-container.classList.add("disabled");
-container.append(preLoaderContainer)
+  container.innerHTML = "";
+  container.classList.add("disabled");
+  container.append(preLoaderContainer);
 }
 
 export function preferedPrimary() {
   document.addEventListener("DOMContentLoaded", () => {
-      const picker = document.getElementById("primaryColor")
-        
-        const saved = JSON.parse(localStorage.getItem("preferedPrimary"));
+    const picker = document.getElementById("primaryColor");
 
-if (saved) {
-  document.documentElement.style.setProperty("--primary", saved);
-  if(picker) {
-  picker.value = saved;
-  }
-}
+    const saved = JSON.parse(localStorage.getItem("preferedPrimary"));
 
-if(picker) {
+    if (saved) {
+      document.documentElement.style.setProperty("--primary", saved);
+      if (picker) {
+        picker.value = saved;
+      }
+    }
 
-  picker.addEventListener("input", () => {
-    const color = picker.value;
-    document.documentElement.style.setProperty("--primary", color);
-    
-    localStorage.setItem("preferedPrimary", JSON.stringify(color))
-  })
-}
-});
+    if (picker) {
+      picker.addEventListener("input", () => {
+        const color = picker.value;
+        document.documentElement.style.setProperty("--primary", color);
 
-const reseToDefaultPrimary = document.getElementById("reseToDefaultPrimary");
-if(!reseToDefaultPrimary) return;
-reseToDefaultPrimary.addEventListener("click", () => {
-  localStorage.removeItem("preferedPrimary");
-  window.location.reload()
-})
-}
+        localStorage.setItem("preferedPrimary", JSON.stringify(color));
+      });
+    }
+  });
 
-
-//SET THEME
-export function setTheme() {
-const themeSelect = document.getElementById("themeSelect");
-
-if(themeSelect) {
-  themeSelect.addEventListener("change", () => {
-const value = themeSelect.value
-
-if(value === "system") {
-  document.documentElement.removeAttribute("data-theme")
-
-  localStorage.setItem("theme", "system")
-  return;
-}
-
-document.documentElement.setAttribute("data-theme", value)
-  localStorage.setItem("theme", value);
-
+  const resetToDefaultPrimary = document.getElementById(
+    "resetToDefaultPrimary",
+  );
+  if (!resetToDefaultPrimary) return;
+  resetToDefaultPrimary.addEventListener("click", () => {
+    localStorage.removeItem("preferedPrimary");
+    window.location.reload();
   });
 }
 
-//LOAD SAVED THEME
-const savedTheme = localStorage.getItem("theme")
-if(savedTheme && themeSelect) {
-  themeSelect.value = savedTheme;
-}
-if (savedTheme === "light" || savedTheme === "dark") {
-  document.documentElement.setAttribute("data-theme", savedTheme);
-} else {
-  document.documentElement.removeAttribute("data-theme");
-}
+//SET THEME
+export function setTheme() {
+  const themeSelect = document.getElementById("themeSelect");
+
+  if (themeSelect) {
+    themeSelect.addEventListener("change", () => {
+      const value = themeSelect.value;
+
+      if (value === "system") {
+        document.documentElement.removeAttribute("data-theme");
+
+        localStorage.setItem("theme", "system");
+        return;
+      }
+
+      document.documentElement.setAttribute("data-theme", value);
+      localStorage.setItem("theme", value);
+    });
+  }
+
+  //LOAD SAVED THEME
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme && themeSelect) {
+    themeSelect.value = savedTheme;
+  }
+  if (savedTheme === "light" || savedTheme === "dark") {
+    document.documentElement.setAttribute("data-theme", savedTheme);
+  } else {
+    document.documentElement.removeAttribute("data-theme");
+  }
 }
 
 export function setInterfaceDensity() {
@@ -141,8 +137,8 @@ export function setInterfaceDensity() {
     interfaceSelect.addEventListener("change", () => {
       const value = interfaceSelect.value;
 
-        document.documentElement.setAttribute("data-density", value);
-        localStorage.setItem("density", value);
+      document.documentElement.setAttribute("data-density", value);
+      localStorage.setItem("density", value);
     });
   }
 
@@ -154,8 +150,6 @@ export function setInterfaceDensity() {
   }
 }
 
-
-
 //Create dropdown
 export function createDropdown(items = []) {
   const container = document.createElement("div");
@@ -166,13 +160,21 @@ export function createDropdown(items = []) {
   list.classList.add("dropdown-list");
 
   items.forEach((item) => {
-    const dangerClass = item.label === "Leave Workspace" || item.label === "Delete" ? "danger" : "normalBtn";
+    const dangerClass =
+      item.label === "Leave Workspace" || item.label === "Delete"
+        ? "danger"
+        : "normalBtn";
 
     const btn = document.createElement("button");
-    btn.classList.add(dangerClass, "btn", "dropdown-item", "btn-md", "btn-secondary");
+    btn.classList.add(
+      dangerClass,
+      "btn",
+      "dropdown-item",
+      "btn-md",
+      "btn-secondary",
+    );
     btn.textContent = item.label;
-    
-    
+
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       item.action();
@@ -187,11 +189,10 @@ export function createDropdown(items = []) {
   return container;
 }
 
-
 export function setLoading(state, container) {
   let isLoading = false;
   isLoading = state;
-  
-    container?.classList.toggle("isLoading", state);
-    container?.classList.toggle("isLoading", state);
+
+  container?.classList.toggle("isLoading", state);
+  container?.classList.toggle("isLoading", state);
 }

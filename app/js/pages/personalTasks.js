@@ -5,7 +5,7 @@ import { actionMsg, openLogPersonalTaskModal, confirmAction, } from "../../js/ut
 import { setLoading, closeModal } from "../../js/ui.js";
 import { loadComponent, createEmptyState, } from "https://ui.scybud.com/js/ui.js";
 import { attachCreatePersonalTaskEvent } from "../../js/utils/modalEvents.js";
-import { formatDateTime } from "../../js/utils/time.js";
+import { formatDateTime, formatTime } from "../../js/utils/time.js";
 import { linkify } from "../../js/utils/linkify.js";
 import { makeCollapsible } from "../../js/utils/toggle.js";
 // State
@@ -200,7 +200,9 @@ export function createTaskElement(task) {
     // Date
     const dateSpan = document.createElement("span");
     dateSpan.classList.add("taskDate");
-    dateSpan.textContent =
+    dateSpan.textContent = task.is_template ? task.task_deadline !== null
+        ? formatTime(task.task_deadline)
+        : formatTime(task.created_at) :
         task.task_deadline !== null
             ? formatDateTime(task.task_deadline)
             : formatDateTime(task.created_at);
