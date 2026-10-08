@@ -47,38 +47,128 @@
           </div>
 
           <div class="doc-section">
-            <h2>Tasks</h2>
-            <p>Tasks are simple, checkable items you create for yourself.</p>
-            <div class="step-box">
-              <h3><span class="step-number">1</span> Create a Task</h3>
-              <p>
-                Click <strong>"+"</strong> at the top of the task page. Give it
-                a title and, optionally, a description.
-              </p>
-            </div>
-            <div class="step-box">
-              <h3><span class="step-number">2</span> Mark It Done</h3>
-              <p>
-                Check a task off whenever you finish it. Done tasks move into a
-                separate, collapsible section, so your active list stays focused
-                on what's left.
-              </p>
-            </div>
-            <div class="step-box">
-              <h3>
-                <span class="step-number">3</span> Undo, Delete, or Keep It
-              </h3>
-              <p>
-                A done task can be unmarked back to active, deleted entirely, or
-                simply left as a record. There's no time limit on any of these.
-              </p>
-            </div>
-            <p>
-              Personal tasks are yours to manage entirely on your own terms.
-              There's no reviewer, no approval step, and no one else who can see
-              them unless you choose to share one.
-            </p>
-          </div>
+  <h2>Tasks</h2>
+  <p>
+    Tasks are checkable items with a deadline, built for planning your own
+    day. You can use them inside LogHue or on their own at
+    <a href="https://tasks.loghue.com" target="_blank" rel="noopener noreferrer">tasks.loghue.com</a>
+    with the same account.
+  </p>
+
+  <div class="step-box">
+    <h3><span class="step-number">1</span> Create a Task</h3>
+    <p>
+      Click <strong>"+ Create Task"</strong> at the top of the task page. Give it a title,
+      set a deadline date and time, and add a description if you like.
+    </p>
+  </div>
+  <div class="step-box">
+    <h3><span class="step-number">2</span> Mark It Done</h3>
+    <p>
+      Check a task off whenever you finish it. Done tasks move into a separate,
+      collapsible section, so your active list stays focused on what's left.
+    </p>
+  </div>
+  <div class="step-box">
+    <h3><span class="step-number">3</span> Edit, Undo, Delete, or Keep It</h3>
+    <p>
+      Use the icons on a task card to edit it, duplicate it to a workspace, or
+      delete it. A done task can be unmarked back to active or simply left as a
+      record. There's no time limit on any of these.
+    </p>
+  </div>
+
+  <h3>How Your List Is Organized</h3>
+  <p>Open tasks are grouped by date, so you see what needs attention first:</p>
+  <div class="status-grid">
+    <div class="status-item">
+      <div class="badge">Overdue</div>
+      <p>Past their deadline, highlighted in red</p>
+    </div>
+    <div class="status-item">
+      <div class="badge">Today</div>
+      <p>Due today</p>
+    </div>
+    <div class="status-item">
+      <div class="badge">This week</div>
+      <p>Due in the coming days</p>
+    </div>
+    <div class="status-item">
+      <div class="badge">Later</div>
+      <p>Due further out</p>
+    </div>
+  </div>
+</div>
+
+<div class="doc-section">
+  <h2>Calendar View</h2>
+  <p>
+    Switch from the list to the calendar to see your tasks laid out in time.
+    The list stays the default, and both views show the same tasks.
+  </p>
+  <ul>
+    <li>
+      Choose <strong>Year, Month, Week, Day, or Hour</strong> view. Week is
+      the default
+    </li>
+    <li>A live clock and a moving "now" line show where you are in the day</li>
+    <li>Overdue tasks that aren't done turn <strong>red</strong></li>
+    <li>Done tasks are <strong>greyed out and struck through</strong></li>
+    <li>
+      Tasks due at similar times sit <strong>side by side</strong>, so every
+      one stays visible and clickable
+    </li>
+  </ul>
+  <p>The calendar currently shows your personal tasks.</p>
+</div>
+
+<div class="doc-section">
+  <h2>Start and End Time</h2>
+  <p>
+    Open the <strong>settings icon</strong> in the task form to give a task a
+    start and end time. This lets you see how much free time you have around
+    your tasks directly on the calendar. It works for any task, recurring or
+    not.
+  </p>
+</div>
+
+<div class="doc-section">
+  <h2>Recurring Tasks</h2>
+  <p>
+    Mark a task as <strong>recurring</strong> to have it repeat daily at the
+    time you set.
+  </p>
+  <ul>
+    <li>Every occurrence is its own entry, so checking one off only affects that day</li>
+    <li>
+      The original recurring task stays in its own collapsed section, separate
+      from your day to day list
+    </li>
+    <li>Every occurrence uses the same start and end time</li>
+  </ul>
+</div>
+
+<div class="doc-section">
+  <h2>Reminders</h2>
+  <p>
+    LogHue reminds you before a task is due, <strong>30 minutes</strong> and
+    <strong>5 minutes</strong> before the deadline by email. Turn on push
+    notifications in <strong>Settings → Notifications</strong> to get them on
+    your device too.
+  </p>
+  <p>
+    For recurring tasks, choose which days you want reminders: every day,
+    weekdays, weekends, or specific days like Monday. If you don't change
+    anything, you get reminders every day. The task itself still repeats daily,
+    only the reminders follow your chosen days.
+  </p>
+  <div class="info-box">
+    <p>
+      <strong>Note:</strong> Workspace tasks with a deadline send reminders
+      too. See <a href="tasks">Team Tasks & Logs</a>.
+    </p>
+  </div>
+</div>
 
           <div class="doc-section">
             <h2>Sharing a Task to a Workspace</h2>
@@ -99,28 +189,106 @@
           </div>
 
           <div class="doc-section">
-            <h2>Notes</h2>
-            <p>
-              Notes are standalone by default, separate from tasks, and built
-              for anything you want to keep handy: meeting summaries, ideas,
-              references, or anything in between.
-            </p>
-            <ul>
-              <li>Create a note from the sidebar at any time</li>
-              <li>
-                Export a note as <strong>PDF, DOCX, TXT, HTML, or MD</strong>
-              </li>
-              <li>
-                Import a note into a workspace when you want to share it with a
-                team
-              </li>
-            </ul>
-            <p>
-              Like tasks, importing a note into a workspace doesn't remove it
-              from your personal notes. It becomes visible in both places
-              independently.
-            </p>
-          </div>
+  <h2>Notes</h2>
+  <p>
+    Notes are standalone by default, separate from tasks, and built for
+    anything you want to keep handy: meeting summaries, ideas, references, or
+    anything in between. You can use them inside LogHue or on their own at
+    <a href="https://notes.loghue.com" target="_blank" rel="noopener noreferrer">notes.loghue.com</a>
+    with the same account.
+  </p>
+
+  <h3>Note Types</h3>
+  <p>
+    Click <strong>"+ Create"</strong> on the notes page and choose what to make:
+  </p>
+  <div class="feature-card">
+    <h3>Text Note</h3>
+    <p>
+      A rich text editor with fonts, bold, italic, underline, links, text
+      color, highlights, lists, checklists, and alignment. Your note saves as
+      you type.
+    </p>
+  </div>
+  <div class="feature-card">
+    <h3>Sketch</h3>
+    <p>
+      A free drawing canvas with pen and eraser tools, for diagrams and quick
+      thinking you can't type.
+    </p>
+  </div>
+  <div class="feature-card">
+    <h3>Table</h3>
+    <p>
+      A standalone table note. You can also add tables inside a text note
+      alongside your writing.
+    </p>
+  </div>
+
+  <h3>Folders</h3>
+  <p>
+    Choose <strong>New Folder</strong> to group related notes. Notes inside a
+    folder are listed under it, and the folder can be collapsed. Notes without
+    a folder stay in the main list. Use <strong>Add to folder</strong> or
+    <strong>Remove from folder</strong> in a note's menu to move it.
+  </p>
+
+  <h3>Linking Notes to Tasks</h3>
+  <p>
+    Link a note to tasks when you want them connected. The editor shows how
+    many tasks a note is linked to.
+  </p>
+
+  <h3>Exporting</h3>
+  <ul>
+    <li><strong>Text notes:</strong> TXT, MD, HTML, PDF, or DOCX</li>
+    <li><strong>Sketches:</strong> PNG image</li>
+    <li><strong>Tables:</strong> HTML or PDF</li>
+  </ul>
+  <div class="info-box">
+    <p>
+      <strong>Note:</strong> Free accounts export TXT and MD. PDF, DOCX, and
+      HTML export are part of the Pro plan. See
+      <a href="https://loghue.com/pricing" target="_blank" rel="noopener noreferrer">loghue.com/pricing</a>.
+    </p>
+  </div>
+
+  <h3>Sharing a Note Publicly</h3>
+  <p>
+    Notes are private until you decide otherwise. To share one, open its menu
+    and click <strong>Share publicly</strong>. LogHue creates a link, and
+    anyone who has the link can view that note.
+  </p>
+  <ul>
+    <li><strong>Copy public link:</strong> copy the link to send it</li>
+    <li>
+      <strong>Show my name:</strong> choose whether the page shows who wrote it
+    </li>
+    <li>
+      <strong>Regenerate link:</strong> create a new link, which stops the old
+      one from working
+    </li>
+    <li>
+      <strong>Stop sharing:</strong> turn the link off and make the note
+      private again
+    </li>
+  </ul>
+  <div class="warning-box">
+    <p>
+      Anyone with the link can read the note, so don't share notes that contain
+      private information. If a link gets out, use Regenerate link or Stop
+      sharing.
+    </p>
+  </div>
+
+  <h3>Sharing with a Team</h3>
+  <p>
+    Import a note into a workspace when you want to share it with a team. Like
+    tasks, importing doesn't remove it from your personal notes. It becomes
+    visible in both places independently. In a workspace, any member can view
+    or download a note, but only its creator can delete it.
+  </p>
+</div>
 
           <div class="doc-page-nav">
             <div class="page-nav">
