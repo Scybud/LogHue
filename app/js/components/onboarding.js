@@ -21,6 +21,8 @@ const state = {
 export async function loadOnboardingState(userId) {
   state.userId = userId;
 
+  if(!userId) return;
+  
   const { data, error } = await supabase
     .from("profiles")
     .select("onboarded, onboarding_progress")
