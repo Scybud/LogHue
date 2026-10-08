@@ -57,7 +57,7 @@
 }
 .docs-content {
   margin: 0 auto;
-  padding: var(--space-xl) var(--space-lg);
+  padding: var(--space-xl) var(--space-md);
 }
 
 /* Hero & Grid */
@@ -82,6 +82,12 @@
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--space-md);
   margin-bottom: var(--space-xl);
+}
+
+.doc-section {
+background: var(--surface-secondary);
+padding: var(--space-lg);
+border-radius: var(--radius-sm);
 }
 
 .doc-card {
