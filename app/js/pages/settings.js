@@ -769,3 +769,43 @@ async function revokeSession(sessionId) {
     ],
   );
 }
+
+const exportBtn = document.getElementById("exportDataBtn");
+
+exportBtn?.addEventListener("click", async () => {
+  const label = exportBtn.textContent;
+  exportBtn.disabled = true;
+  exportBtn.textContent = "Preparing...";
+
+  try {
+    const { data, error } = await supabase.functions.invoke("user-self-export-data");
+    if (error) throw error;
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `loghue-export-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    actionMsg("Export downloaded", "success");
+  } catch (err) {
+  console.error(err);
+  const limited = err?.context?.status === 429;
+  if(limited){
+    actionMsg(
+      "You can export once per hour. Try again later.",
+      "warning",
+    ) 
+  } else {
+    actionMsg("Export failed. Try again.", "error")
+  }
+  
+} finally {
+    exportBtn.disabled = false;
+    exportBtn.textContent = label;
+  }
+});
