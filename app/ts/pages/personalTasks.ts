@@ -111,10 +111,10 @@ type SvgPath = {
   attrs: Record<string, string>;
 };
 
-function createSvgIcon(paths: SvgPath[], { viewBox = "0 0 24 24" } = {}) {
+function createSvgIcon(paths: SvgPath[], { viewBox = "0 0 24 24", size = 14 } = {}) {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  svg.setAttribute("width", "18");
-  svg.setAttribute("height", "18");
+  svg.setAttribute("width", String(size));
+  svg.setAttribute("height", String(size));
   svg.setAttribute("viewBox", viewBox);
   svg.setAttribute("fill", "none");
   svg.setAttribute("stroke", "currentColor");
@@ -220,35 +220,59 @@ export function createTaskElement(task: Task) {
     topRow.append(recurringBadge);
   }
 
+  const actionsBtn = document.createElement("button");
+  actionsBtn.classList.add("tasksActionsBtn");
+  actionsBtn.setAttribute("data-title", "Note actions");
+  actionsBtn.setAttribute("aria-label", "Note actions");
+  actionsBtn.innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="5" r="1.3" />
+      <circle cx="12" cy="12" r="1.3" />
+      <circle cx="12" cy="19" r="1.3" />
+    </svg>
+  `;
+
   const actionsGroup = document.createElement("div");
-  actionsGroup.classList.add("taskActions");
+  actionsGroup.classList.add("dropdown");
+  actionsGroup.hidden = true;
+ actionsBtn.addEventListener("click", (e) => {
+   e.stopPropagation();
+   document.querySelectorAll<HTMLElement>(".taskActionsMenu:not([hidden])").forEach((elem) => {
+     if (elem !== actionsGroup) elem.hidden = true;
+   });
+   actionsGroup.hidden = !actionsGroup.hidden;
+ });
 
   const editBtn = document.createElement("button");
   editBtn.type = "button";
-  editBtn.classList.add("editBtn", "tooltip");
-  editBtn.setAttribute("data-title", "Edit Task");
-  editBtn.appendChild(createSvgIcon(editIconPaths));
+  editBtn.textContent = "Edit task"
+  editBtn.classList.add("btn", "editBtn", "btn-sm");
+  editBtn.prepend(createSvgIcon(editIconPaths));
 
   const duplicateBtn = document.createElement("button");
   duplicateBtn.type = "button";
-  duplicateBtn.classList.add("duplicateBtn", "tooltip");
-  duplicateBtn.setAttribute("data-title", "Duplicate to Workspace");
-  duplicateBtn.appendChild(createSvgIcon(duplicateIconPaths));
+  duplicateBtn.textContent = "Add to workspace"
+  duplicateBtn.classList.add("duplicateBtn", "btn", "btn-sm");
+  duplicateBtn.prepend(createSvgIcon(duplicateIconPaths));
 
   const linkNoteBtn = document.createElement("button");
   linkNoteBtn.type = "button";
-  linkNoteBtn.classList.add("linkNoteBtn", "tooltip");
-  linkNoteBtn.setAttribute("data-title", "Link Note");
-  linkNoteBtn.appendChild(createSvgIcon(linkNoteIconPaths));
+  linkNoteBtn.textContent = "Link to note"
+  linkNoteBtn.classList.add("linkNoteBtn", "btn", "btn-sm");
+  linkNoteBtn.prepend(createSvgIcon(linkNoteIconPaths));
 
   const deleteBtn = document.createElement("button");
   deleteBtn.type = "button";
-  deleteBtn.classList.add("deleteBtn", "tooltip");
-  deleteBtn.setAttribute("data-title", "Delete Task");
-  deleteBtn.appendChild(createSvgIcon(deleteIconPaths));
+  deleteBtn.textContent = "Delete task"
+  deleteBtn.classList.add("deleteBtn", "btn", "btn-sm", "danger");
+  deleteBtn.prepend(createSvgIcon(deleteIconPaths));
 
-  actionsGroup.append(editBtn, linkNoteBtn, duplicateBtn, deleteBtn);
-  topRow.append(checkbox, nameLabel, actionsGroup);
+  const actionsList = document.createElement("div")
+  actionsList.classList.add("dropdown-list")
+  actionsList.append(editBtn, linkNoteBtn, duplicateBtn, deleteBtn);
+
+  actionsGroup.append(actionsList);
+  topRow.append(checkbox, nameLabel, actionsBtn, actionsGroup);
   el.append(topRow);
 
   // Description

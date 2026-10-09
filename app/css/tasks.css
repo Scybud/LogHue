@@ -43,7 +43,7 @@
      display: flex;
      flex-direction: column;
      gap: var(--space-sm);
-     overflow-y: auto;
+     overflow-y: visible;
      transition: height 0.5s ease, padding 0.5s ease;
      height: 500px;
      min-height: fit-content;
@@ -57,6 +57,28 @@
       padding: 0;
     }
     
+    .dropdown {
+top: calc(var(--space-lg) * 2) !important;
+right: var(--space-sm) !important;
+    }
+
+    .dropdown-list .btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px !important;
+  width: 100%;
+  font-size: 0.85rem;
+}
+
+.dropdown-list .btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  margin-right: var(--space-xs);
+  order: -1; /* icon always before text */
+}
+
     /* Task card                       */
     
     .taskCard {
@@ -68,8 +90,19 @@
   gap: var(--space-sm);
 
   opacity: 0;
-  transform: translateY(6px);
   transition: opacity 0.25s ease, transform 0.25s ease, border-color 0.2s ease;
+  position: relative;
+}
+
+.taskCard:has(.taskMenu.open),
+.taskCard.menuOpen {
+  z-index: 10;
+}
+
+.taskContainer:has(.taskMenu.open),
+.taskContainer.menuOpen {
+  position: relative;
+  z-index: 10;
 }
 .taskCard.completed {
         background: var(--surface-primary);
@@ -77,7 +110,6 @@
 
 .taskCard.show {
   opacity: 1;
-  transform: translateY(0);
 }
 
 /* When a task is deleted */
@@ -176,47 +208,6 @@
 line-height: var(--space-md);
 }
 
-/* Action buttons (duplicate/delete) */
-.taskActions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  flex-shrink: 0;
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-sm);
-  background: var(--surface-primary);
-}
-
-.taskActions button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border: none;
-  background: transparent;
-  border-radius: var(--radius-sm);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.taskActions button:hover {
-  background: var(--hover-bg);
-}
-
-.editBtn:hover {
-  color: var(--primary-light);
-}
-
-.duplicateBtn:hover {
-  color: var(--color);
-}
-
-.deleteBtn:hover {
-  color: var(--danger);
-}
-
 
 /* Description (only rendered when present) */
 .taskDescription {
@@ -225,6 +216,32 @@ line-height: var(--space-md);
   line-height: 1rem;
   margin: 0;
   padding-left: calc(18px + var(--space-sm, 10px)); /* aligns under the name, past the checkbox */
+}
+
+.tasksActionsBtn {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .tasksActionsBtn, .deleteFolderBtn {
+    opacity: 1;
+  }
+}
+
+.noteItem:hover .tasksActionsBtn {
+  opacity: 1;
 }
 
 /* Date */
