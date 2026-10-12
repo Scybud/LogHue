@@ -134,11 +134,16 @@ export async function loadDocuments(documents, container) {
       deleteBtn.classList.add("danger", "docDeleteBtn", "docAction");
       deleteBtn.dataset.path = doc.storage_path;
 
-      item.appendChild(left);
+      const right = document.createElement("div")
+      right.className = "docRight";
+
+      item.appendChild(left) ;
       if (doc.uploaded_by === currentUser?.id) {
-        item.append(viewBtn, downloadBtn, deleteBtn);
+        right.append(viewBtn, downloadBtn, deleteBtn);
+        item.append(right);
       } else {
-        item.append(viewBtn, downloadBtn);
+        right.append(viewBtn, downloadBtn);
+        item.append(right);
       }
 
       list.appendChild(item);

@@ -886,6 +886,14 @@ flex-wrap: wrap;
 .docLeft svg {
   stroke: currentColor;
 }
+.docTitle {
+  line-break: anywhere;
+}
+/* Right Side */
+.docRight {
+display: flex;
+gap: var(--space-sm);
+}
 
 /* Info */
 .docInfo {
