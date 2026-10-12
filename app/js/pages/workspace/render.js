@@ -83,7 +83,7 @@ export async function renderSection(section, workspace, container) {
     case "documents": {
       const { data: docs } = await supabase
         .from("workspace_documents")
-        .select("*")
+        .select("*, profiles:uploaded_by (full_name)")
         .eq("workspace_id", workspace.id)
         .order("created_at", { ascending: false });
       await loadDocuments(docs || [], container);

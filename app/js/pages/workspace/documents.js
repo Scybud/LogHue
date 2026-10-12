@@ -114,7 +114,7 @@ export async function loadDocuments(documents, container) {
 
       const meta = document.createElement("div");
       meta.className = "docMeta";
-      meta.textContent = `${(doc.size_bytes / 1024).toFixed(1)} KB • ${doc.mime_type}`;
+      meta.textContent = `${(doc.size_bytes / 1024).toFixed(1)} KB • ${doc.mime_type} | Uploaded by: ${doc.profiles.full_name}`;
 
       info.append(titleEl, meta);
       left.append(svg2, info);
