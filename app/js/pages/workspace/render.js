@@ -55,9 +55,10 @@ export async function renderSection(section, workspace, container) {
         // Member sees only their completed tasks
         const myCompleted = allTasks.filter(
           (t) =>
-            String(t.assigned_to) === String(user.id) &&
-            t.status === "completed",
-        );
+            (String(t.assigned_to) === String(user.id) &&
+              t.status === "completed") ||
+            String(t.created_by) === String(user.id) &&
+              t.status === "completed");
         loadAssignedTasks("Tasks History", myCompleted, container);
       } else {
         const history = allTasks.filter((ts) => ts.status === "completed");

@@ -15,16 +15,12 @@ import {
   setLoading,
   fetchMembershipRole,
   getContentContainer,
-  currentWorkspace,
+  currentRole,
 } from "./state.js";
 import { renderSection } from "./render.js";
-import { loadTasks, loadAssignedTasks } from "./tasks.js";
 
-/**
- * Wait until the sidebar partial has been injected into the DOM.
- * app.js loads it asynchronously via loadComponent, so we must not
- * call navDropdowns() / attachSidebarEvents() before the nodes exist.
- */
+// Wait until the sidebar partial has been injected into the DOM.
+
 export let workspace = null;
 
 function waitForSidebar(timeoutMs = 4000) {
@@ -49,6 +45,64 @@ function waitForSidebar(timeoutMs = 4000) {
     }, 50);
   });
 }
+
+//  ROUTING HELPERS
+
+function getSectionFromUrl() {
+  return new URLSearchParams(window.location.search).get("section");
+}
+
+function setSectionInUrl(section, { replace = false } = {}) {
+  const params = new URLSearchParams(window.location.search);
+  params.set("section", section);
+  const url = `${window.location.pathname}?${params.toString()}`;
+
+  if (replace) {
+    history.replaceState({ section }, "", url);
+  } else {
+    history.pushState({ section }, "", url);
+  }
+}
+
+function setActiveNav(section) {
+  document.querySelectorAll(".navBtn[data-section]").forEach((btn) => {
+    btn.classList.remove("active");
+  });
+
+  const activeBtn = document.querySelector(
+    `.navBtn[data-section="${section}"]`,
+  );
+  if (activeBtn) {
+    activeBtn.classList.add("active");
+  }
+}
+
+async function navigateToSection(
+  section,
+  workspace,
+  container,
+  { push = true } = {},
+) {
+  if (!section || !container) return;
+
+  setLoading(true, container);
+
+  try {
+    await new Promise(requestAnimationFrame);
+    await renderSection(section, workspace, container);
+    setActiveNav(section);
+
+    if (push) {
+      setSectionInUrl(section);
+    }
+  } catch (err) {
+    console.error("Failed to navigate to section:", section, err);
+  } finally {
+    setLoading(false, container);
+  }
+}
+
+//  MAIN ENTRY POINT
 
 /**
  * Single entry point for both admin/owner and member workspace dashboards.
@@ -95,7 +149,7 @@ export async function initWorkspaceDashboard() {
   setLoading(true, container);
 
   // Load workspace + related data
-  const { data: currentWorkspace, error } = await supabase
+  const { data: currentWorkspaceData, error } = await supabase
     .from("workspaces")
     .select(
       `*,
@@ -112,7 +166,7 @@ export async function initWorkspaceDashboard() {
     return;
   }
 
-  workspace = currentWorkspace;
+  workspace = currentWorkspaceData;
 
   if (!workspace || workspaceId.length < 10 || workspace.status === "closed") {
     actionMsg("This workspace has been archived", "warning");
@@ -138,13 +192,18 @@ export async function initWorkspaceDashboard() {
 
   if (container) container.innerHTML = "";
 
-  // Default section: Tasks
+  //  ROUTING: decide & render initial section 
+  let initialSection = getSectionFromUrl();
+
+  if (!initialSection) {
+    initialSection = role === "member" ? "myTasks" : "createdTasks";
+    setSectionInUrl(initialSection, { replace: true });
+  }
+
   try {
-    if (role === "member") {
-      await renderSection("myTasks", currentWorkspace, container);
-    } else if (role === "owner" || role === "admin") {
-      await renderSection("createdTasks", currentWorkspace, container);
-    }
+    await navigateToSection(initialSection, workspace, container, {
+      push: false,
+    });
   } catch (err) {
     console.error(err);
   }
@@ -154,23 +213,24 @@ export async function initWorkspaceDashboard() {
   // Sidebar is loaded async by app.js — wait for it, then wire events
   await waitForSidebar();
   attachSidebarEvents();
-  navDropdowns(); // needs #navBtnDropdown to already exist
+  navDropdowns(); 
 
   // Modals that need workspace context — call AFTER setCurrentWorkspace
-  openStartDiscussionModal(currentWorkspace, authData.user);
+  openStartDiscussionModal(workspace, authData.user);
 
   if (role === "member") {
-    openCreateTaskModal(currentWorkspace.id);
+    openCreateTaskModal(workspace.id);
     openLogTaskModal(supabase, workspaceId, authData.user.id);
   } else {
-    openCreateTaskModal(currentWorkspace.id);
-    openAddMemeberModal(currentWorkspace.id);
+    openCreateTaskModal(workspace.id);
+    openAddMemeberModal(workspace.id);
   }
 
-  // Nav click handler (shared). Ignore the Histories dropdown toggle itself.
+  //  NAV CLICK HANDLER 
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest(".navBtn");
     if (!btn) return;
+
     // Don't treat the dropdown toggle as a section navigation
     if (
       btn.classList.contains("navBtnDropdown") ||
@@ -179,19 +239,24 @@ export async function initWorkspaceDashboard() {
       return;
     }
 
-    const content = getContentContainer();
     const section = btn.dataset.section;
     if (!section) return;
 
-    setLoading(true, content);
-    try {
-      await new Promise(requestAnimationFrame);
-      await renderSection(section, currentWorkspace, content);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false, content);
-    }
+    // Already on this section → do nothing
+    if (getSectionFromUrl() === section) return;
+
+    await navigateToSection(section, workspace, getContentContainer());
+  });
+
+  //  BROWSER BACK / FORWARD 
+  window.addEventListener("popstate", async () => {
+    const section =
+      getSectionFromUrl() ||
+      (currentRole === "member" ? "myTasks" : "createdTasks");
+
+    await navigateToSection(section, workspace, getContentContainer(), {
+      push: false,
+    });
   });
 }
 

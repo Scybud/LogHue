@@ -252,8 +252,14 @@ export function loadAssignedTasks(sectionTitle, tasks, container) {
 
     const assignee = document.createElement("p");
     assignee.classList.add("meta");
-    assignee.textContent = tsk.assigned_to ? `Assigned to: Me` : "Unassigned";
-
+    
+if (tsk.assigned_to === user.id) {
+  assignee.textContent = "Assigned to: Me";
+} else if (tsk.assigned_to) {
+  assignee.textContent = `Assigned to: ${tsk.profiles?.full_name || "Unknown"}`;
+} else {
+  assignee.textContent = "Unassigned";
+}
     const assignedOn = document.createElement("p");
     assignedOn.classList.add("meta");
     assignedOn.textContent = `Assigned on: ${formatDateTime(tsk.created_at)}`;
