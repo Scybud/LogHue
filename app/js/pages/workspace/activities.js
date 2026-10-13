@@ -1,6 +1,7 @@
 import { formatDateTime } from "../../utils/time.js";
 import { sessionState } from "../../session.js";
 import { openUpgradeModal } from "../../utils/modals.js";
+import { makeCollapsible } from "../../utils/toggle.js";
 
 /**
  * Shared activities feed (admin / owner / member).
@@ -159,11 +160,8 @@ function buildEntry(item) {
   strongName.textContent = name;
   text.append(strongName, document.createTextNode(` ${label}`));
 
-  const time = document.createElement("time");
-  time.classList.add("logTime");
-  time.textContent = formatDateTime(item.created_at);
 
-  headline.append(profileImg, text, time);
+  headline.append(profileImg, text);
 
   const detail = document.createElement("div");
   detail.classList.add("logDetail");
@@ -173,6 +171,8 @@ function buildEntry(item) {
     note.classList.add("logNote");
     note.textContent = item.note || "";
 
+    makeCollapsible(note, 150);
+    
     const statusClass = item.status === "in progress" ? "in-progress" : "completed";
     const status = document.createElement("span");
     status.classList.add("statusBadge", statusClass);

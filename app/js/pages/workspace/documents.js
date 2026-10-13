@@ -3,6 +3,7 @@ import { actionMsg, confirmAction, openUpgradeModal } from "../../utils/modals.j
 import { showUploadStatus } from "../../shared/workspace/utils.js";
 import { currentWorkspace } from "./state.js";
 import { sessionState } from "../../session.js";
+import { formatDateTimeRelatively } from "../../utils/time.js";
 
 /**
  * Shared documents section (upload / view / download / delete own).
@@ -114,7 +115,7 @@ export async function loadDocuments(documents, container) {
 
       const meta = document.createElement("div");
       meta.className = "docMeta";
-      meta.textContent = `${(doc.size_bytes / 1024).toFixed(1)} KB • ${doc.mime_type} | Uploaded by: ${doc.profiles.full_name}`;
+      meta.textContent = `${(doc.size_bytes / 1024).toFixed(1)} KB • ${doc.mime_type} | Uploaded by: ${doc.profiles.full_name} | Uploaded ${formatDateTimeRelatively(doc.created_at)}`;
 
       info.append(titleEl, meta);
       left.append(svg2, info);

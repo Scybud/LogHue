@@ -847,30 +847,29 @@ section.isLoading::before,
 .documentsList {
   display: flex;
   flex-direction: column;
-  gap: 12px;
 }
 
 /* Document Item */
 .documentItem {
-  display: grid;
-grid-template-columns: 1fr minmax(50px, 50px) minmax(50px, 100px) minmax(50px, 60px);  
-gap: var(--space-md);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-md);
   padding: var(--space-sm) var(--space-md);
-  background: var(--lh-surface-2);
+  background: var(--surface-primary);
   border-bottom: 1px solid var(--border-primary);
-  border-radius: 8px;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
-@media (max-width: 600px) {
-  .documentItem {
-display: flex;
-flex-wrap: wrap;
+.documentItem:first-child {
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
-.docAction {
-    padding: var(--space-sm);
-  max-width: fit-content;
+.documentItem:last-child {
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
 }
+.documentItem:has(.docAction:hover) {
+background: none;
 }
+
 .documentItem:hover {
   background: var(--bg-secondary);
   border-color: var(--primary-light);
@@ -915,21 +914,16 @@ gap: var(--space-sm);
 .documentItem .docAction {
   margin: 0;
   padding: var(--space-sm);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   color: var(--text-primary);
   background: var(--surface-primary);
   border: 1px solid var(--border-primary);
   cursor: pointer;
   transition: background 0.2s ease, border 0.2s ease;
 }
-.docAction.danger {
-  color: #000;
-  background: var(--danger);
-}
-.docAction.danger:hover {
-  background: rgb(253, 45, 45);
-}
+
 .docAction:hover {
+  background: var(--surface-secondary);
   border: 1px solid var(--border-secondary);
 }
 
