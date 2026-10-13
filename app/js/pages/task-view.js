@@ -14,6 +14,7 @@ import { loadWorkspaceMembersForTaskView } from "../data/tasksDb.js";
 import { openFocusTimerModal } from "../components/focus-timer.js";
 import { makeCollapsible } from "../utils/toggle.js";
 import { linkify } from "../utils/linkify.js";
+import { renderFormattedText, renderFormattedTextWithLink } from "../utils/formatText.js";
 
 let currentTask = null;
 let currentWorkspace = null;
@@ -95,7 +96,7 @@ async function loadWorkspaceActivities() {
 }
 
 const reloadBtn = document.querySelector(".reloadBtn");
-reloadBtn.addEventListener("click", () => {
+reloadBtn?.addEventListener("click", () => {
   window.location.reload();
 });
 
@@ -147,8 +148,11 @@ async function initTaskView() {
   const taskId = params.get("task");
 
   if (!taskId) {
-    document.getElementById("taskViewContent").innerHTML =
-      `<p class="placeholderText">Invalid task link. <a href="dashboard">Go to dashboard</a></p>`;
+    actionMsg("Task does not exist or you do not have access to it.", "warning")
+
+    setTimeout(() => {
+      window.location.href = "dashboard"
+    }, 5000)
     return;
   }
   loadTask.remove;
@@ -286,89 +290,6 @@ function loadSidebar() {
   });
 }
 
-function renderFormattedText(text, container) {
-  container.innerHTML = "";
-
-  if (!text?.trim()) return;
-
-  const linkified = linkify(text); // escapes internally, then adds <a> tags
-
-  const lines = linkified.replace(/\r\n/g, "\n").split("\n");
-
-  let paragraph = [];
-  let currentList = null;
-  let currentListType = null;
-
-  const flushParagraph = () => {
-    if (!paragraph.length) return;
-
-    const p = document.createElement("p");
-
-    paragraph.forEach((line, index) => {
-      if (index > 0) p.appendChild(document.createElement("br"));
-      const span = document.createElement("span");
-      span.innerHTML = line;
-      p.appendChild(span);
-    });
-
-    container.appendChild(p);
-    paragraph = [];
-  };
-
-  const flushList = () => {
-    if (!currentList) return;
-    container.appendChild(currentList);
-    currentList = null;
-    currentListType = null;
-  };
-
-  lines.forEach((line) => {
-    const trimmed = line.trim();
-
-    if (!trimmed) {
-      flushParagraph();
-      flushList();
-      return;
-    }
-
-    const numberedMatch = trimmed.match(/^(\d+)\.\s+(.+)$/);
-
-    if (numberedMatch) {
-      flushParagraph();
-      if (currentListType !== "ol") {
-        flushList();
-        currentList = document.createElement("ol");
-        currentListType = "ol";
-      }
-      const li = document.createElement("li");
-      li.innerHTML = numberedMatch[2];
-      currentList.appendChild(li);
-      return;
-    }
-
-    const bulletMatch = trimmed.match(/^[-*]\s+(.+)$/);
-
-    if (bulletMatch) {
-      flushParagraph();
-      if (currentListType !== "ul") {
-        flushList();
-        currentList = document.createElement("ul");
-        currentListType = "ul";
-      }
-      const li = document.createElement("li");
-      li.innerHTML = bulletMatch[1];
-      currentList.appendChild(li);
-      return;
-    }
-
-    flushList();
-    paragraph.push(trimmed);
-  });
-
-  flushParagraph();
-  flushList();
-}
-
 /* ---------------------------------------------
    RENDER TASK HEADER
 --------------------------------------------- */
@@ -479,7 +400,7 @@ function renderTaskHeader() {
   description.className = "taskDescription";
 
   if (currentTask.description?.trim()) {
-    renderFormattedText(currentTask.description, description);
+    renderFormattedTextWithLink(currentTask.description, description);
     makeCollapsible(description);
   } else {
     description.textContent = "No description provided.";

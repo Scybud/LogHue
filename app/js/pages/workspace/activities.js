@@ -2,6 +2,7 @@ import { formatDateTime } from "../../utils/time.js";
 import { sessionState } from "../../session.js";
 import { openUpgradeModal } from "../../utils/modals.js";
 import { makeCollapsible } from "../../utils/toggle.js";
+import { renderFormattedText } from "../../utils/formatText.js";
 
 /**
  * Shared activities feed (admin / owner / member).
@@ -169,7 +170,7 @@ function buildEntry(item) {
   if (isTaskLog) {
     const note = document.createElement("p");
     note.classList.add("logNote");
-    note.textContent = item.note || "";
+    renderFormattedText(item.note, note) || "";
 
     makeCollapsible(note, 150);
     
