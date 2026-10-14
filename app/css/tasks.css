@@ -253,11 +253,11 @@ line-height: var(--space-md);
   overflow: hidden;
 }
 
-.workspaceListContainer {
+.workspaceListContainer, .notesListContainer {
   display: flex;
   flex-direction: column;
   gap: var(--space-xs, 4px);
-  max-height: 240px;
+  max-height: 300px;
   overflow-y: auto;
   margin: var(--space-md) 0;
 }

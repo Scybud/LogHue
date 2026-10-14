@@ -19,8 +19,10 @@ import { makeCollapsible } from "../../js/utils/toggle.js";
 // State
 let personalCreatedTasks: HTMLElement;
 let loggedTasksCount: HTMLElement;
-let selectedWorkspaceId: string = "";
 let taskIdToDuplicate: string = ""; // set when duplicateBtn is clicked, before the modal opens
+let selectedWorkspaceId: string = "";
+let taskIdToLink: string = "";
+let selectedNoteId: string = "";
 let userNotes: { id: string; title: string }[] = [];
 
 type sessionUser = { id: string; email: string } | null;
@@ -72,7 +74,7 @@ export async function initPersonalTasks() {
   attachDeleteTaskEvent(personalCreatedTasks, user.id);
   attachToggleCompleteEvent(personalCreatedTasks);
   attachDuplicateTaskEvent(personalCreatedTasks, user.id);
-  attachLinkNoteEvent(personalCreatedTasks);
+  attachLinkNoteEvent(personalCreatedTasks, user.id);
   attachEditTaskEvent(personalCreatedTasks);
   openLogPersonalTaskModal();
 }
@@ -652,51 +654,8 @@ export function attachEditTaskEvent(container: HTMLElement) {
   });
 }
 
-// Duplicate Task (Delegated)
-export function attachDuplicateTaskEvent(
-  container: HTMLElement,
-  userId: string,
-) {
-  if (!container) return;
-
-  container.addEventListener("click", async (e: Event) => {
-    const btn = (e.target as HTMLElement).closest(
-      ".duplicateBtn",
-    ) as HTMLButtonElement | null;
-    if (!btn) return;
-
-    const card = btn.closest(".taskCard") as HTMLElement | null;
-    if (!card) return;
-
-    const taskId = card.dataset.id;
-    if (!taskId) return;
-
-    taskIdToDuplicate = taskId;
-
-    await loadComponent(
-      "../components/modals/duplicate-task",
-      "modalContainer",
-    );
-
-    const workspaceListContainer = document.getElementById(
-      "workspaceListContainer",
-    ) as HTMLElement;
-
-    await populateWorkspaceList(workspaceListContainer, userId);
-
-    const confirmBtn = document.getElementById(
-      "duplicateTaskToWorkspaceBtn",
-    ) as HTMLButtonElement | null;
-    if (confirmBtn) {
-      confirmBtn.addEventListener("click", async (evt) => {
-        evt.preventDefault(); // button is inside a <form>, guard against submit
-        await performTaskDuplicate(confirmBtn, userId);
-      });
-    }
-  });
-}
-
 //link task to note
+/*
 function createNoteLinkSelect(task: Task): HTMLElement {
   const wrapper = document.createElement("div");
   wrapper.classList.add("linkNoteSelect");
@@ -751,6 +710,7 @@ export function attachLinkNoteEvent(container: HTMLElement) {
   });
 }
 
+*/
 async function updateTaskLinkedNote(taskId: string, noteId: string | null) {
   const { error } = await supabase
     .from("personal_tasks")
@@ -776,6 +736,162 @@ async function updateTaskLinkedNote(taskId: string, noteId: string | null) {
   }
 
   renderExistingTasks();
+}
+
+// Link Note (Delegated)
+export function attachLinkNoteEvent(
+  container: HTMLElement,
+  userId: string,
+) {
+  if (!container) return;
+
+  container.addEventListener("click", async (e: Event) => {
+    const btn = (e.target as HTMLElement).closest(
+      ".linkNoteBtn",
+    ) as HTMLButtonElement | null;
+    if (!btn) return;
+
+    const card = btn.closest(".taskCard") as HTMLElement | null;
+    if (!card) return;
+
+    const taskId = card.dataset.id;
+    if (!taskId) return;
+
+    taskIdToLink = taskId;
+
+    await loadComponent(
+      "../components/modals/link-task-to-note",
+      "modalContainer",
+    );
+
+    const notesListContainer = document.getElementById(
+      "notesListContainer",
+    ) as HTMLElement;
+
+    await populateNoteList(notesListContainer, userId);
+
+    const confirmBtn = document.getElementById(
+      "linkTaskToNoteBtn",
+    ) as HTMLButtonElement | null;
+    if (confirmBtn) {
+      confirmBtn.addEventListener("click", async (evt) => {
+        evt.preventDefault(); // button is inside a <form>, guard against submit
+        await performTaskLink(confirmBtn, userId);
+      });
+    }
+  });
+}
+
+async function performTaskLink(btn: HTMLButtonElement, userId: string) {
+  if (!selectedNoteId) {
+    actionMsg("Please select a note.", "error");
+    return;
+  }
+
+  const note = userNotes.find(
+    (n) => String(n.id) === String(selectedNoteId),
+  );
+
+  if (!note) {
+    actionMsg("Note not found.", "error");
+    return;
+  }
+
+  btn.disabled = true;
+
+  await updateTaskLinkedNote(taskIdToLink, selectedNoteId)
+
+  actionMsg("Note linked to task!", "success");
+  closeModal();
+
+  taskIdToLink = "";
+  selectedNoteId = "";
+}
+
+async function populateNoteList(container: HTMLElement, userId: string) {
+  const { data, error } = await supabase
+    .from("personal_notes")
+    .select("id, title")
+    .eq("user_id", userId);
+
+  if (error) {
+    console.error(error);
+    actionMsg("Failed to load notes", "error");
+    return;
+  }
+
+  container.innerHTML = "";
+  selectedWorkspaceId = ""; // reset each time the modal opens
+
+  type notesRow = {
+    title: string;
+    id: string;
+  };
+
+  data.forEach((n: notesRow) => {
+      const item = document.createElement("div");
+      item.classList.add("noteOption");
+      item.dataset.noteId = n.id;
+      item.textContent = n.title;
+
+      item.addEventListener("click", () => {
+        container
+          .querySelectorAll(".noteOption.selected")
+          .forEach((el) => el.classList.remove("selected"));
+        item.classList.add("selected");
+        selectedNoteId = n.id;
+      });
+
+      container.append(item);
+    });
+}
+
+
+
+
+
+// Duplicate Task (Delegated)
+export function attachDuplicateTaskEvent(
+  container: HTMLElement,
+  userId: string,
+) {
+  if (!container) return;
+
+  container.addEventListener("click", async (e: Event) => {
+    const btn = (e.target as HTMLElement).closest(
+      ".duplicateBtn",
+    ) as HTMLButtonElement | null;
+    if (!btn) return;
+
+    const card = btn.closest(".taskCard") as HTMLElement | null;
+    if (!card) return;
+
+    const taskId = card.dataset.id;
+    if (!taskId) return;
+
+    taskIdToDuplicate = taskId;
+
+    await loadComponent(
+      "../components/modals/duplicate-task",
+      "modalContainer",
+    );
+
+    const workspaceListContainer = document.getElementById(
+      "workspaceListContainer",
+    ) as HTMLElement;
+
+    await populateWorkspaceList(workspaceListContainer, userId);
+
+    const confirmBtn = document.getElementById(
+      "duplicateTaskToWorkspaceBtn",
+    ) as HTMLButtonElement | null;
+    if (confirmBtn) {
+      confirmBtn.addEventListener("click", async (evt) => {
+        evt.preventDefault(); // button is inside a <form>, guard against submit
+        await performTaskDuplicate(confirmBtn, userId);
+      });
+    }
+  });
 }
 
 async function performTaskDuplicate(btn: HTMLButtonElement, userId: string) {

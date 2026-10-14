@@ -11,8 +11,10 @@ import { makeCollapsible } from "../../js/utils/toggle.js";
 // State
 let personalCreatedTasks;
 let loggedTasksCount;
-let selectedWorkspaceId = "";
 let taskIdToDuplicate = ""; // set when duplicateBtn is clicked, before the modal opens
+let selectedWorkspaceId = "";
+let taskIdToLink = "";
+let selectedNoteId = "";
 let userNotes = [];
 let user = null;
 export let savedTaskDetails = []; // exported for other modules
@@ -50,7 +52,7 @@ export async function initPersonalTasks() {
     attachDeleteTaskEvent(personalCreatedTasks, user.id);
     attachToggleCompleteEvent(personalCreatedTasks);
     attachDuplicateTaskEvent(personalCreatedTasks, user.id);
-    attachLinkNoteEvent(personalCreatedTasks);
+    attachLinkNoteEvent(personalCreatedTasks, user.id);
     attachEditTaskEvent(personalCreatedTasks);
     openLogPersonalTaskModal();
 }
@@ -496,6 +498,154 @@ export function attachEditTaskEvent(container) {
         await openEditTaskModal(task);
     });
 }
+//link task to note
+/*
+function createNoteLinkSelect(task: Task): HTMLElement {
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("linkNoteSelect");
+
+  const select = document.createElement("select");
+  select.classList.add("linkNoteDropdown");
+
+  const noneOpt = document.createElement("option");
+  noneOpt.value = "";
+  noneOpt.textContent = "No linked note";
+  select.appendChild(noneOpt);
+
+  userNotes.forEach((note) => {
+    const opt = document.createElement("option");
+    opt.value = note.id;
+    opt.textContent = note.title || "Untitled";
+    if (note.id === task.linked_note_id) opt.selected = true;
+    select.appendChild(opt);
+  });
+
+  select.addEventListener("change", async () => {
+    await updateTaskLinkedNote(task.id, select.value || null);
+  });
+
+  wrapper.appendChild(select);
+  return wrapper;
+}
+
+export function attachLinkNoteEvent(container: HTMLElement) {
+  if (!container) return;
+
+  container.addEventListener("click", (e: Event) => {
+    const btn = (e.target as HTMLElement).closest(
+      ".linkNoteBtn",
+    ) as HTMLButtonElement | null;
+    if (!btn) return;
+
+    const card = btn.closest(".taskCard") as HTMLElement | null;
+    if (!card) return;
+
+    const existing = card.querySelector(".linkNoteSelect");
+    if (existing) {
+      existing.remove();
+      return;
+    }
+
+    const taskId = card.dataset.id;
+    const task = savedTaskDetails.find((t) => String(t.id) === String(taskId));
+    if (!task) return;
+
+    card.appendChild(createNoteLinkSelect(task));
+  });
+}
+
+*/
+async function updateTaskLinkedNote(taskId, noteId) {
+    const { error } = await supabase
+        .from("personal_tasks")
+        .update({ linked_note_id: noteId })
+        .eq("id", taskId);
+    if (error) {
+        console.error(error);
+        actionMsg("Failed to link note", "error");
+        return;
+    }
+    const taskRecord = savedTaskDetails.find((t) => String(t.id) === String(taskId));
+    if (taskRecord) {
+        taskRecord.linked_note_id = noteId;
+        const note = userNotes.find((n) => n.id === noteId);
+        taskRecord.personal_notes = note
+            ? { id: note.id, title: note.title }
+            : null;
+    }
+    renderExistingTasks();
+}
+// Link Note (Delegated)
+export function attachLinkNoteEvent(container, userId) {
+    if (!container)
+        return;
+    container.addEventListener("click", async (e) => {
+        const btn = e.target.closest(".linkNoteBtn");
+        if (!btn)
+            return;
+        const card = btn.closest(".taskCard");
+        if (!card)
+            return;
+        const taskId = card.dataset.id;
+        if (!taskId)
+            return;
+        taskIdToLink = taskId;
+        await loadComponent("../components/modals/link-task-to-note", "modalContainer");
+        const notesListContainer = document.getElementById("notesListContainer");
+        await populateNoteList(notesListContainer, userId);
+        const confirmBtn = document.getElementById("linkTaskToNoteBtn");
+        if (confirmBtn) {
+            confirmBtn.addEventListener("click", async (evt) => {
+                evt.preventDefault(); // button is inside a <form>, guard against submit
+                await performTaskLink(confirmBtn, userId);
+            });
+        }
+    });
+}
+async function performTaskLink(btn, userId) {
+    if (!selectedNoteId) {
+        actionMsg("Please select a note.", "error");
+        return;
+    }
+    const note = userNotes.find((n) => String(n.id) === String(selectedNoteId));
+    if (!note) {
+        actionMsg("Note not found.", "error");
+        return;
+    }
+    btn.disabled = true;
+    await updateTaskLinkedNote(taskIdToLink, selectedNoteId);
+    actionMsg("Note linked to task!", "success");
+    closeModal();
+    taskIdToLink = "";
+    selectedNoteId = "";
+}
+async function populateNoteList(container, userId) {
+    const { data, error } = await supabase
+        .from("personal_notes")
+        .select("id, title")
+        .eq("user_id", userId);
+    if (error) {
+        console.error(error);
+        actionMsg("Failed to load notes", "error");
+        return;
+    }
+    container.innerHTML = "";
+    selectedWorkspaceId = ""; // reset each time the modal opens
+    data.forEach((n) => {
+        const item = document.createElement("div");
+        item.classList.add("noteOption");
+        item.dataset.noteId = n.id;
+        item.textContent = n.title;
+        item.addEventListener("click", () => {
+            container
+                .querySelectorAll(".noteOption.selected")
+                .forEach((el) => el.classList.remove("selected"));
+            item.classList.add("selected");
+            selectedNoteId = n.id;
+        });
+        container.append(item);
+    });
+}
 // Duplicate Task (Delegated)
 export function attachDuplicateTaskEvent(container, userId) {
     if (!container)
@@ -522,72 +672,6 @@ export function attachDuplicateTaskEvent(container, userId) {
             });
         }
     });
-}
-//link task to note
-function createNoteLinkSelect(task) {
-    const wrapper = document.createElement("div");
-    wrapper.classList.add("linkNoteSelect");
-    const select = document.createElement("select");
-    select.classList.add("linkNoteDropdown");
-    const noneOpt = document.createElement("option");
-    noneOpt.value = "";
-    noneOpt.textContent = "No linked note";
-    select.appendChild(noneOpt);
-    userNotes.forEach((note) => {
-        const opt = document.createElement("option");
-        opt.value = note.id;
-        opt.textContent = note.title || "Untitled";
-        if (note.id === task.linked_note_id)
-            opt.selected = true;
-        select.appendChild(opt);
-    });
-    select.addEventListener("change", async () => {
-        await updateTaskLinkedNote(task.id, select.value || null);
-    });
-    wrapper.appendChild(select);
-    return wrapper;
-}
-export function attachLinkNoteEvent(container) {
-    if (!container)
-        return;
-    container.addEventListener("click", (e) => {
-        const btn = e.target.closest(".linkNoteBtn");
-        if (!btn)
-            return;
-        const card = btn.closest(".taskCard");
-        if (!card)
-            return;
-        const existing = card.querySelector(".linkNoteSelect");
-        if (existing) {
-            existing.remove();
-            return;
-        }
-        const taskId = card.dataset.id;
-        const task = savedTaskDetails.find((t) => String(t.id) === String(taskId));
-        if (!task)
-            return;
-        card.appendChild(createNoteLinkSelect(task));
-    });
-}
-async function updateTaskLinkedNote(taskId, noteId) {
-    const { error } = await supabase
-        .from("personal_tasks")
-        .update({ linked_note_id: noteId })
-        .eq("id", taskId);
-    if (error) {
-        console.error(error);
-        actionMsg("Failed to link note", "error");
-        return;
-    }
-    const taskRecord = savedTaskDetails.find((t) => String(t.id) === String(taskId));
-    if (taskRecord) {
-        taskRecord.linked_note_id = noteId;
-        const note = userNotes.find((n) => n.id === noteId);
-        taskRecord.personal_notes = note
-            ? { id: note.id, title: note.title }
-            : null;
-    }
-    renderExistingTasks();
 }
 async function performTaskDuplicate(btn, userId) {
     if (!selectedWorkspaceId) {

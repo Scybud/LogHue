@@ -593,8 +593,9 @@ from {
       }
 
 
+
       
-.workspaceOption {
+.workspaceOption, .noteOption {
   padding: var(--space-sm, 10px) var(--space-md);
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-md, 6px);
@@ -602,11 +603,11 @@ from {
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
-.workspaceOption:hover {
+.workspaceOption:hover, .noteOption:hover {
   background: var(--surface-primary);
 }
 
-.workspaceOption.selected {
+.workspaceOption.selected, .noteOption.selected {
   background: var(--text-primary);
   border-color: var(--text-primary);
   color: var(--surface-primary);
@@ -614,7 +615,7 @@ from {
 }
 
 /* Optional: a checkmark on the selected item, remove if you don't want it */
-.workspaceOption.selected::after {
+.workspaceOption.selected::after, .noteOption.noteOption.selected::after {
   content: "✓";
   float: right;
 }
