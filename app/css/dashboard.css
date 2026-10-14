@@ -566,6 +566,7 @@ max-width: 200px;
   background: none;
   padding: calc(var(--space-sm) * 1.2) var(--space-sm);
   margin: 0;
+  border: none;
 }
 .dropdown-list .btn.active {
   background-color: var(--active);
