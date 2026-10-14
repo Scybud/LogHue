@@ -26,9 +26,8 @@ let pendingResort = false;
 let idleTimer = null;
 const IDLE_RESORT_MS = 15000;
 
-/* ---------------------------------------------
-GET USER ROLE
---------------------------------------------- */
+/*
+GET USER ROLE */
 async function getUserRole(workspaceId) {
   const { data: userData } = await supabase.auth.getUser();
   if (!userData?.user) return null;
@@ -128,9 +127,8 @@ reloadBtn.addEventListener("click", () => {
   window.location.reload();
 });
 
-/* ---------------------------------------------
-   INIT
---------------------------------------------- */
+/*
+   INIT */
 document.addEventListener("DOMContentLoaded", initDiscussionView);
 window.addEventListener("beforeunload", () => {
   unsubscribeChannel(realtimeChannel);
@@ -158,12 +156,11 @@ async function initDiscussionView() {
   attachCommentSubmitHandler();
   attachIdleResortTracking();
 
-  // renderComments() already scrolls to bottom, but avatar images load
-  // asynchronously and grow the feed's height after that snapshot, so
-  // the initial scroll can land short. Re-run once layout has settled
-  // and once more after images finish loading.
+  // Ensure we land on the latest message even after images/fonts settle
   requestAnimationFrame(() => requestAnimationFrame(scrollFeedToBottom));
   window.addEventListener("load", scrollFeedToBottom, { once: true });
+  setTimeout(scrollFeedToBottom, 150);
+  setTimeout(scrollFeedToBottom, 400);
 
   realtimeChannel = subscribeWorkspaceChannel(currentWorkspace.id, {
     onDiscussionUpdate: handleDiscussionUpdate,
@@ -259,9 +256,8 @@ function loadSidebar() {
   });
 }
 
-/* ---------------------------------------------
-   LOAD DISCUSSION + COMMENTS
---------------------------------------------- */
+/*
+   LOAD DISCUSSION + COMMENTS */
 async function loadDiscussion(discussionId) {
   if (!discussionId) {
     console.warn("No discussion ID provided — skipping Supabase fetch.");
@@ -308,14 +304,13 @@ async function loadDiscussion(discussionId) {
   pendingResort = false;
 }
 
-/* ---------------------------------------------
-   RENDER HEADER
---------------------------------------------- */
+/*
+   RENDER HEADER */
 function renderDiscussionHeader() {
   const container = document.querySelector(".dcnHeader");
   if (!container) return;
 
-  const isAdmin = ["admin", "owner"].includes(userRole.role);
+  const isWorkspaceOwner = ["owner"].includes(userRole.role);
   const isClosed = currentDiscussion.status === "closed";
 
   container.innerHTML = `
@@ -323,7 +318,7 @@ function renderDiscussionHeader() {
       <h2>${currentDiscussion.title}</h2>
       <div class="discussionActions">
         ${
-          isAdmin || currentDiscussion.created_by === currentUser.user.id
+          isWorkspaceOwner || currentDiscussion.created_by === currentUser.user.id
             ? `<button id="markDiscussionClosedBtn" class="primaryBtn btn btn-sm">
                 ${isClosed ? "Reopen" : "Close"}
               </button>`
@@ -338,7 +333,7 @@ function renderDiscussionHeader() {
         <div class="metaItem">
           <span class="metaLabel">Started by:</span>
           <div class="avatarGroup">
-            <img src="${currentDiscussion.profiles?.avatar_url || "/assets/default-avatar.png"}" class="profileImg" />
+            <img src="${currentDiscussion.profiles?.avatar_url || "/assets/images/default_profile.png"}" class="profileImg" />
             <span>${currentDiscussion.profiles?.full_name || "Unknown"}</span>
           </div>
         </div>
@@ -369,17 +364,32 @@ function renderDiscussionHeader() {
   toggleCommentInputForClosedState();
 }
 
-/* ---------------------------------------------
-   SCROLL
---------------------------------------------- */
+/*
+   SCROLL */
 function scrollFeedToBottom() {
   const feed = document.getElementById("commentsFeed");
-  if (feed) feed.scrollTop = feed.scrollHeight;
+  if (!feed) return;
+
+  // Prefer scrolling the last message into view – more reliable
+  const last = feed.lastElementChild;
+  if (last) {
+    last.scrollIntoView({ block: "end", behavior: "instant" });
+  } else {
+    feed.scrollTop = feed.scrollHeight;
+  }
+
+  // Second pass after any pending layout (images, fonts)
+  requestAnimationFrame(() => {
+    if (last) {
+      last.scrollIntoView({ block: "end", behavior: "instant" });
+    } else {
+      feed.scrollTop = feed.scrollHeight;
+    }
+  });
 }
 
-/* ---------------------------------------------
-   RENDER COMMENTS (full, sorted render)
---------------------------------------------- */
+/*
+   RENDER COMMENTS (full, sorted render) */
 function renderComments() {
   const feed = document.getElementById("commentsFeed");
   feed.innerHTML = "";
@@ -403,7 +413,7 @@ function renderComments() {
 
 function buildCommentCard(comment, myId) {
   const isOwn = comment.created_by === myId;
-  const isAdmin = ["admin", "owner"].includes(userRole.role);
+  const isWorkspaceOwner = ["owner"].includes(userRole.role);
   const profile = resolveProfile(comment.created_by);
 
   const card = document.createElement("div");
@@ -415,23 +425,25 @@ function buildCommentCard(comment, myId) {
   header.classList.add("commentHeader");
 
   const avatar = document.createElement("img");
-  avatar.src = profile.avatar_url || "/assets/default-avatar.png";
+  avatar.src = profile.avatar_url || "/assets/images/default_profile.png";
   avatar.className = "profileImg";
+  avatar.alt = "";
 
   const headerInfo = document.createElement("div");
+  headerInfo.className = "headerMeta";
+
   const name = document.createElement("span");
   name.classList.add("name");
   name.textContent = profile.full_name || "Unknown User";
 
-  const timestamp = document.createElement("div");
+  const timestamp = document.createElement("span");
   timestamp.className = "timestamp";
   timestamp.textContent = formatDateTimeRelatively(comment.created_at);
   if (comment.updated_at) {
     timestamp.textContent += " (edited)";
   }
 
-  headerInfo.appendChild(name);
-  headerInfo.appendChild(timestamp);
+  headerInfo.append(name, timestamp);
   header.append(avatar, headerInfo);
 
   const content = document.createElement("div");
@@ -449,7 +461,7 @@ function buildCommentCard(comment, myId) {
     actions.appendChild(editBtn);
   }
 
-  if (isOwn || isAdmin) {
+  if (isOwn || isWorkspaceOwner) {
     const deleteBtn = document.createElement("button");
     deleteBtn.className = "iconBtn deleteCommentBtn";
     deleteBtn.textContent = "Delete";
@@ -468,13 +480,14 @@ function buildCommentCard(comment, myId) {
   replyButton.dataset.comment = comment.id;
   replyButton.textContent = "Reply";
 
+  // Order: header → bubble → actions → thread → reply trigger
   card.append(header, content, actions, thread, replyButton);
   return card;
 }
 
 function buildReplyElement(reply, myId) {
   const isOwnReply = reply.created_by === myId;
-  const isAdmin = ["admin", "owner"].includes(userRole.role);
+  const isWorkspaceOwner = ["owner"].includes(userRole.role);
   const profile = resolveProfile(reply.created_by);
 
   const replyElement = document.createElement("div");
@@ -483,8 +496,9 @@ function buildReplyElement(reply, myId) {
   if (isOwnReply) replyElement.classList.add("is-own");
 
   const avatar = document.createElement("img");
-  avatar.src = profile.avatar_url || "/assets/default-avatar.png";
+  avatar.src = profile.avatar_url || "/assets/images/default_profile.png";
   avatar.className = "profileImg";
+  avatar.alt = "";
 
   const body = document.createElement("div");
   body.classList.add("commentBody");
@@ -497,7 +511,7 @@ function buildReplyElement(reply, myId) {
   text.className = "replyText";
   text.textContent = reply.comment;
 
-  const timestamp = document.createElement("div");
+  const timestamp = document.createElement("span");
   timestamp.className = "timestamp";
   timestamp.textContent = formatDateTimeRelatively(reply.created_at);
   if (reply.updated_at) {
@@ -517,7 +531,7 @@ function buildReplyElement(reply, myId) {
     actions.appendChild(editBtn);
   }
 
-  if (isOwnReply || isAdmin) {
+  if (isOwnReply || isWorkspaceOwner) {
     const deleteBtn = document.createElement("button");
     deleteBtn.className = "iconBtn deleteReplyBtn";
     deleteBtn.textContent = "Delete";
@@ -530,9 +544,8 @@ function buildReplyElement(reply, myId) {
   return replyElement;
 }
 
-/* ---------------------------------------------
-   ADD TOP-LEVEL COMMENT
---------------------------------------------- */
+/*
+   ADD TOP-LEVEL COMMENT */
 function attachCommentSubmitHandler() {
   const btn = document.getElementById("submitCommentBtn");
   const input = document.getElementById("commentInput");
@@ -585,9 +598,8 @@ function toggleCommentInputForClosedState() {
   container.classList.toggle("is-disabled", isClosed);
 }
 
-/* ---------------------------------------------
-   CLOSE / REOPEN
---------------------------------------------- */
+/*
+   CLOSE / REOPEN */
 function handleToggleClosed() {
   const btn = document.getElementById("markDiscussionClosedBtn");
   if (!btn) return;
@@ -607,9 +619,8 @@ function handleToggleClosed() {
     });
 }
 
-/* ---------------------------------------------
-   INLINE REPLY
---------------------------------------------- */
+/*
+   INLINE REPLY */
 function attachInlineReplyHandlers() {
   document.querySelectorAll(".addCommentBtn").forEach((btn) => {
     btn.addEventListener("click", () =>
@@ -674,9 +685,8 @@ async function submitInlineReply(e) {
   box.remove();
 }
 
-/* ---------------------------------------------
-   EDIT / DELETE — COMMENTS
---------------------------------------------- */
+/*
+   EDIT / DELETE — COMMENTS */
 function openEditCommentBox(card, comment) {
   const contentEl = card.querySelector(".commentContent");
   if (!contentEl) return;
@@ -754,9 +764,8 @@ async function handleDeleteComment(commentId) {
   // UI updates via realtime onCommentDelete
 }
 
-/* ---------------------------------------------
-   EDIT / DELETE — REPLIES
---------------------------------------------- */
+/*
+   EDIT / DELETE — REPLIES */
 function openEditReplyBox(replyElement, reply) {
   const textEl = replyElement.querySelector(".replyText");
   if (!textEl) return;
@@ -832,9 +841,8 @@ async function handleDeleteReply(replyId) {
   // UI updates via realtime onReplyDelete
 }
 
-/* ---------------------------------------------
-   REALTIME HANDLERS
---------------------------------------------- */
+/*
+   REALTIME HANDLERS */
 function handleDiscussionUpdate(row) {
   if (row.id !== currentDiscussion.id) return;
   currentDiscussion.status = row.status;
@@ -950,9 +958,8 @@ function handleReplyDelete(row) {
   document.querySelector(`[data-reply-id="${row.id}"]`)?.remove();
 }
 
-/* ---------------------------------------------
-   DEFERRED RESORT (idle / next open)
---------------------------------------------- */
+/*
+   DEFERRED RESORT (idle / next open) */
 function attachIdleResortTracking() {
   const feed = document.getElementById("commentsFeed");
   if (!feed) return;
