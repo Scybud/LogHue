@@ -253,7 +253,13 @@ saveBtn?.addEventListener("click", async () => {
 
       // Delete old avatar after success
       if (oldPath) {
-        await supabase.storage.from("avatars").remove([oldPath]);
+        const { data, error } = await supabase.storage
+          .from("avatars")
+          .remove([oldPath]);
+
+        if (error || !data?.length) {
+          console.error("Old avatar not deleted:", oldPath, data, error);
+        }
       }
 
       sessionState.originalAvatar = urlData.publicUrl;

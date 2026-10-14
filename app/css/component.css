@@ -91,32 +91,6 @@ summary {
   width: 25px;
   height: 25px;
 }
-.actionContainer button,
-.deleteBtn {
-  background-color: var(--bg-primary);
-  border: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  font-size: 1.5rem;
-  color: var(--text-primary);
-  transition:
-    color 0.4s ease,
-    background-color 0.5s ease,
-    transform 0.4s ease;
-  position: relative;
-  cursor: pointer;
-}
-
-button.danger {
-  background: var(--danger);
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-top: var(--space-sm);
-}
 
 #personalCreatedTasks {
   margin: calc(var(--space-sm) + 2px) 0 calc(var(--space-md) + 4px);
@@ -230,6 +204,37 @@ button.danger {
        transform: translate(-10px);
      }
 
+.actionContainer button,
+.deleteBtn {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--danger);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  transition:
+    color 0.4s ease,
+    background-color 0.5s ease,
+    transform 0.4s ease;
+  position: relative;
+  cursor: pointer;
+}
+
+button.danger {
+  background: var(--danger);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: var(--space-sm);
+}
+.btn.deleteBtn:hover, .btn.danger:hover {
+background: rgba(255, 0, 0, 0.21);
+border-color: var(--danger);
+opacity: 1;
+}
 
 /*DROPDOWN STYLES*/
 

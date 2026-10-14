@@ -291,7 +291,7 @@ async function removeMember() {
     btn.addEventListener("click", () => {
       confirmAction(
         "Remove Member",
-        "Are you sure? Removing this member from your workspace cannot be undone. All actions related to the user might also be deleted.",
+        "Are you sure? Removing this member from your workspace cannot be undone. Some activities related to the user might also be deleted.",
         [
           { label: "Cancel", type: "cancel" },
           {
