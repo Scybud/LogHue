@@ -160,15 +160,21 @@ export function ensureBoardSized() {
   if (board.width === BOARD_WIDTH && board.height === BOARD_HEIGHT) return;
   board.width = BOARD_WIDTH;
   board.height = BOARD_HEIGHT;
+  drawNotebookBackground();
 }
 
 export function loadImageOntoBoard(dataUrl) {
   ensureBoardSized();
   if (!context) return;
-  context.clearRect(0, 0, board.width, board.height);
-  if (!dataUrl) return;
+  if (!dataUrl) {
+    drawNotebookBackground();
+    return;
+  }
   const img = new Image();
-  img.onload = () => context.drawImage(img, 0, 0);
+  img.onload = () => {
+    context.clearRect(0, 0, board.width, board.height);
+    context.drawImage(img, 0, 0);
+  };
   img.src = dataUrl;
 }
 
@@ -204,7 +210,7 @@ function getBoardPos(e) {
 }
 
 function clearBoard() {
-  context.clearRect(0, 0, board.width, board.height);
+  drawNotebookBackground();
 }
 
 function fillBoard() {
@@ -607,4 +613,32 @@ function redrawStrokeAsTriangle(verts, color, size) {
     context.stroke();
   };
   img.src = last;
+}
+
+function drawNotebookBackground() {
+  if (!context || !board) return;
+
+  // Paper color
+  context.fillStyle = "#fdfaf3";
+  context.fillRect(0, 0, board.width, board.height);
+
+  // Horizontal ruled lines
+  context.strokeStyle = "#d4cfc4";
+  context.lineWidth = 1.5;
+  context.beginPath();
+
+  const lineSpacing = 48; // adjust for denser/sparser lines
+  for (let y = lineSpacing; y < board.height; y += lineSpacing) {
+    context.moveTo(0, y);
+    context.lineTo(board.width, y);
+  }
+  context.stroke();
+
+  // Optional: vertical margin line (like a real notebook)
+  context.strokeStyle = "#e8a0a0"; // soft red
+  context.lineWidth = 2;
+  context.beginPath();
+  context.moveTo(120, 0); // left margin
+  context.lineTo(120, board.height);
+  context.stroke();
 }
