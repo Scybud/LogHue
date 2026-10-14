@@ -15,6 +15,15 @@ import {
 } from "../components/tables/tableWidget.js";
 import { registerTableEmbedBlot } from "../components/tables/TableembedBlot.js";
 
+import {
+  initSketchBoard,
+  ensureBoardSized,
+  loadImageOntoBoard,
+  getBoardDataURL,
+  clearSketchUndo,
+  setSketchTool,
+} from "../components/sketchboard.js"
+
 // Global state
 let quill = null;
 let currentNoteId = null;
@@ -34,23 +43,10 @@ let isSavingTableNote = false;
 let lastSavedTableSnapshot = "";
 let tableAutosaveTimer = null;
 
-// Sketch state
-let board = null;
-let context = null;
-let isdrawing = false;
-let sketchTool = "pen"; // "pen" | "eraser" | "text"
-let undoStack = [];
-const UNDO_LIMIT = 20;
+// Sketch autosave state
 let isSavingSketch = false;
 let lastSavedSketchSnapshot = "";
 let sketchAutosaveTimer = null;
-const BOARD_WIDTH = 1920;
-const BOARD_HEIGHT = 1080;
-
-// Natural drawing + shape recognition
-let currentStroke = null;
-let shapeHoldTimer = null;
-const SHAPE_HOLD_MS = 700;
 
 // Folder state
 let savedFolders = [];
@@ -158,19 +154,14 @@ function clearSketchAutosaveTimer() {
 }
 
 async function runSketchAutosave() {
-  if (
-    isSavingSketch ||
-    !currentNoteId ||
-    currentNoteType !== "sketch" ||
-    !board
-  )
-    return;
+  if (isSavingSketch || !currentNoteId || currentNoteType !== "sketch") return;
 
   const titleInput = document.getElementById("sketchTitle");
   const title = titleInput ? titleInput.value : "";
-  const imageData = board.toDataURL("image/png");
-  const snapshot = title + imageData;
+  const imageData = getBoardDataURL();
+  if (!imageData) return;
 
+  const snapshot = title + imageData;
   if (snapshot === lastSavedSketchSnapshot) return;
 
   isSavingSketch = true;
@@ -261,38 +252,37 @@ async function initNotes() {
     return;
   }
 
-  // ORIGINAL UI restored
   editorContainer.innerHTML = `
     <div id="textEditorPane">
-  <div class="editorTop">
-    <input id="noteTitle" name="noteTitle" placeholder="Note title" class="noteTitle inputField" />
-    <div class="actionBtnsContainer">
-    <span id="saveStatus" class="saveStatus"></span>
-    <button id="expandNoteBtn" data-title="Resize editor" aria-label="Resize editor" class="btn tooltip actionBtn" type="button">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="5" y="4" width="18" height="14" rx="2" stroke="currentColor" stroke-width="3" />
-          <line x1="7" y1="24" x2="21" y2="24" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
-        </svg>
-      </button>
-      <button id="insertTableBtn" data-title="Insert table" aria-label="Insert table" class="btn tooltip actionBtn" type="button">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="4" width="18" height="16" rx="2" />
-          <path d="M3 10h18M9 4v16" />
-        </svg>
-      </button>
-      <button id="saveNoteBtn" class="btn-sm btn notesActionBtn">Save</button>
-      <select id="exportNotesBtn" class="btn-sm btn btn-secondary notesActionBtn">
-        <option value="">Export As</option>
-        <option value="pdf">PDF</option>
-        <option value="docx">DOCX</option>
-        <option value="html">HTML</option>
-        <option value="txt">TXT</option>
-        <option value="md">Markdown</option>
-      </select>
+      <div class="editorTop">
+        <input id="noteTitle" name="noteTitle" placeholder="Note title" class="noteTitle inputField" />
+        <div class="actionBtnsContainer">
+          <span id="saveStatus" class="saveStatus"></span>
+          <button id="expandNoteBtn" data-title="Resize editor" aria-label="Resize editor" class="btn tooltip actionBtn" type="button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="5" y="4" width="18" height="14" rx="2" stroke="currentColor" stroke-width="3" />
+              <line x1="7" y1="24" x2="21" y2="24" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button id="insertTableBtn" data-title="Insert table" aria-label="Insert table" class="btn tooltip actionBtn" type="button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="16" rx="2" />
+              <path d="M3 10h18M9 4v16" />
+            </svg>
+          </button>
+          <button id="saveNoteBtn" class="btn-sm btn notesActionBtn">Save</button>
+          <select id="exportNotesBtn" class="btn-sm btn btn-secondary notesActionBtn">
+            <option value="">Export As</option>
+            <option value="pdf">PDF</option>
+            <option value="docx">DOCX</option>
+            <option value="html">HTML</option>
+            <option value="txt">TXT</option>
+            <option value="md">Markdown</option>
+          </select>
+        </div>
+      </div>
+      <div id="editor"></div>
     </div>
-  </div>
-  <div id="editor"></div>
-</div>
 
     <div id="sketchEditorPane" hidden>
       <div class="editorTop">
@@ -300,11 +290,11 @@ async function initNotes() {
         <div class="actionBtnsContainer">
           <span id="sketchSaveStatus" class="saveStatus"></span>
           <button id="expandCanvasBtn" data-title="Resize canvas" aria-label="Resize canvas" class="btn tooltip actionBtn" type="button">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="5" y="4" width="18" height="14" rx="2" stroke="currentColor" stroke-width="3" />
-  <line x1="7" y1="24" x2="21" y2="24" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
-</svg>
-         </button>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="5" y="4" width="18" height="14" rx="2" stroke="currentColor" stroke-width="3" />
+              <line x1="7" y1="24" x2="21" y2="24" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
+            </svg>
+          </button>
           <div class="newNoteActionContainer">
             <button onclick="sketchToolbarContainer.hidden ^= 1" class="btn actionBtn" type="button">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -320,12 +310,12 @@ async function initNotes() {
                   <input type="range" id="brush-size" min="1" max="50" value="5" class="tooltip" data-title="Brush size" title="Brush size" />
                 </div>
                 <button id="pen-tool-button" class="btn active" type="button">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 20h9" />
-    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
-  </svg>
-  <span class="toolLabel">Pen</span>
-</button>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 20h9" />
+                    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                  </svg>
+                  <span class="toolLabel">Pen</span>
+                </button>
                 <button id="eraser-tool-button" class="btn" type="button">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 20H8.5L3 14.5a1 1 0 0 1 0-1.4l9-9a1 1 0 0 1 1.4 0l7 7a1 1 0 0 1 0 1.4L14 19" />
@@ -341,20 +331,20 @@ async function initNotes() {
                   <span class="toolLabel">Undo</span>
                 </button>
                 <button id="fill-button" class="btn" type="button">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 11l-8-8-8.5 8.5a2 2 0 0 0 0 2.8L9 21l10-10z" />
-                <path d="M5 13h11" />
-                <circle cx="20" cy="18" r="2" />
-                </svg>
-                <span class="toolLabel">Fill</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 11l-8-8-8.5 8.5a2 2 0 0 0 0 2.8L9 21l10-10z" />
+                    <path d="M5 13h11" />
+                    <circle cx="20" cy="18" r="2" />
+                  </svg>
+                  <span class="toolLabel">Fill</span>
                 </button>
                 <button id="download-button" class="btn" type="button">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 3v12" />
-                <polyline points="7 10 12 15 17 10" />
-                <path d="M5 21h14" />
-                </svg>
-                <span class="toolLabel">Download PNG</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 3v12" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <path d="M5 21h14" />
+                  </svg>
+                  <span class="toolLabel">Download PNG</span>
                 </button>
                 <button id="clear-button" class="btn danger" type="button">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -463,7 +453,11 @@ async function initNotes() {
     return new Delta().insert({ "table-embed": { id } });
   });
 
-  initSketchBoard();
+  // Initialize sketch board (palm rejection + shape recognition)
+  initSketchBoard({
+    onStrokeFinished: () => scheduleSketchAutosave(),
+  });
+
   attachExpandToggle("expandCanvasBtn", "sketchEditorPane");
   attachExpandToggle("expandNoteBtn", "textEditorPane");
   attachExpandToggle("expandTableBtn", "tableEditorPane");
@@ -963,7 +957,6 @@ function openNote(note) {
   clearAutosaveTimer();
   clearSketchAutosaveTimer();
   clearTableAutosaveTimer();
-  clearTimeout(shapeHoldTimer);
   currentNoteId = note.id;
   currentNoteType = note.note_type || "text";
   highlightActiveNote(note.id);
@@ -972,7 +965,7 @@ function openNote(note) {
     showSketchPane();
     document.getElementById("sketchTitle").value =
       note.title || "Untitled Sketch";
-    undoStack = [];
+    clearSketchUndo();
     loadImageOntoBoard(note.canvas_data);
     lastSavedSketchSnapshot = (note.title || "") + (note.canvas_data || "");
     setSketchSaveStatus("");
@@ -1345,566 +1338,7 @@ async function saveNote() {
   }
 }
 
-// ===================== SKETCH BOARD =====================
-
-function initSketchBoard() {
-  board = document.getElementById("board");
-  if (!board) return;
-  context = board.getContext("2d");
-
-  const colorPicker = document.getElementById("color-picker");
-  const brushSize = document.getElementById("brush-size");
-  const penToolBtn = document.getElementById("pen-tool-button");
-  const eraserToolBtn = document.getElementById("eraser-tool-button");
-  const undoBtn = document.getElementById("undo-button");
-  const clearBtn = document.getElementById("clear-button");
-  const fillBtn = document.getElementById("fill-button");
-  const downloadBtn = document.getElementById("download-button");
-
-  board.style.touchAction = "none";
-
-  board.addEventListener("pointerdown", (e) => {
-    // Palm rejection
-    if (e.pointerType === "touch" && e.isPrimary === false) return;
-    if (e.width > 40 || e.height > 40) return;
-
-    if (sketchTool === "text") {
-      placeSketchText(e);
-      return;
-    }
-
-    board.setPointerCapture(e.pointerId);
-    pushUndoSnapshot();
-    isdrawing = true;
-
-    const [x, y] = getBoardPos(e);
-    currentStroke = {
-      points: [{ x, y }],
-      tool: sketchTool,
-      color: colorPicker.value,
-      size: +brushSize.value,
-    };
-
-    context.beginPath();
-    context.moveTo(x, y);
-  });
-
-  board.addEventListener("pointermove", (e) => {
-    if (!isdrawing || !currentStroke) return;
-    if (e.pointerType === "touch" && e.isPrimary === false) return;
-
-    const [x, y] = getBoardPos(e);
-    currentStroke.points.push({ x, y });
-
-    context.lineWidth =
-      currentStroke.tool === "eraser"
-        ? currentStroke.size * 3
-        : currentStroke.size;
-    context.lineCap = "round";
-    context.lineJoin = "round";
-    context.globalCompositeOperation =
-      currentStroke.tool === "eraser" ? "destination-out" : "source-over";
-    context.strokeStyle = currentStroke.color;
-
-    context.lineTo(x, y);
-    context.stroke();
-    context.beginPath();
-    context.moveTo(x, y);
-  });
-
-  board.addEventListener("pointerup", (e) => {
-    if (!isdrawing) return;
-    isdrawing = false;
-    context.beginPath();
-    context.globalCompositeOperation = "source-over";
-
-    if (
-      currentStroke &&
-      currentStroke.tool === "pen" &&
-      currentStroke.points.length > 6
-    ) {
-      clearTimeout(shapeHoldTimer);
-      const pts = currentStroke.points.slice();
-      const col = currentStroke.color;
-      const sz = currentStroke.size;
-
-      shapeHoldTimer = setTimeout(() => {
-        tryRefineShape(pts, col, sz);
-      }, SHAPE_HOLD_MS);
-    } else {
-      scheduleSketchAutosave();
-    }
-
-    currentStroke = null;
-  });
-
-  board.addEventListener("pointercancel", () => {
-    isdrawing = false;
-    currentStroke = null;
-    clearTimeout(shapeHoldTimer);
-  });
-
-  clearBtn.addEventListener("click", () => {
-    pushUndoSnapshot();
-    clearBoard();
-    scheduleSketchAutosave();
-  });
-
-  fillBtn.addEventListener("click", () => {
-    pushUndoSnapshot();
-    fillBoard();
-    scheduleSketchAutosave();
-  });
-
-  downloadBtn.addEventListener("click", downloadBoard);
-  undoBtn.addEventListener("click", undoSketch);
-
-  penToolBtn.addEventListener("click", () => setSketchTool("pen"));
-  eraserToolBtn.addEventListener("click", () =>
-    setSketchTool(sketchTool === "eraser" ? "pen" : "eraser"),
-  );
-
-  setSketchTool("pen");
-}
-
-function getBoardPos(e) {
-  const rect = board.getBoundingClientRect();
-  const scaleX = board.width / rect.width;
-  const scaleY = board.height / rect.height;
-  return [(e.clientX - rect.left) * scaleX, (e.clientY - rect.top) * scaleY];
-}
-
-function ensureBoardSized() {
-  if (!board) return;
-  if (board.width === BOARD_WIDTH && board.height === BOARD_HEIGHT) return;
-  board.width = BOARD_WIDTH;
-  board.height = BOARD_HEIGHT;
-}
-
-function clearBoard() {
-  context.clearRect(0, 0, board.width, board.height);
-}
-
-function fillBoard() {
-  const colorPicker = document.getElementById("color-picker");
-  context.fillStyle = colorPicker.value;
-  context.fillRect(0, 0, board.width, board.height);
-}
-
-function downloadBoard() {
-  const title = document.getElementById("sketchTitle")?.value || "sketch";
-  const safeTitle = title.replace(/[^a-z0-9]/gi, "_").toLowerCase();
-  const imageLink = document.createElement("a");
-  imageLink.download = `${safeTitle || "sketch"}.png`;
-  imageLink.href = board.toDataURL("image/png");
-  imageLink.click();
-}
-
-function setSketchTool(tool) {
-  sketchTool = tool;
-  document
-    .getElementById("pen-tool-button")
-    ?.classList.toggle("active", tool === "pen");
-  document
-    .getElementById("eraser-tool-button")
-    ?.classList.toggle("active", tool === "eraser");
-  board.style.cursor =
-    tool === "text" ? "text" : tool === "eraser" ? "cell" : "crosshair";
-}
-
-function placeSketchText(e) {
-  const rect = board.getBoundingClientRect();
-  const displayX = e.clientX - rect.left;
-  const displayY = e.clientY - rect.top;
-  const [boardX, boardY] = getBoardPos(e);
-  const colorPicker = document.getElementById("color-picker");
-
-  const editable = document.createElement("div");
-  editable.contentEditable = "true";
-  editable.className = "sketchTextInput";
-  editable.style.position = "absolute";
-  editable.style.left = `${displayX}px`;
-  editable.style.top = `${displayY}px`;
-  editable.style.color = colorPicker.value;
-  editable.style.font = "20px sans-serif";
-  editable.style.minWidth = "20px";
-  editable.style.outline = "1px dashed var(--accent, #3b82f6)";
-  editable.style.background = "transparent";
-  board.parentElement.appendChild(editable);
-  editable.focus();
-
-  const commit = () => {
-    const content = editable.textContent.trim();
-    editable.remove();
-    if (!content) return;
-    pushUndoSnapshot();
-    const scale = board.width / rect.width;
-    context.fillStyle = colorPicker.value;
-    context.font = `${20 * scale}px sans-serif`;
-    context.textBaseline = "top";
-    context.fillText(content, boardX, boardY);
-    scheduleSketchAutosave();
-  };
-
-  editable.addEventListener("blur", commit, { once: true });
-  editable.addEventListener("keydown", (ev) => {
-    if (ev.key === "Enter" && !ev.shiftKey) {
-      ev.preventDefault();
-      editable.blur();
-    }
-  });
-}
-
-function pushUndoSnapshot() {
-  if (!board.width || !board.height) return;
-  undoStack.push(board.toDataURL("image/png"));
-  if (undoStack.length > UNDO_LIMIT) undoStack.shift();
-}
-
-function undoSketch() {
-  const previous = undoStack.pop();
-  if (!previous) return;
-  const img = new Image();
-  img.onload = () => {
-    context.clearRect(0, 0, board.width, board.height);
-    context.drawImage(img, 0, 0);
-    scheduleSketchAutosave();
-  };
-  img.src = previous;
-}
-
-function loadImageOntoBoard(dataUrl) {
-  ensureBoardSized();
-  if (!context) return;
-  context.clearRect(0, 0, board.width, board.height);
-  if (!dataUrl) return;
-  const img = new Image();
-  img.onload = () => context.drawImage(img, 0, 0);
-  img.src = dataUrl;
-}
-
-// ===================== IMPROVED SHAPE RECOGNITION =====================
-
-function tryRefineShape(points, color, size) {
-  if (!points || points.length < 8) {
-    scheduleSketchAutosave();
-    return;
-  }
-
-  // Score every shape and pick the best one
-  const scores = {
-    line: scoreLine(points),
-    rect: scoreRect(points),
-    circle: scoreCircle(points),
-    triangle: scoreTriangle(points),
-  };
-
-  // Find the highest scoring shape
-  let best = null;
-  let bestScore = 0.55; // minimum confidence threshold
-
-  for (const [name, score] of Object.entries(scores)) {
-    if (score > bestScore) {
-      bestScore = score;
-      best = name;
-    }
-  }
-
-  if (!best) {
-    scheduleSketchAutosave();
-    return;
-  }
-
-  if (best === "line") {
-    const a = points[0];
-    const b = points[points.length - 1];
-    redrawStrokeAsLine(a, b, color, size);
-  } else if (best === "rect") {
-    const bounds = getBounds(points);
-    redrawStrokeAsRect(bounds, color, size);
-  } else if (best === "circle") {
-    const bounds = getBounds(points);
-    redrawStrokeAsEllipse(bounds, color, size);
-  } else if (best === "triangle") {
-    const verts = findTriangleVertices(points);
-    if (verts) redrawStrokeAsTriangle(verts, color, size);
-  }
-
-  scheduleSketchAutosave();
-}
-
-// ---------- Scoring functions (higher = more confident) ----------
-
-function scoreLine(pts) {
-  const a = pts[0];
-  const b = pts[pts.length - 1];
-  const len = Math.hypot(b.x - a.x, b.y - a.y);
-  if (len < 40) return 0;
-
-  let maxDev = 0;
-  let sumDev = 0;
-  for (const p of pts) {
-    const d = pointToLineDistance(p, a, b);
-    maxDev = Math.max(maxDev, d);
-    sumDev += d;
-  }
-  const avgDev = sumDev / pts.length;
-
-  // Very strict for lines
-  if (maxDev > 18 || avgDev > 8) return 0;
-  return 1 - avgDev / 12;
-}
-
-function scoreRect(pts) {
-  const b = getBounds(pts);
-  if (b.w < 50 || b.h < 50) return 0;
-
-  // Aspect ratio shouldn't be extreme (helps distinguish from lines)
-  const aspect = Math.max(b.w, b.h) / Math.min(b.w, b.h);
-  if (aspect > 6) return 0;
-
-  let onEdge = 0;
-  const tol = Math.max(14, Math.min(b.w, b.h) * 0.08);
-
-  for (const p of pts) {
-    const nearL = Math.abs(p.x - b.x) < tol;
-    const nearR = Math.abs(p.x - (b.x + b.w)) < tol;
-    const nearT = Math.abs(p.y - b.y) < tol;
-    const nearB = Math.abs(p.y - (b.y + b.h)) < tol;
-    if (nearL || nearR || nearT || nearB) onEdge++;
-  }
-
-  const ratio = onEdge / pts.length;
-  if (ratio < 0.68) return 0;
-
-  // Prefer more square-ish shapes for "rect"
-  const squareBonus = 1 - Math.min(1, Math.abs(1 - aspect) * 0.3);
-  return ratio * 0.85 * squareBonus;
-}
-
-function scoreCircle(pts) {
-  const b = getBounds(pts);
-  const cx = b.x + b.w / 2;
-  const cy = b.y + b.h / 2;
-  const rx = b.w / 2;
-  const ry = b.h / 2;
-
-  if (rx < 30 || ry < 30) return 0;
-
-  // Circles should be roughly round
-  const aspect = Math.max(rx, ry) / Math.min(rx, ry);
-  if (aspect > 1.55) return 0; // too elongated → more likely a rect or oval that we treat as freehand
-
-  let sumErr = 0;
-  for (const p of pts) {
-    const dx = (p.x - cx) / rx;
-    const dy = (p.y - cy) / ry;
-    const r = Math.hypot(dx, dy);
-    sumErr += Math.abs(r - 1);
-  }
-  const avgErr = sumErr / pts.length;
-
-  if (avgErr > 0.28) return 0;
-  return 1 - avgErr / 0.35;
-}
-
-function scoreTriangle(pts) {
-  const verts = findTriangleVertices(pts);
-  if (!verts) return 0;
-
-  // Check that most points lie close to one of the three sides
-  const sides = [
-    [verts[0], verts[1]],
-    [verts[1], verts[2]],
-    [verts[2], verts[0]],
-  ];
-
-  let close = 0;
-  const tol = 22;
-
-  for (const p of pts) {
-    let minD = Infinity;
-    for (const [a, b] of sides) {
-      minD = Math.min(minD, pointToLineDistance(p, a, b));
-    }
-    if (minD < tol) close++;
-  }
-
-  const ratio = close / pts.length;
-  if (ratio < 0.62) return 0;
-
-  // Also check that the three vertices are reasonably spaced
-  const d01 = Math.hypot(verts[0].x - verts[1].x, verts[0].y - verts[1].y);
-  const d12 = Math.hypot(verts[1].x - verts[2].x, verts[1].y - verts[2].y);
-  const d20 = Math.hypot(verts[2].x - verts[0].x, verts[2].y - verts[0].y);
-  if (d01 < 40 || d12 < 40 || d20 < 40) return 0;
-
-  return ratio * 0.9;
-}
-
-// Find the three most prominent corners using simplified Douglas-Peucker + angle
-function findTriangleVertices(pts) {
-  // First simplify the path
-  const simplified = douglasPeucker(pts, 18);
-  if (simplified.length < 3) return null;
-
-  // Take the three points that form the largest triangle (by area)
-  let best = null;
-  let bestArea = 0;
-
-  for (let i = 0; i < simplified.length; i++) {
-    for (let j = i + 1; j < simplified.length; j++) {
-      for (let k = j + 1; k < simplified.length; k++) {
-        const area = triangleArea(simplified[i], simplified[j], simplified[k]);
-        if (area > bestArea) {
-          bestArea = area;
-          best = [simplified[i], simplified[j], simplified[k]];
-        }
-      }
-    }
-  }
-
-  if (!best || bestArea < 800) return null;
-  return best;
-}
-
-function triangleArea(a, b, c) {
-  return Math.abs(
-    (a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y)) / 2,
-  );
-}
-
-function douglasPeucker(points, epsilon) {
-  if (points.length < 3) return points.slice();
-
-  let maxDist = 0;
-  let index = 0;
-  const end = points.length - 1;
-
-  for (let i = 1; i < end; i++) {
-    const d = pointToLineDistance(points[i], points[0], points[end]);
-    if (d > maxDist) {
-      maxDist = d;
-      index = i;
-    }
-  }
-
-  if (maxDist > epsilon) {
-    const left = douglasPeucker(points.slice(0, index + 1), epsilon);
-    const right = douglasPeucker(points.slice(index), epsilon);
-    return left.slice(0, -1).concat(right);
-  }
-  return [points[0], points[end]];
-}
-
-// ---------- Helpers ----------
-
-function getBounds(pts) {
-  let minX = Infinity,
-    minY = Infinity,
-    maxX = -Infinity,
-    maxY = -Infinity;
-  for (const p of pts) {
-    minX = Math.min(minX, p.x);
-    minY = Math.min(minY, p.y);
-    maxX = Math.max(maxX, p.x);
-    maxY = Math.max(maxY, p.y);
-  }
-  return { x: minX, y: minY, w: maxX - minX, h: maxY - minY };
-}
-
-function pointToLineDistance(p, a, b) {
-  const A = p.x - a.x;
-  const B = p.y - a.y;
-  const C = b.x - a.x;
-  const D = b.y - a.y;
-  const dot = A * C + B * D;
-  const lenSq = C * C + D * D || 1;
-  const t = Math.max(0, Math.min(1, dot / lenSq));
-  const xx = a.x + t * C;
-  const yy = a.y + t * D;
-  return Math.hypot(p.x - xx, p.y - yy);
-}
-
-function redrawStrokeAsLine(a, b, color, size) {
-  const last = undoStack[undoStack.length - 1];
-  if (!last) return;
-  const img = new Image();
-  img.onload = () => {
-    context.clearRect(0, 0, board.width, board.height);
-    context.drawImage(img, 0, 0);
-    context.strokeStyle = color;
-    context.lineWidth = size;
-    context.lineCap = "round";
-    context.beginPath();
-    context.moveTo(a.x, a.y);
-    context.lineTo(b.x, b.y);
-    context.stroke();
-  };
-  img.src = last;
-}
-
-function redrawStrokeAsRect(bounds, color, size) {
-  const last = undoStack[undoStack.length - 1];
-  if (!last) return;
-  const img = new Image();
-  img.onload = () => {
-    context.clearRect(0, 0, board.width, board.height);
-    context.drawImage(img, 0, 0);
-    context.strokeStyle = color;
-    context.lineWidth = size;
-    context.lineJoin = "round";
-    context.strokeRect(bounds.x, bounds.y, bounds.w, bounds.h);
-  };
-  img.src = last;
-}
-
-function redrawStrokeAsEllipse(bounds, color, size) {
-  const last = undoStack[undoStack.length - 1];
-  if (!last) return;
-  const img = new Image();
-  img.onload = () => {
-    context.clearRect(0, 0, board.width, board.height);
-    context.drawImage(img, 0, 0);
-    context.strokeStyle = color;
-    context.lineWidth = size;
-    context.beginPath();
-    context.ellipse(
-      bounds.x + bounds.w / 2,
-      bounds.y + bounds.h / 2,
-      bounds.w / 2,
-      bounds.h / 2,
-      0,
-      0,
-      Math.PI * 2,
-    );
-    context.stroke();
-  };
-  img.src = last;
-}
-
-function redrawStrokeAsTriangle(verts, color, size) {
-  const last = undoStack[undoStack.length - 1];
-  if (!last) return;
-  const img = new Image();
-  img.onload = () => {
-    context.clearRect(0, 0, board.width, board.height);
-    context.drawImage(img, 0, 0);
-    context.strokeStyle = color;
-    context.lineWidth = size;
-    context.lineJoin = "round";
-    context.lineCap = "round";
-    context.beginPath();
-    context.moveTo(verts[0].x, verts[0].y);
-    context.lineTo(verts[1].x, verts[1].y);
-    context.lineTo(verts[2].x, verts[2].y);
-    context.closePath();
-    context.stroke();
-  };
-  img.src = last;
-}
-
-// ===================== REST OF THE FILE (unchanged) =====================
+// ===================== EXPORT & FOLDERS =====================
 
 function htmlToMarkdown(html) {
   const container = document.createElement("div");
