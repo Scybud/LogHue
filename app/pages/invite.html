@@ -30,7 +30,8 @@
       }
 
       .card {
-        padding: 30px;
+        position: relative;
+        padding: calc(var(--space-xl) * 2) var(--space-md) var(--space-md);
         width: 100%;
         max-width: 420px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -38,9 +39,12 @@
       }
 
       .brand {
+        position: absolute;
+        left: var(--space-md);
+        top: var(--space-xs);
         display: inline-block;
         margin-bottom: 20px;
-        font-size: 22px;
+        font-size: var(--text-sm);
         font-weight: 700;
         color: #fff;
         text-decoration: none;
