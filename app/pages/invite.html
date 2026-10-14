@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Join Workspace</title>
+    <title>Join Workspace | LogHue</title>
     <!--SCYBUD UI-->
     <link rel="stylesheet" href="https://ui.scybud.com/css/variables.css" />
     <link rel="stylesheet" href="https://ui.scybud.com/css/typography.css" />
@@ -37,6 +37,18 @@
         text-align: center;
       }
 
+      .brand {
+        display: inline-block;
+        margin-bottom: 20px;
+        font-size: 22px;
+        font-weight: 700;
+        color: #fff;
+        text-decoration: none;
+      }
+      .brand span {
+        color: #3b82f6;
+      }
+
       .loading {
         font-size: 18px;
         opacity: 0.7;
@@ -53,138 +65,326 @@
         font-weight: 600;
         margin-top: 10px;
       }
-      .homeLink {
+
+      .homeLink,
+      .acceptBtn {
         display: none;
+      }
+
+      .acceptBtn {
+        width: 100%;
+        background: var(--success);
+        color: #000;
+      }
+      .card:has(.acceptBtn:hover) {
+        background: var(--card-bg);
+      }
+      b {
+        color: #fff;
+      }
+
+      /* Current account */
+      .account {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 18px 0;
+        padding: 10px 12px;
+        border: 1px solid #333;
+        border-radius: 10px;
+        text-align: left;
+      }
+      .account[hidden] {
+        display: none;
+      }
+      .accountAvatar {
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        overflow: hidden;
+        background: #3b82f6;
+        color: #fff;
+        font-weight: 700;
+      }
+      .accountAvatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .accountInfo {
+        flex: 1;
+        min-width: 0;
+      }
+      .accountLabel {
+        font-size: 11px;
+        opacity: 0.6;
+      }
+      .accountName,
+      .accountEmail {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .accountName {
+        font-weight: 600;
+        color: #fff;
+      }
+      .accountEmail {
+        font-size: 12px;
+        opacity: 0.6;
+      }
+      .switchBtn {
+        flex-shrink: 0;
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: 12px;
+        color: #3b82f6;
+        cursor: pointer;
+      }
+
+      .disclaimer {
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px solid #333;
+        font-size: 12px;
+        line-height: 1.5;
+        opacity: 0.7;
+      }
+
+      .legal {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 12px;
+        font-size: 12px;
+      }
+      .legal a {
+        color: inherit;
+        opacity: 0.7;
+      }
+      .legal a:hover {
+        opacity: 1;
       }
     </style>
   </head>
 
   <body>
     <div class="card">
-      <h2>Joining Workspace...</h2>
-      <p id="status" class="loading">Please wait</p>
+      <a class="brand" href="https://loghue.com" aria-label="LogHue home"
+        >Log<span>Hue</span></a
+      >
+
+      <h2 class="heading">Join Workspace</h2>
+      <p id="status" class="loading">
+        You have been invited to join a workspace
+      </p>
+
+      <div class="account" hidden>
+        <div class="accountAvatar"></div>
+        <div class="accountInfo">
+          <div class="accountLabel">Accepting as</div>
+          <div class="accountName"></div>
+          <div class="accountEmail"></div>
+        </div>
+        <button type="button" class="switchBtn">Not you?</button>
+      </div>
+
       <a class="homeLink" href="http://app.loghue.com">Go Home</a>
+
+      <div class="actions">
+        <button type="button" class="acceptBtn btn-sm btn">Accept</button>
+      </div>
+
+      <p class="disclaimer">
+        Only accept invites from people you know. Accepting gives you access to
+        the workspace's tasks, notes and discussions. Official LogHue pages are
+        always on <b>loghue.com</b> or <b>app.loghue.com</b>.
+      </p>
+
+      <nav class="legal">
+        <a href="https://loghue.com/privacy" target="_blank" rel="noopener"
+          >Privacy Policy</a
+        >
+        <a href="https://loghue.com/terms" target="_blank" rel="noopener"
+          >Terms of Use</a
+        >
+      </nav>
     </div>
+
     <script type="module">
       import { supabase } from "../js/supabase.js";
 
-      // --- THE DATA GRABBER ---
-      // This looks at the browser address bar for "?token=..."
-      const getUrlToken = () => {
-        const params = new URLSearchParams(window.location.search);
-        return params.get("token");
-      };
+      const token = new URLSearchParams(window.location.search).get("token");
+      const status = document.getElementById("status");
+      const homeLink = document.querySelector(".homeLink");
+      const acceptBtn = document.querySelector(".acceptBtn");
+      const account = document.querySelector(".account");
+      const accountAvatar = document.querySelector(".accountAvatar");
+      const accountName = document.querySelector(".accountName");
+      const accountEmail = document.querySelector(".accountEmail");
+      const switchBtn = document.querySelector(".switchBtn");
 
-      async function acceptInvite(token) {
-        const status = document.getElementById("status");
-        const homeLink = document.querySelector(".homeLink");
+      // Shared between load and accept
+      let currentUser = null;
+      let currentInvite = null;
 
-        // Check if token exists before even trying Supabase
-        if (!token) {
-          status.textContent = "No invite token found in the URL.";
-          status.className = "error";
-          homeLink.classList.add("show");
-          return;
+      const authUrl = () =>
+        `/auth?redirect=${encodeURIComponent(window.location.href)}`;
+
+      function showError(msg) {
+        status.textContent = msg;
+        status.className = "error";
+        homeLink.classList.add("show");
+      }
+
+      // Show which account will join the workspace
+      async function renderAccount(user) {
+        // Profile errors are ignored, metadata is the fallback
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("full_name, avatar_url")
+          .eq("id", user.id)
+          .maybeSingle();
+
+        const meta = user.user_metadata ?? {};
+        const name =
+          profile?.full_name || meta.full_name || meta.name || user.email;
+        const avatar = profile?.avatar_url || meta.avatar_url || meta.picture;
+        const initial = (name || "?").charAt(0).toUpperCase();
+
+        if (avatar) {
+          const img = document.createElement("img");
+          img.src = avatar;
+          img.alt = "";
+          img.onerror = () => accountAvatar.replaceChildren(initial);
+          accountAvatar.replaceChildren(img);
+        } else {
+          accountAvatar.replaceChildren(initial);
         }
 
-        // 1. Ensure user is logged in
+        accountName.textContent = name;
+        accountEmail.textContent = user.email ?? "";
+        account.hidden = false;
+      }
+
+      async function loadInvite() {
+        if (!token) return showError("No invite token found in the URL.");
+
         const {
           data: { user },
           error: authError,
         } = await supabase.auth.getUser();
 
         if (!user || authError) {
-          // Save current URL so we can come back after login
-          const redirectUrl = encodeURIComponent(window.location.href);
-          window.location.href = `https://app.loghue.com/pages/auth?redirect=${redirectUrl}`;
+          status.textContent = "User not logged in. Redirecting to login...";
+          status.className = "error";
+          setTimeout(() => {
+            window.location.href = authUrl();
+          }, 5000);
           return;
         }
+        currentUser = user;
 
-        // 2. Fetch invite
-        const { data: invite, error: fetchError } = await supabase
+        const { data: invite, error } = await supabase
           .from("workspace_invites")
-          .select("*")
+          .select(
+            "id, token, role, workspace_id, accepted_count, max_invite_count, profiles:created_by(full_name), workspaces:workspace_id(name)",
+          )
           .eq("token", token)
           .eq("accepted", false)
           .maybeSingle();
 
-        if (fetchError) {
-          console.error(fetchError);
-          status.textContent =
-            "Something went wrong while loading this invite.";
-          status.className = "error";
-          homeLink.classList.add("show");
-          return;
+        if (error) {
+          console.error(error);
+          return showError("Something went wrong while loading this invite.");
         }
-
         if (!invite) {
-          status.textContent =
-            "This invite is no longer valid. Please request a new one.";
-          status.className = "error";
-          homeLink.classList.add("show");
-
-          return;
+          return showError(
+            "This invite is no longer valid. Please request a new one.",
+          );
         }
-
-        //CHECK NUMBER OF ACCEPTED INVITE
-        if (invite.accepted_count >= invite.max_invite_count) {
-          status.textContent =
-            "This invite link has reached its maximum number of uses (5). Please request a new one.";
-          status.className = "error";
-          homeLink.classList.add("show");
-
-          return;
+        if ((invite.accepted_count ?? 0) >= invite.max_invite_count) {
+          return showError(
+            `This invite link has reached its maximum number of uses (${invite.max_invite_count}). Please request a new one.`,
+          );
         }
+        currentInvite = invite;
 
-        // 3. Add user to workspace
+        // textContent only, no innerHTML with user data
+        const inviter = document.createElement("b");
+        inviter.textContent = invite.profiles?.full_name ?? "someone";
+        const workspace = document.createElement("b");
+        workspace.textContent = invite.workspaces?.name ?? "a workspace";
+
+        status.className = "";
+        status.replaceChildren(
+          "You have been invited by ",
+          inviter,
+          " to join ",
+          workspace,
+        );
+
+        await renderAccount(user);
+        acceptBtn.classList.add("show");
+      }
+
+      async function acceptInvite() {
+        if (!currentInvite || !currentUser) return;
+        acceptBtn.disabled = true; // block double clicks
+
         const { error: memberError } = await supabase
           .from("workspace_members")
           .insert({
-            workspace_id: invite.workspace_id,
-            user_id: user.id,
-            role: invite.role,
+            workspace_id: currentInvite.workspace_id,
+            user_id: currentUser.id,
+            role: currentInvite.role,
           });
 
         if (memberError) {
           console.error("Member Error:", memberError);
-          status.textContent =
-            "You are already a member of this workspace or there was a permission error.";
-          status.className = "error";
-          homeLink.classList.add("show");
-
-          return;
+          acceptBtn.disabled = false;
+          acceptBtn.classList.remove("show");
+          return showError(
+            "You are already a member of this workspace or there was a permission error.",
+          );
         }
 
-        //RECALCULATE INVITE COUNT
-        const currentCount = invite.accepted_count ?? 0;
-        const newCount = currentCount + 1;
+        const newCount = (currentInvite.accepted_count ?? 0) + 1;
 
-        // 4. Mark invite used
-        const isFullyUsed = newCount >= invite.max_invite_count;
-
-        const { data, error } = await supabase
+        const { error: updateError } = await supabase
           .from("workspace_invites")
           .update({
             accepted_count: newCount,
-            accepted: isFullyUsed,
+            accepted: newCount >= currentInvite.max_invite_count,
           })
-          .eq("id", invite.id);
+          .eq("id", currentInvite.id);
 
-        if (error) {
-          console.log("error");
-        }
+        if (updateError) console.error("Invite update error:", updateError);
 
+        acceptBtn.classList.remove("show");
+        homeLink.classList.remove("show");
+        account.hidden = true;
         status.textContent = "Success! Redirecting...";
         status.className = "success";
-        homeLink.classList.remove("show");
 
         setTimeout(() => {
-          window.location.href = `workspace?ws=${invite.workspace_id}`;
+          window.location.href = `workspace?ws=${currentInvite.workspace_id}`;
         }, 1500);
       }
-      // --- EXECUTION ---
-      const token = getUrlToken();
-      acceptInvite(token);
+
+      // Local scope signs out this browser only, not other devices
+      switchBtn.addEventListener("click", async () => {
+        await supabase.auth.signOut({ scope: "local" });
+        window.location.href = authUrl();
+      });
+
+      acceptBtn.addEventListener("click", acceptInvite);
+      await loadInvite();
     </script>
   </body>
 </html>
