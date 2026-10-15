@@ -316,6 +316,14 @@ async function initNotes() {
                   </svg>
                   <span class="toolLabel">Pen</span>
                 </button>
+                <button id="text-tool-button" class="btn" type="button">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="4 7 4 4 20 4 20 7" />
+    <line x1="9" y1="20" x2="15" y2="20" />
+    <line x1="12" y1="4" x2="12" y2="20" />
+  </svg>
+  <span class="toolLabel">Text</span>
+</button>
                 <button id="eraser-tool-button" class="btn" type="button">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 20H8.5L3 14.5a1 1 0 0 1 0-1.4l9-9a1 1 0 0 1 1.4 0l7 7a1 1 0 0 1 0 1.4L14 19" />
