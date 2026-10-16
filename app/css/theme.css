@@ -44,7 +44,7 @@
 }
 
 /* MANUALLY SELECTED LIGHT THEME */
-:root[data-theme="light"] {
+:root[data-theme="light"], :root.light {
   --bg-primary: #ffffed;
   --bg-secondary: #ebebea;
   --text-primary: #1c1c1c;

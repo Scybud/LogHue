@@ -44,8 +44,12 @@
       content="https://loghue.com/assets/images/og-image.webp"
     />
 
+        <link rel="stylesheet" href="https://ui.scybud.com/css/variables.css" />
+
+        <link rel="stylesheet" href="https://app.loghue.com/css/base.css">
     <link rel="stylesheet" href="css/landing.css" />
-    <link rel="stylesheet" href="app/css/utilities.css" />
+    <link rel="stylesheet" href="https://app.loghue.com/css/utilities.css" />
+    <link rel="stylesheet" href="https://app.loghue.com/css/theme.css" />
 
     <!-- FAVICONS -->
     <link
@@ -101,11 +105,11 @@
 
       @keyframes slide {
         from {
-          transform: translateX(100px);
+          transform: translateX(100%);
         }
 
         to {
-          transform: translateX(-1000px);
+          transform: translateX(-100%);
         }
       }
 
@@ -123,6 +127,10 @@
   <body>
     <!-- Global Modal Container -->
     <div id="modalContainer"></div>
+    <div id="actionsMessage"></div>
+        <div id="infoDisplay"></div>
+
+
     <!-- HEADER -->
     <header class="header">
       <a href="https://loghue.com" class="logo-link">
@@ -163,62 +171,43 @@
     <main>
       <!-- HERO -->
       <section class="hero">
-        <div class="hero-inner">
-          <div class="hero-content">
-            <p class="hero-tag">Organize your work, your way</p>
-            <h1>Everything you're working on. Nothing scattered.</h1>
-            <p class="hero-text">
-              LogHue keeps your notes, tasks, and workspaces organized without
-              forcing them into one giant document or scattering them across
-              five different apps. Write freely, connect things when it actually
-              helps, and find anything in seconds with search.
-            </p>
-            <div class="hero-actions">
-              <a href="https://app.loghue.com/pages/auth" class="cta-btn"
-                >Get Started</a
-              >
-              <a href="#what" class="secondary-btn">See what you can do</a>
-            </div>
-            <div class="hero-highlights">
-              <div class="hero-pill">Notes that stand on their own</div>
-              <div class="hero-pill">Tasks you can create solo</div>
-              <div class="hero-pill">Search across everything</div>
-            </div>
-          </div>
-
-          <div class="hero-illustration">
-            <div class="mock-shell">
-              <div class="mock-sidebar">
-                <div class="mock-logo"></div>
-                <div class="mock-nav-item active"></div>
-                <div class="mock-nav-item"></div>
-                <div class="mock-nav-item"></div>
-                <div class="mock-nav-item"></div>
-                <div class="mock-nav-item"></div>
-                <div class="mock-nav-spacer"></div>
-                <div class="mock-nav-item"></div>
-                <div class="mock-nav-item"></div>
-                <div class="mock-nav-cta"></div>
-                <div class="mock-nav-footer"></div>
-              </div>
-              <div class="mock-main">
-                <div class="mock-topbar-icons">
-                  <div class="mock-icon-circle"></div>
-                  <div class="mock-icon-circle"></div>
-                </div>
-                <div class="mock-hero-center">
-                  <div class="mock-hero-question"></div>
-                  <div class="mock-search-bar"></div>
-                  <div class="mock-hero-actions">
-                    <div class="mock-hero-btn"></div>
-                    <div class="mock-hero-btn mock-hero-btn-primary"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+  <div class="hero-inner">
+    <div class="hero-top">
+      <h1>
+        <span>Everything you're working on.</span>
+        <span>Nothing scattered.</span>
+      </h1>
+      <div class="hero-side">
+        <p class="hero-text">
+          Notes, tasks and workspaces stay separate until you connect them.
+          Press Ctrl K and find any of it in seconds.
+        </p>
+        <div class="hero-actions">
+          <a href="https://app.loghue.com/pages/auth" class="cta-btn">Get started</a>
+          <a href="#what" class="secondary-btn">See what you can do</a>
         </div>
-      </section>
+      </div>
+    </div>
+
+    <div class="desk" id="desk" role="group" aria-label="Interactive search demo">
+      <div class="desk-controls">
+        <label class="desk-search">
+          <span class="visually-hidden">Search the demo</span>
+          <input id="deskInput" type="search" placeholder="Search this demo, try all tasks" autocomplete="off" spellcheck="false" />
+          <kbd id="deskKbd">Ctrl K</kbd>
+        </label>
+        <div class="desk-chips">
+          <button type="button" data-q="all tasks">all tasks</button>
+          <button type="button" data-q="all notes">all notes</button>
+          <button type="button" data-q="all workspaces">all workspaces</button>
+          <button type="button" data-q="invoice">invoice</button>
+          <span class="desk-live" id="deskLive" aria-live="polite"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
       <!-- FEATURES -->
       <section id="features" class="section features">
         <div class="section-inner">
@@ -263,187 +252,7 @@
 
       <section class="section backlinksContainer">
         <div class="backLinks">
-          <!--FORGE:TO BACKLINK-->
-          <a
-            href="https://forg.to/products/loghue"
-            target="_blank"
-            rel="noopener"
-          >
-            <img
-              src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
-              alt="LogHue - Upvote on Forg on forg."
-              height="54"
-              width="250"
-            />
-          </a>
-
-          <!--NEXTGEN TOOLS BACKLINK-->
-          <a
-            href="https://www.nxgntools.com/tools/loghue?utm_source=loghue"
-            target="_blank"
-            rel="noopener"
-            style="display: inline-block; width: auto"
-          >
-            <img
-              src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON"
-              alt="Featured on NextGen Tools"
-              height="54"
-              width="250"
-            />
-          </a>
-
-          <!--MARJETINGDB BACKLIN-->
-          <a href="https://marketingdb.live" target="_blank"
-            ><img
-              src="https://marketingdb.live/badge.svg"
-              alt="Listed on MarketingDB"
-              width="250"
-              height="54"
-          /></a>
-
-          <!--PRODUCT HINT BACKLINK-->
-          <a
-            href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
-            target="_blank"
-            rel="noopener noreferrer"
-            ><img
-              alt="LogHue - See what is happening without chasing updates | Product Hunt"
-              width="250"
-              height="54"
-              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"
-          /></a>
-
-          <!--LAUNCHIGNITER BACKLINK-->
-          <a
-            href="https://launchigniter.com/product/loghue?ref=badge-loghue"
-            target="_blank"
-          >
-            <img
-              src="https://launchigniter.com/api/badge/loghue?theme=dark"
-              alt="Featured on LaunchIgniter"
-              width="250"
-              height="54"
-            />
-          </a>
-
-          <!--PRODUCT HOT BACKLINK-->
-          <a
-            href="https://producthot.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              src="https://producthot.com/badages-awards.svg"
-              alt="Featured on Product Hot"
-              height="54"
-              width="250"
-            />
-          </a>
-
-          <!--KITTYLAUNCH BACKLINK-->
-          <a
-            href="https://kittylaunch.com/p/loghue"
-            target="_blank"
-            rel="noopener"
-          >
-            <img
-              src="https://kittylaunch.com/api/public/badges/launch_badge.svg?theme=dark&name=LogHue"
-              width="280"
-              alt="LogHue on KittyLaunch"
-              data-kittylaunch-badge="1"
-            />
-          </a>
-
-          <!--FORGE:TO BACKLINK-->
-          <a
-            href="https://forg.to/products/loghue"
-            target="_blank"
-            rel="noopener"
-          >
-            <img
-              src="https://forg.to/api/badges/upvote/loghue?theme=dark&shape=rounded"
-              alt="LogHue - Upvote on Forg on forg."
-              height="54"
-              width="250"
-            />
-          </a>
-
-          <!--NEXTGEN TOOLS BACKLINK-->
-          <a
-            href="https://www.nxgntools.com/tools/loghue?utm_source=loghue"
-            target="_blank"
-            rel="noopener"
-            style="display: inline-block; width: auto"
-          >
-            <img
-              src="https://www.nxgntools.com/api/embed/loghue?type=FEATURED_ON"
-              alt="Featured on NextGen Tools"
-              height="54"
-              width="250"
-            />
-          </a>
-
-          <!--MARJETINGDB BACKLIN-->
-          <a href="https://marketingdb.live" target="_blank"
-            ><img
-              src="https://marketingdb.live/badge.svg"
-              alt="Listed on MarketingDB"
-              width="250"
-              height="54"
-          /></a>
-
-          <!--PRODUCT HINT BACKLINK-->
-          <a
-            href="https://www.producthunt.com/products/loghue?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-loghue"
-            target="_blank"
-            rel="noopener noreferrer"
-            ><img
-              alt="LogHue - See what is happening without chasing updates | Product Hunt"
-              width="250"
-              height="54"
-              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1116255&amp;theme=dark&amp;t=1775554809572"
-          /></a>
-
-          <!--LAUNCHIGNITER BACKLINK-->
-          <a
-            href="https://launchigniter.com/product/loghue?ref=badge-loghue"
-            target="_blank"
-          >
-            <img
-              src="https://launchigniter.com/api/badge/loghue?theme=dark"
-              alt="Featured on LaunchIgniter"
-              width="250"
-              height="54"
-            />
-          </a>
-
-          <!--PRODUCT HOT BACKLINK-->
-          <a
-            href="https://producthot.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              src="https://producthot.com/badages-awards.svg"
-              alt="Featured on Product Hot"
-              height="54"
-              width="250"
-            />
-          </a>
-
-          <!--KITTYLAUNCH BACKLINK-->
-          <a
-            href="https://kittylaunch.com/p/loghue"
-            target="_blank"
-            rel="noopener"
-          >
-            <img
-              src="https://kittylaunch.com/api/public/badges/launch_badge.svg?theme=dark&name=LogHue"
-              width="280"
-              alt="LogHue on KittyLaunch"
-              data-kittylaunch-badge="1"
-            />
-          </a>
+          
           <!--FORGE:TO BACKLINK-->
           <a
             href="https://forg.to/products/loghue"
@@ -780,12 +589,6 @@
       </div>
     </footer>
 
-    <script
-      src="https://chat.fwdslash.ai/new-embed"
-      chat-bot-id="mz26cn4umurjbpb"
-      async
-      defer
-    ></script>
     <script type="module" src="js/landing.js"></script>
   </body>
 </html>
