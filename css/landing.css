@@ -123,6 +123,7 @@ h3 {
   transition: color 0.2s;
 }
 .nav a:hover {
+  text-decoration: none;
   color: var(--text-primary);
 }
 .nav-login {
@@ -188,6 +189,8 @@ h3 {
   transform: translateX(0);
 }
 .mobile-sidebar a {
+    text-decoration: none;
+
   color: var(--text-primary);
   font-weight: 500;
 }
@@ -219,6 +222,8 @@ h3 {
   color: var(--text-primary);
 }
 .cta-btn:hover {
+    text-decoration: none;
+color: var(--text-primary);
   background: var(--primary-light);
 }
 .secondary-btn {
@@ -226,6 +231,8 @@ h3 {
   color: #fff;
 }
 .secondary-btn:hover {
+    text-decoration: none;
+color: var(--text-primary);
   background: rgba(255, 255, 255, 0.12);
 }
 .cta-btn:active,
