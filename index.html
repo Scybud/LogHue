@@ -48,6 +48,7 @@
 
         <link rel="stylesheet" href="https://app.loghue.com/css/base.css">
     <link rel="stylesheet" href="css/landing.css" />
+        <link rel="stylesheet" href="https://app.loghue.com/css/component.css" />
     <link rel="stylesheet" href="https://app.loghue.com/css/utilities.css" />
     <link rel="stylesheet" href="https://app.loghue.com/css/theme.css" />
 
@@ -87,6 +88,31 @@
     </script>
 
     <style>
+      .customize-tracking {
+        background: none;
+        color: var(--muted);
+        border: none;
+        cursor: pointer;
+        transition: color 0.2s ease;
+      }
+      .customize-tracking:hover {
+        text-decoration: underline;
+        color: var(--text-primary);
+      }
+      .consent-banner {
+  z-index: 9;
+  right: var(--space-xs);
+  left: auto;
+ animation: settle 0.6s var(--ease) backwards;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+@keyframes settle {
+  from {
+    opacity: 0;
+    translate: 0 -28px;
+  }
+}
+
       .backLinks {
         width: 100%;
         overflow: hidden;
@@ -128,7 +154,7 @@
     <!-- Global Modal Container -->
     <div id="modalContainer"></div>
     <div id="actionsMessage"></div>
-        <div id="infoDisplay"></div>
+    <div id="infoDisplay"></div>
 
 
     <!-- HEADER -->
@@ -578,14 +604,21 @@
           <div>
             <h4>Scybud</h4>
             <ul>
+              <li><a href="https://zefeed.scybud.com" target="_blank" rel="noopener noreferrer">ZeFeed</a></li>
+              <li><a href="https://dakat.scybud.com" target="_blank" rel="noopener noreferrer">DakAt</a></li>
+              <li><a href="https://canvart.scybud.com" target="_blank" rel="noopener noreferrer">CanvArt</a></li>
+              <li><a href="https://tasks.loghue.com" target="_blank" rel="noopener noreferrer">LogHue Tasks</a></li>
+              <li><a href="https://notes.loghue.com" target="_blank" rel="noopener noreferrer">LogHue Notes</a></li>
               <li><a href="/scybud-apps">Other apps</a></li>
             </ul>
           </div>
         </div>
-      </div>
 
+      </div>
+      
       <div class="footer-bottom">
         <p>&copy; 2026 LogHue. All rights reserved.</p>
+        <button class="customize-tracking">Cookies</button>
       </div>
     </footer>
 

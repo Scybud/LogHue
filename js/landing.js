@@ -1,4 +1,8 @@
-import {handleConcentEvents} from "/analytics.js"
+import {handleConcentEvents, loadAnalytics} from "/analytics.js"
+import {
+  loadComponent,
+} from "https://ui.scybud.com/js/ui.js";
+
 // Backlinks: lazy load images
 document
   .querySelectorAll(".backLinks img")
@@ -331,5 +335,16 @@ document
     io.observe(el);
   });
 
+
+  // Analytics
+    await loadComponent("https://app.loghue.com/components/modals/cookies-banner", "infoDisplay");
+    const saved = localStorage.getItem("consent-preferences");
+    if (saved) {
+      const prefs = JSON.parse(saved);
+      const consentBanner = document.getElementById("consent-banner");
+      if (consentBanner) consentBanner.remove();
+  
+      if (prefs.analytics) loadAnalytics();
+    }
 
     handleConcentEvents();
