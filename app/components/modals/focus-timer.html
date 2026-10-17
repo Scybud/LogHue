@@ -1,12 +1,13 @@
 <div class="modalContainer">
-<div id="focusTimerModal" class="form" role="dialog" aria-modal="true" aria-labelledby="focusTimerTaskTitle">
 
+  <div id="focusTimerModal" class="form" role="dialog" aria-modal="true" aria-labelledby="focusTimerTaskTitle">
   <div class="modal-panel focus-timer-panel" id="focusTimerPanel">
 
+    <!-- FULL VIEW -->
     <div class="focus-timer-full">
       <header class="focus-timer-header">
         <span class="focus-timer-eyebrow" id="focusTimerContext">Personal task</span>
-        <button type="button" class="modal-close" data-close-focus-timer aria-label="Close">&times;</button>
+        <button type="button" class="closeModalBtn" data-close-focus-timer aria-label="Close">&times;</button>
       </header>
 
       <h2 id="focusTimerTaskTitle" class="focus-timer-task-title">Untitled task</h2>
@@ -24,7 +25,7 @@
 
       <div class="focus-timer-target-row">
         <label for="focusTimerTargetInput">Target</label>
-        <input type="number" id="focusTimerTargetInput" min="5" max="180" step="2" value="25" />
+        <input type="number" id="focusTimerTargetInput" min="5" max="180" step="5" value="25" />
         <span>min</span>
       </div>
 
@@ -41,6 +42,7 @@
       </p>
     </div>
 
+    <!-- COMPACT VIEW -->
     <div class="focus-timer-compact" id="focusTimerCompact">
       <span class="compact-dot" aria-hidden="true"></span>
       <span class="compact-time" id="focusTimerCompactTime">00:00:00</span>
@@ -50,4 +52,5 @@
 
   </div>
 </div>
-</div>
+
+  </div>

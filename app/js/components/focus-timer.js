@@ -13,29 +13,58 @@ let tickHandle = null;
 let els = {};
 let userId = null;
 
+// Drag state
+let isDragging = false;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+
+
+function playGoalReachedSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = ctx.currentTime;
+
+    // Soft two-tone chime
+    const notes = [523.25, 659.25]; // C5 → E5
+
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, now);
+
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.25, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6 + i * 0.15);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now + i * 0.12);
+      osc.stop(now + 0.7 + i * 0.15);
+    });
+  } catch (err) {
+    // AudioContext can fail on some browsers if the user hasn't interacted yet
+    console.warn("Could not play goal sound:", err);
+  }
+}
+
+
 /**
  * Opens the focus timer modal for a task.
- * Loads the HTML, restores any previous timer for this task,
- * wires up the UI, and starts ticking if the timer was already running.
  */
 export async function openFocusTimerModal(task) {
-  // Load the modal HTML into the page
   await loadComponent("/components/modals/focus-timer", "modalContainer");
 
-  // Grab references to every element we need
   cacheEls();
 
-  // Prefer the scalar workspace_id; fall back to the nested workspace object
   const workspaceId = task.workspace_id ?? task.workspace?.id ?? null;
-
-  // Try to restore a previously saved timer for this exact task
   const resumed = restoreState(task.id);
 
-  // Build the live state object
   state = resumed
     ? {
         ...resumed,
-        // If the saved state had a null workspaceId, replace it with the real one
         workspaceId: resumed.workspaceId ?? workspaceId,
       }
     : {
@@ -46,49 +75,29 @@ export async function openFocusTimerModal(task) {
         elapsedMs: 0,
         targetMs: 25 * 60 * 1000,
         status: "idle",
+        isCompact: false,
+        posX: null,
+        posY: null,
       };
 
-  // Update the static labels at the top of the modal
   els.contextLabel.textContent =
     task.type === "workspace" || workspaceId
       ? "Workspace task"
       : "Personal task";
-  els.taskTitle.textContent = task.title;
+  els.taskTitle.textContent = task.title || "Untitled task";
   els.targetInput.value = Math.round(state.targetMs / 60000);
 
-  // Show how many minutes were already logged on this task today
   await refreshTodayTotal();
-
-  // Paint the current numbers and button states
   render();
-
-  // Attach all click / change handlers
   attachFocusTimerEvents();
+  initDrag();
 
-  // If we restored a running timer, keep the clock moving
   if (state.status === "running") startTicking();
 }
 
-/**
- * Attach handlers to the buttons and inputs inside the modal.
- * Called every time the modal is opened because loadComponent
- * inserts fresh DOM nodes.
- */
-export function attachFocusTimerEvents() {
-  els.primaryBtn.onclick = handlePrimaryClick;
-  els.stopBtn.onclick = handleStopAndLog;
-  els.cancelBtn.onclick = handleCancel;
-  els.targetInput.onchange = handleTargetChange;
-
-  document.querySelectorAll("[data-close-focus-timer]").forEach((el) => {
-    el.onclick = closeModal;
-  });
-}
-
-/** Cache all the DOM elements we will touch so we don't query them repeatedly. */
 function cacheEls() {
   els = {
-    panel: document.querySelector(".focus-timer-panel"),
+    panel: document.getElementById("focusTimerPanel"),
     contextLabel: document.getElementById("focusTimerContext"),
     taskTitle: document.getElementById("focusTimerTaskTitle"),
     time: document.getElementById("focusTimerTime"),
@@ -98,75 +107,191 @@ function cacheEls() {
     primaryBtn: document.getElementById("focusTimerPrimaryBtn"),
     stopBtn: document.getElementById("focusTimerStopBtn"),
     cancelBtn: document.getElementById("focusTimerCancelBtn"),
+    minimizeBtn: document.getElementById("focusTimerMinimizeBtn"),
     todayTotal: document.getElementById("focusTimerTodayTotal"),
+    compact: document.getElementById("focusTimerCompact"),
+    compactTime: document.getElementById("focusTimerCompactTime"),
+    compactToggle: document.getElementById("focusTimerCompactToggle"),
+    compactExpand: document.getElementById("focusTimerCompactExpand"),
   };
 }
 
-/** Start or pause the timer when the main button is clicked. */
+export function attachFocusTimerEvents() {
+  els.primaryBtn.onclick = handlePrimaryClick;
+  els.stopBtn.onclick = handleStopAndLog;
+  els.cancelBtn.onclick = handleCancel;
+  els.targetInput.onchange = handleTargetChange;
+  els.minimizeBtn.onclick = () => setCompact(true);
+  els.compactExpand.onclick = () => setCompact(false);
+  els.compactToggle.onclick = handlePrimaryClick;
+
+  document.querySelectorAll("[data-close-focus-timer]").forEach((el) => {
+    el.onclick = closeModal;
+  });
+}
+
+/* ---------- Drag ---------- */
+function initDrag() {
+  const handle = els.compact;
+  if (!handle) return;
+
+  handle.addEventListener("pointerdown", onPointerDown);
+  window.addEventListener("pointermove", onPointerMove);
+  window.addEventListener("pointerup", onPointerUp);
+  window.addEventListener("pointercancel", onPointerUp);
+}
+
+function onPointerDown(e) {
+  // Only drag when in compact mode and not clicking a button
+  if (!state?.isCompact) return;
+  if (e.target.closest("button")) return;
+
+  isDragging = true;
+  els.panel.classList.add("dragging");
+
+  const rect = els.panel.getBoundingClientRect();
+  dragOffsetX = e.clientX - rect.left;
+  dragOffsetY = e.clientY - rect.top;
+
+  // Switch to fixed positioning so we can freely move it
+  els.panel.style.position = "fixed";
+  els.panel.style.margin = "0";
+  els.panel.style.zIndex = "9999";
+
+  e.preventDefault();
+}
+
+function onPointerMove(e) {
+  if (!isDragging) return;
+
+  let x = e.clientX - dragOffsetX;
+  let y = e.clientY - dragOffsetY;
+
+  // Constrain to viewport
+  const maxX = window.innerWidth - els.panel.offsetWidth;
+  const maxY = window.innerHeight - els.panel.offsetHeight;
+  x = Math.max(0, Math.min(x, maxX));
+  y = Math.max(0, Math.min(y, maxY));
+
+  els.panel.style.left = `${x}px`;
+  els.panel.style.top = `${y}px`;
+  els.panel.style.right = "auto";
+  els.panel.style.bottom = "auto";
+
+  state.posX = x;
+  state.posY = y;
+}
+
+function onPointerUp() {
+  if (!isDragging) return;
+  isDragging = false;
+  els.panel.classList.remove("dragging");
+  persistState();
+}
+
+function applySavedPosition() {
+  if (state.posX != null && state.posY != null && state.isCompact) {
+    els.panel.style.position = "fixed";
+    els.panel.style.left = `${state.posX}px`;
+    els.panel.style.top = `${state.posY}px`;
+    els.panel.style.right = "auto";
+    els.panel.style.bottom = "auto";
+    els.panel.style.margin = "0";
+    els.panel.style.zIndex = "9999";
+  }
+}
+
+/* ---------- Core timer logic ---------- */
+function setCompact(compact) {
+  state.isCompact = compact;
+  if (!compact) {
+    // Reset positioning when expanding
+    els.panel.style.position = "";
+    els.panel.style.left = "";
+    els.panel.style.top = "";
+    els.panel.style.right = "";
+    els.panel.style.bottom = "";
+    els.panel.style.margin = "";
+    els.panel.style.zIndex = "";
+  }
+  persistState();
+  render();
+  if (compact) applySavedPosition();
+}
+
 function handlePrimaryClick() {
-  if (state.status === "idle" || state.status === "paused") {
-    // Begin (or resume) counting from the current elapsed time
+  if (
+    state.status === "idle" ||
+    state.status === "paused" ||
+    state.status === "reached"
+  ) {
     state.status = "running";
     state.startedAt = Date.now() - state.elapsedMs;
     startTicking();
   } else if (state.status === "running") {
-    // Freeze the clock
     state.status = "paused";
     stopTicking();
   }
-
-  // Keep the browser storage in sync
   persistState();
   render();
 }
 
-/** Discard the timer and close the modal without saving anything. */
 function handleCancel() {
   stopTicking();
   clearPersistedState();
   closeModal();
 }
 
-/**
- * Stop the timer, write a log row to the database,
- * then close the modal.
- */
 async function handleStopAndLog() {
-  userId = sessionState.user.id;
-
-  // Refuse to log sessions shorter than one minute
   if (state.elapsedMs < 60000) {
     actionMsg("Log at least a minute before saving.", "warn");
     return;
   }
 
+  // Prevent double-clicks
+  els.stopBtn.disabled = true;
+  els.primaryBtn.disabled = true;
+  els.cancelBtn.disabled = true;
+
   stopTicking();
 
   const minutes = Math.round(state.elapsedMs / 60000);
+  userId = sessionState?.user?.id;
 
-  const { error } = await supabase.from("workspace_task_logs").insert({
-    task_id: state.taskId,
-    created_by: userId,
-    log_note: `Just completed a ${minutes}minutes work session on this task`,
-    workspace_id: state.workspaceId,
-    duration_minutes: minutes,
-    source: "focus_timer",
-  });
+  try {
+    const { error } = await supabase.from("workspace_task_logs").insert({
+      task_id: state.taskId,
+      created_by: userId,
+      log_note: `Just completed a ${minutes} minute work session on this task`,
+      workspace_id: state.workspaceId,
+      duration_minutes: minutes,
+      source: "focus_timer",
+      task_status: "in progress",
+    });
 
-  if (error) {
-    console.log(error);
+    if (error) {
+      console.error(error);
+      actionMsg("Could not save your focus log. Try again.", "error");
+      // Re-enable so user can retry
+      els.stopBtn.disabled = false;
+      els.primaryBtn.disabled = false;
+      els.cancelBtn.disabled = false;
+      return;
+    }
+
+    actionMsg(`Logged ${minutes}m on this task.`, "success");
+    clearPersistedState();
+    closeModal();
+  } catch (err) {
+    console.error(err);
     actionMsg("Could not save your focus log. Try again.", "error");
-    return;
+    els.stopBtn.disabled = false;
+    els.primaryBtn.disabled = false;
+    els.cancelBtn.disabled = false;
   }
-
-  actionMsg(`Logged ${minutes}m on this task.`, "success");
-  clearPersistedState();
-  closeModal();
 }
 
-/** Update the target duration when the user changes the minutes input. */
 function handleTargetChange(e) {
-  // Clamp between 5 and 180 minutes
   const minutes = Math.min(180, Math.max(5, Number(e.target.value) || 25));
   e.target.value = minutes;
   state.targetMs = minutes * 60000;
@@ -174,15 +299,15 @@ function handleTargetChange(e) {
   render();
 }
 
-/** Start the 1-second interval that advances the clock. */
 function startTicking() {
-  stopTicking(); // clear any previous interval first
+  stopTicking();
   tickHandle = setInterval(() => {
     state.elapsedMs = Date.now() - state.startedAt;
 
-    // Mark the session as finished when the target is reached
     if (state.elapsedMs >= state.targetMs && state.status !== "reached") {
       state.status = "reached";
+      stopTicking();
+      playGoalReachedSound();   // ← play the chime
     }
 
     persistState();
@@ -190,7 +315,6 @@ function startTicking() {
   }, TICK_MS);
 }
 
-/** Clear the interval so the clock stops. */
 function stopTicking() {
   if (tickHandle) {
     clearInterval(tickHandle);
@@ -198,12 +322,15 @@ function stopTicking() {
   }
 }
 
-/** Push the current state values into the DOM. */
 function render() {
   if (!els.panel) return;
 
+  els.panel.classList.toggle("is-compact", !!state.isCompact);
   els.panel.dataset.state = state.status;
-  els.time.textContent = formatTime(state.elapsedMs);
+
+  const timeStr = formatTime(state.elapsedMs);
+  els.time.textContent = timeStr;
+  if (els.compactTime) els.compactTime.textContent = timeStr;
 
   const labels = {
     idle: "Ready",
@@ -211,19 +338,36 @@ function render() {
     paused: "Paused",
     reached: "Target reached",
   };
-  els.stateLabel.textContent = labels[state.status];
+  els.stateLabel.textContent = labels[state.status] || "Ready";
 
-  // Update the circular progress ring
   const progress = Math.min(1, state.elapsedMs / state.targetMs);
   els.ring.style.strokeDashoffset = String(RING_CIRCUMFERENCE * (1 - progress));
 
-  // Update button labels and disabled states
-  els.primaryBtn.textContent = state.status === "running" ? "Pause" : "Start";
-  els.stopBtn.disabled = state.elapsedMs === 0;
-  els.cancelBtn.disabled = state.elapsedMs === 0 && state.status === "idle";
+  // Primary button label
+  if (state.status === "running") {
+    els.primaryBtn.textContent = "Pause";
+  } else if (state.status === "reached") {
+    els.primaryBtn.textContent = "Restart";
+  } else {
+    els.primaryBtn.textContent = "Start";
+  }
+
+  // Compact toggle icon
+  if (els.compactToggle) {
+    els.compactToggle.innerHTML =
+      state.status === "running" ? "&#10074;&#10074;" : "&#9654;";
+    els.compactToggle.setAttribute(
+      "aria-label",
+      state.status === "running" ? "Pause" : "Resume",
+    );
+  }
+
+  const hasTime = state.elapsedMs > 0;
+  els.stopBtn.disabled = !hasTime;
+  els.cancelBtn.disabled = !hasTime && state.status === "idle";
+  els.primaryBtn.disabled = false; // always re-enable after render unless logging
 }
 
-/** Turn milliseconds into HH:MM:SS. */
 function formatTime(ms) {
   const totalSeconds = Math.floor(ms / 1000);
   const h = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
@@ -232,10 +376,6 @@ function formatTime(ms) {
   return `${h}:${m}:${s}`;
 }
 
-/**
- * Fetch all focus-timer logs for this task that were created today
- * and show the total minutes in the modal.
- */
 async function refreshTodayTotal() {
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
@@ -254,36 +394,32 @@ async function refreshTodayTotal() {
 
   const total = data.reduce((sum, row) => sum + (row.duration_minutes || 0), 0);
   els.todayTotal.textContent =
-    total >= 60 ? `${Math.round(total / 60)}h ${total % 60}m` : `${total}m`;
+    total >= 60 ? `${Math.floor(total / 60)}h ${total % 60}m` : `${total}m`;
 }
 
-/** Write the current timer state to localStorage so it survives a refresh. */
 function persistState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
-/**
- * Read a previously saved timer from localStorage.
- * Returns the state only if it belongs to the same taskId;
- * otherwise returns null so a fresh timer is created.
- */
 function restoreState(taskId) {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
     if (saved && saved.taskId === taskId) {
-      // If the timer was running when the page closed, advance the elapsed time
       if (saved.status === "running") {
         saved.elapsedMs = Date.now() - saved.startedAt;
+        if (saved.elapsedMs >= saved.targetMs) {
+          saved.status = "reached";
+          saved.elapsedMs = saved.targetMs;
+        }
       }
       return saved;
     }
   } catch {
-    // Corrupt or missing data → start fresh
+    // ignore
   }
   return null;
 }
 
-/** Delete the saved timer from localStorage. */
 function clearPersistedState() {
   localStorage.removeItem(STORAGE_KEY);
 }

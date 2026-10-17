@@ -1,7 +1,4 @@
-/* focusTimer.css
-   Uses LogHue's existing CSS custom properties where they exist.
-   Fallback values are the same indigo family already used elsewhere in Scybud UI,
-   swap the --ft-* fallbacks for your real design tokens if names differ. */
+/* focus-timer.css */
 
 .focus-timer-panel {
   --ft-bg: var(--bg-secondary, #1c1f3b);
@@ -21,8 +18,10 @@
   padding: 24px;
   color: var(--ft-text);
   font-family: inherit;
+  transition: padding 0.2s ease, border-radius 0.2s ease;
 }
 
+/* ---------- FULL VIEW ---------- */
 .focus-timer-header {
   display: flex;
   align-items: center;
@@ -37,18 +36,19 @@
   color: var(--ft-text-muted);
 }
 
-.modal-close {
-  background: var(--surface-primary);
+.focus-timer-full .closeModalBtn {
+  background: transparent;
   border: none;
   color: var(--ft-text-muted);
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
   padding: 4px;
+  position: static;
 }
 
-.modal-close:hover,
-.modal-close:focus-visible {
+.closeModalBtn:hover,
+.closeModalBtn:focus-visible {
   color: var(--ft-text);
 }
 
@@ -85,7 +85,7 @@
   stroke: var(--ft-accent);
   stroke-width: 10;
   stroke-linecap: round;
-  stroke-dasharray: 553; /* 2 * PI * r(88) */
+  stroke-dasharray: 553;
   stroke-dashoffset: 553;
   transition: stroke-dashoffset 0.3s linear, stroke 0.4s ease;
 }
@@ -144,7 +144,8 @@
 }
 
 .focus-timer-panel[data-state="running"] .focus-timer-target-row input,
-.focus-timer-panel[data-state="paused"] .focus-timer-target-row input {
+.focus-timer-panel[data-state="paused"] .focus-timer-target-row input,
+.focus-timer-panel[data-state="reached"] .focus-timer-target-row input {
   opacity: 0.5;
   pointer-events: none;
 }
@@ -157,11 +158,11 @@
 
 .btn {
   flex: 1;
-  padding: var(--space-sm);
+  padding: 10px 12px;
   border-radius: 10px;
   border: 1px solid transparent;
   font-size: 14px;
-  font-weight: var(--font-bold);
+  font-weight: 600;
   cursor: pointer;
   transition: opacity 0.15s ease, background 0.15s ease;
 }
@@ -173,7 +174,7 @@
 
 .btn-primary {
   background: var(--ft-accent);
-  color: #000000;
+  color: #000;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -185,10 +186,18 @@
   color: var(--ft-accent);
 }
 
-.btn-ghost {
-  background: transparent;
-  border-color: var(--ft-border);
+.btn-icon {
+  flex: 0 0 auto;
+  width: 42px;
+  padding: 0;
+  background: var(--ft-bg-inset);
   color: var(--ft-text-muted);
+  border: 1px solid var(--ft-border);
+}
+
+.btn-icon:hover:not(:disabled) {
+  color: var(--ft-text);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .focus-timer-today {
@@ -201,6 +210,104 @@
 .focus-timer-today strong {
   color: var(--ft-text);
   font-weight: 600;
+}
+
+/* ---------- COMPACT / FLOATING ---------- */
+.modalContainer:has(.is-compact) {
+  width: fit-content;
+  height: fit-content;
+  top: auto;
+  bottom: var(--space-md, 16px) !important;
+  left: var(--space-md, 16px);
+  right: auto;
+  backdrop-filter: none;
+  background: transparent;
+  pointer-events: none; /* let clicks pass except on the panel itself */
+}
+
+.modalContainer:has(.is-compact) .form {
+  width: auto;
+  padding: 0;
+  border-radius: var(--radius-lg, 16px);
+  pointer-events: auto;
+}
+
+.focus-timer-compact {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  min-width: 220px;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.focus-timer-compact:active {
+  cursor: grabbing;
+}
+
+.focus-timer-panel.is-compact {
+  padding: 0;
+  border-radius: 999px;
+  width: auto;
+  max-width: none;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.focus-timer-panel.is-compact .focus-timer-full {
+  display: none;
+}
+
+.focus-timer-panel.is-compact .focus-timer-compact {
+  display: flex;
+}
+
+.compact-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ft-accent);
+  flex-shrink: 0;
+}
+
+.focus-timer-panel[data-state="paused"] .compact-dot {
+  background: var(--ft-paused);
+}
+
+.focus-timer-panel[data-state="reached"] .compact-dot {
+  background: var(--ft-done);
+}
+
+.compact-time {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  flex: 1;
+}
+
+.compact-toggle,
+.compact-expand {
+  background: transparent;
+  border: none;
+  color: var(--ft-text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  line-height: 1;
+}
+
+.compact-toggle:hover,
+.compact-expand:hover {
+  color: var(--ft-text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Prevent text selection while dragging */
+.focus-timer-panel.is-compact.dragging {
+  opacity: 0.95;
 }
 
 @media (prefers-reduced-motion: reduce) {
