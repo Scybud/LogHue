@@ -89,8 +89,8 @@ div#editor.ql-container.ql-snow {
   overflow-x: auto;
 }
 .ql-editor p {
-  margin-bottom: auto;
-  line-height: normal;
+  margin: 0;
+  line-height: inherit;
 }
 .ql-editor.ql-blank::before {
   color: var(--muted);

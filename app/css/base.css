@@ -20,6 +20,10 @@ body {
   background: var(--bg-primary);
   color: var(--text-primary);
 }
+::selection {
+  background: var(--primary);
+  color: #ffffff;
+}
 
 /*MAIN*/
 .main {

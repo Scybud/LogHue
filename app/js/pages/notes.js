@@ -461,6 +461,20 @@ async function initNotes() {
     return new Delta().insert({ "table-embed": { id } });
   });
 
+const BLOCK_TAGS = /^(P|H[1-6]|UL|OL|BLOCKQUOTE)$/;
+quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+  if (!BLOCK_TAGS.test(node.tagName)) return delta;
+  if (node.parentElement?.closest("li, blockquote, pre")) return delta;
+
+  const next = node.nextElementSibling;
+  if (!next || !(BLOCK_TAGS.test(next.tagName) || next.tagName === "PRE")) {
+    return delta;
+  }
+  if (!node.textContent.trim() || !next.textContent.trim()) return delta;
+
+  return delta.insert("\n");
+});
+
   // Initialize sketch board (palm rejection + shape recognition)
   initSketchBoard({
     onStrokeFinished: () => scheduleSketchAutosave(),
@@ -1648,7 +1662,7 @@ async function exportRenderedNote(type, title, safeTitle, htmlContent) {
   <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
   <style>
     body { font-family: Arial, sans-serif; padding: 40px; }
-    .ql-editor { line-height: 1.6; }
+    .ql-editor { line-height: 1.65; }
   </style>
 </head>
 <body>
@@ -1686,6 +1700,7 @@ async function exportRenderedNote(type, title, safeTitle, htmlContent) {
           margin-bottom: 20px;
           color: #000000 !important;
         }
+          .pdf-container p { margin: 0; }
       </style>
       <div class="pdf-container">
         <h1>${title}</h1>
@@ -1893,9 +1908,13 @@ async function exportCurrentNote(type, skipTableWarning = false) {
         return;
       }
       const { Document, Packer, Paragraph } = window.docx;
+      const lines = plainText.replace(/\n$/, "").split("\n");
       const doc = new Document({
         sections: [
-          { properties: {}, children: [new Paragraph({ text: plainText })] },
+          {
+            properties: {},
+            children: lines.map((line) => new Paragraph({ text: line })),
+          },
         ],
       });
       Packer.toBlob(doc).then((blob) => saveAs(blob, `${safeTitle}.docx`));
