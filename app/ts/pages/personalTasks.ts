@@ -15,6 +15,7 @@ import { attachCreatePersonalTaskEvent } from "../../js/utils/modalEvents.js";
 import { formatDateTime, formatTime } from "../../js/utils/time.js";
 import { linkify } from "../../js/utils/linkify.js";
 import { makeCollapsible } from "../../js/utils/toggle.js";
+import {openFocusTimerModal} from "../../js/components/focus-timer.js"
 
 // State
 let personalCreatedTasks: HTMLElement;
@@ -71,12 +72,13 @@ export async function initPersonalTasks() {
 
   renderExistingTasks();
   checkIfEmpty();
-  attachDeleteTaskEvent(personalCreatedTasks, user.id);
-  attachToggleCompleteEvent(personalCreatedTasks);
-  attachDuplicateTaskEvent(personalCreatedTasks, user.id);
-  attachLinkNoteEvent(personalCreatedTasks, user.id);
-  attachEditTaskEvent(personalCreatedTasks);
-  openLogPersonalTaskModal();
+attachDeleteTaskEvent(personalCreatedTasks, user.id);
+attachToggleCompleteEvent(personalCreatedTasks);
+attachDuplicateTaskEvent(personalCreatedTasks, user.id);
+attachLinkNoteEvent(personalCreatedTasks, user.id);
+attachEditTaskEvent(personalCreatedTasks);
+attachFocusTimerEvent(personalCreatedTasks); // ← add this
+openLogPersonalTaskModal();
 }
 
 // Empty State
@@ -269,9 +271,21 @@ export function createTaskElement(task: Task) {
   deleteBtn.classList.add("deleteBtn", "btn", "btn-sm", "danger");
   deleteBtn.prepend(createSvgIcon(deleteIconPaths));
 
-  const actionsList = document.createElement("div")
-  actionsList.classList.add("dropdown-list")
-  actionsList.append(editBtn, linkNoteBtn, duplicateBtn, deleteBtn);
+const focusBtn = document.createElement("button");
+focusBtn.type = "button";
+focusBtn.textContent = "Focus timer";
+focusBtn.classList.add("btn", "btn-sm", "focusTimerBtn");
+focusBtn.prepend(
+  createSvgIcon([
+    { tag: "circle", attrs: { cx: "12", cy: "13", r: "8" } },
+    { tag: "path", attrs: { d: "M12 9v4l2 2" } },
+    { tag: "path", attrs: { d: "M9 2h6" } },
+  ]),
+);
+
+const actionsList = document.createElement("div");
+actionsList.classList.add("dropdown-list");
+actionsList.append(editBtn, focusBtn, linkNoteBtn, duplicateBtn, deleteBtn);
 
   actionsGroup.append(actionsList);
   topRow.append(checkbox, nameLabel, actionsBtn, actionsGroup);
@@ -309,6 +323,27 @@ export function createTaskElement(task: Task) {
   el.append(dateSpan);
 
   return el;
+}
+
+export function attachFocusTimerEvent(container: HTMLElement) {
+  if (!container) return;
+
+  container.addEventListener("click", async (e: Event) => {
+    const btn = (e.target as HTMLElement).closest(
+      ".focusTimerBtn",
+    ) as HTMLButtonElement | null;
+    if (!btn) return;
+
+    const card = btn.closest(".taskCard") as HTMLElement | null;
+    const taskId = card?.dataset.id;
+    const task = taskId
+      ? savedTaskDetails.find((t) => String(t.id) === String(taskId))
+      : undefined;
+
+    if (!task) return;
+
+    await openFocusTimerModal(task, "personal");
+  });
 }
 
 // Date bucketing

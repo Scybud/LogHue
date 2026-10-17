@@ -53,24 +53,37 @@ function playGoalReachedSound() {
 
 /**
  * Opens the focus timer modal for a task.
+ * Works for both workspace tasks and personal tasks.
+ * @param {object} task
+ * @param {"workspace" | "personal"} [type] - optional, auto-detected when omitted
  */
-export async function openFocusTimerModal(task) {
+export async function openFocusTimerModal(task, type = null) {
   await loadComponent("/components/modals/focus-timer", "modalContainer");
 
   cacheEls();
 
-  const workspaceId = task.workspace_id ?? task.workspace?.id ?? null;
+  const isPersonal =
+    type === "personal" ||
+    (!task.workspace_id && !task.workspace && !task.type);
+
+  const workspaceId = isPersonal
+    ? null
+    : (task.workspace_id ?? task.workspace?.id ?? null);
+
+  const taskTitle = task.title || task.name || "Untitled task";
   const resumed = restoreState(task.id);
 
   state = resumed
     ? {
         ...resumed,
         workspaceId: resumed.workspaceId ?? workspaceId,
+        isPersonal: resumed.isPersonal ?? isPersonal,
       }
     : {
         taskId: task.id,
         workspaceId,
-        taskTitle: task.title,
+        taskTitle,
+        isPersonal,
         startedAt: null,
         elapsedMs: 0,
         targetMs: 25 * 60 * 1000,
@@ -80,14 +93,22 @@ export async function openFocusTimerModal(task) {
         posY: null,
       };
 
-  els.contextLabel.textContent =
-    task.type === "workspace" || workspaceId
-      ? "Workspace task"
-      : "Personal task";
-  els.taskTitle.textContent = task.title || "Untitled task";
+  els.contextLabel.textContent = state.isPersonal
+    ? "Personal task"
+    : "Workspace task";
+  els.taskTitle.textContent = taskTitle;
   els.targetInput.value = Math.round(state.targetMs / 60000);
 
-  await refreshTodayTotal();
+  // Personal tasks have no "logged today" data
+  if (state.isPersonal) {
+    els.todayTotal.closest(".focus-timer-today")?.style.setProperty("display", "none");
+    els.stopBtn.textContent = "Stop";
+  } else {
+    els.todayTotal.closest(".focus-timer-today")?.style.removeProperty("display");
+    els.stopBtn.textContent = "Stop & log";
+    await refreshTodayTotal();
+  }
+
   render();
   attachFocusTimerEvents();
   initDrag();
@@ -243,12 +264,21 @@ function handleCancel() {
 }
 
 async function handleStopAndLog() {
+  // Personal tasks → just stop and close, no DB write
+  if (state.isPersonal) {
+    stopTicking();
+    clearPersistedState();
+    closeModal();
+    actionMsg("Focus session ended.", "success");
+    return;
+  }
+
+  // ── Workspace task (existing logic) ──
   if (state.elapsedMs < 60000) {
     actionMsg("Log at least a minute before saving.", "warn");
     return;
   }
 
-  // Prevent double-clicks
   els.stopBtn.disabled = true;
   els.primaryBtn.disabled = true;
   els.cancelBtn.disabled = true;
@@ -256,7 +286,7 @@ async function handleStopAndLog() {
   stopTicking();
 
   const minutes = Math.round(state.elapsedMs / 60000);
-  userId = sessionState?.user?.id;
+  const userId = sessionState?.user?.id;
 
   try {
     const { error } = await supabase.from("workspace_task_logs").insert({
@@ -269,15 +299,7 @@ async function handleStopAndLog() {
       task_status: "in progress",
     });
 
-    if (error) {
-      console.error(error);
-      actionMsg("Could not save your focus log. Try again.", "error");
-      // Re-enable so user can retry
-      els.stopBtn.disabled = false;
-      els.primaryBtn.disabled = false;
-      els.cancelBtn.disabled = false;
-      return;
-    }
+    if (error) throw error;
 
     actionMsg(`Logged ${minutes}m on this task.`, "success");
     clearPersistedState();
@@ -377,6 +399,11 @@ function formatTime(ms) {
 }
 
 async function refreshTodayTotal() {
+  if (state?.isPersonal) {
+    els.todayTotal.textContent = "0m";
+    return;
+  }
+
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
 

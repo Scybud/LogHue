@@ -8,6 +8,7 @@ import { attachCreatePersonalTaskEvent } from "../../js/utils/modalEvents.js";
 import { formatDateTime, formatTime } from "../../js/utils/time.js";
 import { linkify } from "../../js/utils/linkify.js";
 import { makeCollapsible } from "../../js/utils/toggle.js";
+import { openFocusTimerModal } from "../../js/components/focus-timer.js";
 // State
 let personalCreatedTasks;
 let loggedTasksCount;
@@ -54,6 +55,7 @@ export async function initPersonalTasks() {
     attachDuplicateTaskEvent(personalCreatedTasks, user.id);
     attachLinkNoteEvent(personalCreatedTasks, user.id);
     attachEditTaskEvent(personalCreatedTasks);
+    attachFocusTimerEvent(personalCreatedTasks); // ← add this
     openLogPersonalTaskModal();
 }
 // Empty State
@@ -200,9 +202,18 @@ export function createTaskElement(task) {
     deleteBtn.textContent = "Delete task";
     deleteBtn.classList.add("deleteBtn", "btn", "btn-sm", "danger");
     deleteBtn.prepend(createSvgIcon(deleteIconPaths));
+    const focusBtn = document.createElement("button");
+    focusBtn.type = "button";
+    focusBtn.textContent = "Focus timer";
+    focusBtn.classList.add("btn", "btn-sm", "focusTimerBtn");
+    focusBtn.prepend(createSvgIcon([
+        { tag: "circle", attrs: { cx: "12", cy: "13", r: "8" } },
+        { tag: "path", attrs: { d: "M12 9v4l2 2" } },
+        { tag: "path", attrs: { d: "M9 2h6" } },
+    ]));
     const actionsList = document.createElement("div");
     actionsList.classList.add("dropdown-list");
-    actionsList.append(editBtn, linkNoteBtn, duplicateBtn, deleteBtn);
+    actionsList.append(editBtn, focusBtn, linkNoteBtn, duplicateBtn, deleteBtn);
     actionsGroup.append(actionsList);
     topRow.append(checkbox, nameLabel, actionsBtn, actionsGroup);
     el.append(topRow);
@@ -233,6 +244,23 @@ export function createTaskElement(task) {
             : formatDateTime(task.created_at);
     el.append(dateSpan);
     return el;
+}
+export function attachFocusTimerEvent(container) {
+    if (!container)
+        return;
+    container.addEventListener("click", async (e) => {
+        const btn = e.target.closest(".focusTimerBtn");
+        if (!btn)
+            return;
+        const card = btn.closest(".taskCard");
+        const taskId = card?.dataset.id;
+        const task = taskId
+            ? savedTaskDetails.find((t) => String(t.id) === String(taskId))
+            : undefined;
+        if (!task)
+            return;
+        await openFocusTimerModal(task, "personal");
+    });
 }
 // Date bucketing
 export function getDateBucket(deadline) {
