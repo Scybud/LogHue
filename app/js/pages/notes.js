@@ -768,13 +768,31 @@ function renderNotesList(notes) {
   highlightActiveNote(currentNoteId);
 }
 
+function makeDivider() {
+  const d = document.createElement("div");
+  d.classList.add("dropdown-divider");
+  return d;
+}
+
+function makeMenuBtn(label, handler, extraClass = "") {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.classList.add("btn", "btn-sm");
+  if (extraClass) btn.classList.add(extraClass);
+  btn.textContent = label;
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    handler();
+  });
+  return btn;
+}
+
 function buildNoteItem(note) {
   const item = document.createElement("div");
   item.classList.add("noteItem");
   if (note.note_type === "sketch") item.classList.add("noteItemSketch");
   if (note.note_type === "table") item.classList.add("noteItemTable");
   if (note.is_public) item.classList.add("noteItemPublic");
-
   item.dataset.id = note.id;
 
   const content = document.createElement("div");
@@ -786,9 +804,6 @@ function buildNoteItem(note) {
       : note.note_type === "table"
         ? "▦ "
         : "";
-
-  const dropdownDivider = document.createElement("div");
-  dropdownDivider.classList.add("dropdown-divider");
 
   const titleEl = document.createElement("p");
   titleEl.classList.add("noteTitle");
@@ -827,68 +842,44 @@ function buildNoteItem(note) {
   const actionsMenu = document.createElement("div");
   actionsMenu.classList.add("dropdown", "noteActionsMenu");
   actionsMenu.hidden = true;
+  // Keep clicks inside the menu from opening the note
+  actionsMenu.addEventListener("click", (e) => e.stopPropagation());
 
-  const actionsMenuList = document.createElement("div");
-  actionsMenuList.classList.add("dropdown-list");
-  actionsMenu.append(actionsMenuList);
+  const list = document.createElement("div");
+  list.classList.add("dropdown-list");
+  actionsMenu.append(list);
 
-  const deleteBtn = document.createElement("button");
-  deleteBtn.type = "button";
-  deleteBtn.classList.add("btn", "danger", "btn-sm");
-  deleteBtn.textContent = "Delete";
-  deleteBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    actionsMenu.hidden = true;
-    confirmAction("Delete Note", "Delete this note?", [
-      { label: "Cancel", type: "cancel" },
-      {
-        label: "Delete",
-        type: "confirm",
-        onClick: () => attachDeleteNoteEvent(item, note.id),
-      },
-    ]);
-  });
-  actionsMenuList.append(deleteBtn);
-
-  if (note.folder_id) {
-    actionsMenuList.append(dropdownDivider);
-
-    const removeBtn = document.createElement("button");
-    removeBtn.type = "button";
-    removeBtn.classList.add("btn", "btn-sm");
-    removeBtn.textContent = "Remove from folder";
-    removeBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
+  const mainPanel = document.createElement("div");
+  mainPanel.classList.add("menuPanel");
+  const folderPanel = buildFolderPanel(note, {
+    onBack: () => showPanel("main"),
+    onPick: (folderId) => {
       actionsMenu.hidden = true;
-      removeNoteFromFolder(note.id);
-    });
-    actionsMenuList.append(removeBtn);
-  } else if (savedFolders.length > 0) {
-    actionsMenuList.append(dropdownDivider);
+      assignNoteToFolder(note.id, folderId);
+    },
+  });
+  folderPanel.hidden = true;
+  list.append(mainPanel, folderPanel);
 
-    const label = document.createElement("div");
-    label.classList.add("dropdown-sectionLabel");
-    label.textContent = "Add to folder";
-    actionsMenuList.append(label);
-
-    savedFolders.forEach((folder) => {
-      const folderBtn = document.createElement("button");
-      folderBtn.type = "button";
-      folderBtn.classList.add("btn", "btn-sm");
-      folderBtn.textContent = folder.name;
-      folderBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        actionsMenu.hidden = true;
-        assignNoteToFolder(note.id, folder.id);
-      });
-      actionsMenuList.append(folderBtn);
-    });
+  function showPanel(name) {
+    mainPanel.hidden = name !== "main";
+    folderPanel.hidden = name !== "folders";
+    if (name === "folders") {
+      const search = folderPanel.querySelector(".folderSearch");
+      if (search) {
+        search.value = "";
+        search.dispatchEvent(new Event("input"));
+        search.focus();
+      }
+    }
   }
 
-  const shareDivider = document.createElement("div");
-  shareDivider.classList.add("dropdown-divider");
-  actionsMenuList.append(shareDivider);
+  const closeAnd = (fn) => () => {
+    actionsMenu.hidden = true;
+    fn();
+  };
 
+  // 1. Share actions
   const shareActions = note.is_public
     ? [
         ["Copy public link", () => copyShareLink(note)],
@@ -901,18 +892,54 @@ function buildNoteItem(note) {
       ]
     : [["Share publicly", () => enableSharing(note)]];
 
-  shareActions.forEach(([label, handler]) => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.classList.add("btn", "btn-sm");
-    btn.textContent = label;
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      actionsMenu.hidden = true;
-      handler();
-    });
-    actionsMenuList.append(btn);
-  });
+  shareActions.forEach(([label, fn]) =>
+    mainPanel.append(makeMenuBtn(label, closeAnd(fn))),
+  );
+
+  // 2. Folder actions
+  const hasFolderActions = savedFolders.length > 0 || note.folder_id;
+  if (hasFolderActions) mainPanel.append(makeDivider());
+
+  if (savedFolders.length > 0) {
+    const moveBtn = makeMenuBtn(
+      note.folder_id ? "Move to another folder" : "Move to folder",
+      () => showPanel("folders"),
+      "menuDrillBtn",
+    );
+    moveBtn.insertAdjacentHTML(
+      "beforeend",
+      `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18" /></svg>`,
+    );
+    mainPanel.append(moveBtn);
+  }
+
+  if (note.folder_id) {
+    mainPanel.append(
+      makeMenuBtn(
+        "Remove from folder",
+        closeAnd(() => removeNoteFromFolder(note.id)),
+      ),
+    );
+  }
+
+  // 3. Delete, last and separated
+  mainPanel.append(makeDivider());
+  mainPanel.append(
+    makeMenuBtn(
+      "Delete",
+      closeAnd(() =>
+        confirmAction("Delete Note", "Delete this note?", [
+          { label: "Cancel", type: "cancel" },
+          {
+            label: "Delete",
+            type: "confirm",
+            onClick: () => attachDeleteNoteEvent(item, note.id),
+          },
+        ]),
+      ),
+      "danger",
+    ),
+  );
 
   actionsBtn.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -922,12 +949,92 @@ function buildNoteItem(note) {
         if (el !== actionsMenu) el.hidden = true;
       });
     actionsMenu.hidden = !actionsMenu.hidden;
+    if (!actionsMenu.hidden) showPanel("main");
   });
 
   item.append(content, actionsBtn, actionsMenu);
   item.onclick = () => openNote(note);
 
   return item;
+}
+
+function buildFolderPanel(note, { onBack, onPick }) {
+  const panel = document.createElement("div");
+  panel.classList.add("menuPanel", "folderPanel");
+
+  const back = makeMenuBtn("‹ Back", onBack, "menuBackBtn");
+  panel.append(back);
+
+  const folders = sortFoldersByRecent(
+    savedFolders.filter((f) => String(f.id) !== String(note.folder_id)),
+  );
+
+  // Search only earns its space once the list gets long
+  let search = null;
+  if (folders.length > 6) {
+    search = document.createElement("input");
+    search.type = "text";
+    search.placeholder = "Search folders";
+    search.classList.add("inputField", "folderSearch");
+    search.addEventListener("click", (e) => e.stopPropagation());
+    panel.append(search);
+  }
+
+  const results = document.createElement("div");
+  results.classList.add("folderPicker");
+  panel.append(results);
+
+  const renderResults = (query = "") => {
+    results.innerHTML = "";
+    const q = query.trim().toLowerCase();
+    const matches = folders.filter((f) => f.name.toLowerCase().includes(q));
+
+    if (matches.length === 0) {
+      const empty = document.createElement("p");
+      empty.classList.add("placeholderText");
+      empty.textContent = "No folders found.";
+      results.append(empty);
+      return;
+    }
+
+    matches.forEach((folder) =>
+      results.append(makeMenuBtn(folder.name, () => onPick(folder.id))),
+    );
+  };
+
+  search?.addEventListener("input", () => renderResults(search.value));
+  renderResults();
+
+  return panel;
+}
+
+// Recently used folders float to the top of the picker
+function loadRecentFolders() {
+  try {
+    return JSON.parse(localStorage.getItem("noteFolderRecent") || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function pushRecentFolder(folderId) {
+  const id = String(folderId);
+  const list = [id, ...loadRecentFolders().filter((x) => x !== id)].slice(
+    0,
+    30,
+  );
+  localStorage.setItem("noteFolderRecent", JSON.stringify(list));
+}
+
+function sortFoldersByRecent(folders) {
+  const recent = loadRecentFolders();
+  const rank = (f) => {
+    const i = recent.indexOf(String(f.id));
+    return i === -1 ? 9999 : i;
+  };
+  return [...folders].sort(
+    (a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name),
+  );
 }
 
 function attachNoteMenuOutsideClickHandler() {
@@ -1614,6 +1721,8 @@ async function assignNoteToFolder(noteId, folderId) {
     return;
   }
 
+    pushRecentFolder(folderId);
+    
   const note = savedNoteDetails.find((n) => String(n.id) === String(noteId));
   if (note) note.folder_id = folderId;
   renderNotesList(savedNoteDetails);

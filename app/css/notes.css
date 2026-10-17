@@ -107,8 +107,7 @@
   padding: var(--space-md) var(--space-md);
   border-bottom: 1px solid var(--border-primary);
   flex-shrink: 0;
-    margin-bottom: 0;
-
+  margin-bottom: 0;
 }
 
 .sectionHeaderLeft {
@@ -228,7 +227,33 @@
   font-size: 0.78rem;
 }
 
-/* Per-note actions button, replaces the old plain deleteBtn */
+.noteActionsMenu .menuPanel[hidden] {
+  display: none;
+}
+
+.noteActionsMenu .folderPicker {
+  max-height: 220px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.noteActionsMenu .folderSearch {
+  width: 100%;
+  margin: 4px 0;
+  box-sizing: border-box;
+  padding: var(--space-sm) var(--space-md);
+}
+
+.noteActionsMenu .menuDrillBtn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.noteActionsMenu .menuBackBtn {
+  opacity: 0.7;
+}
+
 .noteActionsBtn {
   opacity: 0;
   flex-shrink: 0;
@@ -247,10 +272,10 @@
 }
 
 @media (hover: none) and (pointer: coarse) {
-  .noteActionsBtn, .deleteFolderBtn {
+  .noteActionsBtn,
+  .deleteFolderBtn {
     opacity: 1;
   }
-  
 }
 
 .noteItem:hover .noteActionsBtn {
@@ -326,12 +351,15 @@
   cursor: pointer;
   color: #fff;
   border-left: 2px solid transparent;
-  transition: background 0.4s ease, border-color 0.4s ease, border-radius 0.4s ease;
+  transition:
+    background 0.4s ease,
+    border-color 0.4s ease,
+    border-radius 0.4s ease;
   position: relative;
 }
 
 .noteItem:hover {
-    border-radius: var(--radius-sm);
+  border-radius: var(--radius-sm);
   background: var(--hover-bg);
 }
 
@@ -340,7 +368,6 @@
   border-left-color: var(--primary-light);
   color: #fff;
 }
-
 
 .noteItemContent {
   flex: 1;
@@ -392,9 +419,9 @@
   padding: 0;
 }
 @media (hover: none) and (pointer: coarse) {
-.noteItem .deleteBtn {
+  .noteItem .deleteBtn {
     opacity: 1;
-}
+  }
 }
 
 .noteItem:hover .deleteBtn {
@@ -416,8 +443,8 @@
 }
 
 .noteActions {
-display: flex;
-gap: var(--space-sm);
+  display: flex;
+  gap: var(--space-sm);
 }
 
 /*
@@ -454,7 +481,9 @@ gap: var(--space-sm);
   background: var(--card-bg);
 }
 
-#noteTitle, #sketchTitle, #tableTitle {
+#noteTitle,
+#sketchTitle,
+#tableTitle {
   border: 1px solid var(--border-primary);
   width: 100%;
   min-width: 250px;
@@ -465,7 +494,9 @@ gap: var(--space-sm);
   padding: 6px 10px;
   border-radius: var(--radius-sm);
   color: var(--text-primary);
-  transition: border-color 0.2s ease, background 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
 }
 
 #noteTitle:focus {
@@ -501,7 +532,8 @@ gap: var(--space-sm);
   background: var(--primary-light);
 }
 
-#exportNotesBtn, #exportTableBtn {
+#exportNotesBtn,
+#exportTableBtn {
   color: var(--text-primary);
   background: var(--card-bg);
   border: 1px solid var(--border-primary);
@@ -511,18 +543,18 @@ gap: var(--space-sm);
 #textEditorPane {
   flex: 1 1 auto;
   min-height: 0;
-    height: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
 #editor {
-  flex: 1 1 auto;       /* takes remaining space after the toolbar */
+  flex: 1 1 auto; /* takes remaining space after the toolbar */
   min-height: 0;
-  height: auto;          /* remove height:100%, flex handles sizing now */
+  height: auto; /* remove height:100%, flex handles sizing now */
   max-height: none;
-  overflow: auto;        /* only #editor scrolls */
+  overflow: auto; /* only #editor scrolls */
   border: none;
   background: var(--bg-primary);
   color: var(--text-primary);
@@ -547,14 +579,14 @@ button.toggleNotesListBtn {
 
 /* Make the whole notes area fill the available height */
 .notesContainer {
-  height: calc(100dvh - 80px);   /* 80px ≈ header; adjust if needed */
+  height: calc(100dvh - 80px); /* 80px ≈ header; adjust if needed */
   max-height: calc(100dvh - 80px);
 }
 
 /* Mobile */
 @media (max-width: 800px) {
   .notesContainer {
-    height: calc(100dvh - 70px);   /* smaller header on mobile */
+    height: calc(100dvh - 70px); /* smaller header on mobile */
     max-height: none;
     display: flex;
     flex-direction: column;
@@ -566,7 +598,7 @@ button.toggleNotesListBtn {
 
   #editorContainer {
     flex: 1 1 auto;
-    min-height: 0;                 /* critical for flex children */
+    min-height: 0; /* critical for flex children */
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -615,7 +647,9 @@ button.toggleNotesListBtn {
     height: 0;
     overflow: hidden;
     padding: 0;
-    transition: height 0.35s ease, padding 0.35s ease;
+    transition:
+      height 0.35s ease,
+      padding 0.35s ease;
   }
 
   #notesList.expandList {
@@ -667,8 +701,13 @@ button.toggleNotesListBtn {
 
 #sketchEditorPane {
   position: relative;
-  transition: transform 0.5s ease, width 0.5s ease, height 0.5s ease,
-    top 0.5s ease, left 0.5s ease, border-radius 0.5s ease;
+  transition:
+    transform 0.5s ease,
+    width 0.5s ease,
+    height 0.5s ease,
+    top 0.5s ease,
+    left 0.5s ease,
+    border-radius 0.5s ease;
 }
 #sketchCanvasWrap {
   flex: 1;
@@ -691,33 +730,35 @@ button.toggleNotesListBtn {
   padding: var(--space-xs) 0;
 }
 .sketchToolInputRow .tooltip {
-color: var(--text-primary);
+  color: var(--text-primary);
 }
-#sketchEditorPane.expanded, #textEditorPane.expanded, #tableEditorPane.expanded {
-position: fixed;
-width: calc(100% - 60px);
-height: 100%;
-z-index: 2;
-top: 0;
-left: 60px;
-backdrop-filter: var(--filter);
+#sketchEditorPane.expanded,
+#textEditorPane.expanded,
+#tableEditorPane.expanded {
+  position: fixed;
+  width: calc(100% - 60px);
+  height: 100%;
+  z-index: 2;
+  top: 0;
+  left: 60px;
+  backdrop-filter: var(--filter);
 }
- .actionBtn.tooltip:hover::after {
+.actionBtn.tooltip:hover::after {
   color: var(--text-primary);
   z-index: 1;
 }
 
-
 @media (max-width: 800px) {
- #sketchEditorPane.expanded, #textEditorPane.expanded, #tableEditorPane.expanded {
-width: 100%;
-height: 100%;
-left: 0;
-}
-#sketchEditorPane.expanded #sketchCanvasWrap {
-  height: 100%;
-}
-
+  #sketchEditorPane.expanded,
+  #textEditorPane.expanded,
+  #tableEditorPane.expanded {
+    width: 100%;
+    height: 100%;
+    left: 0;
+  }
+  #sketchEditorPane.expanded #sketchCanvasWrap {
+    height: 100%;
+  }
 }
 #textEditorPane[hidden],
 #sketchEditorPane[hidden] {
